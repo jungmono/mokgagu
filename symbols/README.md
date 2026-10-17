@@ -8,3 +8,4 @@
 - angwe_true_ratio.png — 안궤를 실측 비율(가로 72.3 : 높이 44.2)로 맞춘 것. 사이트에 쓰는 mark_angwe.png도 이 비율
 - angwe_photo_true.svg/png — 소장 안궤를 사진과 실측(높이 44.1, 천판 가로 72.3, 천판 두께 1.35, 본체 가로 55cm)으로 그린 것. 천판 끝은 아래로 둥글림. 현재 사이트의 mark_angwe.png
 - angwe_photo_true_white.png — 같은 안궤 그림, 흰 바탕(여백 포함)
+- mark_eonyang_white.png (사이트 루트) — eonyang_bandaji_gpt_line.png를 여백만 잘라 줄인 것(비율 그대로). 초기화면 맨 아래 가운데에 사용
