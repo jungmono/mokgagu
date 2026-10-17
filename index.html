@@ -270,7 +270,7 @@ function openItem(i) {
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
     <dl>${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
-    <a href="${r.b}.html">이 도록 대시보드로 가기 →</a>`;
+    <a href="${r.b}.html">도록으로 돌아가기 →</a>`;
   $('d-pos').textContent = `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
