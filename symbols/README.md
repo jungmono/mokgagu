@@ -5,3 +5,4 @@
 - angwe_gpt.png — 안궤 (검은 실루엣, 흰 장석선)
 - eonyang_bandaji_gpt_black.png — 언양반닫이 (검은 바탕, 흰 장석)
 - eonyang_bandaji_gpt_line.png — 언양반닫이 (흰 바탕, 검은 장석·선)
+- angwe_true_ratio.png — 안궤를 실측 비율(가로 72.3 : 높이 44.2)로 맞춘 것. 사이트에 쓰는 mark_angwe.png도 이 비율
