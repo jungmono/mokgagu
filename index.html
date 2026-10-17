@@ -224,7 +224,7 @@ function render(q = '') {
   const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
   let html = '';
   if (fd) {
-    html = `<a class="card folder back" href="#"><div class="cover fd">←</div><div><h3>도록 목록으로</h3><p>조선의 목가구 도록으로 돌아가기</p></div></a>` + fd[3].map(card).join('');
+    html = fd[3].map(card).join('');
   } else {
     html = MAIN.map(card).join('') + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd">${FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p} — ${L.map((d) => d.title).join(' · ')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
   }

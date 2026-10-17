@@ -569,13 +569,32 @@ dash.calc('compare', {
 </div><div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div><button type="button" id="to-top" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
 <style>#to-top{position:fixed;right:22px;bottom:22px;z-index:900;width:52px;height:52px;border-radius:50%;border:2px solid #111;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s,background .15s}#to-top.show{opacity:1;visibility:visible;transform:none}#to-top:hover{background:#fff;color:#111}#to-top:focus-visible{outline:3px solid #8a2f22;outline-offset:3px}@media (max-width:640px){#to-top{right:14px;bottom:14px;width:46px;height:46px}}@media print{#to-top{display:none}}</style>
 <script>(function(){var b=document.getElementById('to-top');function u(){b.classList.toggle('show',window.scrollY>500);}window.addEventListener('scroll',u,{passive:true});u();b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();</script>
-<script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;var x0=null,y0=null,t0=0;
-var img=document.getElementById('dlg-img');if(img){img.setAttribute('draggable','false');}
-function go(dir){var b=document.getElementById(dir>0?'dlg-next':'dlg-prev');if(b&&!b.disabled)b.click();}
-d.addEventListener('pointerdown',function(e){if(e.target.closest('button,a,input,select'))return;x0=e.clientX;y0=e.clientY;t0=Date.now();},{passive:true});
-d.addEventListener('pointerup',function(e){if(x0===null)return;var dx=e.clientX-x0,dy=e.clientY-y0;x0=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.4&&Date.now()-t0<1200){go(dx<0?1:-1);}},{passive:true});
-d.addEventListener('pointercancel',function(){x0=null;});
-d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){go(1);}else if(e.key==='ArrowLeft'){go(-1);}});
+
+<script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;
+var img=document.getElementById('dlg-img')||document.getElementById('d-img');
+var nx=function(){return document.getElementById('dlg-next')||document.getElementById('d-next');},pv=function(){return document.getElementById('dlg-prev')||document.getElementById('d-prev');};
+if(img){img.setAttribute('draggable','false');img.addEventListener('dragstart',function(e){e.preventDefault();});}
+var x0=null,y0=0,t0=0,dx=0,mode=0,busy=false;
+function setX(v,anim){if(!img)return;img.style.transition=anim?'transform .22s ease, opacity .22s ease':'none';img.style.transform=v?'translateX('+v+'px)':'';img.style.opacity=v?String(Math.max(.35,1-Math.abs(v)/600)):'';}
+function go(dir){var b=dir>0?nx():pv();if(!b||b.disabled){setX(0,true);return;}
+  if(busy)return;busy=true;var w=(d.clientWidth||400)*0.6;setX(-dir*w,true);
+  setTimeout(function(){b.click();setX(dir*w,false);requestAnimationFrame(function(){requestAnimationFrame(function(){setX(0,true);busy=false;});});},200);}
+function start(x,y,t){if(t&&t.closest&&t.closest('button,a,input,select,textarea'))return;x0=x;y0=y;t0=Date.now();dx=0;mode=0;}
+function move(x,y,e){if(x0===null)return;var ddx=x-x0,ddy=y-y0;
+  if(!mode){if(Math.abs(ddx)>8&&Math.abs(ddx)>Math.abs(ddy)*1.2)mode=1;else if(Math.abs(ddy)>10)mode=2;}
+  if(mode===1){dx=ddx;setX(dx,false);if(e&&e.cancelable)e.preventDefault();}}
+var tEnd=0,dxEnd=0;function end(){if(x0===null)return;tEnd=Date.now();dxEnd=mode===1?dx:0;var fast=Date.now()-t0<300&&Math.abs(dx)>30;x0=null;
+  if(mode===1&&(Math.abs(dx)>70||fast)){go(dx<0?1:-1);}else if(mode===1){setX(0,true);}mode=0;}
+d.addEventListener('touchstart',function(e){if(e.touches.length!==1){x0=null;return;}var p=e.touches[0];start(p.clientX,p.clientY,e.target);},{passive:true});
+d.addEventListener('touchmove',function(e){var p=e.touches[0];if(p)move(p.clientX,p.clientY,e);},{passive:false});
+d.addEventListener('touchend',end);d.addEventListener('touchcancel',function(){x0=null;mode=0;setX(0,true);});
+var mouse=false;
+d.addEventListener('mousedown',function(e){if(e.button!==0)return;mouse=true;start(e.clientX,e.clientY,e.target);});
+window.addEventListener('mousemove',function(e){if(mouse)move(e.clientX,e.clientY,e);});
+window.addEventListener('mouseup',function(){if(mouse){mouse=false;end();}});
+d.addEventListener('click',function(e){if(e.isTrusted&&Date.now()-tEnd<400&&Math.abs(dxEnd)>8){e.stopPropagation();e.preventDefault();}},true);
+d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}});
+d.addEventListener('close',function(){setX(0,false);});
 })();</script>
-<style>#dlg{touch-action:pan-y}#dlg-img{-webkit-user-drag:none;user-select:none}</style>
+<style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 </body></html>

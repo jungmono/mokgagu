@@ -52,7 +52,7 @@ select{font:inherit;font-size:13.5px;padding:6px 10px;border:1px solid var(--lin
 .price .fail{font-size:14px;font-weight:600;color:#8b857b}
 .price .pre{font-size:14px;font-weight:600;color:var(--warn)}
 .note{font-size:13px;color:var(--muted);line-height:1.7;margin:22px 0 0}
-dialog{border:0;border-radius:14px;padding:0;max-width:min(1100px,96vw);width:96vw;max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.35);touch-action:pan-y}
+dialog{border:0;border-radius:14px;padding:0;max-width:min(1100px,96vw);width:96vw;max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.35);}
 dialog::backdrop{background:rgba(20,18,15,.55)}
 .d-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px;padding:20px;max-height:calc(94vh - 60px);overflow:auto}
 .d-img{display:grid;place-items:center;min-height:300px}
@@ -70,7 +70,7 @@ dialog::backdrop{background:rgba(20,18,15,.55)}
 /*FOOT_V2*/.sa-foot{max-width:1200px;margin:44px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}.sa-foot .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}.sa-foot .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}.sa-foot .ft-mark .ew-blk{background:#fff;color:#111}.sa-foot .ft-mark .ew-wht{background:#111;color:#fff}.sa-foot .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}
 </style></head>
 <body>
-<div class="sa-top"><a class="sa-home" href="index.html#auction" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
 <div class="wrap">
   <h1>아이옥션 경매 — 목가구·목기</h1>
   <ul class="lead" id="lead"></ul>
@@ -197,14 +197,37 @@ document.getElementById('d-prev').onclick = () => open_(cur - 1);
 document.getElementById('d-next').onclick = () => open_(cur + 1);
 document.getElementById('d-close').onclick = () => dlg.close();
 dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
-dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') open_(cur + 1); else if (e.key === 'ArrowLeft') open_(cur - 1); });
-let x0 = null, y0 = 0, t0 = 0;
-dlg.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; x0 = e.clientX; y0 = e.clientY; t0 = Date.now(); }, { passive: true });
-dlg.addEventListener('pointerup', (e) => { if (x0 === null) return; const dx = e.clientX - x0, dy = e.clientY - y0; x0 = null; if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4 && Date.now() - t0 < 1200) open_(cur + (dx < 0 ? 1 : -1)); }, { passive: true });
-dlg.addEventListener('pointercancel', () => { x0 = null; });
+
 const tt = document.getElementById('to-top');
 addEventListener('scroll', () => tt.classList.toggle('show', scrollY > 500), { passive: true });
 tt.onclick = () => scrollTo({ top: 0, behavior: 'smooth' });
 render();
 </script>
+<script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;
+var img=document.getElementById('dlg-img')||document.getElementById('d-img');
+var nx=function(){return document.getElementById('dlg-next')||document.getElementById('d-next');},pv=function(){return document.getElementById('dlg-prev')||document.getElementById('d-prev');};
+if(img){img.setAttribute('draggable','false');img.addEventListener('dragstart',function(e){e.preventDefault();});}
+var x0=null,y0=0,t0=0,dx=0,mode=0,busy=false;
+function setX(v,anim){if(!img)return;img.style.transition=anim?'transform .22s ease, opacity .22s ease':'none';img.style.transform=v?'translateX('+v+'px)':'';img.style.opacity=v?String(Math.max(.35,1-Math.abs(v)/600)):'';}
+function go(dir){var b=dir>0?nx():pv();if(!b||b.disabled){setX(0,true);return;}
+  if(busy)return;busy=true;var w=(d.clientWidth||400)*0.6;setX(-dir*w,true);
+  setTimeout(function(){b.click();setX(dir*w,false);requestAnimationFrame(function(){requestAnimationFrame(function(){setX(0,true);busy=false;});});},200);}
+function start(x,y,t){if(t&&t.closest&&t.closest('button,a,input,select,textarea'))return;x0=x;y0=y;t0=Date.now();dx=0;mode=0;}
+function move(x,y,e){if(x0===null)return;var ddx=x-x0,ddy=y-y0;
+  if(!mode){if(Math.abs(ddx)>8&&Math.abs(ddx)>Math.abs(ddy)*1.2)mode=1;else if(Math.abs(ddy)>10)mode=2;}
+  if(mode===1){dx=ddx;setX(dx,false);if(e&&e.cancelable)e.preventDefault();}}
+var tEnd=0,dxEnd=0;function end(){if(x0===null)return;tEnd=Date.now();dxEnd=mode===1?dx:0;var fast=Date.now()-t0<300&&Math.abs(dx)>30;x0=null;
+  if(mode===1&&(Math.abs(dx)>70||fast)){go(dx<0?1:-1);}else if(mode===1){setX(0,true);}mode=0;}
+d.addEventListener('touchstart',function(e){if(e.touches.length!==1){x0=null;return;}var p=e.touches[0];start(p.clientX,p.clientY,e.target);},{passive:true});
+d.addEventListener('touchmove',function(e){var p=e.touches[0];if(p)move(p.clientX,p.clientY,e);},{passive:false});
+d.addEventListener('touchend',end);d.addEventListener('touchcancel',function(){x0=null;mode=0;setX(0,true);});
+var mouse=false;
+d.addEventListener('mousedown',function(e){if(e.button!==0)return;mouse=true;start(e.clientX,e.clientY,e.target);});
+window.addEventListener('mousemove',function(e){if(mouse)move(e.clientX,e.clientY,e);});
+window.addEventListener('mouseup',function(){if(mouse){mouse=false;end();}});
+d.addEventListener('click',function(e){if(e.isTrusted&&Date.now()-tEnd<400&&Math.abs(dxEnd)>8){e.stopPropagation();e.preventDefault();}},true);
+d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}});
+d.addEventListener('close',function(){setX(0,false);});
+})();</script>
+<style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 </body></html>
