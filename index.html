@@ -26,7 +26,7 @@ h1 .home-link:focus-visible{outline:3px solid var(--brand);outline-offset:4px}
 h1 .ttl{display:block;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
 h1 .shelf{display:flex;justify-content:center;gap:clamp(8px,1.6vw,16px);margin-top:8px;padding-top:10px;border-top:2px solid #d9d6f3}
 h1 .shelf svg{width:clamp(26px,3.2vw,36px);height:clamp(26px,3.2vw,36px)}
-.eyebrow{color:var(--brand);font-weight:700;font-size:clamp(14px,1.8vw,19px);letter-spacing:-.01em}
+.eyebrow{display:inline-flex;align-items:center;flex-wrap:wrap;justify-content:center;font-size:clamp(16px,2.2vw,22px);font-weight:900;color:#111}.eyebrow .ew-blk,.eyebrow .ew-wht{display:inline-block;padding:.32em .8em;border:2.5px solid #111;letter-spacing:.08em;line-height:1.2}.eyebrow .ew-blk{background:#fff;color:#111}.eyebrow .ew-wht{background:#111;color:#fff}.eyebrow .ew-rest{margin-left:.12em;font-weight:700;letter-spacing:-.02em;color:#222}
 h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spacing:-.04em;line-height:1.15}
 
 .hero{display:flex;align-items:center;gap:22px;background:var(--card);border-radius:20px;padding:24px 28px;
@@ -112,20 +112,10 @@ footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">블랙 &amp; 화이트의 조선목가구 공부방</div>
+    <div class="eyebrow"><span class="ew-blk">블랙</span><span class="ew-wht">화이트</span><span class="ew-rest">의 조선목가구 공부방</span></div>
     <h1><a class="home-link" id="home-link" href="index.html" title="처음 화면으로"><span class="ttl">조선의 목가구</span><span class="shelf"><svg viewBox="0 0 32 32" fill="none" stroke="#4b55d6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-bandaji"/></svg><svg viewBox="0 0 32 32" fill="none" stroke="#5a52d6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-seoan"/></svg><svg viewBox="0 0 32 32" fill="none" stroke="#6450d6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-soban"/></svg><svg viewBox="0 0 32 32" fill="none" stroke="#6e4fd6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-takja"/></svg><svg viewBox="0 0 32 32" fill="none" stroke="#754fd6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-yakjang"/></svg><svg viewBox="0 0 32 32" fill="none" stroke="#7b4fd6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-jang"/></svg></span></a></h1>
   </header>
 
-  <section class="hero">
-    <div class="hero-ico" aria-hidden="true">
-      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-jang"/></svg>
-    </div>
-    <div class="hero-txt">
-      <h2><span class="badge">NEW</span><span id="hero-title">최근 추가한 도록</span></h2>
-      <p id="hero-desc"></p>
-    </div>
-    <a class="hero-btn" id="hero-btn" href="#">바로 보기 <span aria-hidden="true">→</span></a>
-  </section>
 
   <div class="info">
     <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권 · 기물 <b id="n-items">0</b>건</span></span>
@@ -204,11 +194,6 @@ const fmt = (s) => s.replaceAll('-', '. ');
 
 const latest = DASHBOARDS.reduce((a, b) => (b.added > a.added ? b : a), DASHBOARDS[0]);
 const newest = DASHBOARDS.filter((d) => d.added === latest.added);
-document.getElementById('hero-title').textContent = newest.length > 1 ? `도록 ${newest.length}권 추가` : latest.title;
-document.getElementById('hero-desc').textContent = newest.length > 1
-  ? newest.map((d) => d.title).join(' · ')
-  : `${latest.desc} · ${latest.items.toLocaleString('ko-KR')}건`;
-document.getElementById('hero-btn').href = url(newest[0]);
 document.getElementById('n-books').textContent = DASHBOARDS.length;
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 document.getElementById('updated').textContent = fmt(latest.added);
