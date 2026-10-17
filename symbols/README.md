@@ -6,4 +6,4 @@
 - eonyang_bandaji_gpt_black.png — 언양반닫이 (검은 바탕, 흰 장석)
 - eonyang_bandaji_gpt_line.png — 언양반닫이 (흰 바탕, 검은 장석·선)
 - angwe_true_ratio.png — 안궤를 실측 비율(가로 72.3 : 높이 44.2)로 맞춘 것. 사이트에 쓰는 mark_angwe.png도 이 비율
-- angwe_photo_true.svg/png — 소장 안궤 사진 두 장(정면·천판 끝)을 대조해 그린 것. 천판은 옆널 밖으로 두께의 약 2.7배 나오고 끝은 아래로 둥글림. 현재 사이트의 mark_angwe.png
+- angwe_photo_true.svg/png — 소장 안궤를 사진과 실측(높이 44.1, 천판 가로 72.3, 천판 두께 1.35, 본체 가로 55cm)으로 그린 것. 천판 끝은 아래로 둥글림. 현재 사이트의 mark_angwe.png
