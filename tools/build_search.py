@@ -88,4 +88,4 @@ for b in boards:
 
 with open('search.js', 'w', encoding='utf-8') as f:
     f.write('window.SEARCH=' + json.dumps(rows, ensure_ascii=False, separators=(',', ':')) + ';')
-print(len(boards), 'boards,', len(rows), 'items,', sum(r['t'] for r in rows), 'thumbs,', sum(r['h'] for r in rows), 'hi')
+print(len(boards), 'boards,', len(rows), 'items,', sum(r['t'] for r in rows), 'thumbs,', sum(r['h'] for r in rows), 'photos')
