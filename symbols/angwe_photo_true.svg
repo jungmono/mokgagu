@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-176 756 1850 1146">
+<g fill="#111">
+  <!-- 천판 -->
+  <path d="M-164 766 H1662 Q1670 766 1670 774 V785 Q1670 792 1662 792 H-164 Q-172 792 -172 785 V774 Q-172 766 -164 766 Z"/>
+  <!-- 몸체(서랍부) -->
+  <rect x="38" y="792" width="1422" height="380"/>
+  <!-- 옆널 안쪽면 -->
+  <rect x="38" y="1172" width="198" height="440"/>
+  <rect x="1275" y="1172" width="185" height="440"/>
+  <!-- 선반 -->
+  <rect x="38" y="1430" width="1422" height="185"/>
+  <!-- 앞다리(옆널이 내려온 다리) -->
+  <path d="M38 1612 H137 Q122 1660 118 1745 L113 1893 H38 Z"/>
+  <path d="M1460 1612 H1360 Q1376 1660 1380 1745 L1386 1893 H1460 Z"/>
+  <!-- 뒷다리 -->
+  <path d="M160 1612 H223 V1700 Q223 1716 207 1716 H178 Q164 1716 164 1700 Q170 1660 160 1612 Z"/>
+  <path d="M1275 1612 H1345 Q1336 1660 1342 1700 Q1342 1718 1326 1718 H1291 Q1275 1718 1275 1700 Z"/>
+</g>
+<g fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+  <!-- 서랍 테두리 -->
+  <rect x="70" y="803" width="660" height="148" rx="3"/>
+  <rect x="770" y="805" width="650" height="146" rx="3"/>
+  <rect x="78" y="988" width="1342" height="148" rx="3"/>
+  <!-- 쇠목·기둥 선 -->
+  <path d="M38 794 H1460 M76 794 V1612 M1424 794 V1612 M76 1172 H1424 M236 1172 V1430 M1275 1172 V1430"/>
+  <path d="M236 1430 L80 1576 M1275 1430 L1420 1576 M76 1576 H1424 M76 1612 H1424"/>
+  <!-- ㄷ자 손잡이 -->
+  <path d="M371 856 V903 H433 V856 M384 867 V891 H420 V867" stroke-width="5"/>
+  <path d="M1066 856 V903 H1128 V856 M1079 867 V891 H1115 V867" stroke-width="5"/>
+</g>
+<g fill="#fff">
+  <circle cx="390" cy="853" r="5"/><circle cx="414" cy="853" r="5"/><circle cx="1085" cy="853" r="5"/><circle cx="1109" cy="853" r="5"/>
+  <!-- 반달 자물쇠 앞바탕 -->
+  <path d="M672 993 H842 V1006 A85 85 0 0 1 672 1006 Z"/>
+</g>
+<g fill="none" stroke="#111" stroke-width="5" stroke-linecap="round">
+  <circle cx="757" cy="1072" r="26"/><circle cx="757" cy="1058" r="10" fill="#111"/>
+  <path d="M780 1006 l-8 16"/>
+</g>
+<circle cx="782" cy="1003" r="6" fill="#111"/>
+<!-- 감잡이(ㅏ·ㅓ자 장석) -->
+<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round">
+  <path d="M18 798 H84 M51 798 V836"/>
+  <path d="M51 932 V1002 M51 970 H96"/>
+  <path d="M51 1110 V1180 M51 1145 H96"/>
+  <path d="M51 1560 V1630 M51 1596 H96"/>
+  <path d="M1482 798 H1416 M1449 798 V836"/>
+  <path d="M1445 932 V1002 M1445 970 H1400"/>
+  <path d="M1445 1110 V1180 M1445 1145 H1400"/>
+  <path d="M1445 1560 V1630 M1445 1596 H1400"/>
+  <path d="M710 800 H782 M746 800 V840"/>
+  <path d="M746 930 V975 M704 972 H788"/>
+</g>
+<g fill="#fff">
+  <circle cx="51" cy="838" r="9"/><circle cx="51" cy="930" r="8"/><circle cx="98" cy="970" r="9"/><circle cx="51" cy="1108" r="8"/><circle cx="98" cy="1145" r="9"/><circle cx="51" cy="1182" r="8"/><circle cx="51" cy="1558" r="8"/><circle cx="98" cy="1596" r="9"/><circle cx="51" cy="1632" r="8"/>
+  <circle cx="1449" cy="838" r="9"/><circle cx="1445" cy="930" r="8"/><circle cx="1398" cy="970" r="9"/><circle cx="1445" cy="1108" r="8"/><circle cx="1398" cy="1145" r="9"/><circle cx="1445" cy="1182" r="8"/><circle cx="1445" cy="1558" r="8"/><circle cx="1398" cy="1596" r="9"/><circle cx="1445" cy="1632" r="8"/>
+  <circle cx="746" cy="842" r="9"/><circle cx="702" cy="972" r="9"/><circle cx="790" cy="972" r="9"/>
+</g>
+</svg>
