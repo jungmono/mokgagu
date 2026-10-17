@@ -433,12 +433,7 @@ dash.calc('bandaji_region', {
     return photoMap.get(id) || null;
   };
   const chunkOf = (plate) => 'photos_hi_' + Math.floor((Number(plate) - 1) / 60);
-  const hiPhoto = (r) => {
-    const cid = chunkOf(r.plate), p = dash.data(cid);
-    if (p.status !== 'ok') return null;
-    const f = p.data.find((x) => x.id === r.id);
-    return f ? f.img : null;
-  };
+  const hiPhoto = (r) => 'photos/lee/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemById = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
   let dlgList = [], dlgIdx = 0;
@@ -454,7 +449,7 @@ dash.calc('bandaji_region', {
     const r = itemById().get(dlgList[dlgIdx]);
     if (!r) return;
     document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.plate);
-    const src = hiPhoto(r) || photo(r.id);
+    const src = hiPhoto(r) || photo(r.id); document.getElementById('dlg-img').dataset.fb = photo(r.id) || '';
     const im = document.getElementById('dlg-img');
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
     document.getElementById('dlg-kind').textContent = `${r.group} › ${r.category}`;
@@ -478,6 +473,7 @@ dash.calc('bandaji_region', {
   document.getElementById('dlg-prev').addEventListener('click', () => { if (dlgIdx > 0) { dlgIdx--; showDetail(); } });
   document.getElementById('dlg-next').addEventListener('click', () => { if (dlgIdx < dlgList.length - 1) { dlgIdx++; showDetail(); } });
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  document.getElementById('dlg-img').addEventListener('error', (e) => { const im = e.currentTarget; if (im.dataset.fb && im.src !== im.dataset.fb) im.src = im.dataset.fb; });
   dlg.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' && dlgIdx > 0) { dlgIdx--; showDetail(); }
     if (e.key === 'ArrowRight' && dlgIdx < dlgList.length - 1) { dlgIdx++; showDetail(); }

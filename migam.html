@@ -365,7 +365,7 @@ dash.calc('compare', {
   let photoRows = null, photoMap = new Map();
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
   const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / CHUNK);
-  const hiPhoto = (r) => { const p = dash.data(chunkOf(r.no)); if (p.status !== 'ok') return null; const f = p.data.find((x) => x.id === r.id); return f ? f.img : null; };
+  const hiPhoto = (r) => 'photos/migam/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
   let dlgList = [], dlgIdx = 0;
@@ -380,7 +380,7 @@ dash.calc('compare', {
   function showDetail() {
     const r = itemMap().get(dlgList[dlgIdx]); if (!r) return;
     document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.no);
-    const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id);
+    const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id); im.dataset.fb = photo(r.id) || '';
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
     document.getElementById('dlg-kind').textContent = `${r.kind} · ${r.space}`;
     document.getElementById('dlg-name').textContent = r.hanja ? `${r.name} ${r.hanja}` : r.name;
@@ -401,6 +401,7 @@ dash.calc('compare', {
   document.getElementById('dlg-prev').addEventListener('click', () => { if (dlgIdx > 0) { dlgIdx--; showDetail(); } });
   document.getElementById('dlg-next').addEventListener('click', () => { if (dlgIdx < dlgList.length - 1) { dlgIdx++; showDetail(); } });
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  document.getElementById('dlg-img').addEventListener('error', (e) => { const im = e.currentTarget; if (im.dataset.fb && im.src !== im.dataset.fb) im.src = im.dataset.fb; });
   dlg.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' && dlgIdx > 0) { dlgIdx--; showDetail(); }
     if (e.key === 'ArrowRight' && dlgIdx < dlgList.length - 1) { dlgIdx++; showDetail(); }

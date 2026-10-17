@@ -3,7 +3,7 @@
 저장소 맨 위의 <도록>.html (ds-items·ds-photos)과 <도록>_photos_hi_N.js 를 읽어
   search.js          검색 색인 (window.SEARCH = [...])
   thumbs/<도록>/N.jpg 작은 사진
-  hi/<도록>/N.jpg     큰 사진
+(큰 사진은 photos/<도록>/<id>.jpg — sa/hq.py 로 만든다)
 을 만든다. 도록 목록·이름은 index.html 의 DASHBOARDS 에서 읽는다.
 새 도록을 추가한 뒤:  python3 tools/build_search.py
 """
@@ -47,8 +47,9 @@ def save_img(data_url, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     open(path, 'wb').write(base64.b64decode(data_url.split(',', 1)[1]))
 
-for d in ('thumbs', 'hi'):
-    shutil.rmtree(d, ignore_errors=True)
+shutil.rmtree('thumbs', ignore_errors=True)
+shutil.rmtree('hi', ignore_errors=True)   # 예전 큰 사진 폴더 (이제 photos/ 를 씀)
+safe = lambda i: re.sub(r'[^0-9A-Za-z가-힣_-]', '_', i)
 
 rows = []
 for b in boards:
@@ -66,7 +67,6 @@ for b in boards:
     cat_key = re.sub(r'반닫이|목가구|목칠공예|목기|[,·—]', ' ', b['title']).strip()
     for n, r in enumerate(items, 1):
         if r['id'] in thumbs: save_img(thumbs[r['id']], f'thumbs/{slug}/{n}.jpg')
-        if r['id'] in his: save_img(his[r['id']], f'hi/{slug}/{n}.jpg')
         kind = r.get('category') or r.get('kind') or r.get('family') or ''
         sub = r.get('type') or r.get('sub') or ''
         owner = r.get('owner') or r.get('holder') or ''
@@ -82,7 +82,7 @@ for b in boards:
             'cat': short, 'kind': ' · '.join(dict.fromkeys(x for x in (kind, sub) if x and x != r.get('name'))),
             'era': r.get('era') or '', 'size': size(r), 'wood': r.get('wood') or '',
             'owner': owner, 'page': r.get('page') or '',
-            't': r['id'] in thumbs, 'h': r['id'] in his,
+            't': r['id'] in thumbs, 'pid': safe(r['id']), 'h': os.path.exists(f"photos/{slug}/{safe(r['id'])}.jpg"),
             'q': ' '.join(sorted(hay)).lower(),
         })
 

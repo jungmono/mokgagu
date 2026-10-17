@@ -268,7 +268,8 @@ $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-it
 function openItem(i) {
   cur = i; const r = shown[i]; if (!r) return;
   const img = $('d-img');
-  img.src = r.h ? `hi/${r.b}/${r.n}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
+  img.src = r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
+  img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
   img.alt = r.name;
   const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
