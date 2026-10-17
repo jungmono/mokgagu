@@ -106,7 +106,7 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 .d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
 .d-r{display:flex;gap:8px}
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
-footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}
+footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
 
 .card.folder .cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
 body{position:relative}
@@ -122,8 +122,7 @@ body{position:relative}
 
   <div class="info">
     <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권<span id="n-refs"></span> · 기물 <b id="n-items">0</b>건</span></span>
-    <span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span>
-    <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 강원반닫이, 이건희" aria-label="물건 이름으로 찾기">
+    <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기">
   </div>
 
   <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
@@ -149,6 +148,7 @@ body{position:relative}
   <footer>
     <span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.
     <img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이">
+    <div class="ft-upd"><span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span></div>
   </footer>
 </div>
 
@@ -232,7 +232,7 @@ function render(q = '') {
   grid.innerHTML = html;
   const h = document.getElementById('grid-title'); if (h) h.textContent = fd ? fd[1] : '';
 }
-window.addEventListener('hashchange', () => { render(); grid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#see=')) return; render(); grid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 render();
 
 /* ───────── 물건 이름 검색 ───────── */
@@ -291,6 +291,20 @@ $('d-prev').addEventListener('click', () => openItem(cur - 1));
 $('d-next').addEventListener('click', () => openItem(cur + 1));
 $('d-close').addEventListener('click', () => $('dlg').close());
 $('dlg').addEventListener('click', (e) => { if (e.target === $('dlg')) $('dlg').close(); });
+/* 최근 본 기물 창에서 누르면 index.html#see=<도록>/<id> 로 와서 그 기물 사진 창을 연다 */
+window.RV_OPEN = true;
+function openSeen() {
+  const m = location.hash.match(/^#see=([^/]+)\/(.+)$/); if (!m) return;
+  const b = decodeURIComponent(m[1]), pid = decodeURIComponent(m[2]);
+  if (!window.SEARCH) return;   // 검색 색인(search.js)이 아직 안 왔으면 load 때 다시
+  const r = window.SEARCH.find((x) => x.b === b && String(x.pid) === pid);
+  history.replaceState(null, '', location.pathname + location.search);
+  if (!r) return;
+  shown = [r]; openItem(0);
+}
+window.addEventListener('hashchange', openSeen);
+window.addEventListener('load', openSeen);
+openSeen();
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
   ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장·농', 'jang', 'meok'], ['함', 'ham', 'ju']];
 $('quick').innerHTML = QUICK.map(([w, ic, tone]) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi t-${tone}">${svg(ic)}</span>${w}</button>`).join('');
@@ -365,5 +379,6 @@ d.addEventListener('close',reset);
 })();</script>
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
+<script src="recent.js" defer></script>
 </body>
 </html>
