@@ -29,6 +29,7 @@ def num(v):
     f = float(v); return int(f) if f == int(f) else f
 
 def size(r):
+    if r.get('size_raw'): return r['size_raw'] + ' cm'   # 도록에 적힌 순서 그대로
     if r.get('diameter_cm') and not r.get('width_cm') and not r.get('length_cm'):
         h = num(r.get('height_cm'))
         return f"지름 {num(r['diameter_cm'])}" + (f" · 높이 {h}" if h else '') + ' cm'
@@ -61,6 +62,8 @@ for b in boards:
         arr = json.loads(t[t.index(',') + 1:t.rindex(')')])
         his.update({p['id']: p['img'] for p in arr})
     short = b['title'].replace(' 기증 목칠공예', ' 기증').replace('목가구, ', '').replace(' 화백 구장 조선목기', ' 구장').replace('Ⅰ 목가구', '')
+    # 도록 이름으로도 찾되, 이름 속 기물 낱말(예: '양산 반닫이'의 반닫이)은 빼서 다른 기물이 섞이지 않게
+    cat_key = re.sub(r'반닫이|목가구|목칠공예|목기|[,·—]', ' ', b['title']).strip()
     for n, r in enumerate(items, 1):
         if r['id'] in thumbs: save_img(thumbs[r['id']], f'thumbs/{slug}/{n}.jpg')
         if r['id'] in his: save_img(his[r['id']], f'hi/{slug}/{n}.jpg')
@@ -71,7 +74,7 @@ for b in boards:
         # 넓은 분류(예: '반닫이·궤·뒤주')는 검색어에 넣지 않는다 — 반닫이로 찾을 때 뒤주가 섞이지 않게
         narrow = [x for x in (kind, sub) if x and '·' not in x]
         for s in (r.get('name'), r.get('list_name'), r.get('hanja'), r.get('region'), *narrow,
-                  r.get('wood'), owner, b['title'], short):
+                  r.get('wood'), owner, cat_key, b['desc']):
             if s: hay |= variants(str(s))
         hay |= variants((r.get('region') or '') + (r.get('name') or ''))
         rows.append({
