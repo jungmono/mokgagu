@@ -176,7 +176,7 @@ button{font:inherit}
     </div>
     <div class="lk-card" id="card-space">
       <h3>쓰임 공간별 건수</h3>
-      <p class="lk-note">공간 구분은 도록에 없는 것으로, 기종의 통상 쓰임에 따라 제가 붙였습니다. 반닫이·함·농은 안방, 책 가구·문방구는 사랑방으로 보았습니다.</p>
+      <p class="lk-note">공간 구분은 도록에 없는 것으로, 기종의 통상 쓰임에 따라 제가 붙였습니다. 반닫이·함·농은 안방, 책 가구·문방구는 사랑방으로 보았습니다. 막대를 누르면 아래 사진이 그 갈래만 보입니다.</p>
       <div class="lk-chart dash-skeleton" id="chart-space" data-source="by_space"></div>
     </div>
   </div>
@@ -309,6 +309,7 @@ dash.calc('compare', {
   const sColor = (s) => C()[Math.max(0, SPACES.indexOf(s))];
   const kind = () => dash.params().kind || 'all';
   const nm = () => dash.params().nm || '';
+  const grp = () => dash.params().grp || '';
   let sortK = 'no', sortDir = 1;
 
   const tip = (card) => { let t = card.querySelector('.lk-tip'); if (!t) { t = document.createElement('div'); t.className = 'lk-tip'; t.hidden = true; card.appendChild(t); } return t; };
@@ -405,7 +406,7 @@ dash.calc('compare', {
       label: (d) => d.kind, value: (d) => d.n, valueText: (d) => `${d.n}건`, color: () => C()[0],
       selected: (d) => d.kind === kind(),
       tip: (d) => [d.kind, `${d.n}건`, '누르면 사진 보기'],
-      onClick: (d) => dash.setParams({ kind: kind() === d.kind ? 'all' : d.kind, nm: '' }),
+      onClick: (d) => dash.setParams({ kind: kind() === d.kind ? 'all' : d.kind, nm: '', grp: '' }),
     });
   }
   const SPACE_TXT = { h: document.querySelector('#card-space h3').textContent, n: document.querySelector('#card-space .lk-note').textContent };
@@ -429,12 +430,12 @@ dash.calc('compare', {
     h3.textContent = SPACE_TXT.h; note.textContent = SPACE_TXT.n;
     const s = dash.data('by_space');
     if (s.status !== 'ok') return fail(el, s.status);
-    hbars(el, s.data, { label: (d) => d.space, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => sColor(d.space), tip: (d) => [d.space, `${d.n}건 (목기의 ${d.share_pct}%)`] });
+    hbars(el, s.data, { label: (d) => d.space, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => !grp() || d.space === grp() ? sColor(d.space) : 'var(--cds-chart-muted)', selected: (d) => d.space === grp(), tip: (d) => [d.space, `${d.n}건 (목기의 ${d.share_pct}%)`, grp() === d.space ? '다시 누르면 전체 사진' : '누르면 이 갈래 사진만'], onClick: (d) => dash.setParams({ grp: grp() === d.space ? '' : d.space, kind: 'all', nm: '' }) });
   }
   function drawChips() {
     const el = document.getElementById('kind-chips'), s = dash.data('by_kind');
     if (s.status !== 'ok') { el.replaceChildren(); return; }
-    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ kind: val, nm: '' })); return b; };
+    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ kind: val, nm: '', grp: '' })); return b; };
     el.replaceChildren(mk('all', '전체'), ...s.data.map((r) => mk(r.kind, `${r.kind} ${r.n}`)));
   }
   function drawGallery() {
@@ -443,9 +444,10 @@ dash.calc('compare', {
     el.classList.remove('dash-skeleton');
     const k = kind();
     const gt = document.getElementById('gallery-title');
-    gt.textContent = '사진으로 보기' + (k === 'all' ? ' — 전체' : ' — ' + k) + (nm() ? ' › ' + nm() : '');
+    gt.textContent = '사진으로 보기' + (grp() ? ' — ' + grp() : (k === 'all' ? ' — 전체' : ' — ' + k)) + (nm() ? ' › ' + nm() : '');
+    if (grp()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ grp: '' })); gt.appendChild(x); }
     if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '' })); gt.appendChild(x); }
-    const rows = s.data.filter((r) => (k === 'all' || r.kind === k) && (!nm() || r.name === nm())).sort((a, b) => a.no - b.no);
+    const rows = s.data.filter((r) => (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.space === grp())).sort((a, b) => a.no - b.no);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
       const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', r.name);

@@ -194,13 +194,13 @@ button{font:inherit}
   <div class="lk-grid">
     <div class="lk-card" id="card-era">
       <h3>연대 분포</h3>
-      <p class="lk-note">각 도판 캡션의 연대 표기 기준(기초 조사 결과). ‘조선’은 세기 표기 없이 조선으로만 적힌 것입니다.</p>
+      <p class="lk-note">각 도판 캡션의 연대 표기 기준(기초 조사 결과). ‘조선’은 세기 표기 없이 조선으로만 적힌 것입니다. 막대를 누르면 해당 기물 사진이 열립니다.</p>
       <div class="lk-legend" id="era-legend"></div>
       <div class="lk-chart dash-skeleton" id="chart-era" data-source="by_era"></div>
     </div>
     <div class="lk-card" id="card-deco">
       <h3>칠·장식 기법이 명칭에 드러난 기물</h3>
-      <p class="lk-note">명칭에 나전·주칠·흑칠·주흑칠·지장·어피가 들어간 것만 셉니다. 한 기물에 둘 이상이면 각각 셉니다(나전 흑칠 → 나전 1, 흑칠 1).</p>
+      <p class="lk-note">명칭에 나전·주칠·흑칠·주흑칠·지장·어피가 들어간 것만 셉니다. 한 기물에 둘 이상이면 각각 셉니다(나전 흑칠 → 나전 1, 흑칠 1). 막대를 누르면 해당 기물 사진이 열립니다.</p>
       <div class="lk-chart dash-skeleton" id="chart-deco" data-source="deco"></div>
     </div>
   </div>
@@ -209,7 +209,7 @@ button{font:inherit}
   <div class="lk-grid">
     <div class="lk-card" id="card-region">
       <h3>반닫이 지역 명칭</h3>
-      <p class="lk-note">목록집은 지역 특징이 뚜렷한 것만 지역명을 붙이고, 섞이거나 불분명한 것은 ‘반닫이’로 통일했습니다.</p>
+      <p class="lk-note">목록집은 지역 특징이 뚜렷한 것만 지역명을 붙이고, 섞이거나 불분명한 것은 ‘반닫이’로 통일했습니다. 막대를 누르면 해당 기물 사진이 열립니다.</p>
       <div class="lk-chart dash-skeleton" id="chart-region" data-source="bandaji_region"></div>
     </div>
     <div class="lk-card" id="card-size">
@@ -484,6 +484,7 @@ dash.calc('bandaji_region', {
     if (tr) openDetail(tr.dataset.key, tableIds);
   });
 
+  const openList = (pred) => { const s = dash.data('items'); if (s.status !== 'ok') return; const ids = s.data.filter(pred).sort((a, b) => a.plate - b.plate).map((r) => r.id); if (ids.length) openDetail(ids[0], ids); };
   function drawGallery() {
     const el = document.getElementById('gallery');
     const s = dash.data('items'), p = dash.data('photos');
@@ -570,6 +571,7 @@ dash.calc('bandaji_region', {
     const x = d3.scaleLinear([0, d3.max(rows, (r) => r.total)], [0, Math.max(20, W - lw - vw - 4)]);
     const card = el.closest('.lk-card');
     const g = svg.selectAll('g').data(rows).join('g').attr('transform', (d, i) => `translate(0,${i * rowH})`);
+    g.style('cursor', 'pointer').on('click', (ev, d) => openList((r) => r.era === d.era));
     g.append('rect').attr('width', W).attr('height', rowH).attr('fill', 'transparent');
     g.append('text').attr('x', lw - 8).attr('y', rowH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').attr('font-size', 12).attr('fill', 'var(--color-fg-muted)').text((d) => d.era);
     g.each(function (d) {
@@ -585,7 +587,7 @@ dash.calc('bandaji_region', {
     const el = document.getElementById('chart-deco');
     const s = dash.data('deco');
     if (s.status !== 'ok') return fail(el, s.status);
-    hbars(el, s.data, { label: (d) => d.decoration, value: (d) => d.n, valueText: (d) => `${d.n}건`, color: () => C()[3], tip: (d) => [d.decoration, `${d.n}건`] });
+    hbars(el, s.data, { label: (d) => d.decoration, value: (d) => d.n, valueText: (d) => `${d.n}건`, color: () => C()[3], tip: (d) => [d.decoration, `${d.n}건`, '누르면 사진 보기'], onClick: (d) => openList((r) => (r.decoration || '').split('·').includes(d.decoration)) });
   }
 
   function drawRegion() {
@@ -595,7 +597,8 @@ dash.calc('bandaji_region', {
     hbars(el, s.data, {
       label: (d) => d.region, value: (d) => d.n, valueText: (d) => `${d.n}건`,
       color: (d) => d.region === '지역명 없음' ? 'var(--cds-chart-muted)' : (d.region === '진주' ? 'var(--cds-chart-status-critical)' : C()[0]),
-      tip: (d) => [d.region === '지역명 없음' ? '‘반닫이’로만 표기' : d.region + ' 반닫이', `${d.n}건`],
+      tip: (d) => [d.region === '지역명 없음' ? '‘반닫이’로만 표기' : d.region + ' 반닫이', `${d.n}건`, '누르면 사진 보기'],
+      onClick: (d) => openList((r) => r.type === '반닫이' && (r.region || '지역명 없음') === d.region),
     });
   }
 
