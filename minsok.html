@@ -34,7 +34,7 @@ button{font:inherit}
 .sa-top{max-width:1200px;margin:0 auto 18px;font-size:.875rem}
 .sa-top a{color:var(--color-fg-muted);text-decoration:none;border:1px solid var(--color-border-line);border-radius:999px;padding:6px 14px;background:var(--color-panel);display:inline-block}
 .sa-top a:hover{color:var(--color-fg)}
-</style><script src="d3.min.js"></script><script>
+.lk-tile[data-tl]{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.lk-tile[data-tl]:hover{border-color:var(--color-fg-muted);box-shadow:0 3px 10px rgba(0,0,0,.08);transform:translateY(-1px)}.lk-tile[data-tl]:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}.lk-tile.on{border-color:var(--color-fg);box-shadow:inset 0 0 0 1px var(--color-fg)}.lk-tile[data-tl] .lk-k::after{content:" ↓";opacity:0;transition:opacity .15s}.lk-tile[data-tl]:hover .lk-k::after,.lk-tile.on .lk-k::after{opacity:.7}</style><script src="d3.min.js"></script><script>
 (function(){
   var calcs = {}, cache = {}, subs = [], params = {"kind": "all"}, pending = {};
   var fire = function(){ subs.forEach(function(f){ try { f(); } catch (e) { console.error(e); } }); };
@@ -150,19 +150,19 @@ button{font:inherit}
   <ul class="lk-lede" id="lede"><li>국립민속박물관 『민속유물이해Ⅰ 木家具』(2003) 수록 <b data-source="totals" data-field="all" data-row="0" class="dash-skeleton">—</b>점 기준</li><li>박물관 소장품 138점 + 전국 현지조사 <b data-source="totals" data-field="t5" data-row="0" class="dash-skeleton">—</b>점을 장·농·반닫이·소반 네 갈래로 실측·정리</li><li>반닫이 <b data-source="by_group" data-field="n" data-where="group=반닫이" class="dash-skeleton">—</b>점으로 가장 많음 — 평안도부터 제주도까지 7개 지역</li><li>지역별 반닫이를 견주기에 가장 좋은 자료</li><li>기물마다 수종·짜임·장석 재료 기록</li></ul>
 
   <div class="lk-tiles" id="tiles">
-    <div class="lk-tile"><div class="lk-k">도록 수록품</div>
+    <div class="lk-tile" data-tl="0" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">도록 수록품</div>
       <div class="lk-v"><span data-source="totals" data-field="all" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">목가구·목기 <span data-source="totals" data-field="wood" data-row="0">—</span>건</div></div>
-    <div class="lk-tile"><div class="lk-k">가장 많은 기종</div>
+    <div class="lk-tile" data-tl="1" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">가장 많은 기종</div>
       <div class="lk-v"><span data-source="by_kind" data-field="kind" data-row="0" class="dash-skeleton">—</span></div>
       <div class="lk-s"><span data-source="by_kind" data-field="n" data-row="0">—</span>건</div></div>
-    <div class="lk-tile"><div class="lk-k">반닫이</div>
+    <div class="lk-tile" data-tl="2" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">반닫이</div>
       <div class="lk-v"><span data-source="totals" data-field="bandaji" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">7개 지역</div></div>
-    <div class="lk-tile"><div class="lk-k">소반</div>
+    <div class="lk-tile" data-tl="3" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">소반</div>
       <div class="lk-v"><span data-source="totals" data-field="soban" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">해주·나주·통영식 등</div></div>
-    <div class="lk-tile"><div class="lk-k">현지조사 자료</div>
+    <div class="lk-tile" data-tl="4" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">현지조사 자료</div>
       <div class="lk-v"><span data-source="totals" data-field="t5" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">개인·지방 박물관 소장</div></div>
   </div>
@@ -331,6 +331,27 @@ dash.calc('by_wood', {
   const gColor = (g) => { const i = GROUP_ORDER.indexOf(g); return i < 0 || i >= 8 ? 'var(--cds-chart-muted)' : C()[i]; };
   const kind = () => dash.params().kind || 'all';
   const nm = () => dash.params().nm || '';
+
+  const TILES = [{label: "도록 수록품", reset: 1}, {label: "가장 많은 기종", top: 1}, {label: "반닫이", pred: (r) => r.family === '반닫이'}, {label: "소반", pred: (r) => r.family === '소반'}, {label: "현지조사 자료", pred: (r) => r.source === '현지조사'}];
+  const TL = () => dash.params().tl || '';
+  const TILE_OK = (r) => { const d = TILES[TL()]; return !TL() || !d || !d.pred || d.pred(r); };
+  const markTiles = () => document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => {
+    const d = TILES[el.dataset.tl], P = dash.params(); let on = false;
+    if (d.pred) on = TL() === el.dataset.tl;
+    else if (d.kind) on = P.kind === d.kind && !TL();
+    else if (d.grp) on = P.grp === d.grp && !TL();
+    else if (d.top) { const b = dash.data('by_kind'); on = !TL() && b.status === 'ok' && b.data[0] && P.kind === b.data[0].kind; }
+    el.classList.toggle('on', on); el.setAttribute('aria-pressed', String(on)); });
+  const goGallery = () => setTimeout(() => { const g = document.getElementById('gallery-title'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  const tileClick = (el) => { const i = el.dataset.tl, d = TILES[i];
+    if (el.classList.contains('on')) { dash.setParams({ tl: '', nm: '', kind: 'all', grp: '' }); return; }
+    if (d.pred) dash.setParams({ tl: i, kind: 'all', grp: '', nm: '' });
+    else if (d.reset) dash.setParams({ tl: '', kind: 'all', grp: '', nm: '' });
+    else if (d.kind) dash.setParams({ tl: '', kind: d.kind, grp: '', nm: '' });
+    else if (d.grp) dash.setParams({ tl: '', kind: 'all', grp: d.grp, nm: '' });
+    else if (d.top) { const b = dash.data('by_kind'); if (b.status === 'ok' && b.data[0]) dash.setParams({ tl: '', kind: b.data[0].kind, grp: '', nm: '' }); }
+    goGallery(); };
+  document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => { el.addEventListener('click', () => tileClick(el)); el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tileClick(el); } }); });
   const grp = () => dash.params().grp || '';
   const CHUNK = 20;
   let sortK = 'no', sortDir = 1;
@@ -434,7 +455,7 @@ dash.calc('by_wood', {
       label: (d) => d.kind, value: (d) => d.n, valueText: (d) => `${d.n}건`, color: () => C()[0],
       selected: (d) => d.kind === kind(),
       tip: (d) => [d.kind, `${d.n}건`, '누르면 사진 보기'],
-      onClick: (d) => dash.setParams({ kind: kind() === d.kind ? 'all' : d.kind, nm: '', grp: '' }),
+      onClick: (d) => dash.setParams({ tl: '', kind: kind() === d.kind ? 'all' : d.kind, nm: '', grp: '' }),
     });
   }
   const SPACE_TXT = { h: document.querySelector('#card-space h3').textContent, n: document.querySelector('#card-space .lk-note').textContent };
@@ -442,9 +463,9 @@ dash.calc('by_wood', {
     const el = document.getElementById('chart-space'), k = kind();
     const h3 = document.querySelector('#card-space h3'), note = document.querySelector('#card-space .lk-note');
     const rb = document.getElementById('space-reset');
-    rb.hidden = k === 'all' && !grp();
+    rb.hidden = k === 'all' && !grp() && !TL();
     rb.textContent = k !== 'all' ? '← ' + SPACE_TXT.h + ' 보기' : '↺ 전체 보기';
-    rb.onclick = () => dash.setParams({ kind: 'all', nm: '', grp: '' });
+    rb.onclick = () => dash.setParams({ tl: '', kind: 'all', nm: '', grp: '' });
     if (k !== 'all') {
       const it = dash.data('items'); if (it.status !== 'ok') return fail(el, it.status);
       const m = new Map(); for (const r of it.data) if (r.kind === k) m.set(r.name, (m.get(r.name) || 0) + 1);
@@ -456,19 +477,19 @@ dash.calc('by_wood', {
         color: (d) => !nm() || d.name === nm() ? C()[0] : 'var(--cds-chart-muted)',
         selected: (d) => d.name === nm(),
         tip: (d) => [d.name, `${d.n}건`, nm() === d.name ? '다시 누르면 기종 전체 사진' : '누르면 이 기물 사진만'],
-        onClick: (d) => dash.setParams({ nm: nm() === d.name ? '' : d.name }),
+        onClick: (d) => dash.setParams({ tl: '', nm: nm() === d.name ? '' : d.name }),
       });
     }
     h3.textContent = SPACE_TXT.h; note.textContent = SPACE_TXT.n;
     const s = dash.data('by_group');
     if (s.status !== 'ok') return fail(el, s.status);
     const rows = s.data.slice().sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
-    hbars(el, rows, { label: (d) => d.group, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => !grp() || d.group === grp() ? gColor(d.group) : 'var(--cds-chart-muted)', selected: (d) => d.group === grp(), tip: (d) => [d.group, `${d.n}건 (전체의 ${d.share_pct}%)`, grp() === d.group ? '다시 누르면 전체 사진' : '누르면 이 갈래 사진만'], onClick: (d) => dash.setParams({ grp: grp() === d.group ? '' : d.group, kind: 'all', nm: '' }) });
+    hbars(el, rows, { label: (d) => d.group, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => !grp() || d.group === grp() ? gColor(d.group) : 'var(--cds-chart-muted)', selected: (d) => d.group === grp(), tip: (d) => [d.group, `${d.n}건 (전체의 ${d.share_pct}%)`, grp() === d.group ? '다시 누르면 전체 사진' : '누르면 이 갈래 사진만'], onClick: (d) => dash.setParams({ tl: '', grp: grp() === d.group ? '' : d.group, kind: 'all', nm: '' }) });
   }
   function drawChips() {
     const el = document.getElementById('kind-chips'), s = dash.data('by_kind');
     if (s.status !== 'ok') { el.replaceChildren(); return; }
-    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ kind: val, nm: '', grp: '' })); return b; };
+    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ tl: '', kind: val, nm: '', grp: '' })); return b; };
     el.replaceChildren(mk('all', '전체'), ...s.data.map((r) => mk(r.kind, `${r.kind} ${r.n}`)));
   }
   function drawGallery() {
@@ -478,9 +499,11 @@ dash.calc('by_wood', {
     const k = kind();
     const gt = document.getElementById('gallery-title');
     gt.textContent = '사진으로 보기' + (grp() ? ' — ' + grp() : (k === 'all' ? ' — 전체' : ' — ' + k)) + (nm() ? ' › ' + nm() : '');
-    if (grp()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ grp: '' })); gt.appendChild(x); }
-    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '' })); gt.appendChild(x); }
-    const rows = s.data.filter((r) => (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.family === grp())).sort((a, b) => a.no - b.no);
+    markTiles();
+    if (TL() && TILES[TL()]) { gt.textContent = '사진으로 보기 — ' + TILES[TL()].label; const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ tl: '' })); gt.appendChild(x); }
+    if (grp()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ tl: '', grp: '' })); gt.appendChild(x); }
+    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '', tl: '' })); gt.appendChild(x); }
+    const rows = s.data.filter((r) => TILE_OK(r) && (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.family === grp())).sort((a, b) => a.no - b.no);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
       const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', r.name);

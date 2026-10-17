@@ -34,7 +34,7 @@ button{font:inherit}
 .sa-top{max-width:1200px;margin:0 auto 18px;font-size:.875rem}
 .sa-top a{color:var(--color-fg-muted);text-decoration:none;border:1px solid var(--color-border-line);border-radius:999px;padding:6px 14px;background:var(--color-panel);display:inline-block}
 .sa-top a:hover{color:var(--color-fg)}
-</style><script src="d3.min.js"></script><script>
+.lk-tile[data-tl]{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.lk-tile[data-tl]:hover{border-color:var(--color-fg-muted);box-shadow:0 3px 10px rgba(0,0,0,.08);transform:translateY(-1px)}.lk-tile[data-tl]:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}.lk-tile.on{border-color:var(--color-fg);box-shadow:inset 0 0 0 1px var(--color-fg)}.lk-tile[data-tl] .lk-k::after{content:" ↓";opacity:0;transition:opacity .15s}.lk-tile[data-tl]:hover .lk-k::after,.lk-tile.on .lk-k::after{opacity:.7}</style><script src="d3.min.js"></script><script>
 (function(){
   var calcs = {}, cache = {}, subs = [], params = {}, pending = {};
   var fire = function(){ subs.forEach(function(f){ try { f(); } catch (e) { console.error(e); } }); };
@@ -151,19 +151,19 @@ button{font:inherit}
   <ul class="lk-lede" id="lede"><li>국립중앙박물관 『고 이건희 회장 기증품 목록집 제12집: 목칠·기타 공예』(2023) 수록 기물 기준</li><li>목가구 <b data-source="totals" data-field="items" data-where="group=목가구" class="dash-skeleton">—</b>건 — 전체의 <b data-source="totals" data-field="share_pct" data-where="group=목가구" class="dash-skeleton">—</b>%</li><li>가장 많은 기종: 반닫이·궤·뒤주 <b data-source="summary" data-field="items" data-where="key=목가구/일상가구/반닫이·궤·뒤주" class="dash-skeleton">—</b>건, 소반 <b data-source="summary" data-field="items" data-where="key=목가구/일상가구/소반" class="dash-skeleton">—</b>건</li><li>세기가 적힌 기물의 <b data-source="era_share" data-field="share_pct" data-row="0" class="dash-skeleton">—</b>%가 19세기 이후 작품</li></ul>
 
   <div class="lk-tiles" id="tiles">
-    <div class="lk-tile"><div class="lk-k">전체 수록</div>
+    <div class="lk-tile" data-tl="0" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">전체 수록</div>
       <div class="lk-v"><span data-source="totals" data-field="items" data-where="group=전체" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s"><span data-source="totals" data-field="pieces" data-where="group=전체">—</span>점</div></div>
-    <div class="lk-tile"><div class="lk-k">목가구 (일상·제례)</div>
+    <div class="lk-tile" data-tl="1" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">목가구 (일상·제례)</div>
       <div class="lk-v"><span data-source="totals" data-field="items" data-where="group=목가구" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s"><span data-source="totals" data-field="pieces" data-where="group=목가구">—</span>점</div></div>
-    <div class="lk-tile"><div class="lk-k">목칠 소품 (생활·상례)</div>
+    <div class="lk-tile" data-tl="2" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">목칠 소품 (생활·상례)</div>
       <div class="lk-v"><span data-source="totals" data-field="items" data-where="group=소품" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s"><span data-source="totals" data-field="pieces" data-where="group=소품">—</span>점</div></div>
-    <div class="lk-tile"><div class="lk-k">기타 공예 (종이·돌·섬유 등)</div>
+    <div class="lk-tile" data-tl="3" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">기타 공예 (종이·돌·섬유 등)</div>
       <div class="lk-v"><span data-source="totals" data-field="items" data-where="group=기타공예" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s"><span data-source="totals" data-field="pieces" data-where="group=기타공예">—</span>점</div></div>
-    <div class="lk-tile"><div class="lk-k">19세기 이후 작품 비중</div>
+    <div class="lk-tile" data-tl="4" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">19세기 이후 작품 비중</div>
       <div class="lk-v"><span data-source="era_share" data-field="share_pct" data-row="0" class="dash-skeleton">—</span><small>%</small></div>
       <div class="lk-s">세기 표기된 <span data-source="era_share" data-field="dated" data-row="0">—</span>건 중</div></div>
   </div>
@@ -354,6 +354,20 @@ dash.calc('bandaji_region', {
   const DEFAULT_CAT = '목가구/반닫이·궤·뒤주';
   const cat = () => dash.params().cat || DEFAULT_CAT;
   const nm = () => dash.params().nm || '';
+
+  const TILES = [{label: "전체 수록", pred: (r) => true}, {label: "목가구 (일상·제례)", pred: (r) => r.group === "목가구"}, {label: "목칠 소품 (생활·상례)", pred: (r) => r.group === "소품"}, {label: "기타 공예 (종이·돌·섬유 등)", pred: (r) => r.group === "기타공예"}, {label: "19세기 이후 작품 비중", pred: (r) => ['19세기', '19세기 후반~20세기 전반', '20세기 전반'].includes(r.era)}];
+  const TL = () => dash.params().tl || '';
+  const TILE_OK = (r) => { const d = TILES[TL()]; return !TL() || !d || !d.pred || d.pred(r); };
+  const markTiles = () => document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => {
+    const d = TILES[el.dataset.tl], P = dash.params(); let on = false;
+    if (d.pred) on = TL() === el.dataset.tl;
+    el.classList.toggle('on', on); el.setAttribute('aria-pressed', String(on)); });
+  const goGallery = () => setTimeout(() => { const g = document.getElementById('gallery-title'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  const tileClick = (el) => { const i = el.dataset.tl, d = TILES[i];
+    if (el.classList.contains('on')) { dash.setParams({ tl: '', nm: '' }); return; }
+    dash.setParams({ tl: i, nm: '' });
+    goGallery(); };
+  document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => { el.addEventListener('click', () => tileClick(el)); el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tileClick(el); } }); });
   let onlyCat = false, sortK = 'plate', sortDir = 1;
 
   const tip = (card) => {
@@ -494,8 +508,10 @@ dash.calc('bandaji_region', {
     const c = cat();
     const gt = document.getElementById('gallery-title');
     gt.textContent = '사진으로 보기 — ' + c.split('/')[1] + (nm() ? ' › ' + nm() : '');
-    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '' })); gt.appendChild(x); }
-    const rows = s.data.filter((r) => r.group + '/' + r.category === c && (!nm() || r.name === nm())).sort((a, b) => a.plate - b.plate);
+    markTiles();
+    if (TL() && TILES[TL()]) { gt.textContent = '사진으로 보기 — ' + TILES[TL()].label; const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ tl: '' })); gt.appendChild(x); }
+    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '', tl: '' })); gt.appendChild(x); }
+    const rows = s.data.filter((r) => TL() ? TILE_OK(r) : (r.group + '/' + r.category === c && (!nm() || r.name === nm()))).sort((a, b) => a.plate - b.plate);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
       const b = document.createElement('button');
@@ -513,7 +529,7 @@ dash.calc('bandaji_region', {
   }
 
   const catSel = document.getElementById('cat-select');
-  catSel.addEventListener('change', () => dash.setParams({ cat: catSel.value, nm: '' }));
+  catSel.addEventListener('change', () => dash.setParams({ cat: catSel.value, nm: '', tl: '' }));
   document.getElementById('only-cat').addEventListener('click', (e) => { onlyCat = !onlyCat; e.currentTarget.setAttribute('aria-pressed', String(onlyCat)); drawTable(); });
   document.getElementById('q').addEventListener('input', () => drawTable());
   document.querySelectorAll('#tbl th button').forEach((b) => b.addEventListener('click', () => {
@@ -533,7 +549,7 @@ dash.calc('bandaji_region', {
       color: (d) => gColor(d.group), groupOf: (d) => d.group, groupGap: 10,
       selected: (d) => d.group + '/' + d.category === cat(), dimOthers: false,
       tip: (d) => [`${d.group} › ${d.use}`, `${d.category}: ${d.items}건 ${d.pieces}점`, '누르면 구성 보기'],
-      onClick: (d) => dash.setParams({ cat: d.group + '/' + d.category, nm: '' }),
+      onClick: (d) => dash.setParams({ cat: d.group + '/' + d.category, nm: '', tl: '' }),
     });
   }
 
@@ -548,14 +564,14 @@ dash.calc('bandaji_region', {
     }
     const c = cat();
     document.getElementById('detail-title').textContent = '기종 안 기물 구성 — ' + c.split('/')[1];
-    const rb = document.getElementById('detail-reset'); rb.hidden = !nm(); rb.onclick = () => dash.setParams({ nm: '' });
+    const rb = document.getElementById('detail-reset'); rb.hidden = !nm(); rb.onclick = () => dash.setParams({ nm: '', tl: '' });
     const rows = s.data.filter((r) => r.cat === c).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, 'ko'));
     hbars(el, rows, {
       label: (d) => d.name, value: (d) => d.n, valueText: (d) => `${d.n}건`,
       color: (d) => gColor(d.group), rowH: 22,
       selected: (d) => d.name === nm(), dimOthers: !!nm(),
       tip: (d) => [d.category, `${d.name}: ${d.n}건`, nm() === d.name ? '다시 누르면 기종 전체 사진' : '누르면 이 기물 사진만'],
-      onClick: (d) => dash.setParams({ nm: nm() === d.name ? '' : d.name }),
+      onClick: (d) => dash.setParams({ tl: '', nm: nm() === d.name ? '' : d.name }),
     });
   }
 

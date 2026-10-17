@@ -34,7 +34,7 @@ button{font:inherit}
 .sa-top{max-width:1200px;margin:0 auto 18px;font-size:.875rem}
 .sa-top a{color:var(--color-fg-muted);text-decoration:none;border:1px solid var(--color-border-line);border-radius:999px;padding:6px 14px;background:var(--color-panel);display:inline-block}
 .sa-top a:hover{color:var(--color-fg)}
-</style><script src="d3.min.js"></script><script>
+.lk-tile[data-tl]{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}.lk-tile[data-tl]:hover{border-color:var(--color-fg-muted);box-shadow:0 3px 10px rgba(0,0,0,.08);transform:translateY(-1px)}.lk-tile[data-tl]:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}.lk-tile.on{border-color:var(--color-fg);box-shadow:inset 0 0 0 1px var(--color-fg)}.lk-tile[data-tl] .lk-k::after{content:" ↓";opacity:0;transition:opacity .15s}.lk-tile[data-tl]:hover .lk-k::after,.lk-tile.on .lk-k::after{opacity:.7}</style><script src="d3.min.js"></script><script>
 (function(){
   var calcs = {}, cache = {}, subs = [], params = {"kind": "all"}, pending = {};
   var fire = function(){ subs.forEach(function(f){ try { f(); } catch (e) { console.error(e); } }); };
@@ -150,19 +150,19 @@ button{font:inherit}
   <ul class="lk-lede" id="lede"><li>원주시역사박물관 2024 소장품 특별전 『우리 나전, 새로 맞는 날』(2024) 수록품 기준</li><li>나전칠기 <b data-source="totals" data-field="all" data-row="0" class="dash-skeleton">—</b>건 — 함·상자 <b data-source="totals" data-field="bandaji" data-row="0" class="dash-skeleton">—</b>건, 상·소반·쟁반 <b data-source="totals" data-field="soban" data-row="0" class="dash-skeleton">—</b>건</li><li>조선 <b data-source="by_group" data-field="n" data-where="group=조선" class="dash-skeleton">—</b>건 · 근대 <b data-source="by_group" data-field="n" data-where="group=근대" class="dash-skeleton">—</b>건 · 현대 <b data-source="by_group" data-field="n" data-where="group=현대" class="dash-skeleton">—</b>건 — 시대에 따른 나전 양식 변화를 견줌</li><li>현대 작품에는 전성규·김봉룡(傳) 등 작가와 장일순 글씨가 함께 실림</li><li>모든 기물이 원주시역사박물관 소장(구입·기증)</li></ul>
 
   <div class="lk-tiles" id="tiles">
-    <div class="lk-tile"><div class="lk-k">도록 수록품</div>
+    <div class="lk-tile" data-tl="0" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">도록 수록품</div>
       <div class="lk-v"><span data-source="totals" data-field="all" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">목가구·목기 <span data-source="totals" data-field="wood" data-row="0">—</span>건</div></div>
-    <div class="lk-tile"><div class="lk-k">가장 많은 기종</div>
+    <div class="lk-tile" data-tl="1" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">가장 많은 기종</div>
       <div class="lk-v"><span data-source="by_kind" data-field="kind" data-row="0" class="dash-skeleton">—</span></div>
       <div class="lk-s"><span data-source="by_kind" data-field="n" data-row="0">—</span>건</div></div>
-    <div class="lk-tile"><div class="lk-k">함·상자</div>
+    <div class="lk-tile" data-tl="2" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">함·상자</div>
       <div class="lk-v"><span data-source="totals" data-field="bandaji" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">교지함·서류함·빗접·경대 등</div></div>
-    <div class="lk-tile"><div class="lk-k">상·소반·쟁반</div>
+    <div class="lk-tile" data-tl="3" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">상·소반·쟁반</div>
       <div class="lk-v"><span data-source="totals" data-field="soban" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">소반·경상·대궐반·과반·쟁반</div></div>
-    <div class="lk-tile"><div class="lk-k">조선 나전</div>
+    <div class="lk-tile" data-tl="4" role="button" tabindex="0" title="누르면 아래에 사진이 나옵니다"><div class="lk-k">조선 나전</div>
       <div class="lk-v"><span data-source="totals" data-field="t5" data-row="0" class="dash-skeleton">—</span><small>건</small></div>
       <div class="lk-s">조선시대 작품</div></div>
   </div>
@@ -315,6 +315,27 @@ dash.calc('compare', {
   const gColor = (g) => { const i = GROUP_ORDER.indexOf(g); return i < 0 || i >= 8 ? 'var(--cds-chart-muted)' : C()[i]; };
   const kind = () => dash.params().kind || 'all';
   const nm = () => dash.params().nm || '';
+
+  const TILES = [{label: "도록 수록품", reset: 1}, {label: "가장 많은 기종", top: 1}, {label: "함·상자", pred: (r) => r.kind === '함·상자'}, {label: "상·소반·쟁반", pred: (r) => r.kind === '상·소반·쟁반'}, {label: "조선 나전", pred: (r) => r.part === '조선'}];
+  const TL = () => dash.params().tl || '';
+  const TILE_OK = (r) => { const d = TILES[TL()]; return !TL() || !d || !d.pred || d.pred(r); };
+  const markTiles = () => document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => {
+    const d = TILES[el.dataset.tl], P = dash.params(); let on = false;
+    if (d.pred) on = TL() === el.dataset.tl;
+    else if (d.kind) on = P.kind === d.kind && !TL();
+    else if (d.grp) on = P.grp === d.grp && !TL();
+    else if (d.top) { const b = dash.data('by_kind'); on = !TL() && b.status === 'ok' && b.data[0] && P.kind === b.data[0].kind; }
+    el.classList.toggle('on', on); el.setAttribute('aria-pressed', String(on)); });
+  const goGallery = () => setTimeout(() => { const g = document.getElementById('gallery-title'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  const tileClick = (el) => { const i = el.dataset.tl, d = TILES[i];
+    if (el.classList.contains('on')) { dash.setParams({ tl: '', nm: '', kind: 'all', grp: '' }); return; }
+    if (d.pred) dash.setParams({ tl: i, kind: 'all', grp: '', nm: '' });
+    else if (d.reset) dash.setParams({ tl: '', kind: 'all', grp: '', nm: '' });
+    else if (d.kind) dash.setParams({ tl: '', kind: d.kind, grp: '', nm: '' });
+    else if (d.grp) dash.setParams({ tl: '', kind: 'all', grp: d.grp, nm: '' });
+    else if (d.top) { const b = dash.data('by_kind'); if (b.status === 'ok' && b.data[0]) dash.setParams({ tl: '', kind: b.data[0].kind, grp: '', nm: '' }); }
+    goGallery(); };
+  document.querySelectorAll('.lk-tile[data-tl]').forEach((el) => { el.addEventListener('click', () => tileClick(el)); el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tileClick(el); } }); });
   const grp = () => dash.params().grp || '';
   const CHUNK = 20;
   let sortK = 'no', sortDir = 1;
@@ -416,7 +437,7 @@ dash.calc('compare', {
       label: (d) => d.kind, value: (d) => d.n, valueText: (d) => `${d.n}건`, color: () => C()[0],
       selected: (d) => d.kind === kind(),
       tip: (d) => [d.kind, `${d.n}건`, '누르면 사진 보기'],
-      onClick: (d) => dash.setParams({ kind: kind() === d.kind ? 'all' : d.kind, nm: '', grp: '' }),
+      onClick: (d) => dash.setParams({ tl: '', kind: kind() === d.kind ? 'all' : d.kind, nm: '', grp: '' }),
     });
   }
   const SPACE_TXT = { h: document.querySelector('#card-space h3').textContent, n: document.querySelector('#card-space .lk-note').textContent };
@@ -424,9 +445,9 @@ dash.calc('compare', {
     const el = document.getElementById('chart-space'), k = kind();
     const h3 = document.querySelector('#card-space h3'), note = document.querySelector('#card-space .lk-note');
     const rb = document.getElementById('space-reset');
-    rb.hidden = k === 'all' && !grp();
+    rb.hidden = k === 'all' && !grp() && !TL();
     rb.textContent = k !== 'all' ? '← ' + SPACE_TXT.h + ' 보기' : '↺ 전체 보기';
-    rb.onclick = () => dash.setParams({ kind: 'all', nm: '', grp: '' });
+    rb.onclick = () => dash.setParams({ tl: '', kind: 'all', nm: '', grp: '' });
     if (k !== 'all') {
       const it = dash.data('items'); if (it.status !== 'ok') return fail(el, it.status);
       const m = new Map(); for (const r of it.data) if (r.kind === k) m.set(r.name, (m.get(r.name) || 0) + 1);
@@ -438,19 +459,19 @@ dash.calc('compare', {
         color: (d) => !nm() || d.name === nm() ? C()[0] : 'var(--cds-chart-muted)',
         selected: (d) => d.name === nm(),
         tip: (d) => [d.name, `${d.n}건`, nm() === d.name ? '다시 누르면 기종 전체 사진' : '누르면 이 기물 사진만'],
-        onClick: (d) => dash.setParams({ nm: nm() === d.name ? '' : d.name }),
+        onClick: (d) => dash.setParams({ tl: '', nm: nm() === d.name ? '' : d.name }),
       });
     }
     h3.textContent = SPACE_TXT.h; note.textContent = SPACE_TXT.n;
     const s = dash.data('by_group');
     if (s.status !== 'ok') return fail(el, s.status);
     const rows = s.data.slice().sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
-    hbars(el, rows, { label: (d) => d.group, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => !grp() || d.group === grp() ? gColor(d.group) : 'var(--cds-chart-muted)', selected: (d) => d.group === grp(), tip: (d) => [d.group, `${d.n}건 (전체의 ${d.share_pct}%)`, grp() === d.group ? '다시 누르면 전체 사진' : '누르면 이 갈래 사진만'], onClick: (d) => dash.setParams({ grp: grp() === d.group ? '' : d.group, kind: 'all', nm: '' }) });
+    hbars(el, rows, { label: (d) => d.group, value: (d) => d.n, valueText: (d) => `${d.n}건 · ${d.share_pct}%`, color: (d) => !grp() || d.group === grp() ? gColor(d.group) : 'var(--cds-chart-muted)', selected: (d) => d.group === grp(), tip: (d) => [d.group, `${d.n}건 (전체의 ${d.share_pct}%)`, grp() === d.group ? '다시 누르면 전체 사진' : '누르면 이 갈래 사진만'], onClick: (d) => dash.setParams({ tl: '', grp: grp() === d.group ? '' : d.group, kind: 'all', nm: '' }) });
   }
   function drawChips() {
     const el = document.getElementById('kind-chips'), s = dash.data('by_kind');
     if (s.status !== 'ok') { el.replaceChildren(); return; }
-    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ kind: val, nm: '', grp: '' })); return b; };
+    const mk = (val, label) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'lk-chip'; b.textContent = label; b.setAttribute('aria-pressed', String(kind() === val)); b.addEventListener('click', () => dash.setParams({ tl: '', kind: val, nm: '', grp: '' })); return b; };
     el.replaceChildren(mk('all', '전체'), ...s.data.map((r) => mk(r.kind, `${r.kind} ${r.n}`)));
   }
   function drawGallery() {
@@ -460,9 +481,11 @@ dash.calc('compare', {
     const k = kind();
     const gt = document.getElementById('gallery-title');
     gt.textContent = '사진으로 보기' + (grp() ? ' — ' + grp() : (k === 'all' ? ' — 전체' : ' — ' + k)) + (nm() ? ' › ' + nm() : '');
-    if (grp()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ grp: '' })); gt.appendChild(x); }
-    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '' })); gt.appendChild(x); }
-    const rows = s.data.filter((r) => (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.part === grp())).sort((a, b) => a.no - b.no);
+    markTiles();
+    if (TL() && TILES[TL()]) { gt.textContent = '사진으로 보기 — ' + TILES[TL()].label; const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ tl: '' })); gt.appendChild(x); }
+    if (grp()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 전체 보기'; x.addEventListener('click', () => dash.setParams({ tl: '', grp: '' })); gt.appendChild(x); }
+    if (nm()) { const x = document.createElement('button'); x.type = 'button'; x.className = 'lk-clear'; x.textContent = '× 기종 전체 보기'; x.addEventListener('click', () => dash.setParams({ nm: '', tl: '' })); gt.appendChild(x); }
+    const rows = s.data.filter((r) => TILE_OK(r) && (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.part === grp())).sort((a, b) => a.no - b.no);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
       const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', r.name);
