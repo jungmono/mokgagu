@@ -107,7 +107,7 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 .d-r{display:flex;gap:8px}
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}
-</style>
+.card.folder .cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}</style>
 </head>
 <body>
 <div class="wrap">
@@ -119,7 +119,7 @@ footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-
 
 
   <div class="info">
-    <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권 · 기물 <b id="n-items">0</b>건</span></span>
+    <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권<span id="n-refs"></span> · 기물 <b id="n-items">0</b>건</span></span>
     <span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span>
     <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 강원반닫이, 이건희" aria-label="물건 이름으로 찾기">
   </div>
@@ -157,7 +157,7 @@ footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-
    added : 추가한 날짜 (가장 최근 날짜의 도록이 위 큰 배너에 나옵니다)            */
 const DASHBOARDS = [
   { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
-  { path: 'geumsok', title: '우리나라 전통 무늬 4 금속공예', desc: '국립문화재연구소 문양 조사보고서(2011)', items: 213, icon: 'ham', tone: 'meok', added: '2026-10-17' },
+  { path: 'geumsok', title: '우리나라 전통 무늬 4 금속공예', desc: '국립문화재연구소 문양 조사보고서(2011)', items: 213, icon: 'ham', tone: 'meok', added: '2026-10-17', group: 'ref' },
   { path: 'munui', title: '우리나라 전통 무늬 5 목공예', desc: '국립문화재연구소 문양 조사보고서(2012)', items: 164, icon: 'ham', tone: 'nok', added: '2026-10-17' },
   { path: 'yakjang', title: '약장, 건강을 염원하다', desc: '허준박물관·국립민속박물관 공동기획전 도록(2014)', items: 53, icon: 'yakjang', tone: 'jaju', added: '2026-10-17' },
   { path: 'wonju',  title: '우리 나전, 새로 맞는 날',   desc: '원주시역사박물관 소장품 특별전 도록(2024)', items: 31,  icon: 'ham',     tone: 'ju',    added: '2026-10-17' },
@@ -197,15 +197,14 @@ const fmt = (s) => s.replaceAll('-', '. ');
 
 const latest = DASHBOARDS.reduce((a, b) => (b.added > a.added ? b : a), DASHBOARDS[0]);
 const newest = DASHBOARDS.filter((d) => d.added === latest.added);
-document.getElementById('n-books').textContent = DASHBOARDS.length;
+const MAIN = DASHBOARDS.filter((d) => d.group !== 'ref'), REFS = DASHBOARDS.filter((d) => d.group === 'ref');
+document.getElementById('n-books').textContent = MAIN.length;
+document.getElementById('n-refs').innerHTML = REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '';
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 document.getElementById('updated').textContent = fmt(latest.added);
 
 const grid = document.getElementById('grid');
-function render(q = '') {
-  const k = q.trim().toLowerCase();
-  const list = DASHBOARDS.filter((d) => !k || (d.title + ' ' + d.desc).toLowerCase().includes(k));
-  grid.innerHTML = list.length ? list.map((d) => `
+const card = (d) => `
     <a class="card" href="${url(d)}">
       <div class="cover t-${d.tone}"><img src="covers/${d.path}.jpg" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></div>
       <div style="min-width:0">
@@ -213,8 +212,20 @@ function render(q = '') {
         <p>${d.desc}</p>
         <div class="meta">${d.items.toLocaleString('ko-KR')}건</div>
       </div>
-    </a>`).join('') : '<div class="empty">찾는 도록이 없어요.</div>';
+    </a>`;
+const FOLDER_SVG = '<svg viewBox="0 0 48 48" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 13a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M5 20h38"/></svg>';
+function render(q = '') {
+  const inRef = location.hash === '#ref';
+  let html = '';
+  if (inRef) {
+    html = `<a class="card folder back" href="#"><div class="cover fd">←</div><div><h3>도록 목록으로</h3><p>조선의 목가구 도록으로 돌아가기</p></div></a>` + REFS.map(card).join('');
+  } else {
+    html = MAIN.map(card).join('') + (REFS.length ? `<a class="card folder" href="#ref"><div class="cover fd">${FOLDER_SVG}</div><div style="min-width:0"><h3>도움자료</h3><p>목가구 공부에 참고할 다른 분야 자료 — ${REFS.map((d) => d.title).join(' · ')}</p><div class="meta">${REFS.length}권 · ${REFS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>` : '');
+  }
+  grid.innerHTML = html;
+  const h = document.getElementById('grid-title'); if (h) h.textContent = inRef ? '도움자료' : '';
 }
+window.addEventListener('hashchange', () => { render(); grid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 render();
 
 /* ───────── 물건 이름 검색 ───────── */
@@ -292,7 +303,7 @@ $('home-link').addEventListener('click', (e) => {
   e.preventDefault();
   $('q').value = ''; search(''); syncQuick();
   if ($('dlg').open) $('dlg').close();
-  history.replaceState(null, '', location.pathname);
+  history.replaceState(null, '', location.pathname); render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 let tmr; $('q').addEventListener('input', (e) => { clearTimeout(tmr); tmr = setTimeout(() => { search(e.target.value); syncQuick(); }, 150); });
