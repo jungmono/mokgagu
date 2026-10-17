@@ -160,12 +160,12 @@ footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-
    tone  : ju(주칠) · meok(먹) · hwang(황동) · jjok(쪽빛) · nok(녹색) · jaju(자주) 중 하나
    added : 추가한 날짜 (가장 최근 날짜의 도록이 위 큰 배너에 나옵니다)            */
 const DASHBOARDS = [
-  { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집 제12집 (2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
-  { path: 'minsok', title: '민속유물이해Ⅰ 목가구', desc: '국립민속박물관 (2003) · 수종·짜임·장석까지 정리', items: 223, icon: 'yakjang', tone: 'jaju', added: '2026-10-15' },
-  { path: 'namu',   title: '목가구, 나무의 이치를 담다', desc: '국립민속박물관·영인산산림박물관 · 수종별 보기', items: 57,  icon: 'duiju',   tone: 'nok',  added: '2026-10-15' },
-  { path: 'salm',   title: '목가구, 삶을 담다',        desc: '미리벌민속박물관·국립민속박물관 (2015) · 공간별', items: 53,  icon: 'soban',   tone: 'hwang',  added: '2026-10-15' },
-  { path: 'migam',  title: '목가구의 미감',            desc: '은평역사한옥박물관 · 선(線)·선(鮮)·선(善)',      items: 55,  icon: 'takja',   tone: 'ju',   added: '2026-10-15' },
-  { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '권옥연 화백 소장품전 도록 · 공간·기종별',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
+  { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
+  { path: 'minsok', title: '민속유물이해Ⅰ 목가구', desc: '국립민속박물관 민속유물이해Ⅰ(2003)', items: 223, icon: 'yakjang', tone: 'jaju', added: '2026-10-15' },
+  { path: 'namu',   title: '목가구, 나무의 이치를 담다', desc: '국립민속박물관·영인산산림박물관 공동기획전 도록(2016)', items: 56,  icon: 'duiju',   tone: 'nok',  added: '2026-10-15' },
+  { path: 'salm',   title: '목가구, 삶을 담다',        desc: '미리벌민속박물관·국립민속박물관 공동기획전 도록(2015)', items: 53,  icon: 'soban',   tone: 'hwang',  added: '2026-10-15' },
+  { path: 'migam',  title: '목가구의 미감',            desc: '국립민속박물관·은평역사한옥박물관 공동기획전 도록(2016)',      items: 55,  icon: 'takja',   tone: 'ju',   added: '2026-10-15' },
+  { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '북촌민예관 개관전 도록(2012)',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
 ];
 
 const ICONS = {
@@ -173,8 +173,8 @@ const ICONS = {
   bandaji: '<rect x="3.5" y="8" width="25" height="16.5" rx=".8"/><path d="M3.5 15.5h25"/><path d="M5 24.5v3M27 24.5v3"/><path d="M8.5 8v5.5h3V8M20.5 8v5.5h3V8"/><path d="M13.5 15.5h5v4.2l-2.5 1.8-2.5-1.8z"/><path d="M5.8 19.5c1 0 1.6.6 1.6 1.4M26.2 19.5c-1 0-1.6.6-1.6 1.4"/>',
   /* 서안: 양 끝이 말려 올라간 두루마리 천판, 서랍, 풍혈 */
   seoan: '<path d="M2.5 9.2c.6 1.4 1.4 1.8 2.6 1.8h21.8c1.2 0 2-.4 2.6-1.8"/><path d="M6 11v16M26 11v16"/><rect x="9" y="11" width="14" height="4.2"/><path d="M15 13.1h2"/><path d="M6 18.5c3 0 3.5 2.5 10 2.5s7-2.5 10-2.5"/><path d="M6 24.5h20"/>',
-  /* 소반: 둥근 천판과 운각, 개다리 */
-  soban: '<path d="M3 11.5c0-1.4 5.8-2.5 13-2.5s13 1.1 13 2.5-5.8 2.5-13 2.5S3 12.9 3 11.5z"/><path d="M6 13.2c1.8 1.8 3.4 2.3 5 2.3h10c1.6 0 3.2-.5 5-2.3"/><path d="M9.5 15.5c0 4.5-1.6 8.3-4.3 11.8M22.5 15.5c0 4.5 1.6 8.3 4.3 11.8"/><path d="M7.6 23h16.8"/>',
+  /* 소반(나주반): 변죽 두른 네모 천판, 단순한 운각, 곧은 일자 다리와 낮은 중대 */
+  soban: '<path d="M2.5 9.5h27"/><path d="M3.5 9.5v1.8h25V9.5"/><path d="M6.5 11.5v2.2c2.2 0 2.6 1.8 4.8 1.8h9.4c2.2 0 2.6-1.8 4.8-1.8v-2.2"/><path d="M7.5 11.5v16.5M24.5 11.5v16.5"/><path d="M11 15.5v10.5M21 15.5v10.5"/><path d="M7.5 23.5h17"/>',
   /* 사방탁자: 네 기둥에 층널, 가운데 서랍 */
   takja: '<path d="M9 2.5v27M23 2.5v27"/><path d="M8 3.5h16"/><path d="M9 10.5h14M9 17.5h14M9 22h14M9 26h14"/><path d="M15 19.75h2"/>',
   /* 뒤주: 긴 기둥다리, 천판 위 반쪽 뚜껑과 자물쇠 앞바탕 */
@@ -197,7 +197,7 @@ const newest = DASHBOARDS.filter((d) => d.added === latest.added);
 document.getElementById('hero-title').textContent = newest.length > 1 ? `도록 ${newest.length}권 추가` : latest.title;
 document.getElementById('hero-desc').textContent = newest.length > 1
   ? newest.map((d) => d.title).join(' · ')
-  : `${latest.desc} — 기물 ${latest.items}건을 기물별로 정리했습니다. 사진을 누르면 크게 볼 수 있어요.`;
+  : `${latest.desc} · ${latest.items.toLocaleString('ko-KR')}건`;
 document.getElementById('hero-btn').href = url(newest[0]);
 document.getElementById('n-books').textContent = DASHBOARDS.length;
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
@@ -213,7 +213,7 @@ function render(q = '') {
       <div style="min-width:0">
         <h3>${d.title}${d.added === latest.added && newest.length < DASHBOARDS.length ? '<span class="new">NEW</span>' : ''}</h3>
         <p>${d.desc}</p>
-        <div class="meta">기물 ${d.items.toLocaleString('ko-KR')}건 · 사진</div>
+        <div class="meta">${d.items.toLocaleString('ko-KR')}건</div>
       </div>
     </a>`).join('') : '<div class="empty">찾는 도록이 없어요.</div>';
 }
@@ -229,10 +229,10 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 let hits = [], shown = [], only = '', cur = -1;
 
 function search(raw) {
-  const q = norm(raw.trim());
-  if (!q) { $('results').hidden = true; grid.hidden = false; return; }
+  const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
+  if (!terms.length) { $('results').hidden = true; grid.hidden = false; return; }
   const all = window.SEARCH || [];
-  hits = all.filter((r) => r.q.includes(q));
+  hits = all.filter((r) => terms.some((q) => r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = '';
   $('results').hidden = false; grid.hidden = true;
@@ -280,7 +280,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight' && cur < shown.length - 1) openItem(cur + 1);
 });
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
-  ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장', 'jang', 'meok'], ['함', 'ham', 'ju']];
+  ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장·농', 'jang', 'meok'], ['함', 'ham', 'ju']];
 $('quick').innerHTML = QUICK.map(([w, ic, tone]) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi t-${tone}">${svg(ic)}</span>${w}</button>`).join('');
 const syncQuick = () => document.querySelectorAll('#quick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.w === $('q').value.trim())));
 $('quick').addEventListener('click', (e) => {
