@@ -13,7 +13,7 @@
     '#to-top{display:none!important}',
     '#rv{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
     '#rv .rv-box{background:#fff;border:1px solid #e3ded6;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:8px 7px;display:flex;flex-direction:column;align-items:center;gap:6px;width:86px}',
-    '#rv .rv-t{font-size:11.5px;font-weight:700;color:#3b3833;letter-spacing:-.2px;text-align:center;line-height:1.25}',
+    '#rv .rv-t{font-size:11.5px;font-weight:700;color:#3b3833;letter-spacing:-.2px;text-align:center;line-height:1.25;word-break:keep-all}',
     '#rv .rv-t small{display:block;font-weight:400;color:#8a837a;font-size:10.5px}',
     '#rv .rv-nav{width:100%;height:20px;border:0;background:#f3f0eb;border-radius:6px;cursor:pointer;display:grid;place-items:center;color:#3b3833;padding:0}',
     '#rv .rv-nav:disabled{opacity:.3;cursor:default}',
