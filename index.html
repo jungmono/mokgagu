@@ -245,7 +245,7 @@ function render(q = '') {
   if (fd) {
     html = fd[3].map(card).join('');
   } else {
-    html = MAIN.map(card).join('') + STUDY + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p} — ${L.map((d) => d.title).join(' · ')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
+    html = MAIN.map(card).join('') + STUDY + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p}<br>${L.map((d) => d.title).join(' · ')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
   }
   grid.innerHTML = html;
   const h = document.getElementById('grid-title'); if (h) h.textContent = fd ? fd[1] : '';
