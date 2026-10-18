@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v5: 소장품에 상태(소장·판매 예정·판매함)·판매일·판매가·판매처 추가.
  * v4: 소장품 도록(clist·cimg·csave·cphoto·cdel) 추가 — 시트 '소장품' 탭, 사진은 드라이브 비공개 폴더.
  * v3: 'edit'(고치기) 추가 — 거믄·힌 글은 가족 암호, 벗 글은 쓴 기기의 key 로만 고친다.
  * ※ 실제 배포본에는 CODE 에 가족 암호가 들어 있다(공개 저장소에는 올리지 않음).
@@ -93,14 +94,15 @@ function 시트준비() { sheet_(); }
  * 모든 읽기·쓰기는 가족 암호가 있어야 한다. 사진도 암호를 넣은 화면에서만 받아 볼 수 있다.
  * 처음 배포할 때 드라이브 권한을 한 번 허락해야 한다.                                   */
 const COL_SHEET = '소장품';
-const COL_HEAD = ['id', 'name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'photos', 'owner', 'created', 'updated', 'deleted'];
-const COL_FIELDS = ['name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'owner'];
+const COL_HEAD = ['id', 'name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'photos', 'owner', 'created', 'updated', 'deleted', 'status', 'sold', 'sprice', 'sto'];
+const COL_FIELDS = ['name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'owner', 'status', 'sold', 'sprice', 'sto'];
 const PHOTO_FOLDER = '조선의 목가구 소장품 사진';
 
 function colSheet_() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   let sh = ss.getSheetByName(COL_SHEET);
   if (!sh) { sh = ss.insertSheet(COL_SHEET); sh.appendRow(COL_HEAD); sh.setFrozenRows(1); }
+  if (sh.getRange(1, COL_HEAD.length).getValue() !== COL_HEAD[COL_HEAD.length - 1]) sh.getRange(1, 1, 1, COL_HEAD.length).setValues([COL_HEAD]);
   return sh;
 }
 function colFolder_() {
@@ -109,7 +111,7 @@ function colFolder_() {
 }
 function colRow_(r) {
   const o = {};
-  COL_HEAD.forEach((k, i) => { let v = r[i]; o[k] = v instanceof Date ? Utilities.formatDate(v, 'Asia/Seoul', k === 'bought' ? 'yyyy-MM-dd' : "yyyy-MM-dd'T'HH:mm:ss") : String(v == null ? '' : v); });
+  COL_HEAD.forEach((k, i) => { let v = r[i]; o[k] = v instanceof Date ? Utilities.formatDate(v, 'Asia/Seoul', (k === 'bought' || k === 'sold') ? 'yyyy-MM-dd' : "yyyy-MM-dd'T'HH:mm:ss") : String(v == null ? '' : v); });
   try { o.photos = JSON.parse(o.photos || '[]'); } catch (x) { o.photos = []; }
   return o;
 }
@@ -148,6 +150,7 @@ function colPost_(d, fam) {
       if (k === 'created') return row ? sh.getRange(row, COL_HEAD.indexOf('created') + 1).getValue() : now;
       if (k === 'updated') return now;
       if (k === 'deleted') return '';
+      if (k === 'status') return ['소장', '판매 예정', '판매함'].indexOf(String(it.status)) >= 0 ? String(it.status) : '소장';
       return String(it[k] == null ? '' : it[k]).slice(0, k === 'memo' || k === 'note' ? 6000 : 300);
     });
     if (row) sh.getRange(row, 1, 1, COL_HEAD.length).setValues([vals]); else sh.appendRow(vals);

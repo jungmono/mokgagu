@@ -42,6 +42,10 @@ button{font:inherit;cursor:pointer}
 .seg{display:inline-flex;border:1px solid #d9d4cc;border-radius:999px;overflow:hidden}
 .seg button{border:0;background:#fff;font-size:13px;padding:7px 12px;color:#3b3833}.seg button+button{border-left:1px solid #d9d4cc}
 .seg button.on{background:var(--fg);color:#fff;font-weight:700}
+.stb{position:absolute;left:8px;bottom:8px;background:#fff;color:#8a5a14;border:1.5px solid #c9a35a;font-size:11.5px;font-weight:900;border-radius:999px;padding:1px 9px}.stb.done{color:#fff;background:#6b665e;border-color:#6b665e}.stb.in{position:static;vertical-align:1px;margin-left:4px}
+.it .mt.sl{color:#8a5a14;font-weight:700}.seg.st button small{color:inherit;opacity:.65;margin-left:2px}
+.who.sts button.on{background:var(--k)!important;color:#fff!important;box-shadow:none!important}
+.sold-box{background:#fbf7ec;border:1px solid #eadfbf;border-radius:12px;padding:12px}.sold-box[hidden]{display:none}
 .cnt{margin-left:auto;font-size:13.5px;color:var(--muted)}.cnt b{color:var(--fg)}
 .note{background:#fbf7ec;border:1px solid #eadfbf;color:#6b5a2a;border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.55;margin:0 0 16px}
 .note.bad{background:#fbefed;border-color:#ecc9c3;color:var(--warn)}
@@ -134,6 +138,12 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
         <label class="full">이름 <small>예: 안궤, 언양 반닫이</small><input name="name" required maxlength="100" autocomplete="off"></label>
         <label>종류<input name="kind" list="kinds" maxlength="40" autocomplete="off"><datalist id="kinds"><option>반닫이</option><option>궤</option><option>안궤</option><option>서안</option><option>경상</option><option>소반</option><option>함</option><option>장·농</option><option>사방탁자</option><option>책장·책궤</option><option>뒤주</option><option>약장</option><option>문갑</option><option>떡살</option><option>도자기</option><option>기타</option></datalist></label>
         <label>누구의 소장품<div class="who" id="who"><button type="button" data-o="거믄">거믄</button><button type="button" data-o="힌">힌</button><button type="button" data-o="함께">함께</button></div></label>
+        <label class="full">상태<div class="who sts" id="sts"><button type="button" data-s2="소장">소장</button><button type="button" data-s2="판매 예정">판매 예정</button><button type="button" data-s2="판매함">판매함</button></div></label>
+        <div class="full sold-box" id="sold-box"><div class="fs" style="margin-top:0">
+          <label>판매일<input type="date" name="sold"></label>
+          <label><span id="sp-l">판매가</span><input name="sprice" maxlength="60" autocomplete="off"></label>
+          <label class="full">판매처 <small>누구에게, 어디서</small><input name="sto" maxlength="120" autocomplete="off"></label>
+        </div></div>
         <label>구입일<input type="date" name="bought"></label>
         <label>구입처 <small>가게·경매·사람·지역</small><input name="place" maxlength="120" autocomplete="off"></label>
         <label>크기 <small>가로×깊이×높이 cm</small><input name="size" maxlength="120" placeholder="72.3 × 33 × 44.2" autocomplete="off"></label>
@@ -157,7 +167,9 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   var ls = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { localStorage.removeItem(k); } catch (e) {} } };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-  var PW = '', items = [], mode = 'server', note = '', sort = ls.get(K_SORT) || 'new', q = '';
+  var PW = '', items = [], mode = 'server', note = '', sort = ls.get(K_SORT) || 'new', q = '', stf = ls.get('mokgagu_col_st') || '소장';
+  var ST = ['소장', '판매 예정', '판매함'];
+  function st(x) { return ST.indexOf(x.status) >= 0 ? x.status : '소장'; }
 
   /* ── 암호: 공부방과 같은 암호. 공부방 노트를 실제로 풀어 보아 맞는지 이 자리에서 확인한다 ── */
   function b64u(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
@@ -269,7 +281,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   function owners(o) { return o === '힌' ? '<span class="ow h">힌</span>' : o === '함께' ? '<span class="ow b" title="거믄·힌 함께">·</span>' : o ? '<span class="ow g">거믄</span>' : ''; }
   function fmtD(d) { if (!d) return ''; var p = String(d).slice(0, 10).split('-'); return p.length === 3 ? p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '.' : d; }
   function view() {
-    var L = items.filter(function (x) { return !q || [x.name, x.kind, x.place, x.note, x.memo, x.wood, x.era].join(' ').toLowerCase().indexOf(q) >= 0; });
+    var L = items.filter(function (x) { return (stf === '전체' || st(x) === stf) && (!q || [x.name, x.kind, x.place, x.note, x.memo, x.wood, x.era, x.sto].join(' ').toLowerCase().indexOf(q) >= 0); });
     L.sort(function (a, b) {
       if (sort === 'name') return String(a.name).localeCompare(String(b.name), 'ko');
       var x = a.bought || a.created || '', y = b.bought || b.created || '';
@@ -285,14 +297,15 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     if (note) h += '<p class="note' + (mode === 'offline' ? ' bad' : '') + '">' + note + '</p>';
     h += '<div class="bar"><button class="add" id="add"><b>＋</b> 소장품 넣기</button><input type="search" id="q" placeholder="소장품에서 찾기 — 이름, 구입처, 메모" value="' + esc(q) + '">' +
       '<span class="seg" id="sort">' + [['new', '최근 구입'], ['old', '오래된 구입'], ['name', '이름순']].map(function (s) { return '<button type="button" data-s="' + s[0] + '" class="' + (sort === s[0] ? 'on' : '') + '">' + s[1] + '</button>'; }).join('') + '</span>' +
-      '<span class="cnt">소장품 <b>' + items.length + '</b>점</span></div>';
+      '<span class="cnt">소장 <b>' + items.filter(function (x) { return st(x) === '소장'; }).length + '</b>점</span></div>' +
+      '<div class="bar"><span class="seg st" id="stf">' + ['소장', '판매 예정', '판매함', '전체'].map(function (k) { var n = k === '전체' ? items.length : items.filter(function (x) { return st(x) === k; }).length; return '<button type="button" data-st="' + k + '" class="' + (stf === k ? 'on' : '') + '">' + k + ' <small>' + n + '</small></button>'; }).join('') + '</span></div>';
     h += '<div class="grid" id="grid">' + (shown.length ? shown.map(function (x, i) {
       var p = (x.photos || [])[0];
       return '<button type="button" class="it" data-i="' + i + '"><div class="ph">' + (p ? '<img data-pid="' + esc(p.t || p.f) + '" alt="">' : '<img class="none" src="mark_angwe.png" alt="">') +
-        ((x.photos || []).length > 1 ? '<span class="n">📷 ' + x.photos.length + '</span>' : '') + (x.pending ? '<span class="pend">이 기기에만</span>' : '') + '</div>' +
+        ((x.photos || []).length > 1 ? '<span class="n">📷 ' + x.photos.length + '</span>' : '') + (x.pending ? '<span class="pend">이 기기에만</span>' : '') + (st(x) !== '소장' ? '<span class="stb' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div>' +
         '<div class="tx"><div class="nm">' + owners(x.owner) + esc(x.name) + '</div>' + (x.kind ? '<div class="kd">' + esc(x.kind) + '</div>' : '') +
-        '<div class="mt">' + esc([fmtD(x.bought), x.place].filter(Boolean).join(' · ')) + '</div></div></button>';
-    }).join('') : '<div class="empty">' + (items.length ? '찾는 소장품이 없어요.' : '아직 넣은 소장품이 없어요.<br><b>＋ 소장품 넣기</b>를 누르거나, 사진을 이 화면에 끌어다 놓으면 바로 시작해요.') + '</div>') + '</div>';
+        '<div class="mt">' + esc([fmtD(x.bought), x.place].filter(Boolean).join(' · ')) + '</div>' + (st(x) !== '소장' && (x.sprice || x.sold) ? '<div class="mt sl">' + esc([st(x) === '판매함' ? '판매' : '판매 예정', fmtD(x.sold), x.sprice].filter(Boolean).join(' · ')) + '</div>' : '') + '</div></button>';
+    }).join('') : '<div class="empty">' + (items.length ? (q ? '찾는 소장품이 없어요.' : '「' + stf + '」에 해당하는 소장품이 없어요.') : '아직 넣은 소장품이 없어요.<br><b>＋ 소장품 넣기</b>를 누르거나, 사진을 이 화면에 끌어다 놓으면 바로 시작해요.') + '</div>') + '</div>';
     app.innerHTML = h; fillImgs(app);
   }
   app.addEventListener('click', function (e) {
@@ -300,6 +313,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     if (b.id === 'add') openForm(null, []);
     else if (b.id === 'out') { ls.del(K_STUDY); PW = ''; items = []; lockView('이 기기에서 잠갔어요.'); }
     else if (b.dataset.s) { sort = b.dataset.s; ls.set(K_SORT, sort); render(); }
+    else if (b.dataset.st) { stf = b.dataset.st; ls.set('mokgagu_col_st', stf); render(); }
     else if (b.dataset.i != null && b.classList.contains('it')) openView(+b.dataset.i);
   });
   app.addEventListener('input', function (e) { if (e.target.id === 'q') { q = e.target.value.trim().toLowerCase(); var pos = e.target.selectionStart; render(); var n = $('q'); n.focus(); n.setSelectionRange(pos, pos); } });
@@ -315,8 +329,8 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     $('v-main').innerHTML = P.length ? '<img data-pid="' + esc(P[vp].f) + '" alt="' + esc(x.name) + '">' : '<img class="none" src="mark_angwe.png" alt="">';
     $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
-    $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
-      row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', x.price) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
+    $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
+      row('상태', st(x)) + (st(x) !== '소장' ? row('판매일', fmtD(x.sold)) + row(st(x) === '판매함' ? '판매가' : '받을 금액', x.sprice) + row('판매처', x.sto) : '') + row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', x.price) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
       '<div class="acts"><button class="btn k" id="v-edit">✎ 고치기</button><button class="btn del" id="v-del">지우기</button></div>' +
       (x.pending ? '<p class="note" style="margin-top:14px">이 기기에만 저장되어 있어요. 시트 스크립트를 새로 배포하면 자동으로 올라가요.</p>' : '');
     $('v-pos').textContent = (vi + 1) + ' / ' + shown.length;
@@ -352,12 +366,15 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     editing = x; pics = (x && x.photos ? x.photos.map(function (p) { return { f: p.f, t: p.t }; }) : []);
     var f = $('fm-f'); f.reset(); $('fm-msg').textContent = '';
     $('fm-t').textContent = x ? '소장품 고치기' : '소장품 넣기';
-    if (x) ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo'].forEach(function (k) { f.elements[k].value = x[k] || ''; });
-    setOwner(x && x.owner ? x.owner : owner);
+    if (x) ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo', 'sold', 'sprice', 'sto'].forEach(function (k) { f.elements[k].value = x[k] || ''; });
+    setOwner(x && x.owner ? x.owner : owner); setSt(x ? st(x) : '소장');
     drawPics(); if (!$('fm').open) $('fm').showModal();
     if (files && files.length) addFiles(files);
     setTimeout(function () { if (!files || !files.length) f.elements.name.focus(); }, 30);
   }
+  var status = '소장';
+  function setSt(v) { status = v; [].forEach.call($('sts').children, function (b) { b.classList.toggle('on', b.dataset.s2 === v); }); $('sold-box').hidden = v === '소장'; $('sp-l').textContent = v === '판매함' ? '판매가' : '받을 금액 · 판매 희망가'; }
+  $('sts').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) setSt(b.dataset.s2); });
   function setOwner(o) { owner = o; [].forEach.call($('who').children, function (b) { b.classList.toggle('on', b.dataset.o === o); }); }
   $('who').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { setOwner(b.dataset.o); ls.set(K_OWNER, b.dataset.o); } });
   function drawPics() {
@@ -436,8 +453,8 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     var f = e.target, name = f.elements.name.value.trim();
     if (!name) { $('fm-msg').textContent = '이름을 적어 주세요.'; f.elements.name.focus(); return; }
     if (pics.some(function (p) { return p.busy; })) { $('fm-msg').textContent = '사진을 줄이는 중이에요. 잠시만요.'; return; }
-    var it = { id: editing ? editing.id : uid(), owner: owner };
-    ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo'].forEach(function (k) { it[k] = f.elements[k].value.trim(); });
+    var it = { id: editing ? editing.id : uid(), owner: owner, status: status };
+    ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo', 'sold', 'sprice', 'sto'].forEach(function (k) { it[k] = f.elements[k].value.trim(); });
     busy = true; $('fm-go').disabled = true; $('fm-x').disabled = true;
     var useServer = mode === 'server' && !(editing && editing.pending);
     var total = pics.filter(function (p) { return !p.f; }).length, n = 0;
@@ -455,7 +472,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
       var k = items.findIndex(function (x) { return x.id === saved.id; });
       if (k >= 0) items[k] = saved; else items.push(saved);
       if (mode === 'server') ls.set('mokgagu_col_cache', JSON.stringify(items.filter(function (x) { return !x.pending; })));
-      busy = false; $('fm-go').disabled = false; $('fm-x').disabled = false; $('fm').close(); render();
+      busy = false; $('fm-go').disabled = false; $('fm-x').disabled = false; $('fm').close(); if (stf !== '전체' && st(saved) !== stf) { stf = st(saved); ls.set('mokgagu_col_st', stf); } render();
       var at = shown.findIndex(function (x) { return x.id === saved.id; }); if (at >= 0) openView(at);
     }).catch(function (j) {
       busy = false; $('fm-go').disabled = false; $('fm-x').disabled = false;
