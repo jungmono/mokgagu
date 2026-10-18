@@ -244,7 +244,7 @@ const FD_ICON = {
   ref: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 15 24 5l20 10z"/><path d="M6 15v27h36V15"/><path d="M6 28.5h36M4 42h40"/><path d="M10 27.5v-9M13.5 27.5v-7M17 27.5v-9M20.5 27.5v-8M25 27.5l3-8.5M31 27.5v-9M34.5 27.5v-7M38 27.5v-9"/><path d="M10 41v-9M13.5 41v-7.5M17 41v-9M21 41v-6.5M24.5 41v-9M28 41v-8M33 41l2.5-8M38 41v-9"/><circle cx="24" cy="11.5" r="1.6"/></svg>',
 };
 const STUDY = `<a class="card folder study" href="study.html"><div class="cover fd">${FOLDER_SVG}<span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 공부방</h3><p>동인방 정대영 선생님 수업<br>거믄의 노트 · 힌의 노트<br>날짜별 정리</p><div class="meta">암호로 잠금</div></div></a>`;
-const COLLECTION = `<a class="card folder study col" href="collection.html"><div class="cover fd"><img src="mark_angwe.png" alt="" class="col-ico"><span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 소장품</h3><p>우리 집에 들인 목가구·기물<br>사진 · 구입일 · 구입처 · 비고</p><div class="meta">암호로 잠금 · 공부방과 같은 암호</div></div></a>`;
+const COLLECTION = `<a class="card folder study col" href="collection.html"><div class="cover fd"><img src="mark_angwe.png" alt="" class="col-ico"><span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 소장품</h3><p>우리 집에 들인 목가구·기물<br>사진 · 구입일 · 구입처 · 비고</p><div class="meta">암호로 잠금</div></div></a>`;
 function render(q = '') {
   const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
   let html = '';
