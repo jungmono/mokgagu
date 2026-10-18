@@ -169,6 +169,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
   var PW = '', items = [], mode = 'server', note = '', sort = ls.get(K_SORT) || 'new', q = '', stf = ls.get('mokgagu_col_st') || '소장';
   var ST = ['소장', '판매 예정', '판매함'];
+  function won(v) { v = String(v == null ? '' : v).trim(); return /^\d{4,}$/.test(v) ? Number(v).toLocaleString('ko-KR') : v; }
   function st(x) { return ST.indexOf(x.status) >= 0 ? x.status : '소장'; }
 
   /* ── 암호: 공부방과 같은 암호. 공부방 노트를 실제로 풀어 보아 맞는지 이 자리에서 확인한다 ── */
@@ -304,7 +305,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
       return '<button type="button" class="it" data-i="' + i + '"><div class="ph">' + (p ? '<img data-pid="' + esc(p.t || p.f) + '" alt="">' : '<img class="none" src="mark_angwe.png" alt="">') +
         ((x.photos || []).length > 1 ? '<span class="n">📷 ' + x.photos.length + '</span>' : '') + (x.pending ? '<span class="pend">이 기기에만</span>' : '') + (st(x) !== '소장' ? '<span class="stb' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div>' +
         '<div class="tx"><div class="nm">' + owners(x.owner) + esc(x.name) + '</div>' + (x.kind ? '<div class="kd">' + esc(x.kind) + '</div>' : '') +
-        '<div class="mt">' + esc([fmtD(x.bought), x.place].filter(Boolean).join(' · ')) + '</div>' + (st(x) !== '소장' && (x.sprice || x.sold) ? '<div class="mt sl">' + esc([st(x) === '판매함' ? '판매' : '판매 예정', fmtD(x.sold), x.sprice].filter(Boolean).join(' · ')) + '</div>' : '') + '</div></button>';
+        '<div class="mt">' + esc([fmtD(x.bought), x.place].filter(Boolean).join(' · ')) + '</div>' + (st(x) !== '소장' && (x.sprice || x.sold) ? '<div class="mt sl">' + esc([st(x) === '판매함' ? '판매' : '판매 예정', fmtD(x.sold), won(x.sprice)].filter(Boolean).join(' · ')) + '</div>' : '') + '</div></button>';
     }).join('') : '<div class="empty">' + (items.length ? (q ? '찾는 소장품이 없어요.' : '「' + stf + '」에 해당하는 소장품이 없어요.') : '아직 넣은 소장품이 없어요.<br><b>＋ 소장품 넣기</b>를 누르거나, 사진을 이 화면에 끌어다 놓으면 바로 시작해요.') + '</div>') + '</div>';
     app.innerHTML = h; fillImgs(app);
   }
@@ -330,7 +331,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
     $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
-      row('상태', st(x)) + (st(x) !== '소장' ? row('판매일', fmtD(x.sold)) + row(st(x) === '판매함' ? '판매가' : '받을 금액', x.sprice) + row('판매처', x.sto) : '') + row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', x.price) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
+      row('상태', st(x)) + (st(x) !== '소장' ? row('판매일', fmtD(x.sold)) + row(st(x) === '판매함' ? '판매가' : '받을 금액', won(x.sprice)) + row('판매처', x.sto) : '') + row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', won(x.price)) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
       '<div class="acts"><button class="btn k" id="v-edit">✎ 고치기</button><button class="btn del" id="v-del">지우기</button></div>' +
       (x.pending ? '<p class="note" style="margin-top:14px">이 기기에만 저장되어 있어요. 시트 스크립트를 새로 배포하면 자동으로 올라가요.</p>' : '');
     $('v-pos').textContent = (vi + 1) + ' / ' + shown.length;
@@ -366,7 +367,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     editing = x; pics = (x && x.photos ? x.photos.map(function (p) { return { f: p.f, t: p.t }; }) : []);
     var f = $('fm-f'); f.reset(); $('fm-msg').textContent = '';
     $('fm-t').textContent = x ? '소장품 고치기' : '소장품 넣기';
-    if (x) ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo', 'sold', 'sprice', 'sto'].forEach(function (k) { f.elements[k].value = x[k] || ''; });
+    if (x) ['name', 'kind', 'bought', 'place', 'size', 'price', 'era', 'wood', 'note', 'memo', 'sold', 'sprice', 'sto'].forEach(function (k) { f.elements[k].value = (k === 'price' || k === 'sprice') ? won(x[k]) : (x[k] || ''); });
     setOwner(x && x.owner ? x.owner : owner); setSt(x ? st(x) : '소장');
     drawPics(); if (!$('fm').open) $('fm').showModal();
     if (files && files.length) addFiles(files);
