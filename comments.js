@@ -1,5 +1,5 @@
 /* 기물 이야기(코멘트) — 모든 도록 페이지에서 기물 사진 창을 열면 그 아래에 코멘트를 남기고 볼 수 있다.
-   - 누가: 거믄(MONO) · 힌(아내) · 다른 사람(이름 직접 입력)
+   - 누가: 거믄(MONO) · 힌(아내) · 벗(이름 직접 입력)
    - 어디에: 구글 시트(Apps Script 웹 앱)에 저장해 노트북·아이패드·휴대폰 어디서나 같은 코멘트를 본다.
              API 주소가 비어 있으면 이 기기(브라우저)에만 임시로 저장했다가, 주소를 넣으면 자동으로 시트에 올린다.
    - 표시: 코멘트가 있는 기물은 목록 사진 오른쪽 위에 말풍선과 개수를 단다.
@@ -92,7 +92,7 @@
     '.cm-pick{display:inline-flex;border:1px solid #d9d4cc;border-radius:999px;overflow:hidden}',
     '.cm-pick button{border:0;background:#fff;font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:#3b3833}',
     '.cm-pick button+button{border-left:1px solid #d9d4cc}',
-    '.cm-pick button.on[data-w="거믄"]{background:#111;color:#fff;font-weight:800}.cm-pick button.on[data-w="힌"]{background:#fff;color:#111;font-weight:800;box-shadow:inset 0 0 0 2px #111}.cm-pick button.on[data-w="다른 사람"]{background:#6b665e;color:#fff;font-weight:700}',
+    '.cm-pick button.on[data-w="거믄"]{background:#111;color:#fff;font-weight:800}.cm-pick button.on[data-w="힌"]{background:#fff;color:#111;font-weight:800;box-shadow:inset 0 0 0 2px #111}.cm-pick button.on[data-w="벗"]{background:#6b665e;color:#fff;font-weight:700}',
     '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
     '.cm textarea{min-height:76px;resize:vertical;line-height:1.6}',
     '.cm-name{max-width:160px}',
@@ -117,14 +117,14 @@
   function infoBox(d) {
     return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d;
   }
-  function who() { return ls.get(K_WHO, '거믄'); }
+  function who() { var w = ls.get(K_WHO, '거믄'); return w === '다른 사람' ? '벗' : w; }
   function panelHTML(cid) {
     var cs = byCid(cid), w = who();
     var h = '<h4>' + BUB.replace('<svg', '<svg width="16" height="16"') + ' 기물 이야기 <small>' + (cs.length ? cs.length + '개' : '') + '</small></h4>';
     if (state.err) h += '<p class="cm-err">' + esc(state.err) + '</p>';
     if (state.loading && !cs.length) h += '<p class="cm-empty">불러오는 중…</p>';
     h += cs.length ? '<div class="cm-list">' + cs.map(function (c) {
-      var cls = c.author === '거믄' ? 'g' : c.author === '힌' ? 'h' : 'o', label = c.author === '다른 사람' ? (c.name || '다른 사람') : c.author;
+      var cls = c.author === '거믄' ? 'g' : c.author === '힌' ? 'h' : 'o', label = (c.author === '벗' || c.author === '다른 사람') ? (c.name || '벗') : c.author;
       var tail = sureId === c.id ? '<span class="cm-sure">지울까요?<button type="button" data-yes="' + esc(c.id) + '">예</button><button type="button" data-no="1">아니오</button></span>' : '<button type="button" class="cm-del" data-del="' + esc(c.id) + '">지우기</button>';
       return '<div class="cm-it"><div class="cm-hd"><span class="cm-who ' + cls + '">' + esc(label) + '</span><span>' + esc(when(c.t)) + (c.pending ? ' · 이 기기에만 저장됨' : '') + '</span>' + tail + '</div><div class="cm-tx">' + esc(c.text) + '</div></div>';
     }).join('') + '</div>' : (state.loading ? '' : '<p class="cm-empty">아직 남긴 이야기가 없어요. 이 기물에 대한 생각을 적어 보세요.</p>');
@@ -133,8 +133,8 @@
       return h;
     }
     h += '<div class="cm-form"><div class="cm-row"><span class="cm-pick" role="radiogroup" aria-label="누가 남기나요">' +
-      ['거믄', '힌', '다른 사람'].map(function (x) { return '<button type="button" role="radio" aria-checked="' + (w === x) + '" class="' + (w === x ? 'on' : '') + '" data-w="' + x + '">' + x + '</button>'; }).join('') +
-      '</span>' + (w === '다른 사람' ? '<input type="text" class="cm-name" placeholder="이름" value="' + esc(ls.get(K_NAME, '')) + '">' : '') + '</div>' +
+      ['거믄', '힌', '벗'].map(function (x) { return '<button type="button" role="radio" aria-checked="' + (w === x) + '" class="' + (w === x ? 'on' : '') + '" data-w="' + x + '">' + x + '</button>'; }).join('') +
+      '</span>' + (w === '벗' ? '<input type="text" class="cm-name" placeholder="이름" value="' + esc(ls.get(K_NAME, '')) + '">' : '') + '</div>' +
       '<textarea class="cm-text" placeholder="이 기물에 대한 이야기를 남겨 주세요 (수종, 짜임, 장석, 감정 메모, 선생님 말씀…)"></textarea>' +
       '<button type="button" class="cm-go cm-send">남기기</button>' +
       (API ? '' : '<p class="cm-note">아직 공용 저장소(구글 시트)에 연결되기 전이라 <b>이 기기에만</b> 저장됩니다. 연결하면 자동으로 옮겨져 다른 기기에서도 보여요.</p>') + '</div>';
@@ -163,7 +163,7 @@
     if (b.classList.contains('cm-send')) {
       var text = (p.querySelector('.cm-text').value || '').trim(); if (!text) { p.querySelector('.cm-text').focus(); return; }
       var w = who(), nm = '';
-      if (w === '다른 사람') { nm = ((p.querySelector('.cm-name') || {}).value || '').trim(); if (!nm) { p.querySelector('.cm-name').focus(); return; } ls.set(K_NAME, nm); }
+      if (w === '벗') { nm = ((p.querySelector('.cm-name') || {}).value || '').trim(); if (!nm) { p.querySelector('.cm-name').focus(); return; } ls.set(K_NAME, nm); }
       var c = { id: uid(), cid: p.dataset.cid, author: w, name: nm, text: text.slice(0, 4000), t: new Date().toISOString(), page: location.pathname.split('/').pop() || 'index.html' };
       if (!API) c.pending = 1;
       p.querySelector('.cm-text').value = ''; b.disabled = true;
