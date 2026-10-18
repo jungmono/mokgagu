@@ -77,6 +77,32 @@
     });
   }
   function canDel(c) { return fam || c.pending || !!keys[c.id]; }
+  // 고치기: 거믄·힌의 글은 가족 암호가 있을 때, 벗의 글은 쓴 기기에서만
+  function canEdit(c) { return !!c.pending || !!keys[c.id] || (fam && !!FAMW[c.author]); }
+  function edit(id, text) {
+    text = String(text || '').trim(); if (!text) return Promise.resolve(false);
+    var lc = local.filter(function (x) { return x.id === id; })[0];
+    if (lc) { lc.text = text; lc.edited = new Date().toISOString(); save(); changed(); return Promise.resolve(true); }
+    var c = all.filter(function (x) { return x.id === id; })[0]; if (!c) return Promise.resolve(false);
+    var was = { text: c.text, edited: c.edited };
+    c.text = text.slice(0, FAMW[c.author] ? 4000 : 1000); c.edited = new Date().toISOString(); changed();
+    return apiPost({ action: 'edit', id: id, text: c.text, key: keys[id] || '' }).then(function (j) {
+      if (j && j.ok) { save(); return true; }
+      if (j && j.err === 'action') return editByReplace(c, was);   // 시트 쪽이 아직 '고치기'를 모를 때: 새 글로 올리고 옛 글은 지움
+      throw j;
+    }).catch(function () { c.text = was.text; c.edited = was.edited; state.err = '고치지 못했어요. 잠시 뒤에 다시 해 주세요.'; changed(); return false; });
+  }
+  function editByReplace(c, was) {
+    var n = { id: uid(), cid: c.cid, author: c.author, name: c.name || '', text: c.text, t: c.t, page: c.page || '', pub: !!c.pub, edited: c.edited };
+    if (!FAMW[c.author]) { n.key = uid() + uid(); keys[n.id] = n.key; }
+    return apiPost({ action: 'add', c: n }).then(function (j) {
+      if (!j || !j.ok) throw j;
+      var oldKey = keys[c.id] || '';
+      all = all.filter(function (x) { return x.id !== c.id; }); all.push(n); delete keys[c.id]; save(); changed();
+      apiPost({ action: 'del', id: c.id, key: oldKey }).catch(function () {});
+      return true;
+    });
+  }
   function del(id) {
     if (local.some(function (x) { return x.id === id; })) { local = local.filter(function (x) { return x.id !== id; }); save(); changed(); return; }
     all.forEach(function (x) { if (x.id === id) x.del = 1; }); changed();
@@ -117,6 +143,7 @@
     '.cm-pick.vis button.on{background:#1d1b18;color:#fff;font-weight:800}.cm-pick.vis button.on[data-v="pub"]{background:#2f6b45}',
     '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
     '.cm textarea{min-height:76px;resize:vertical;line-height:1.6}',
+    '.cm .cm-edit{margin-top:4px}.cm-go.ghost{background:#fff;color:#6b665e;border:1px solid #d9d4cc;margin-right:6px}',
     '.cm-name{max-width:160px}',
     '.cm-go{align-self:flex-end;font:inherit;font-size:14px;font-weight:700;border:0;border-radius:8px;background:#1d1b18;color:#fff;padding:8px 16px;cursor:pointer}',
     '.cm-go:disabled{opacity:.4;cursor:default}',
@@ -138,7 +165,7 @@
   function starsHTML(s) { return (s.g ? STAR_G : '') + (s.h ? STAR_H : '') + (!s.g && !s.h && s.b ? '<span class="bub">' + BUB + s.b + '</span>' : ''); }
 
   /* ── 코멘트 창: 사진 창(dialog) 안의 설명 칸 아래에 붙인다 ── */
-  var curDlg = null, sureId = '';
+  var curDlg = null, sureId = '', editId = '';
   function infoBox(d) {
     return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d;
   }
@@ -147,14 +174,20 @@
     var cls = c.author === '거믄' ? 'g' : c.author === '힌' ? 'h' : 'o', label = FAMW[c.author] ? c.author : (c.name ? '벗 · ' + c.name : '벗');
     var pub = isPub(c), vis = FAMW[c.author] ? '<span class="cm-vis' + (pub ? ' pub' : '') + '">' + (pub ? '공개' : '🔒 비공개') + '</span>' : '';
     var tail;
+    if (editId === c.id) {
+      return '<div class="cm-it' + (pub ? '' : ' priv') + '"><div class="cm-hd"><span class="cm-who ' + cls + '">' + esc(label) + '</span>' + vis + '<span>고치는 중</span></div>' +
+        '<textarea class="cm-edit" data-eid="' + esc(c.id) + '">' + esc(c.text) + '</textarea>' +
+        '<div class="cm-row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="cm-go ghost" data-ecancel="1">그만두기</button><button type="button" class="cm-go" data-esave="' + esc(c.id) + '">고친 내용 저장</button></div></div>';
+    }
     if (sureId === c.id) tail = '<span class="cm-sure">지울까요?<button type="button" data-yes="' + esc(c.id) + '">예</button><button type="button" data-no="1">아니오</button></span>';
     else {
       var acts = '';
+      if (canEdit(c)) acts += '<button type="button" data-edit="' + esc(c.id) + '">✎ 고치기</button>';
       if (fam && FAMW[c.author] && !c.pending) acts += '<button type="button" data-pub="' + esc(c.id) + '" data-to="' + (pub ? 0 : 1) + '">' + (pub ? '비공개로' : '공개하기') + '</button>';
       if (canDel(c)) acts += '<button type="button" class="cm-del" data-del="' + esc(c.id) + '">지우기</button>';
       tail = acts ? '<span class="cm-act">' + acts + '</span>' : '';
     }
-    return '<div class="cm-it' + (pub ? '' : ' priv') + '"><div class="cm-hd"><span class="cm-who ' + cls + '">' + esc(label) + '</span>' + vis + '<span>' + esc(when(c.t)) + (c.pending ? ' · 이 기기에만 저장됨' : '') + '</span>' + tail + '</div><div class="cm-tx">' + esc(c.text) + '</div></div>';
+    return '<div class="cm-it' + (pub ? '' : ' priv') + '"><div class="cm-hd"><span class="cm-who ' + cls + '">' + esc(label) + '</span>' + vis + '<span>' + esc(when(c.t)) + (c.edited ? ' · 고침' : '') + (c.pending ? ' · 이 기기에만 저장됨' : '') + '</span>' + tail + '</div><div class="cm-tx">' + esc(c.text) + '</div></div>';
   }
   function panelHTML(cid) {
     var cs = byCid(cid), w = who();
@@ -184,11 +217,13 @@
     var cid = curDlg.dataset.cid; if (!cid) return;
     var box = infoBox(curDlg), p = box.querySelector(':scope > .cm');
     var keep = p && p.querySelector('.cm-text') ? p.querySelector('.cm-text').value : '';
+    var keepEdit = p && p.querySelector('.cm-edit') ? p.querySelector('.cm-edit').value : null;
     var hadFocus = p && document.activeElement && p.contains(document.activeElement) && document.activeElement.classList.contains('cm-text');
     if (!p) { p = document.createElement('div'); p.className = 'cm'; box.appendChild(p); }
     p.dataset.cid = cid; p.innerHTML = panelHTML(cid);
     var ta = p.querySelector('.cm-text'); if (ta && keep && p.dataset.lastCid === cid) ta.value = keep;
     if (ta && hadFocus) ta.focus();
+    var ed = p.querySelector('.cm-edit'); if (ed && keepEdit != null && p.dataset.lastCid === cid) ed.value = keepEdit;
     p.dataset.lastCid = cid;
   }
   document.addEventListener('click', function (e) {
@@ -196,7 +231,10 @@
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.w) { ls.set(K_WHO, b.dataset.w); state.codeErr = ''; paint(); return; }
     if (b.dataset.v) { state.pub = b.dataset.v === 'pub'; paint(); return; }
-    if (b.dataset.del) { sureId = b.dataset.del; paint(); return; }
+    if (b.dataset.edit) { editId = b.dataset.edit; sureId = ''; paint(); var ed = p.querySelector('.cm-edit'); if (ed) { ed.focus(); ed.setSelectionRange(ed.value.length, ed.value.length); } return; }
+    if (b.dataset.ecancel) { editId = ''; paint(); return; }
+    if (b.dataset.esave) { var et = p.querySelector('.cm-edit'), eid = b.dataset.esave; if (!et || !et.value.trim()) { if (et) et.focus(); return; } var v2 = et.value; editId = ''; edit(eid, v2); return; }
+    if (b.dataset.del) { sureId = b.dataset.del; editId = ''; paint(); return; }
     if (b.dataset.no) { sureId = ''; paint(); return; }
     if (b.dataset.yes) { var id = b.dataset.yes; sureId = ''; del(id); return; }
     if (b.dataset.pub) { setPub(b.dataset.pub, b.dataset.to === '1'); return; }
@@ -214,6 +252,8 @@
   });
   document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.classList && e.target.classList.contains('cm-text')) { var s = e.target.closest('.cm').querySelector('.cm-send'); if (s) s.click(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.classList && e.target.classList.contains('cm-edit')) { var sv = e.target.closest('.cm').querySelector('[data-esave]'); if (sv) sv.click(); }
+    if (e.key === 'Escape' && e.target.classList && e.target.classList.contains('cm-edit')) { e.preventDefault(); e.stopPropagation(); editId = ''; paint(); }
     if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('cm-code')) { e.preventDefault(); e.target.closest('.cm').querySelector('.cm-codego').click(); }
   });
   // 사진 창 안에서 누르는 키(화살표 등)가 페이지의 이전·다음 넘기기로 새지 않게
@@ -222,7 +262,7 @@
   function watchDialogs() {
     document.querySelectorAll('dialog').forEach(function (d) {
       if (d.dataset.cmWatch) return; d.dataset.cmWatch = '1';
-      var go = function () { if (d.open) { curDlg = d; sureId = ''; setTimeout(paint, 0); } };
+      var go = function () { if (d.open) { curDlg = d; sureId = ''; editId = ''; setTimeout(paint, 0); } };
       new MutationObserver(go).observe(d, { attributes: true, attributeFilter: ['open', 'data-cid'] });
       new MutationObserver(function () { if (d.open && d.dataset.cid && !infoBox(d).querySelector(':scope > .cm')) setTimeout(paint, 0); }).observe(d, { childList: true, subtree: true });
     });
@@ -256,7 +296,7 @@
   window.MOKGAGU_COMMENTS = {
     reload: apiGet, list: list, isFam: function () { return fam; }, isPub: isPub, when: when, esc: esc,
     starsHTML: function (author) { return author === '거믄' ? STAR_G : author === '힌' ? STAR_H : '<span class="bub">' + BUB + '</span>'; },
-    login: login, logout: logout, setPub: setPub, del: del, canDel: canDel,
+    login: login, logout: logout, setPub: setPub, del: del, canDel: canDel, edit: edit, canEdit: canEdit,
     onChange: function (f) { subs.push(f); }, state: state
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

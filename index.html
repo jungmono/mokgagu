@@ -108,7 +108,7 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 .d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
 .d-r{display:flex;gap:8px}
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
-footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
+footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icons{display:flex;justify-content:center;align-items:flex-end;gap:clamp(28px,5vw,48px);margin:18px auto 8px}footer .ft-icon{display:block;margin:0;width:144px;height:auto}footer .ft-icon.ft-angwe{width:104px;margin-bottom:5px}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
 
 .card.folder .cover.fd[class*="fd-"] svg{width:58px;height:58px}.cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.card.folder.study{border:2px solid #111}.card.folder.study .cover.fd{position:relative;background:#111;color:#fff}.card.folder.study .lk{position:absolute;right:6px;bottom:4px;font-size:18px}.card.folder.study h3 .ew{display:inline-flex;margin-right:2px}.card.folder.study h3 .ew b,.card.folder.study h3 .ew i{font-style:normal;font-size:.8em;font-weight:900;padding:.05em .35em;border:1.5px solid #111;line-height:1.2}.card.folder.study h3 .ew b{background:#111;color:#fff}.card.folder.study h3 .ew i{background:#fff;color:#111}
 .since-top{position:absolute;top:14px;right:16px;z-index:5;display:flex;align-items:center;font-size:clamp(11px,1.25vw,14px);font-weight:900;letter-spacing:-.02em;line-height:1.2}.since-top span{display:inline-block;padding:.15em .45em;border:1.5px solid #111;box-sizing:border-box;text-align:center}.since-top .sc-blk{background:#111;color:#fff;min-width:2.9em}.since-top .sc-wht{background:#fff;color:#111}
@@ -154,7 +154,7 @@ body{position:relative}
 
   <footer>
     <span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.
-    <img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이">
+    <div class="ft-icons"><img class="ft-icon ft-angwe" src="mark_angwe.png" width="328" height="200" alt="안궤"><img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
     <div class="ft-upd"><span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span></div>
   </footer>
 </div>
@@ -214,7 +214,7 @@ const fmt = (s) => s.replaceAll('-', '. ');
 const latest = DASHBOARDS.reduce((a, b) => (b.added > a.added ? b : a), DASHBOARDS[0]);
 const newest = DASHBOARDS.filter((d) => d.added === latest.added);
 const MAIN = DASHBOARDS.filter((d) => !d.group), REFS = DASHBOARDS.filter((d) => d.group === 'ref'), AUCS = DASHBOARDS.filter((d) => d.group === 'auction'), MUSE = DASHBOARDS.filter((d) => d.group === 'museum');
-const FOLDERS = [['museum', '박물관자료', '박물관·국가유산으로 지정된 목공예 유물', MUSE], ['auction', '경매자료', '경매에 나온 목가구·목기<br>추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
+const FOLDERS = [['museum', '박물관자료', '박물관·지정된 문화유산 목공예 유물', MUSE], ['auction', '경매자료', '경매에 나온 목가구·목기<br>추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
 document.getElementById('n-books').textContent = MAIN.length;
 document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
@@ -261,7 +261,7 @@ const ORDER = DASHBOARDS.map((d) => d.path);
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let hits = [], shown = [], only = '', cur = -1;
+let hits = [], shown = [], only = '', cur = -1, seqFrom = '';
 
 function search(raw) {
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
@@ -269,7 +269,7 @@ function search(raw) {
   const all = window.SEARCH || [];
   hits = all.filter((r) => terms.some((q) => r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
-  only = '';
+  only = ''; seqFrom = '';
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
 }
@@ -301,8 +301,8 @@ function openItem(i) {
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
     <dl>${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
-    <a href="${r.b}.html">도록으로 돌아가기 →</a>`;
-  $('d-pos').textContent = `${i + 1} / ${shown.length}`;
+    <a href="${r.b}.html">도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}`;
+  $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
 }
@@ -319,7 +319,16 @@ function openSeen() {
   const r = window.SEARCH.find((x) => x.b === b && String(x.pid) === pid);
   history.replaceState(null, '', location.pathname + location.search);
   if (!r) return;
-  shown = [r]; openItem(0);
+  /* 기물 이야기 모아보기에서 왔으면 그 목록 순서대로 좌우로 넘겨 볼 수 있게 */
+  let seq = null;
+  try { seq = JSON.parse(sessionStorage.getItem('mokgagu_see_list') || 'null'); sessionStorage.removeItem('mokgagu_see_list'); } catch (e) {}
+  if (seq && Array.isArray(seq.list) && seq.list.length > 1) {
+    const IX = {}; window.SEARCH.forEach((x) => { IX[x.b + '/' + x.pid] = x; });
+    const L = seq.list.map((k) => IX[k]).filter(Boolean);
+    const at = L.indexOf(r);
+    if (at >= 0) { shown = L; seqFrom = seq.from || ''; openItem(at); return; }
+  }
+  seqFrom = ''; shown = [r]; openItem(0);
 }
 window.addEventListener('hashchange', openSeen);
 window.addEventListener('load', openSeen);
