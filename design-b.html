@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>시안 B · 먹감과 장석 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 시안 B — 먹감나무와 장석
+   바탕은 먹감나무의 검은 결, 글은 한지 빛, 단추와 선은 황동 장석 빛.
+   도록 하나하나를 서랍 앞판처럼: 왼쪽에 표지, 가운데 이름, 오른쪽에 둥근 고리 손잡이. */
+:root{--wood:#211a15;--wood2:#2b221b;--grain:#362a21;--hanji:#ece5d8;--dim:#a99c8a;--brass:#c3a062;--brass-d:#8d7040;--ju:#a8432f}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--wood);color:var(--hanji)}
+body{font-family:"IBM Plex Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;
+  background-image:repeating-linear-gradient(97deg,transparent 0 22px,rgba(255,255,255,.012) 22px 24px,transparent 24px 61px,rgba(0,0,0,.08) 61px 63px)}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:22px 20px 80px}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
+.duo{display:inline-flex}.duo span{display:inline-block;min-width:2.9em;text-align:center;padding:.12em .45em;border:1.5px solid var(--hanji);line-height:1.2}
+.duo .k{background:var(--hanji);color:var(--wood)}.duo .w{color:var(--hanji)}
+.top small{margin-left:8px;color:var(--dim);font-weight:500}
+header{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:end;padding:60px 0 40px;border-bottom:1px solid var(--brass-d)}
+h1{margin:0;font-family:"Gowun Batang",serif;font-weight:700;font-size:clamp(40px,7.4vw,84px);letter-spacing:-.03em;line-height:1.02}
+.lede{margin:16px 0 0;color:var(--dim);font-size:16px;max-width:30em;line-height:1.65}
+.pair{display:flex;align-items:flex-end;gap:20px}
+.pair img{height:clamp(48px,7vw,86px);width:auto;filter:invert(1) sepia(.35) brightness(.92);mix-blend-mode:screen}.pair img.ag{height:clamp(42px,6.1vw,75px)}
+.tools{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center;padding:26px 0}
+.find{flex:1 1 340px}
+.find input{width:100%;font:inherit;font-size:16px;padding:12px 4px;border:0;border-bottom:1.5px solid var(--brass);background:transparent;color:var(--hanji);outline:none}
+.find input::placeholder{color:#7e7262}
+.find input:focus-visible{border-bottom-color:var(--hanji)}
+.quick{display:flex;flex-wrap:wrap;gap:6px}
+.quick a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:13.5px;color:var(--hanji);border:1px solid var(--brass-d);border-radius:999px;padding:5px 12px 5px 8px}
+.quick a svg{width:20px;height:20px;color:var(--brass)}
+.quick a:hover,.quick a:focus-visible{border-color:var(--brass);background:rgba(195,160,98,.1);outline:none}
+.stat{color:var(--dim);font-size:14px;margin:0 0 30px}.stat b{color:var(--brass);font-weight:700}
+/* 서랍 */
+.grp{margin:40px 0 0}
+.grp h2{display:flex;align-items:baseline;gap:12px;margin:0 0 14px;font-family:"Gowun Batang",serif;font-size:24px;font-weight:700}
+.grp h2 small{font-family:"IBM Plex Sans KR",sans-serif;font-size:13.5px;font-weight:400;color:var(--dim)}
+.chest{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#120e0b;border:2px solid #120e0b;border-radius:4px;box-shadow:0 14px 34px rgba(0,0,0,.4)}
+.dr{position:relative;display:flex;align-items:center;gap:18px;padding:16px 64px 16px 16px;text-decoration:none;background:linear-gradient(180deg,var(--wood2),var(--wood));min-height:104px}
+.dr::before{content:"";position:absolute;inset:6px;border:1px solid rgba(195,160,98,.18);pointer-events:none}
+.dr img{flex:none;width:54px;height:72px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.dr b{display:block;font-family:"Gowun Batang",serif;font-size:18px;font-weight:700;line-height:1.3}
+.dr span.d{display:block;margin-top:3px;font-size:13px;color:var(--dim);line-height:1.45}
+.dr span.n{display:inline-block;margin-top:5px;font-size:12.5px;color:var(--brass);font-weight:700}
+.pull{position:absolute;right:20px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e5c98d,var(--brass) 45%,var(--brass-d));box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.pull::after{content:"";position:absolute;left:50%;top:14px;width:22px;height:20px;margin-left:-11px;border:2.5px solid var(--brass);border-top:0;border-radius:0 0 12px 12px;transform-origin:top center;transition:transform .2s}
+.dr:hover .pull::after,.dr:focus-visible .pull::after{transform:rotate(-24deg)}
+.dr:hover,.dr:focus-visible{background:linear-gradient(180deg,#33281f,#271f19);outline:none}
+.dr:focus-visible::before{border-color:var(--brass)}
+.study{display:flex;align-items:center;gap:20px;margin:44px 0 0;padding:24px 26px;background:var(--hanji);color:var(--wood);text-decoration:none;border-radius:4px}
+.study .lk{flex:none;width:52px;height:52px;border-radius:50%;background:var(--ju);color:#fff;display:grid;place-items:center;font-size:22px}
+.study b{font-family:"Gowun Batang",serif;font-size:22px}
+.study p{margin:3px 0 0;color:#5c5246;font-size:14px}
+.study em{margin-left:auto;font-style:normal;font-weight:700;font-size:14px}
+.talk{display:inline-block;margin:26px 0 0;color:var(--brass);font-weight:700;text-decoration:none;border-bottom:1px solid var(--brass-d)}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--grain);font-size:12.5px;color:var(--dim);line-height:1.7}
+.sample{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);background:var(--brass);color:var(--wood);font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:999px;z-index:9}
+@media (max-width:760px){header{grid-template-columns:1fr}.chest{grid-template-columns:1fr}.study{flex-wrap:wrap}.study em{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span><span class="duo"><span class="w">거믄</span><span class="k">힌</span></span><small>고미술공부방</small></span><span class="duo"><span class="k">since</span><span class="w">2026.10.16.</span></span></div>
+  <header>
+    <div><h1>조선의 목가구</h1><p class="lede">답십리 동인방 정대영 선생님께 배우며 모은 도록과 자료. 나무와 장석과 짜임을 보는 눈을 기르는 곳.</p></div>
+    <div class="pair"><img class="ag" src="mark_angwe.png" alt="안궤"><img src="mark_eonyang_white.png" alt="언양반닫이"></div>
+  </header>
+  <div class="tools">
+    <form class="find" action="index.html"><input type="search" name="q" placeholder="물건 이름으로 찾기 — 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기"></form>
+    <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
+  </div>
+  <p class="stat" id="stat"></p>
+  <main id="main"></main>
+  <a class="study" href="study.html"><span class="lk">🔒</span><span><b>거믄과 힌의 공부방</b><p>동인방 수업 노트 — 날짜별 정리</p></span><em>가족 암호로 열기</em></a>
+  <a class="talk" href="comments.html">💬 기물 이야기 모아보기</a>
+  <footer>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다. · 마지막 업데이트 <b id="upd"></b></footer>
+</div>
+<div class="sample">시안 B · 먹감과 장석 — <a href="design-a.html">A</a> · <a href="design-c.html">C</a> · <a href="index.html">지금 홈</a></div>
+<script src="design-data.js"></script>
+<script>
+(function () {
+  var D = DS_DASH, $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  $('quick').innerHTML = DS_QUICK.map(function (q) { return '<a href="index.html?q=' + encodeURIComponent(q[0]) + '">' + dsIcon(q[1], 1.8) + q[0] + '</a>'; }).join('');
+  $('stat').innerHTML = '도록과 자료 <b>' + D.length + '</b>권 · 기물 <b>' + dsFmt(dsTotal()) + '</b>건';
+  $('upd').textContent = D.reduce(function (a, d) { return d.added > a ? d.added : a; }, '').replaceAll('-', '. ') + '.';
+  $('main').innerHTML = DS_GROUPS.map(function (g) {
+    var L = D.filter(function (d) { return (d.group || '') === g[0]; }); if (!L.length) return '';
+    return '<section class="grp"><h2>' + g[1] + ' <small>' + g[2] + '</small></h2><div class="chest">' + L.map(function (d) {
+      return '<a class="dr" href="' + d.path + '.html"><img src="covers/' + d.path + '.jpg" alt="" loading="lazy"><span><b>' + esc(d.title) + '</b><span class="d">' + esc(d.desc) + '</span><span class="n">' + dsFmt(d.items) + '건</span></span><i class="pull" aria-hidden="true"></i></a>';
+    }).join('') + '</div></section>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
