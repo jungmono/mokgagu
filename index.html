@@ -110,7 +110,7 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
 
-.card.folder .cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.card.folder.study{border:2px solid #111}.card.folder.study .cover.fd{position:relative;background:#111;color:#fff}.card.folder.study .lk{position:absolute;right:6px;bottom:4px;font-size:18px}.card.folder.study h3 .ew{display:inline-flex;margin-right:2px}.card.folder.study h3 .ew b,.card.folder.study h3 .ew i{font-style:normal;font-size:.8em;font-weight:900;padding:.05em .35em;border:1.5px solid #111;line-height:1.2}.card.folder.study h3 .ew b{background:#111;color:#fff}.card.folder.study h3 .ew i{background:#fff;color:#111}
+.card.folder .cover.fd[class*="fd-"] svg{width:58px;height:58px}.cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.card.folder.study{border:2px solid #111}.card.folder.study .cover.fd{position:relative;background:#111;color:#fff}.card.folder.study .lk{position:absolute;right:6px;bottom:4px;font-size:18px}.card.folder.study h3 .ew{display:inline-flex;margin-right:2px}.card.folder.study h3 .ew b,.card.folder.study h3 .ew i{font-style:normal;font-size:.8em;font-weight:900;padding:.05em .35em;border:1.5px solid #111;line-height:1.2}.card.folder.study h3 .ew b{background:#111;color:#fff}.card.folder.study h3 .ew i{background:#fff;color:#111}
 .since-top{position:absolute;top:14px;right:16px;z-index:5;display:flex;align-items:center;font-size:clamp(11px,1.25vw,14px);font-weight:900;letter-spacing:-.02em;line-height:1.2}.since-top span{display:inline-block;padding:.15em .45em;border:1.5px solid #111;box-sizing:border-box;text-align:center}.since-top .sc-blk{background:#111;color:#fff;min-width:2.9em}.since-top .sc-wht{background:#fff;color:#111}
 .chip.cm-link{text-decoration:none;font-weight:700;color:var(--fg)}.chip.cm-link:hover{border-color:#111}
 .eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
@@ -230,6 +230,14 @@ const card = (d) => `
       </div>
     </a>`;
 const FOLDER_SVG = '<svg viewBox="0 0 48 48" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 13a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M5 20h38"/></svg>';
+const FD_ICON = {
+  /* 국립중앙박물관: 길게 누운 두 동, 가운데를 지붕 판이 덮은 '열린 마당'과 넓은 계단, 앞의 거울못 */
+  museum: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M1.5 15.5h45v3h-45z" fill="currentColor"/><path d="M3 18.5v13h14v-13M31 18.5v13h14v-13"/><path d="M3 23h14M3 27h14M31 23h14M31 27h14" stroke-width="1.2"/><path d="M17 31.5h14M15.5 34h17M14 36.5h20" stroke-width="1.6"/><path d="M1.5 31.5h12.5M34 31.5h12.5"/><path d="M6 40.5h36" stroke-width="1.5"/><path d="M11 43.5h26" stroke-width="1.2"/></svg>',
+  /* 경매: 의사봉(망치)과 받침 */
+  auction: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-40 22 18)"><rect x="12" y="10" width="20" height="9" rx="2"/><path d="M15 10v9M29 10v9"/><path d="M22 19v19"/></g><path d="M26 41h17"/><rect x="28.5" y="36.5" width="12" height="4.5" rx="1"/><path d="M8 8l2.5 2.5M5 14h3.5M13 4.5v3.5" stroke-width="1.8"/></svg>',
+  /* 도서관: 박공 지붕 아래 책이 꽂힌 서가 */
+  ref: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 15 24 5l20 10z"/><path d="M6 15v27h36V15"/><path d="M6 28.5h36M4 42h40"/><path d="M10 27.5v-9M13.5 27.5v-7M17 27.5v-9M20.5 27.5v-8M25 27.5l3-8.5M31 27.5v-9M34.5 27.5v-7M38 27.5v-9"/><path d="M10 41v-9M13.5 41v-7.5M17 41v-9M21 41v-6.5M24.5 41v-9M28 41v-8M33 41l2.5-8M38 41v-9"/><circle cx="24" cy="11.5" r="1.6"/></svg>',
+};
 const STUDY = `<a class="card folder study" href="study.html"><div class="cover fd">${FOLDER_SVG}<span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 공부방</h3><p>동인방 정대영 선생님 수업 — 날짜별 정리 · 손글씨 노트와 선생님 자료</p><div class="meta">가족 암호로 잠금</div></div></a>`;
 function render(q = '') {
   const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
@@ -237,7 +245,7 @@ function render(q = '') {
   if (fd) {
     html = fd[3].map(card).join('');
   } else {
-    html = MAIN.map(card).join('') + STUDY + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd">${FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p} — ${L.map((d) => d.title).join(' · ')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
+    html = MAIN.map(card).join('') + STUDY + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p} — ${L.map((d) => d.title).join(' · ')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
   }
   grid.innerHTML = html;
   const h = document.getElementById('grid-title'); if (h) h.textContent = fd ? fd[1] : '';
