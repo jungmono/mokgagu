@@ -7,7 +7,9 @@
   var css = document.createElement('style');
   css.textContent = [
     '.st-top{position:relative;max-width:1200px;margin:0 auto 6px;padding:6px 0 0;text-align:center;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}',
-    '.st-top .st-mark{position:absolute;left:0;top:4px;line-height:0;transition:opacity .15s}.st-top .st-mark:hover{opacity:.75}.st-top .st-mark img{height:clamp(28px,3.4vw,40px);width:auto}',
+    '.st-top .st-row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2.6vw,30px)}',
+    '.st-top .st-mark{flex:none;display:block;line-height:0;margin-bottom:clamp(4px,.7vw,8px);transition:opacity .15s}.st-top .st-mark:hover{opacity:.75}',
+    '.st-top .st-mark img{display:block;width:auto;height:clamp(30px,4.6vw,52px);user-select:none}.st-top .st-mark.st-angwe img{height:clamp(27px,4.1vw,46px)}',
     '.st-top .st-title{display:inline-block;color:#111;text-decoration:none;font-weight:900;font-size:clamp(26px,3.8vw,42px);letter-spacing:-.04em;line-height:1.15;padding:2px 10px;border-radius:10px;transition:transform .15s}',
     '.st-top .st-title:hover{transform:translateY(-2px)}',
     '.st-cover{display:flex;align-items:center;gap:clamp(16px,2.4vw,28px);max-width:1200px;margin:18px auto 22px;padding:clamp(14px,2vw,22px) clamp(16px,2.4vw,28px);background:#fff;border:1px solid #e6e8f0;border-radius:18px;box-shadow:0 1px 2px rgba(20,24,60,.04),0 6px 20px rgba(20,24,60,.06);font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;box-sizing:border-box}',
@@ -18,7 +20,7 @@
     '.st-cover .st-tx p{margin:0!important;font-family:inherit!important;font-weight:700!important;font-size:clamp(14.5px,1.6vw,18px);line-height:1.5;color:#3b3833}',
     '.st-cover .st-tx .st-n{margin-top:6px!important;font-weight:900!important;font-size:clamp(15px,1.6vw,18px);color:#4b55d6}',
     '.st-h1-hide{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;margin:0!important;padding:0!important}',
-    '@media (max-width:600px){.st-top{padding-top:44px}.st-top .st-mark{left:50%;transform:translateX(-50%)}}',
+    '@media (max-width:420px){.st-top .st-mark img{height:26px}.st-top .st-mark.st-angwe img{height:23px}.st-top .st-mark{margin-bottom:5px}}',
     '@media print{.st-top .st-mark{display:none}}'
   ].join('');
   document.head.appendChild(css);
@@ -31,8 +33,11 @@
     var top = document.querySelector('.sa-top');
     if (!top) { top = document.createElement('div'); document.body.insertBefore(top, document.body.firstChild); }
     top.className = 'st-top';
-    top.innerHTML = '<a class="st-mark" href="index.html" aria-label="처음 화면으로" title="처음 화면으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a>' +
-      '<a class="st-title" href="index.html" title="처음 화면으로">조선의 목가구</a>';
+    top.innerHTML = '<div class="st-row">' +
+      '<a class="st-mark st-angwe" href="index.html" aria-label="처음 화면으로" title="처음 화면으로"><img src="mark_angwe.png" alt="안궤" width="328" height="200"></a>' +
+      '<a class="st-title" href="index.html" title="처음 화면으로">조선의 목가구</a>' +
+      '<a class="st-mark st-eonyang" href="index.html" aria-label="처음 화면으로" title="처음 화면으로"><img src="mark_eonyang_white.png" alt="언양반닫이" width="400" height="243"></a>' +
+      '</div>';
     var b = BOOKS[slug]; if (!b) return;
     var h1 = document.querySelector('h1');
     var cv = document.createElement('section'); cv.className = 'st-cover';
