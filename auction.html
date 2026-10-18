@@ -173,7 +173,7 @@ function render() {
   else view.sort((a, b) => b.date.localeCompare(a.date) || a.lot.localeCompare(b.lot));
   const vs = view.filter((i) => i.hammer);
   document.getElementById('count').textContent = `${view.length}점` + (vs.length ? ` · 낙찰 ${vs.length}점, 낙찰가 합계 ${won(vs.reduce((s, i) => s + i.hammer, 0))}` : '');
-  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}"><div class="ph"><img loading="lazy" src="${THUMB[i.id]}" alt="${i.name}"></div><div class="bd"><span class="badge">${short(i.sale)} · Lot ${i.lot} · ${i.kind}</span><span class="nm">${i.name}</span>${i.maker ? `<span class="mk">${i.maker}</span>` : ''}<span class="sz">${i.size}</span><div class="price">${priceHtml(i)}</div></div></button>`).join('');
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}" data-cid="auction/${i.id}"><div class="ph"><img loading="lazy" src="${THUMB[i.id]}" alt="${i.name}"></div><div class="bd"><span class="badge">${short(i.sale)} · Lot ${i.lot} · ${i.kind}</span><span class="nm">${i.name}</span>${i.maker ? `<span class="mk">${i.maker}</span>` : ''}<span class="sz">${i.size}</span><div class="price">${priceHtml(i)}</div></div></button>`).join('');
 }
 document.getElementById('f-sale').onchange = (e) => { st.sale = e.target.value; render(); };
 document.getElementById('sort').onchange = (e) => { st.sort = e.target.value; render(); };
@@ -182,7 +182,7 @@ const go = () => setTimeout(() => document.getElementById('gal').scrollIntoView(
 
 const dlg = document.getElementById('dlg'); let cur = 0;
 function open_(n) {
-  cur = (n + view.length) % view.length; const i = view[cur];
+  cur = (n + view.length) % view.length; const i = view[cur]; dlg.dataset.cid = 'auction/' + i.id;
   const im = document.getElementById('d-img'); im.src = THUMB[i.id]; im.alt = i.name;
   const hi = new Image(); hi.onload = () => { if (view[cur] === i) im.src = hi.src; }; hi.src = 'photos/auction/' + i.id + '.jpg';
   const ratio = i.hammer && i.est_lo ? ` <span style="font-size:13px;color:var(--muted);font-weight:400">(낮은 추정가의 ${Math.round(i.hammer / i.est_lo * 100)}%)</span>` : '';
@@ -254,4 +254,5 @@ d.addEventListener('close',reset);
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
+<script src="comments.js" defer></script>
 </body></html>

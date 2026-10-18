@@ -404,7 +404,7 @@ dash.calc('by_wood', {
     return p.length ? p.join(' · ') + ' cm' : '—';
   };
   function showDetail() {
-    const r = itemMap().get(dlgList[dlgIdx]); if (!r) return;
+    const r = itemMap().get(dlgList[dlgIdx]); if (!r) return; document.getElementById('dlg').dataset.cid = 'yangsan/' + r.id;
     document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.no);
     const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id); im.dataset.fb = photo(r.id) || '';
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
@@ -491,7 +491,7 @@ dash.calc('by_wood', {
     const rows = s.data.filter((r) => TILE_OK(r) && (k === 'all' || r.kind === k) && (!nm() || r.name === nm()) && (!grp() || r.part === grp())).sort((a, b) => a.no - b.no);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', r.name);
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', r.name); b.dataset.cid = 'yangsan/' + r.id;
       const ph = document.createElement('div'); ph.className = 'lk-ph';
       const src = photo(r.id); if (src) { const im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy'; ph.appendChild(im); }
       const cap = document.createElement('div'); cap.className = 'lk-cap'; cap.textContent = r.name;
@@ -652,4 +652,5 @@ d.addEventListener('close',reset);
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
+<script src="comments.js" defer></script>
 </body></html>

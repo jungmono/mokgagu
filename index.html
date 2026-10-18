@@ -266,7 +266,7 @@ function drawResults(label) {
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
     `<button class="r-chip" data-k="${k}" aria-pressed="${only === k}">${esc(t)}<small>${n}</small></button>`).join('') : '';
   $('r-grid').innerHTML = shown.length ? shown.map((r, i) => `
-    <button class="r-item" data-i="${i}">
+    <button class="r-item" data-i="${i}" data-cid="${esc(r.b + '/' + r.pid)}">
       <div class="ph">${r.t ? `<img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="">` : ''}</div>
       <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat)}</div>
       <div class="mt">${esc([r.era, r.size].filter(Boolean).join(' · '))}</div></div>
@@ -276,7 +276,7 @@ $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-c
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
 
 function openItem(i) {
-  cur = i; const r = shown[i]; if (!r) return;
+  cur = i; const r = shown[i]; if (!r) return; $('dlg').dataset.cid = r.b + '/' + r.pid;
   const img = $('d-img');
   img.src = r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
   img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
@@ -383,5 +383,6 @@ d.addEventListener('close',reset);
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
+<script src="comments.js" defer></script>
 </body>
 </html>

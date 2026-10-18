@@ -128,7 +128,7 @@ function chips() {
 function render() {
   chips(); tiles();
   view = ITEMS.filter((i) => !grp || gOf(i) === grp);
-  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}"><div class="ph">${THUMB[i.id] ? `<img loading="lazy" src="${THUMB[i.id]}" alt="${esc(i.name)}">` : '<span class="no">사진 없음</span>'}</div><div class="bd"><span class="badge">${esc(i.kind)}</span><span class="nm">${esc(i.name)}</span>${i.hanja ? `<span class="hj">${esc(i.hanja)}</span>` : ''}<span class="mt">${esc(i.era || '')}${i.era && i.admin ? ' · ' : ''}${esc(i.admin || i.owner || '')}</span><span class="pc">${i.pics.length ? '사진 ' + i.pics.length + '장' : ''}</span></div></button>`).join('');
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}" data-cid="heritage/${i.id}"><div class="ph">${THUMB[i.id] ? `<img loading="lazy" src="${THUMB[i.id]}" alt="${esc(i.name)}">` : '<span class="no">사진 없음</span>'}</div><div class="bd"><span class="badge">${esc(i.kind)}</span><span class="nm">${esc(i.name)}</span>${i.hanja ? `<span class="hj">${esc(i.hanja)}</span>` : ''}<span class="mt">${esc(i.era || '')}${i.era && i.admin ? ' · ' : ''}${esc(i.admin || i.owner || '')}</span><span class="pc">${i.pics.length ? '사진 ' + i.pics.length + '장' : ''}</span></div></button>`).join('');
 }
 document.getElementById('grid').addEventListener('click', (e) => { const c = e.target.closest('.card'); if (c) open_(+c.dataset.n); });
 const dlg = document.getElementById('dlg'); let cur = 0, pi = 0;
@@ -143,7 +143,7 @@ function showPic() {
   document.querySelectorAll('#d-strip button').forEach((b, k) => b.classList.toggle('on', k === pi));
 }
 function open_(n) {
-  cur = (n + view.length) % view.length; pi = 0; const i = view[cur];
+  cur = (n + view.length) % view.length; pi = 0; const i = view[cur]; dlg.dataset.cid = 'heritage/' + i.id;
   document.getElementById('d-strip').innerHTML = i.pics.length > 1 ? i.pics.map((p, k) => `<button type="button" data-k="${k}" aria-label="${k + 1}번째 사진"><img loading="lazy" src="${p.src}" alt=""></button>`).join('') : '';
   showPic();
   document.getElementById('d-info').innerHTML = `<span class="badge">${esc(i.kind)}</span><h3>${esc(i.name)}</h3><div class="hj">${esc(i.hanja)}</div><dl>
@@ -209,4 +209,5 @@ render();
 </script>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
+<script src="comments.js" defer></script>
 </body></html>

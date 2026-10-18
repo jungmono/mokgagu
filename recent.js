@@ -1,9 +1,9 @@
 /* 최근 본 기물 — 화면 오른쪽 아래 떠 있는 창.
-   어느 도록에서든 사진 창(dialog#dlg)을 열면 그 기물을 기억해 두고(이 브라우저에만, 최대 10개),
-   썸네일을 3개씩 보여 준다. ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
+   어느 도록에서든 사진 창(dialog#dlg)을 열면 그 기물을 기억해 두고(이 브라우저에만, 최대 20개),
+   썸네일을 5개씩 보여 준다. ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
    썸네일을 누르면 첫 화면(index.html)에서 그 기물 사진 창이 열린다. */
 (function () {
-  var KEY = 'mokgagu_recent_v1', MAX = 10, SHOW = 3;
+  var KEY = 'mokgagu_recent_v1', MAX = 20, SHOW = 5;
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
   var list = load(), start = 0;
@@ -12,13 +12,13 @@
   css.textContent = [
     '#to-top{display:none!important}',
     '#rv{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
-    '#rv .rv-box{background:#fff;border:1px solid #e3ded6;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:8px 7px;display:flex;flex-direction:column;align-items:center;gap:6px;width:86px}',
+    '#rv .rv-box{background:#fff;border:1px solid #e3ded6;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:8px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;width:80px}',
     '#rv .rv-t{font-size:11.5px;font-weight:700;color:#3b3833;letter-spacing:-.2px;text-align:center;line-height:1.25;word-break:keep-all}',
     '#rv .rv-t small{display:block;font-weight:400;color:#8a837a;font-size:10.5px}',
     '#rv .rv-nav{width:100%;height:20px;border:0;background:#f3f0eb;border-radius:6px;cursor:pointer;display:grid;place-items:center;color:#3b3833;padding:0}',
     '#rv .rv-nav:disabled{opacity:.3;cursor:default}',
     '#rv .rv-nav svg{width:14px;height:14px}',
-    '#rv .rv-it{display:block;width:70px;height:70px;border-radius:8px;overflow:hidden;border:1px solid #ece8e1;background:#faf9f6;cursor:pointer;padding:0;position:relative}',
+    '#rv .rv-it{display:block;width:64px;height:64px;border-radius:8px;overflow:hidden;border:1px solid #ece8e1;background:#faf9f6;cursor:pointer;padding:0;position:relative}',
     '#rv .rv-it img{width:100%;height:100%;object-fit:contain;display:block}',
     '#rv .rv-it span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;line-height:1.3;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transition:opacity .15s}',
     '#rv .rv-it:hover span,#rv .rv-it:focus-visible span{opacity:1}',
@@ -26,7 +26,7 @@
     '#rv .rv-top svg{width:22px;height:22px}',
     '#rv .rv-fold{border:0;background:none;color:#8a837a;font-size:10.5px;cursor:pointer;padding:0;text-decoration:underline}',
     '#rv.folded .rv-list,#rv.folded .rv-nav{display:none}',
-    '@media (max-width:720px){#rv{right:10px;bottom:10px;gap:6px}#rv .rv-box{width:62px;padding:6px 5px;gap:5px;border-radius:12px}#rv .rv-it{width:50px;height:50px;border-radius:7px}#rv .rv-t{font-size:10.5px}#rv .rv-t small{display:none}#rv .rv-top{width:42px;height:42px}#rv .rv-top svg{width:20px;height:20px}#rv .rv-nav{height:18px}}',
+    '@media (max-width:720px){#rv{right:10px;bottom:10px;gap:6px}#rv .rv-box{width:56px;padding:6px 4px;gap:4px;border-radius:12px}#rv .rv-it{width:46px;height:46px;border-radius:7px}#rv .rv-t{font-size:10.5px}#rv .rv-t small{display:none}#rv .rv-top{width:42px;height:42px}#rv .rv-top svg{width:20px;height:20px}#rv .rv-nav{height:18px}}',
     '@media print{#rv{display:none}}',
     /* 사진 칸 비율 고정 — 아이패드·아이폰 사파리에서 사진이 칸 밖으로 넘치거나 칸이 길어지지 않게.
        칸 높이를 너비 기준(padding-top)으로 정하고, 사진은 칸 안에 꽉 맞춰(object-fit: contain) 넣는다. */
@@ -46,7 +46,7 @@
   root.innerHTML = '<div class="rv-box" role="region" aria-label="최근 본 기물">' +
     '<div class="rv-t">최근 본 기물<small id="rv-n"></small></div>' +
     '<button type="button" class="rv-nav" id="rv-prev" aria-label="더 최근에 본 기물">' + up + '</button>' +
-    '<div class="rv-list" id="rv-list" style="display:flex;flex-direction:column;gap:6px"></div>' +
+    '<div class="rv-list" id="rv-list" style="display:flex;flex-direction:column;gap:5px"></div>' +
     '<button type="button" class="rv-nav" id="rv-next" aria-label="이전에 본 기물">' + down + '</button>' +
     '<button type="button" class="rv-fold" id="rv-fold">접기</button>' +
     '</div><button type="button" class="rv-top" id="rv-top" aria-label="맨 위로" title="맨 위로">' + top + '</button>';
@@ -59,7 +59,7 @@
     if (start > Math.max(0, list.length - SHOW)) start = Math.max(0, list.length - SHOW);
     var view = list.slice(start, start + SHOW);
     root.querySelector('#rv-list').innerHTML = view.map(function (r, k) {
-      return '<button type="button" class="rv-it" data-k="' + (start + k) + '" title="' + esc(r.name) + '"><img alt="' + esc(r.name) + '" src="' + esc(r.th) + '"><span>' + esc(r.name) + '</span></button>';
+      return '<button type="button" class="rv-it" data-k="' + (start + k) + '" data-cid="' + esc(r.b + '/' + r.pid) + '" title="' + esc(r.name) + '"><img alt="' + esc(r.name) + '" src="' + esc(r.th) + '"><span>' + esc(r.name) + '</span></button>';
     }).join('');
     root.querySelector('#rv-n').textContent = list.length > SHOW ? (start + 1) + '–' + Math.min(start + SHOW, list.length) + ' / ' + list.length : list.length + '점';
     root.querySelector('#rv-prev').disabled = start === 0;

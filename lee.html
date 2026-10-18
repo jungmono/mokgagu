@@ -451,7 +451,7 @@ dash.calc('bandaji_region', {
   };
   function showDetail() {
     const r = itemById().get(dlgList[dlgIdx]);
-    if (!r) return;
+    if (!r) return; document.getElementById('dlg').dataset.cid = 'lee/' + r.id;
     document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.plate);
     const src = hiPhoto(r) || photo(r.id); document.getElementById('dlg-img').dataset.fb = photo(r.id) || '';
     const im = document.getElementById('dlg-img');
@@ -503,7 +503,7 @@ dash.calc('bandaji_region', {
     const rows = s.data.filter((r) => TL() ? TILE_OK(r) : (r.group + '/' + r.category === c && (!nm() || r.name === nm()))).sort((a, b) => a.plate - b.plate);
     const ids = rows.map((r) => r.id);
     el.replaceChildren(...rows.map((r) => {
-      const b = document.createElement('button');
+      const b = document.createElement('button'); b.dataset.cid = 'lee/' + r.id;
       b.type = 'button'; b.setAttribute('aria-label', `${r.name} ${r.id}`);
       const ph = document.createElement('div'); ph.className = 'lk-ph';
       const src = photo(r.id);
@@ -767,4 +767,5 @@ d.addEventListener('close',reset);
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
+<script src="comments.js" defer></script>
 </body></html>
