@@ -70,6 +70,8 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 .quick button:hover{transform:translateY(-2px);border-color:var(--muted)}
 .quick button[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
 .quick .qi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center}
+/* 기물 단추 아이콘: 거믄·힌 모노톤 — 검은 바탕과 흰 바탕을 번갈아, 명암은 조금씩 다르게 */
+.qi.m0{background:#1d1b18;color:#fff}.qi.m1{background:#f3f2ef;color:#1d1b18}.qi.m2{background:#34312d;color:#f6f5f2}.qi.m3{background:#e7e5e1;color:#1d1b18}.qi.m4{background:#4a4642;color:#fff}.qi.m5{background:#dad7d1;color:#1d1b18}.qi.m6{background:#2a2825;color:#ecebe8}.qi.m7{background:#cfccc6;color:#111}
 .quick svg{width:32px;height:32px}
 #results{margin-bottom:12px}
 .r-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;margin:0 0 16px}
@@ -308,7 +310,7 @@ window.addEventListener('load', openSeen);
 openSeen();
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
   ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장·농', 'jang', 'meok'], ['함', 'ham', 'ju']];
-$('quick').innerHTML = QUICK.map(([w, ic, tone]) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi t-${tone}">${svg(ic)}</span>${w}</button>`).join('');
+$('quick').innerHTML = QUICK.map(([w, ic], k) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi m${k % 8}">${svg(ic)}</span>${w}</button>`).join('');
 const syncQuick = () => document.querySelectorAll('#quick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.w === $('q').value.trim())));
 $('quick').addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
