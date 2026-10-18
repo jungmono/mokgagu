@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light">
+<title>거믄 힌의 공부방 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{--fg:#1d1b18;--muted:#756e65;--line:#e6e1d9;--paper:#fbfaf7;--ink:#111}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--fg)}
+body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.wrap{max-width:920px;margin:0 auto;padding:18px 16px 72px}
+.hd{text-align:center;margin:26px 0 10px}
+.hd .mk{display:inline-flex;font-weight:900;font-size:15px}.hd .mk span{display:inline-block;min-width:2.9em;padding:.12em .45em;border:1.5px solid #111;line-height:1.25}
+.hd .mk .b{background:#111;color:#fff}.hd .mk .w{background:#fff;color:#111}
+.hd h1{margin:12px 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(28px,4.4vw,42px);letter-spacing:-.03em}
+.hd p{margin:0;color:var(--muted);font-weight:500}
+/* 잠금 */
+.lock{max-width:380px;margin:40px auto;text-align:center;border:1px solid var(--line);border-radius:18px;padding:30px 24px;background:var(--paper)}
+.lock .ic{font-size:40px}
+.lock h2{margin:8px 0 4px;font-size:19px;font-weight:900}
+.lock p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.6}
+.lock input{font:inherit;font-size:22px;letter-spacing:.4em;text-align:center;width:180px;border:1.5px solid #cfc8bd;border-radius:10px;padding:10px;background:#fff}
+.lock button{display:block;margin:14px auto 0;font:inherit;font-weight:800;font-size:15px;border:0;border-radius:10px;background:#111;color:#fff;padding:10px 26px;cursor:pointer}
+.lock button:disabled{opacity:.5}
+.lock .err{color:#8a2f22;font-size:13.5px;margin-top:10px;min-height:1.2em}
+.lock label{display:flex;justify-content:center;gap:6px;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}
+/* 목차 */
+.toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 26px}
+.toc a{text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;background:#fff}
+.toc a:hover{border-color:#111}
+.toc a small{color:var(--muted);font-weight:500;margin-left:4px}
+.tools{display:flex;gap:8px;justify-content:center;align-items:center;margin:18px 0 14px;flex-wrap:wrap}
+.tools input{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(340px,100%)}
+.tools button{font:inherit;font-size:13px;border:1px solid #d9d4cc;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#6b665e}
+/* 수업 */
+.ses{position:relative;border:1px solid var(--line);border-radius:18px;padding:22px 24px 18px;margin:0 0 22px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04)}
+.ses .dt{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ses .dt b{font-family:"Noto Serif KR",serif;font-size:26px;font-weight:900;letter-spacing:-.02em}
+.ses .dt span{font-size:13px;color:var(--muted);font-weight:700}
+.ses .dt .no{font-size:12px;color:#fff;background:#111;border-radius:6px;padding:2px 8px;font-weight:900}
+.ses h2{margin:6px 0 8px;font-size:clamp(19px,2.6vw,23px);font-weight:900;letter-spacing:-.02em}
+.ses .lead{margin:0 0 10px;color:#3b3833;line-height:1.7;font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.tags span{font-size:12px;font-weight:700;background:#f3f1ec;border-radius:6px;padding:2px 8px;color:#4a463f}
+.body{line-height:1.8;font-size:15.5px}
+.body h3{margin:20px 0 6px;font-size:16.5px;font-weight:900;border-left:4px solid #111;padding-left:9px}
+.body ul,.body ol{margin:4px 0 8px;padding-left:22px}.body li{margin:2px 0}
+.body .note{color:var(--muted);margin:2px 0}
+.body .star{background:#fff8e6;border:1px solid #f0dca5;border-radius:10px;padding:8px 12px;font-weight:700;list-style:none}
+.body li.star{margin:6px 0 6px -22px}
+.q4{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:14.5px}.q4 td{border:1.5px solid #111;padding:10px 12px;vertical-align:top;width:50%;line-height:1.65}
+.body mark{background:#fff1a8}
+.more{margin-top:8px}
+.more summary{cursor:pointer;font-weight:800;font-size:14.5px;color:#3b3833;list-style:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.more summary::-webkit-details-marker{display:none}
+.more[open] summary{background:#111;color:#fff;border-color:#111}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}
+.gal button{border:1px solid var(--line);border-radius:10px;background:#faf8f5;padding:0;cursor:zoom-in;overflow:hidden;text-align:left}
+.gal img{display:block;width:100%;height:150px;object-fit:cover;object-position:top}
+.gal span{display:block;font-size:12px;color:#4a463f;padding:5px 7px;line-height:1.35}
+.foot{margin-top:30px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+.foot button{font:inherit;font-size:12.5px;border:0;background:none;color:#a0988e;text-decoration:underline;cursor:pointer}
+/* 크게 보기 */
+#lb{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100vh}
+#lb::backdrop{background:rgba(10,10,10,.88)}
+#lb .in{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+#lb img{max-width:96vw;max-height:88vh;transform-origin:center;transition:transform .05s;user-select:none}
+#lb .bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:8px;align-items:center;padding:12px;color:#fff;font-size:14px}
+#lb .bar button{font:inherit;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.4);color:#fff;border-radius:999px;padding:6px 14px;cursor:pointer}
+#lb .cap{position:fixed;top:12px;left:0;right:0;text-align:center;color:#fff;font-weight:700;text-shadow:0 1px 4px #000}
+@media (max-width:600px){.ses{padding:18px 16px 14px}.q4 td{display:block;width:auto;border-bottom-width:0}.q4 tr:last-child td:last-child{border-bottom-width:1.5px}}
+@media print{.lock,.tools,.toc,.more summary,.foot button{display:none}.ses{box-shadow:none;break-inside:avoid-page}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <span class="mk"><span class="b">거믄</span><span class="w">힌</span></span>
+    <h1>거믄 힌의 공부방</h1>
+    <p>답십리 동인방 · 정대영 선생님께 배운 것을 날짜별로</p>
+  </div>
+  <div id="app"></div>
+</div>
+<dialog id="lb" aria-label="노트 크게 보기"><div class="in" id="lb-in"><img id="lb-img" alt=""></div><div class="cap" id="lb-cap"></div>
+  <div class="bar"><button id="lb-prev">← 이전</button><button id="lb-zo">－</button><button id="lb-zi">＋</button><button id="lb-next">다음 →</button><button id="lb-x">닫기</button></div></dialog>
+<script src="site.js"></script>
+<script src="recent.js" defer></script>
+<script>
+(function () {
+  var K_CODE = 'mokgagu_cm_code', K_STUDY = 'mokgagu_study_pw';
+  var app = document.getElementById('app');
+  var ls = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  var key = null, DATA = null, cache = {};
+  function b64(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  async function derive(pw) {
+    var meta = await fetch('study/salt.json', { cache: 'no-store' }).then(function (r) { return r.json(); });
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(meta.salt), iterations: meta.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  }
+  async function dec(url) {
+    var buf = new Uint8Array(await fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('net'); return r.arrayBuffer(); }));
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, key, buf.slice(12));
+  }
+  async function unlock(pw, remember) {
+    key = await derive(pw);
+    var plain = await dec('study/data.bin');   // 암호가 틀리면 여기서 실패
+    DATA = JSON.parse(new TextDecoder().decode(plain));
+    if (remember) { ls.set(K_STUDY, pw); if (!ls.get(K_CODE)) ls.set(K_CODE, pw); }
+    render();
+  }
+  function lockView(msg) {
+    app.innerHTML = '<div class="lock"><div class="ic">🔒</div><h2>가족 암호를 넣어 주세요</h2><p>거믄과 힌의 수업 노트가 들어 있는 공부방이에요.<br>내용은 암호로 잠가 두어 암호 없이는 열리지 않아요.</p>' +
+      '<form id="f"><input id="pw" type="password" inputmode="numeric" autocomplete="current-password" maxlength="20" aria-label="가족 암호" autofocus>' +
+      '<label><input type="checkbox" id="rem" checked> 이 기기에서 기억하기</label><button id="go">열기</button><div class="err" id="err">' + esc(msg || '') + '</div></form></div>';
+    document.getElementById('f').addEventListener('submit', function (e) {
+      e.preventDefault(); var pw = document.getElementById('pw').value.trim(); if (!pw) return;
+      var b = document.getElementById('go'); b.disabled = true; b.textContent = '여는 중…'; document.getElementById('err').textContent = '';
+      unlock(pw, document.getElementById('rem').checked).catch(function (er) { b.disabled = false; b.textContent = '열기'; document.getElementById('err').textContent = er && er.message === 'net' ? '인터넷 연결을 확인해 주세요.' : '암호가 맞지 않아요.'; });
+    });
+  }
+  function fmtDate(d) { var p = d.split('-'); var w = '일월화수목금토'[new Date(d + 'T12:00:00').getDay()]; return p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '. (' + w + ')'; }
+  var allImgs = [];
+  function render() {
+    var S = DATA.sessions.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    var total = DATA.sessions.length; allImgs = [];
+    var html = '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
+    html += '<nav class="toc">' + S.map(function (s, i) { return '<a href="#d' + s.date + '">' + fmtDate(s.date).replace(/^2026\. /, '') + '<small>' + esc(s.title.split(' — ')[0].split(' · ')[0]) + '</small></a>'; }).join('') + '</nav><div id="list">';
+    S.forEach(function (s) {
+      var no = DATA.sessions.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).indexOf(s) + 1;
+      var gi = s.imgs.map(function (im) { allImgs.push({ f: im.f, cap: fmtDate(s.date) + ' · ' + im.cap }); return '<button type="button" data-i="' + (allImgs.length - 1) + '"><img loading="lazy" src="' + im.th + '" alt=""><span>' + esc(im.cap) + '</span></button>'; }).join('');
+      html += '<article class="ses" id="d' + s.date + '" data-date="' + s.date + '"><div class="dt"><span class="no">' + no + '번째 수업</span><b>' + fmtDate(s.date) + '</b><span>' + esc(s.who) + '</span></div>' +
+        '<h2>' + esc(s.title) + '</h2><p class="lead">' + esc(s.lead) + '</p><div class="tags">' + s.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
+        '<div class="body">' + s.body + '</div>' +
+        (gi ? '<details class="more"><summary>📝 손글씨 노트·선생님 자료 ' + s.imgs.length + '장</summary><div class="gal">' + gi + '</div></details>' : '') + '</article>';
+    });
+    html += '</div><div class="foot">모두 ' + total + '번의 수업 · (?)는 손글씨 판독이 불확실한 곳<br>새 수업 노트 사진을 주시면 날짜별로 이어서 정리해 둘게요.<br><button id="out">이 기기에서 잠그기</button></div>';
+    app.innerHTML = html;
+    if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) setTimeout(function () { t.scrollIntoView(); }, 50); }
+  }
+  /* 검색: 맞는 수업만 보이고 낱말에 형광펜 */
+  function search(q) {
+    document.querySelectorAll('.ses').forEach(function (a) {
+      var b = a.querySelector('.body'); if (!b.dataset.orig) b.dataset.orig = b.innerHTML; b.innerHTML = b.dataset.orig;
+      if (!q) { a.hidden = false; return; }
+      var hit = a.textContent.indexOf(q) >= 0; a.hidden = !hit;
+      if (hit) { var w = document.createTreeWalker(b, NodeFilter.SHOW_TEXT), ns = []; while (w.nextNode()) if (w.currentNode.nodeValue.indexOf(q) >= 0) ns.push(w.currentNode);
+        ns.forEach(function (n) { var span = document.createElement('span'); span.innerHTML = esc(n.nodeValue).split(esc(q)).join('<mark>' + esc(q) + '</mark>'); n.parentNode.replaceChild(span, n); }); }
+    });
+  }
+  /* 크게 보기 (확대·끌기) */
+  var lb = document.getElementById('lb'), li = document.getElementById('lb-img'), cur = 0, z = 1, tx = 0, ty = 0;
+  function apply() { li.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + z + ')'; }
+  async function show(i) {
+    cur = (i + allImgs.length) % allImgs.length; z = 1; tx = ty = 0; apply();
+    var it = allImgs[cur]; document.getElementById('lb-cap').textContent = it.cap + '  (' + (cur + 1) + '/' + allImgs.length + ')';
+    if (!cache[it.f]) { li.style.opacity = .3; var buf = await dec(it.f); cache[it.f] = URL.createObjectURL(new Blob([buf], { type: 'image/jpeg' })); }
+    li.src = cache[it.f]; li.style.opacity = 1;
+    if (!lb.open) lb.showModal();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.i != null && b.closest('.gal')) { show(+b.dataset.i); return; }
+    if (b.id === 'lb-prev') show(cur - 1); else if (b.id === 'lb-next') show(cur + 1); else if (b.id === 'lb-x') lb.close();
+    else if (b.id === 'lb-zi') { z = Math.min(6, z * 1.4); apply(); } else if (b.id === 'lb-zo') { z = Math.max(1, z / 1.4); if (z === 1) tx = ty = 0; apply(); }
+    else if (b.id === 'out') { ls.del(K_STUDY); key = null; DATA = null; lockView('이 기기에서 잠갔어요.'); }
+    else if (b.id === 'order') { var L = document.getElementById('list'), arr = [].slice.call(L.children).reverse(); arr.forEach(function (a) { L.appendChild(a); }); b.textContent = b.textContent === '오래된 수업부터' ? '최근 수업부터' : '오래된 수업부터'; }
+  });
+  document.addEventListener('input', function (e) { if (e.target.id === 'q') search(e.target.value.trim()); });
+  document.addEventListener('keydown', function (e) { if (!lb.open) return; if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1); });
+  document.getElementById('lb-in').addEventListener('wheel', function (e) { e.preventDefault(); z = Math.max(1, Math.min(6, z * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (z === 1) tx = ty = 0; apply(); }, { passive: false });
+  document.getElementById('lb-in').addEventListener('click', function (e) { if (e.target.id === 'lb-in') lb.close(); });
+  li.addEventListener('dblclick', function () { z = z > 1 ? 1 : 2.5; tx = ty = 0; apply(); });
+  var pts = {}, start = null;
+  li.addEventListener('pointerdown', function (e) { li.setPointerCapture(e.pointerId); pts[e.pointerId] = [e.clientX, e.clientY]; var k = Object.keys(pts); start = k.length === 2 ? { d: Math.hypot(pts[k[0]][0] - pts[k[1]][0], pts[k[0]][1] - pts[k[1]][1]), z: z } : { x: e.clientX - tx, y: e.clientY - ty }; });
+  li.addEventListener('pointermove', function (e) { if (!pts[e.pointerId]) return; pts[e.pointerId] = [e.clientX, e.clientY]; var k = Object.keys(pts);
+    if (k.length === 2 && start.d) { z = Math.max(1, Math.min(6, start.z * Math.hypot(pts[k[0]][0] - pts[k[1]][0], pts[k[0]][1] - pts[k[1]][1]) / start.d)); apply(); }
+    else if (k.length === 1 && z > 1 && start.x != null) { tx = e.clientX - start.x; ty = e.clientY - start.y; apply(); } });
+  ['pointerup', 'pointercancel'].forEach(function (t) { li.addEventListener(t, function (e) { delete pts[e.pointerId]; start = null; }); });
+  li.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+  if (!window.crypto || !crypto.subtle) { app.innerHTML = '<div class="lock"><p>이 브라우저에서는 열 수 없어요. 최신 크롬·사파리로 열어 주세요.</p></div>'; return; }
+  var saved = ls.get(K_STUDY) || ls.get(K_CODE);
+  if (saved) { app.innerHTML = '<p style="text-align:center;color:#756e65;margin:40px 0">여는 중…</p>'; unlock(saved, false).catch(function () { lockView(); }); }
+  else lockView();
+})();
+</script>
+</body>
+</html>
