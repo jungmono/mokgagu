@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v4: 소장품 도록(clist·cimg·csave·cphoto·cdel) 추가 — 시트 '소장품' 탭, 사진은 드라이브 비공개 폴더.
  * v3: 'edit'(고치기) 추가 — 거믄·힌 글은 가족 암호, 벗 글은 쓴 기기의 key 로만 고친다.
  * ※ 실제 배포본에는 CODE 에 가족 암호가 들어 있다(공개 저장소에는 올리지 않음).
  */
@@ -33,6 +34,7 @@ function find_(sh, id) {
 function doGet(e) {
   const p = (e && e.parameter) || {};
   const fam = isFam_(p.code);
+  if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -63,6 +65,7 @@ function doPost(e) {
       sh.getRange(f.i, 8).setValue('삭제 ' + new Date().toISOString());
       return out_({ ok: true });
     }
+    if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
       const isFamRow = String(f.r[2]) === '거믄' || String(f.r[2]) === '힌';
@@ -83,3 +86,78 @@ function doPost(e) {
 }
 
 function 시트준비() { sheet_(); }
+
+
+/* ───────── 거믄과 힌의 소장품 도록 (v4) ─────────
+ * 시트 '소장품' 탭에 한 줄씩, 사진은 내 드라이브 '조선의 목가구 소장품 사진' 폴더(비공개)에 저장.
+ * 모든 읽기·쓰기는 가족 암호가 있어야 한다. 사진도 암호를 넣은 화면에서만 받아 볼 수 있다.
+ * 처음 배포할 때 드라이브 권한을 한 번 허락해야 한다.                                   */
+const COL_SHEET = '소장품';
+const COL_HEAD = ['id', 'name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'photos', 'owner', 'created', 'updated', 'deleted'];
+const COL_FIELDS = ['name', 'kind', 'size', 'era', 'wood', 'bought', 'place', 'price', 'note', 'memo', 'owner'];
+const PHOTO_FOLDER = '조선의 목가구 소장품 사진';
+
+function colSheet_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName(COL_SHEET);
+  if (!sh) { sh = ss.insertSheet(COL_SHEET); sh.appendRow(COL_HEAD); sh.setFrozenRows(1); }
+  return sh;
+}
+function colFolder_() {
+  const it = DriveApp.getFoldersByName(PHOTO_FOLDER);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(PHOTO_FOLDER);
+}
+function colRow_(r) {
+  const o = {};
+  COL_HEAD.forEach((k, i) => { let v = r[i]; o[k] = v instanceof Date ? Utilities.formatDate(v, 'Asia/Seoul', k === 'bought' ? 'yyyy-MM-dd' : "yyyy-MM-dd'T'HH:mm:ss") : String(v == null ? '' : v); });
+  try { o.photos = JSON.parse(o.photos || '[]'); } catch (x) { o.photos = []; }
+  return o;
+}
+function colFind_(sh, id) {
+  const last = sh.getLastRow(); if (last < 2) return null;
+  const ids = sh.getRange(2, 1, last - 1, 1).getValues();
+  for (let i = 0; i < ids.length; i++) if (String(ids[i][0]) === String(id)) return i + 2;
+  return null;
+}
+function colGet_(p, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  if (p.action === 'cimg') {
+    const f = DriveApp.getFileById(String(p.id));
+    if (f.getParents().next().getName() !== PHOTO_FOLDER) return out_({ ok: false, err: 'none' });
+    return out_({ ok: true, type: f.getMimeType(), data: Utilities.base64Encode(f.getBlob().getBytes()) });
+  }
+  const rows = colSheet_().getDataRange().getValues(); rows.shift();
+  return out_({ ok: true, list: rows.filter(r => r[0] && !r[15]).map(colRow_) });
+}
+function colPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const sh = colSheet_(), now = new Date().toISOString();
+  if (d.action === 'cphoto') {
+    const bytes = Utilities.base64Decode(String(d.data || ''));
+    if (!bytes.length || bytes.length > 8 * 1024 * 1024) return out_({ ok: false, err: 'size' });
+    const f = colFolder_().createFile(Utilities.newBlob(bytes, 'image/jpeg', String(d.name || 'photo').slice(0, 80) + '.jpg'));
+    return out_({ ok: true, id: f.getId() });
+  }
+  if (d.action === 'csave' && d.item) {
+    const it = d.item, id = String(it.id || '').slice(0, 40); if (!id) return out_({ ok: false, err: 'id' });
+    if (!String(it.name || '').trim()) return out_({ ok: false, err: 'name' });
+    const row = colFind_(sh, id);
+    const vals = COL_HEAD.map(k => {
+      if (k === 'id') return id;
+      if (k === 'photos') return JSON.stringify((it.photos || []).slice(0, 40));
+      if (k === 'created') return row ? sh.getRange(row, COL_HEAD.indexOf('created') + 1).getValue() : now;
+      if (k === 'updated') return now;
+      if (k === 'deleted') return '';
+      return String(it[k] == null ? '' : it[k]).slice(0, k === 'memo' || k === 'note' ? 6000 : 300);
+    });
+    if (row) sh.getRange(row, 1, 1, COL_HEAD.length).setValues([vals]); else sh.appendRow(vals);
+    return out_({ ok: true, item: colRow_(vals) });
+  }
+  if (d.action === 'cdel' && d.id) {
+    const row = colFind_(sh, d.id); if (!row) return out_({ ok: true });
+    sh.getRange(row, COL_HEAD.indexOf('deleted') + 1).setValue('삭제 ' + now);
+    return out_({ ok: true });
+  }
+  return out_({ ok: false, err: 'action' });
+}
+function 소장품준비() { colSheet_(); colFolder_(); }
