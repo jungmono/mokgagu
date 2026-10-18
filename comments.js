@@ -5,7 +5,7 @@
    - 표시: 코멘트가 있는 기물은 목록 사진 오른쪽 위에 말풍선과 개수를 단다.
    기물 열쇠(cid)는 '<도록>/<기물 id>' 꼴이며, 각 페이지가 카드에 data-cid, 사진 창 dialog에 dataset.cid 로 적어 둔다. */
 (function () {
-  var API = '';   // ← 구글 Apps Script 웹 앱 주소 (https://script.google.com/macros/s/…/exec)
+  var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';   // ← 구글 Apps Script 웹 앱 주소 (https://script.google.com/macros/s/…/exec)
   var K_CODE = 'mokgagu_cm_code', K_WHO = 'mokgagu_cm_who', K_NAME = 'mokgagu_cm_name', K_LOCAL = 'mokgagu_cm_local_v1', K_CACHE = 'mokgagu_cm_cache_v1';
   var ls = {
     get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } },
