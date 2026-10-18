@@ -9,76 +9,82 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-/* 처음 화면 — 서탁(書卓)
-   흰 종이 바탕에 먹 글씨. 도록은 먹감빛 서탁 천판 위에 세워 좌우로 넘기고,
-   가운데 칸에는 박물관자료·경매자료·도움자료를 꽂아 두며, 서랍 둘은 공부방과 소장품. */
 :root{
-  --paper:#ffffff;--ink:#1a1714;--sub:#6e665d;--rule:#e4dfd8;--fg:#1a1714;--muted:#6e665d;--line:#e4dfd8;--brand:#8a5a2b;
-  --w1:#5b3b26;--w2:#432a1b;--w3:#2c1b11;--w4:#1d120b;--brass:#b8925a;--brass2:#7d5e2e;--cream:#efe3cf;
-  --shadow-h:0 2px 4px rgba(40,25,10,.06),0 14px 34px rgba(40,25,10,.14);
+  --bg:#ffffff; --card:#ffffff; --fg:#1f2433; --muted:#6b7183; --line:#e6e8f0;
+  --brand:#4b55d6; --brand2:#7b4fd6; --brand-soft:#eef0ff;
+  --shadow:0 1px 2px rgba(20,24,60,.04),0 6px 20px rgba(20,24,60,.06);
+  --shadow-h:0 2px 4px rgba(20,24,60,.06),0 14px 34px rgba(20,24,60,.12);
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink)}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
 body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
-a{color:inherit}
-.wrap{max-width:1160px;margin:0 auto;padding:22px 20px 70px}
-.top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
-.duo{display:inline-flex}.duo span{display:inline-block;min-width:2.9em;text-align:center;padding:.12em .45em;border:1.5px solid var(--ink);line-height:1.2}
-.duo .k{background:var(--ink);color:#fff}.duo .w{background:#fff;color:var(--ink)}
-.top small{margin-left:8px;color:var(--sub);font-weight:500}
-header{text-align:center;padding:44px 0 30px}
-h1{margin:0;display:flex;justify-content:center;align-items:flex-end;gap:clamp(14px,3vw,34px);font-weight:700;font-size:clamp(34px,6vw,64px);letter-spacing:-.03em;line-height:1.1}
-h1 img{height:clamp(34px,5.2vw,60px);width:auto;margin-bottom:6px;user-select:none}h1 img.ag{height:clamp(30px,4.6vw,53px)}
-h1 .home-link{text-decoration:none;color:var(--ink);border-radius:10px;transition:transform .15s}
-h1 .home-link:hover{transform:translateY(-2px)}h1 .home-link:focus-visible{outline:3px solid var(--brass);outline-offset:4px}
-.lede{margin:16px 0 0;font-size:clamp(15px,1.7vw,18px);color:var(--sub)}
-.find{display:flex;justify-content:center;margin:30px auto 0;max-width:560px}
-.find input{flex:1;min-width:0;font:inherit;font-size:16px;padding:13px 20px;border:1.5px solid var(--ink);border-radius:999px;outline:none;background:#fff;color:var(--ink)}
-.find input:focus-visible{box-shadow:0 0 0 3px #e3d6c0}
-.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin:20px 0 0}
-.quick button{display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:13px;font-weight:500;color:var(--sub);background:none;border:0;padding:6px 4px;border-radius:8px;cursor:pointer}
-.quick button svg{width:30px;height:30px;color:var(--ink)}
-.quick button:hover{color:var(--ink);background:#f5f2ee}
-.quick button[aria-pressed="true"]{color:var(--ink);background:#efe8dd;font-weight:700}
-.count{text-align:center;margin:24px 0 0;font-size:14px;color:var(--sub)}.count b{color:var(--ink)}
+.wrap{max-width:1180px;margin:0 auto;padding:48px 16px 64px}
+header{text-align:center;margin-bottom:32px;position:relative}.brand-mark{position:absolute;left:0;top:-10px;display:block;line-height:0}.brand-mark img{height:clamp(30px,3.6vw,44px);width:auto}
+h1 .home-link{display:inline-block;text-decoration:none;color:inherit;cursor:pointer;padding:4px 10px;border-radius:12px;transition:transform .15s}
+h1 .home-link:hover{transform:translateY(-2px)}
+h1 .home-link:focus-visible{outline:3px solid var(--brand);outline-offset:4px}
+h1 .ttl{display:block;color:#111}
+h1 .shelf{display:flex;justify-content:center;gap:clamp(8px,1.6vw,16px);margin-top:8px;padding-top:10px;border-top:2px solid #d9d6f3}
+h1 .shelf svg{width:clamp(26px,3.2vw,36px);height:clamp(26px,3.2vw,36px)}
+.eyebrow{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:clamp(11px,1.25vw,14px);font-weight:900;color:#111;margin:-24px 0 18px}.eyebrow .ew-blk,.eyebrow .ew-wht{display:inline-block;padding:.15em .45em;border:1.5px solid #111;letter-spacing:-.02em;line-height:1.2;font-size:1em}.eyebrow .ew-blk{background:#fff;color:#111}.eyebrow .ew-wht{background:#111;color:#fff}.eyebrow .ew-blk,.eyebrow .ew-wht{min-width:2.9em;text-align:center;box-sizing:border-box}.eyebrow .ew-rest{margin-left:.4em;font-weight:700;letter-spacing:-.02em;color:#222}
+h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spacing:-.04em;line-height:1.15}
+h1.ttl-row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2.6vw,30px)}
+h1 .ttl-ico{flex:none;display:block;width:auto;height:clamp(34px,5.4vw,62px);margin-bottom:clamp(4px,.7vw,8px);user-select:none}
+h1 .ttl-ico.ttl-angwe{height:clamp(30px,4.8vw,55px)}
+@media (max-width:420px){h1{font-size:28px}h1 .ttl-ico{height:30px;margin-bottom:5px}h1 .ttl-ico.ttl-angwe{height:27px}}
 
-/* ── 서가: 무리마다 선반 한 칸 ── */
-.rooms{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:34px 0 54px}
-.study{display:flex;align-items:center;gap:20px;border:1.5px solid var(--ink);border-radius:14px;padding:20px 24px;text-decoration:none;transition:background .15s}
-.study:hover{background:#f7f4ef}
-.study .lk{flex:none;width:56px;height:56px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:22px}
-.study .lk img{width:38px;height:auto;filter:invert(1)}
-.study b{display:flex;align-items:center;gap:6px;font-size:21px;font-weight:900;letter-spacing:-.03em}
-.study b .duo{font-size:.68em}
-.study p{margin:4px 0 0;color:var(--sub);font-size:14px;line-height:1.5}
-.study .go{margin-left:auto;flex:none;font-weight:700;font-size:13.5px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
-.case{margin-top:0}
-.shelf{margin:0 0 46px}
-.shelf h2{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 6px;font-weight:900;font-size:23px;letter-spacing:-.03em}
-.shelf h2 small{font-weight:500;font-size:13.5px;color:var(--sub);letter-spacing:0}
-.row{display:flex;align-items:flex-end;gap:18px;overflow-x:auto;padding:22px 14px 0;scrollbar-width:thin}
-.bk{flex:none;width:118px;text-decoration:none;display:block;position:relative}
-.bk .cv{display:block;width:118px;height:158px;object-fit:cover;background:#efebe5;box-shadow:2px 0 0 rgba(0,0,0,.08),4px 6px 10px rgba(40,25,10,.22);transition:transform .2s}
-.bk:hover .cv,.bk:focus-visible .cv{transform:translateY(-8px)}
-.bk:focus-visible{outline:none}.bk:focus-visible .cv{outline:3px solid var(--brass);outline-offset:3px}
-.bk .tip{position:absolute;left:0;right:0;bottom:calc(100% + 4px);background:var(--ink);color:#fff;font-size:12px;line-height:1.4;padding:6px 8px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:2}
-.bk:hover .tip,.bk:focus-visible .tip{opacity:1}
-.bk .new{position:absolute;top:6px;right:-4px;font-size:10.5px;font-weight:900;color:#fff;background:#b0412e;border-radius:4px;padding:1px 5px}
-.board{height:16px;margin:0 -2px;background:linear-gradient(#6b4c37,#4a3426 45%,#2f2017);border-radius:2px;box-shadow:0 6px 10px rgba(40,25,10,.18)}
-.labels{display:flex;gap:18px;padding:10px 14px 0;overflow:hidden}
-.labels span{flex:none;width:118px;font-size:12.5px;line-height:1.4;color:var(--ink);font-weight:500}
-.labels span em{display:block;font-style:normal;color:var(--sub);font-size:12px}
-.talk{display:block;width:max-content;margin:-10px auto 0;font-weight:700;font-size:15px;text-decoration:none;border-bottom:1.5px solid var(--ink);padding-bottom:2px}
-@media (max-width:760px){.rooms{grid-template-columns:1fr}}
-@media (max-width:600px){.study{flex-wrap:wrap;padding:18px}.study .go{margin-left:76px}.bk,.bk .cv,.labels span{width:96px}.bk .cv{height:128px}.row,.labels{gap:14px}}
-/* 검색 결과 */
-#results{margin:34px 0 12px}
+.hero{display:flex;align-items:center;gap:22px;background:var(--card);border-radius:20px;padding:24px 28px;
+  box-shadow:var(--shadow);border:1px solid var(--line);border-left:5px solid var(--brand);margin-bottom:22px}
+.hero-ico{flex:none;width:76px;height:76px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 8px 20px rgba(75,85,214,.35)}
+.hero-ico svg{width:46px;height:46px}
+.hero-txt{flex:1;min-width:0}
+.hero-txt h2{margin:0;font-size:clamp(18px,2.3vw,25px);font-weight:900;letter-spacing:-.03em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{font-size:12px;font-weight:900;color:#fff;background:#e04848;border-radius:6px;padding:3px 8px;letter-spacing:0}
+.hero-txt p{margin:6px 0 0;color:var(--muted);font-size:clamp(14px,1.5vw,16.5px);line-height:1.55}
+.hero-btn{flex:none;display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:900;font-size:17px;
+  background:linear-gradient(90deg,var(--brand),var(--brand2));padding:17px 30px;border-radius:14px;box-shadow:0 8px 20px rgba(75,85,214,.3);transition:transform .15s}
+.hero-btn:hover{transform:translateY(-2px)}
+
+.info{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:0 0 30px;font-size:14px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;color:var(--fg);font-weight:500}
+.chip b{color:var(--brand)}
+.search{flex:1 1 320px;max-width:420px;font:inherit;font-size:14px;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 16px;outline:none}
+.search:focus{border-color:var(--brand)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.hero{flex-wrap:wrap;padding:20px}.hero-btn{width:100%;justify-content:center}.hero-ico{width:60px;height:60px}}
+.card{display:flex;align-items:center;gap:20px;background:var(--card);border-radius:18px;padding:22px 24px;text-decoration:none;color:inherit;
+  box-shadow:var(--shadow);border:1px solid var(--line);transition:transform .15s,box-shadow .15s,border-color .15s;min-width:0}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-h);border-color:var(--muted)}
+.ico{flex:none;width:66px;height:66px;border-radius:16px;display:grid;place-items:center}
+.cover{flex:none;width:72px;height:96px;border-radius:6px;overflow:hidden;display:grid;place-items:center;box-shadow:0 1px 2px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.10);border:1px solid var(--line)}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}.cover svg{width:34px;height:34px}
+.ico svg{width:38px;height:38px}
+.card h3{margin:0;font-size:clamp(17px,1.7vw,21px);font-weight:900;letter-spacing:-.035em;line-height:1.3}
+.card p{margin:5px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
+.card .meta{margin-top:7px;font-size:12.5px;color:var(--brand);font-weight:700}
+.new{font-size:11px;font-weight:900;color:#fff;background:#e04848;border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:3px}
+.t-ju{background:#fbeeea;color:#b0412e}.t-meok{background:#f1f0ed;color:#2e2b28}.t-hwang{background:#fbf3e1;color:#9a6c16}
+.t-jjok{background:#ecf0f8;color:#2f4f8a}.t-nok{background:#edf4ea;color:#47703f}.t-jaju{background:#f6ecf1;color:#7b3a58}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px}
+.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:-12px 0 30px}
+.quick button{display:flex;flex-direction:column;align-items:center;gap:6px;width:84px;padding:12px 4px 10px;font:inherit;font-size:13px;font-weight:700;color:var(--fg);background:#fff;border:1px solid var(--line);border-radius:14px;cursor:pointer;transition:transform .15s,border-color .15s}
+.quick button:hover{transform:translateY(-2px);border-color:var(--muted)}
+.quick button[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.quick .qi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center}
+/* 기물 단추 아이콘: 힌 — 밝은 바탕에 검은 그림 하나로 */
+.qi.m0,.qi.m1,.qi.m2,.qi.m3,.qi.m4,.qi.m5,.qi.m6,.qi.m7{background:#f1efeb;color:#1d1b18}
+.quick svg{width:32px;height:32px}
+#results{margin-bottom:12px}
 .r-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;margin:0 0 16px}
-.r-head h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.03em}.r-head h2 b{color:var(--brand)}
+.r-head h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.03em}
+.r-head h2 b{color:var(--brand)}
 .r-chips{display:flex;flex-wrap:wrap;gap:6px}
 .r-chip{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
 .r-chip[aria-pressed="true"]{background:var(--fg);color:#fff;border-color:var(--fg)}
-.r-chip small{color:var(--muted);margin-left:4px}.r-chip[aria-pressed="true"] small{color:#d8d0c4}
+.r-chip small{color:var(--muted);margin-left:4px}.r-chip[aria-pressed="true"] small{color:#cfd2dc}
 .r-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
 .r-item{display:flex;flex-direction:column;text-align:left;font:inherit;color:inherit;background:#fff;border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s}
 .r-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
@@ -90,8 +96,7 @@ h1 .home-link:hover{transform:translateY(-2px)}h1 .home-link:focus-visible{outli
 .r-item .mt{margin-top:2px;font-size:12px;color:var(--muted);line-height:1.4}
 .r-more{display:block;margin:18px auto 0;font:inherit;font-weight:700;font-size:15px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 28px;cursor:pointer}
 .r-empty{color:var(--muted);padding:30px 0;text-align:center}
-/* 사진 창 */
-#dlg{border:none;border-radius:18px;padding:0;width:min(1100px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.3);color:var(--fg)}
+#dlg{border:none;border-radius:18px;padding:0;width:min(1100px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 #dlg::backdrop{background:rgba(20,20,24,.55)}
 .d-body{display:flex;gap:24px;padding:22px;max-height:calc(92vh - 64px);overflow:auto}
 .d-img{flex:1 1 60%;display:grid;place-items:center;min-height:300px;background:#fafaf8;border-radius:12px}
@@ -107,35 +112,39 @@ h1 .home-link:hover{transform:translateY(-2px)}h1 .home-link:focus-visible{outli
 .d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
 .d-r{display:flex;gap:8px}
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
-footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--rule);text-align:center;font-size:12.5px;color:var(--sub);line-height:1.7}
-footer .duo{vertical-align:middle;margin-right:8px;font-size:11.5px;font-weight:900}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icons{display:flex;justify-content:center;align-items:flex-end;gap:clamp(28px,5vw,48px);margin:18px auto 8px}footer .ft-icon{display:block;margin:0;width:144px;height:auto}footer .ft-icon.ft-angwe{width:104px;margin-bottom:5px}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
+
+.card.folder .cover.fd[class*="fd-"] svg{width:58px;height:58px}.cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.card.folder.study{border:2px solid #111}.card.folder.study .cover.fd{position:relative;background:#111;color:#fff}.card.folder.study .lk{position:absolute;right:6px;bottom:4px;font-size:18px}.card.folder.study h3 .ew{display:inline-flex;margin-right:2px}.card.folder.study h3 .ew b,.card.folder.study h3 .ew i{font-style:normal;font-size:.8em;font-weight:900;padding:.05em .35em;border:1.5px solid #111;line-height:1.2}.card.folder.study h3 .ew b{background:#111;color:#fff}.card.folder.study h3 .ew i{background:#fff;color:#111}
+.card.folder.col .cover.fd{place-items:center}.card.folder.col .col-ico{width:62px;height:auto;filter:invert(1);mix-blend-mode:screen}
+.since-top{position:absolute;top:14px;right:16px;z-index:5;display:flex;align-items:center;font-size:clamp(11px,1.25vw,14px);font-weight:900;letter-spacing:-.02em;line-height:1.2}.since-top span{display:inline-block;padding:.15em .45em;border:1.5px solid #111;box-sizing:border-box;text-align:center}.since-top .sc-blk{background:#111;color:#fff;min-width:2.9em}.since-top .sc-wht{background:#fff;color:#111}
+.chip.cm-link{text-decoration:none;font-weight:700;color:var(--fg)}.chip.cm-link:hover{border-color:#111}
+.eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
+body{position:relative}
 </style>
 </head>
 <body>
+<div class="since-top"><span class="sc-blk">since</span><span class="sc-wht">2026.10.16.</span></div>
+<div class="eyebrow eb-top"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span><span class="ew-rest">고미술공부방</span></div>
 <div class="wrap">
-  <div class="top"><span><span class="duo"><span class="w">거믄</span><span class="k">힌</span></span><small>고미술공부방</small></span><span class="duo"><span class="k">since</span><span class="w">2026.10.16.</span></span></div>
   <header>
-    <h1><img class="ag" src="mark_angwe.png" width="328" height="200" alt="안궤"><a class="home-link" id="home-link" href="index.html" title="처음 화면으로">조선의 목가구</a><img src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></h1>
-    <p class="lede">답십리 동인방에서 배우며 모은 목가구 도록과 자료</p>
-    <form class="find" onsubmit="return false"><input id="q" type="search" placeholder="물건 이름으로 찾기 — 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기" autocomplete="off"></form>
-    <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
-    <p class="count" id="count"></p>
+    <h1 class="ttl-row"><img class="ttl-ico ttl-angwe" src="mark_angwe.png" width="328" height="200" alt="안궤"><a class="home-link" id="home-link" href="index.html" title="처음 화면으로"><span class="ttl">조선의 목가구</span></a><img class="ttl-ico ttl-eonyang" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></h1>
   </header>
+
+
+  <div class="info">
+    <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권<span id="n-refs"></span> · 기물 <b id="n-items">0</b>건</span></span>
+    <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기">
+    <a class="chip cm-link" href="comments.html">💬 기물 이야기 모아보기</a>
+  </div>
+
+  <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
 
   <section id="results" hidden>
     <div class="r-head"><h2 id="r-title"></h2><div class="r-chips" id="r-chips"></div></div>
     <div class="r-grid" id="r-grid"></div>
   </section>
 
-  <main id="grid">
-    <div class="rooms">
-      <a class="study" href="study.html"><span class="lk">🔒</span><span><b><span class="duo"><span class="w">거믄</span><span class="k">힌</span></span>의 공부방</b><p>동인방 정대영 선생님 수업 — 거믄의 노트, 힌의 노트를 날짜별로</p></span><span class="go">가족 암호로 열기</span></a>
-      <a class="study" href="collection.html"><span class="lk"><img src="mark_angwe.png" alt=""></span><span><b><span class="duo"><span class="w">거믄</span><span class="k">힌</span></span>의 소장품</b><p>우리 집에 들인 목가구·기물 — 사진, 구입일, 구입처, 비고</p></span><span class="go">가족 암호로 열기</span></a>
-    </div>
-    <div class="case" id="case"></div>
-    <a class="talk" href="comments.html">💬 기물 이야기 모아보기</a>
-  </main>
+  <main class="grid" id="grid"></main>
 
   <dialog id="dlg" aria-label="기물 사진">
     <div class="d-body">
@@ -148,7 +157,10 @@ footer .duo{vertical-align:middle;margin-right:8px;font-size:11.5px;font-weight:
     </div>
   </dialog>
 
-  <footer><span class="duo"><span class="w">거믄</span><span class="k">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<br>마지막 업데이트 <b id="updated">—</b></footer>
+  <footer>
+    <span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.
+    <div class="ft-upd"><span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span></div>
+  </footer>
 </div>
 
 <script>
@@ -207,25 +219,45 @@ const latest = DASHBOARDS.reduce((a, b) => (b.added > a.added ? b : a), DASHBOAR
 const newest = DASHBOARDS.filter((d) => d.added === latest.added);
 const MAIN = DASHBOARDS.filter((d) => !d.group), REFS = DASHBOARDS.filter((d) => d.group === 'ref'), AUCS = DASHBOARDS.filter((d) => d.group === 'auction'), MUSE = DASHBOARDS.filter((d) => d.group === 'museum');
 const FOLDERS = [['museum', '박물관자료', '박물관·지정된 문화유산 목공예 유물', MUSE], ['auction', '경매자료', '경매에 나온 목가구·목기<br>추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
+document.getElementById('n-books').textContent = MAIN.length;
+document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
+document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
+document.getElementById('updated').textContent = fmt(latest.added) + '.';
 
 const grid = document.getElementById('grid');
-const total = DASHBOARDS.reduce((s, d) => s + d.items, 0);
-document.getElementById('count').innerHTML = `도록과 자료 <b>${DASHBOARDS.length}</b>권에 기물 <b>${total.toLocaleString('ko-KR')}</b>건`;
-document.getElementById('updated').textContent = fmt(latest.added) + '.';
-const isNew = (d) => d.added === latest.added && newest.length < DASHBOARDS.length;
-const GROUPS = [['', '도록', '선생님 책과 박물관 도록에서 모은 기물', MAIN], ...FOLDERS.map(([k, n, p, L]) => [k, n, p.replace(/<br>/g, ', '), L])];
-function render() {
-  document.getElementById('case').innerHTML = GROUPS.filter((g) => g[3].length).map(([k, name, sub, L]) => {
-    const n = L.reduce((s, d) => s + d.items, 0);
-    return `<section class="shelf" id="${k || 'books'}"><h2>${name} <small>${sub} · ${L.length}권 ${n.toLocaleString('ko-KR')}건</small></h2>` +
-      `<div class="row">${L.map((d) => `<a class="bk" href="${url(d)}"><span class="tip">${esc(d.desc)}</span><img class="cv" src="covers/${d.path}.jpg" alt="${esc(d.title)} 표지" loading="lazy">${isNew(d) ? '<span class="new">NEW</span>' : ''}</a>`).join('')}</div>` +
-      `<div class="board"></div><div class="labels">${L.map((d) => `<span>${esc(d.title)}<em>${d.items.toLocaleString('ko-KR')}건</em></span>`).join('')}</div></section>`;
-  }).join('');
-  document.querySelectorAll('.shelf').forEach((sh) => { const r = sh.querySelector('.row'), l = sh.querySelector('.labels'); r.addEventListener('scroll', () => { l.scrollLeft = r.scrollLeft; }, { passive: true }); });
+const card = (d) => `
+    <a class="card" href="${url(d)}">
+      <div class="cover t-${d.tone}"><img src="covers/${d.path}.jpg" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></div>
+      <div style="min-width:0">
+        <h3>${d.title}${d.added === latest.added && newest.length < DASHBOARDS.length ? '<span class="new">NEW</span>' : ''}</h3>
+        <p>${d.desc}</p>
+        <div class="meta">${d.items.toLocaleString('ko-KR')}건</div>
+      </div>
+    </a>`;
+const FOLDER_SVG = '<svg viewBox="0 0 48 48" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 13a3 3 0 0 1 3-3h10l4 5h18a3 3 0 0 1 3 3v19a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M5 20h38"/></svg>';
+const FD_ICON = {
+  /* 국립중앙박물관: 길게 누운 두 동, 가운데를 지붕 판이 덮은 '열린 마당'과 넓은 계단, 앞의 거울못 */
+  museum: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M1.5 15.5h45v3h-45z" fill="currentColor"/><path d="M3 18.5v13h14v-13M31 18.5v13h14v-13"/><path d="M3 23h14M3 27h14M31 23h14M31 27h14" stroke-width="1.2"/><path d="M17 31.5h14M15.5 34h17M14 36.5h20" stroke-width="1.6"/><path d="M1.5 31.5h12.5M34 31.5h12.5"/><path d="M6 40.5h36" stroke-width="1.5"/><path d="M11 43.5h26" stroke-width="1.2"/></svg>',
+  /* 경매: 의사봉(망치)과 받침 */
+  auction: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-40 22 18)"><rect x="12" y="10" width="20" height="9" rx="2"/><path d="M15 10v9M29 10v9"/><path d="M22 19v19"/></g><path d="M26 41h17"/><rect x="28.5" y="36.5" width="12" height="4.5" rx="1"/><path d="M8 8l2.5 2.5M5 14h3.5M13 4.5v3.5" stroke-width="1.8"/></svg>',
+  /* 도서관: 박공 지붕 아래 책이 꽂힌 서가 */
+  ref: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 15 24 5l20 10z"/><path d="M6 15v27h36V15"/><path d="M6 28.5h36M4 42h40"/><path d="M10 27.5v-9M13.5 27.5v-7M17 27.5v-9M20.5 27.5v-8M25 27.5l3-8.5M31 27.5v-9M34.5 27.5v-7M38 27.5v-9"/><path d="M10 41v-9M13.5 41v-7.5M17 41v-9M21 41v-6.5M24.5 41v-9M28 41v-8M33 41l2.5-8M38 41v-9"/><circle cx="24" cy="11.5" r="1.6"/></svg>',
+};
+const STUDY = `<a class="card folder study" href="study.html"><div class="cover fd">${FOLDER_SVG}<span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 공부방</h3><p>동인방 정대영 선생님 수업<br>거믄의 노트 · 힌의 노트<br>날짜별 정리</p><div class="meta">암호로 잠금</div></div></a>`;
+const COLLECTION = `<a class="card folder study col" href="collection.html"><div class="cover fd"><img src="mark_angwe.png" alt="" class="col-ico"><span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 소장품</h3><p>우리 집에 들인 목가구·기물<br>사진 · 구입일 · 구입처 · 비고</p><div class="meta">암호로 잠금</div></div></a>`;
+function render(q = '') {
+  const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
+  let html = '';
+  if (fd) {
+    html = fd[3].map(card).join('');
+  } else {
+    html = MAIN.map(card).join('') + STUDY + COLLECTION + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p}<br>${L.map((d) => d.title).join('<br>')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
+  }
+  grid.innerHTML = html;
+  const h = document.getElementById('grid-title'); if (h) h.textContent = fd ? fd[1] : '';
 }
-/* 예전 주소(#museum · #auction · #ref)로 오면 그 선반으로 내려간다 */
-function goShelf() { const m = location.hash.match(/^#(museum|auction|ref)$/); if (m) { const el = document.getElementById(m[1]); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
-window.addEventListener('hashchange', goShelf);
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#see=')) return; render(); grid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+render();
 
 /* ───────── 물건 이름 검색 ───────── */
 const PROV = /(경기|강원|충청|전라|경상|황해|평안|함경|제주)(남|북)?도/g;
@@ -235,7 +267,6 @@ const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let hits = [], shown = [], only = '', cur = -1, seqFrom = '';
-render(); goShelf();
 
 function search(raw) {
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
@@ -309,7 +340,7 @@ window.addEventListener('load', openSeen);
 openSeen();
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
   ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장·농', 'jang', 'meok'], ['함', 'ham', 'ju']];
-$('quick').innerHTML = QUICK.map(([w, ic], k) => `<button type="button" data-w="${w}" aria-pressed="false">${svg(ic).replace('stroke-width="1.7"','stroke-width="1.6"')}${w}</button>`).join('');
+$('quick').innerHTML = QUICK.map(([w, ic], k) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi m${k % 8}">${svg(ic)}</span>${w}</button>`).join('');
 const syncQuick = () => document.querySelectorAll('#quick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.w === $('q').value.trim())));
 $('quick').addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
