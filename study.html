@@ -29,6 +29,18 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .lock button:disabled{opacity:.5}
 .lock .err{color:#8a2f22;font-size:13.5px;margin-top:10px;min-height:1.2em}
 .lock label{display:flex;justify-content:center;gap:6px;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.tabs{display:flex;justify-content:center;gap:0;margin:22px auto 0;border:1.5px solid #111;border-radius:12px;overflow:hidden;width:max-content;max-width:100%}
+.tabs button{font:inherit;font-size:15px;font-weight:800;border:0;background:#fff;color:#111;padding:9px 18px;cursor:pointer}
+.tabs button+button{border-left:1.5px solid #111}
+.tabs button small{font-weight:500;color:#8a837a;margin-left:2px}
+.tabs button.on.t-g{background:#111;color:#fff}.tabs button.on.t-g small{color:#ccc}
+.tabs button.on.t-h{background:#fff;color:#111;box-shadow:inset 0 0 0 3px #111}
+.tabs button.on.t-b{background:#f1efeb}
+.ow{display:inline-block;min-width:2.9em;text-align:center;font-style:normal;font-weight:900;font-size:12px;padding:1px 7px;border:1.5px solid #111;line-height:1.35;margin-right:6px}
+.ow.g{background:#111;color:#fff}.ow.h{background:#fff;color:#111}
+.ses.o-h{background:#fdfcfa;border-color:#d8d2c7}
+.ses.o-h .body h3{border-left-color:#bbb}
+@media (max-width:480px){.tabs button{padding:8px 11px;font-size:14px}}
 /* 목차 */
 .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 26px}
 .toc a{text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;background:#fff}
@@ -126,20 +138,29 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   }
   function fmtDate(d) { var p = d.split('-'); var w = '일월화수목금토'[new Date(d + 'T12:00:00').getDay()]; return p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '. (' + w + ')'; }
   var allImgs = [];
+  var K_TAB = 'mokgagu_study_tab';
+  var tab = ls.get(K_TAB) || '거믄';
   function render() {
-    var S = DATA.sessions.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-    var total = DATA.sessions.length; allImgs = [];
-    var html = '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
-    html += '<nav class="toc">' + S.map(function (s, i) { return '<a href="#d' + s.date + '">' + fmtDate(s.date).replace(/^2026\. /, '') + '<small>' + esc(s.title.split(' — ')[0].split(' · ')[0]) + '</small></a>'; }).join('') + '</nav><div id="list">';
+    if (['거믄', '힌', '함께'].indexOf(tab) < 0) tab = '거믄';
+    var own = function (o) { return DATA.sessions.filter(function (s) { return (s.owner || '거믄') === o; }); };
+    var cnt = { '거믄': own('거믄').length, '힌': own('힌').length };
+    var S = (tab === '함께' ? DATA.sessions.slice() : own(tab)).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : ((a.owner || '거믄') < (b.owner || '거믄') ? -1 : 1); });
+    allImgs = [];
+    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께']].map(function (t) {
+      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
+    html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
+    var sid = function (s) { return 'd' + (s.owner === '힌' ? 'h' : 'g') + s.date; };
+    html += '<nav class="toc">' + S.map(function (s) { return '<a href="#' + sid(s) + '">' + (tab === '함께' ? '<i class="ow ' + (s.owner === '힌' ? 'h' : 'g') + '">' + esc(s.owner || '거믄') + '</i>' : '') + fmtDate(s.date).replace(/^2026\. /, '') + '<small>' + esc(s.title.split(' — ')[0].split(' · ')[0]) + '</small></a>'; }).join('') + '</nav><div id="list">';
     S.forEach(function (s) {
-      var no = DATA.sessions.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).indexOf(s) + 1;
-      var gi = s.imgs.map(function (im) { allImgs.push({ f: im.f, cap: fmtDate(s.date) + ' · ' + im.cap }); return '<button type="button" data-i="' + (allImgs.length - 1) + '"><img loading="lazy" src="' + im.th + '" alt=""><span>' + esc(im.cap) + '</span></button>'; }).join('');
-      html += '<article class="ses" id="d' + s.date + '" data-date="' + s.date + '"><div class="dt"><span class="no">' + no + '번째 수업</span><b>' + fmtDate(s.date) + '</b><span>' + esc(s.who) + '</span></div>' +
+      var o = s.owner || '거믄', mine = own(o).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+      var no = mine.indexOf(s) + 1;
+      var gi = s.imgs.map(function (im) { allImgs.push({ f: im.f, cap: o + ' · ' + fmtDate(s.date) + ' · ' + im.cap }); return '<button type="button" data-i="' + (allImgs.length - 1) + '"><img loading="lazy" src="' + im.th + '" alt=""><span>' + esc(im.cap) + '</span></button>'; }).join('');
+      html += '<article class="ses o-' + (o === '힌' ? 'h' : 'g') + '" id="' + sid(s) + '" data-date="' + s.date + '"><div class="dt"><span class="ow ' + (o === '힌' ? 'h' : 'g') + '">' + esc(o) + '</span><span class="no">' + no + '번째 노트</span><b>' + fmtDate(s.date) + '</b>' + (s.who && s.who !== o ? '<span>' + esc(s.who) + '</span>' : '') + '</div>' +
         '<h2>' + esc(s.title) + '</h2><p class="lead">' + esc(s.lead) + '</p><div class="tags">' + s.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
         '<div class="body">' + s.body + '</div>' +
-        (gi ? '<details class="more"><summary>📝 손글씨 노트·선생님 자료 ' + s.imgs.length + '장</summary><div class="gal">' + gi + '</div></details>' : '') + '</article>';
+        (gi ? '<details class="more"><summary>📝 ' + (o === '힌' ? '힌의 필기' : '손글씨 노트·선생님 자료') + ' ' + s.imgs.length + '장</summary><div class="gal">' + gi + '</div></details>' : '') + '</article>';
     });
-    html += '</div><div class="foot">모두 ' + total + '번의 수업 · (?)는 손글씨 판독이 불확실한 곳<br>새 수업 노트 사진을 주시면 날짜별로 이어서 정리해 둘게요.<br><button id="out">이 기기에서 잠그기</button></div>';
+    html += '</div><div class="foot">거믄의 노트 ' + cnt['거믄'] + '편 · 힌의 노트 ' + cnt['힌'] + '편 · (?)는 손글씨 판독이 불확실한 곳<br>새 수업 노트를 주시면 거믄·힌 따로 날짜별로 이어서 정리해 둘게요.<br><button id="out">이 기기에서 잠그기</button></div>';
     app.innerHTML = html;
     if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) setTimeout(function () { t.scrollIntoView(); }, 50); }
   }
@@ -168,6 +189,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     if (b.dataset.i != null && b.closest('.gal')) { show(+b.dataset.i); return; }
     if (b.id === 'lb-prev') show(cur - 1); else if (b.id === 'lb-next') show(cur + 1); else if (b.id === 'lb-x') lb.close();
     else if (b.id === 'lb-zi') { z = Math.min(6, z * 1.4); apply(); } else if (b.id === 'lb-zo') { z = Math.max(1, z / 1.4); if (z === 1) tx = ty = 0; apply(); }
+    else if (b.dataset.tab) { tab = b.dataset.tab; ls.set(K_TAB, tab); render(); }
     else if (b.id === 'out') { ls.del(K_STUDY); key = null; DATA = null; lockView('이 기기에서 잠갔어요.'); }
     else if (b.id === 'order') { var L = document.getElementById('list'), arr = [].slice.call(L.children).reverse(); arr.forEach(function (a) { L.appendChild(a); }); b.textContent = b.textContent === '오래된 수업부터' ? '최근 수업부터' : '오래된 수업부터'; }
   });
