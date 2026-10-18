@@ -28,6 +28,10 @@ h1 .shelf{display:flex;justify-content:center;gap:clamp(8px,1.6vw,16px);margin-t
 h1 .shelf svg{width:clamp(26px,3.2vw,36px);height:clamp(26px,3.2vw,36px)}
 .eyebrow{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:clamp(11px,1.25vw,14px);font-weight:900;color:#111;margin:-24px 0 18px}.eyebrow .ew-blk,.eyebrow .ew-wht{display:inline-block;padding:.15em .45em;border:1.5px solid #111;letter-spacing:-.02em;line-height:1.2;font-size:1em}.eyebrow .ew-blk{background:#fff;color:#111}.eyebrow .ew-wht{background:#111;color:#fff}.eyebrow .ew-blk,.eyebrow .ew-wht{min-width:2.9em;text-align:center;box-sizing:border-box}.eyebrow .ew-rest{margin-left:.4em;font-weight:700;letter-spacing:-.02em;color:#222}
 h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spacing:-.04em;line-height:1.15}
+h1.ttl-row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2.6vw,30px)}
+h1 .ttl-ico{flex:none;display:block;width:auto;height:clamp(34px,5.4vw,62px);margin-bottom:clamp(4px,.7vw,8px);user-select:none}
+h1 .ttl-ico.ttl-angwe{height:clamp(30px,4.8vw,55px)}
+@media (max-width:420px){h1{font-size:28px}h1 .ttl-ico{height:30px;margin-bottom:5px}h1 .ttl-ico.ttl-angwe{height:27px}}
 
 .hero{display:flex;align-items:center;gap:22px;background:var(--card);border-radius:20px;padding:24px 28px;
   box-shadow:var(--shadow);border:1px solid var(--line);border-left:5px solid var(--brand);margin-bottom:22px}
@@ -122,7 +126,7 @@ body{position:relative}
 <div class="eyebrow eb-top"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span><span class="ew-rest">고미술공부방</span></div>
 <div class="wrap">
   <header>
-    <h1><a class="home-link" id="home-link" href="index.html" title="처음 화면으로"><span class="ttl">조선의 목가구</span></a></h1>
+    <h1 class="ttl-row"><img class="ttl-ico ttl-angwe" src="mark_angwe.png" width="328" height="200" alt="안궤"><a class="home-link" id="home-link" href="index.html" title="처음 화면으로"><span class="ttl">조선의 목가구</span></a><img class="ttl-ico ttl-eonyang" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></h1>
   </header>
 
 
@@ -154,7 +158,6 @@ body{position:relative}
 
   <footer>
     <span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.
-    <div class="ft-icons"><img class="ft-icon ft-angwe" src="mark_angwe.png" width="328" height="200" alt="안궤"><img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
     <div class="ft-upd"><span class="chip"><span>🗓</span><span>마지막 업데이트 <b id="updated">—</b></span></span></div>
   </footer>
 </div>
