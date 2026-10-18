@@ -110,11 +110,14 @@ h1{margin:10px 0 0;font-weight:900;font-size:clamp(30px,5.4vw,56px);letter-spaci
 @media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center}
 
-.card.folder .cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
+.card.folder .cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.since-top{position:absolute;top:14px;right:16px;z-index:5;font-size:clamp(11px,1.25vw,14px);font-weight:900;color:#111;letter-spacing:-.01em;line-height:1.2;padding:.15em 0;border-top:1.5px solid transparent}
+.chip.cm-link{text-decoration:none;font-weight:700;color:var(--fg)}.chip.cm-link:hover{border-color:#111}
+.eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
 body{position:relative}
 </style>
 </head>
 <body>
+<div class="since-top">since 2026.10.16.</div>
 <div class="eyebrow eb-top"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span><span class="ew-rest">의 고미술공부방</span></div>
 <div class="wrap">
   <header>
@@ -125,6 +128,7 @@ body{position:relative}
   <div class="info">
     <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권<span id="n-refs"></span> · 기물 <b id="n-items">0</b>건</span></span>
     <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기">
+    <a class="chip cm-link" href="comments.html">💬 기물 이야기 모아보기</a>
   </div>
 
   <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
@@ -211,7 +215,7 @@ const FOLDERS = [['museum', '박물관자료', '박물관·국가유산으로 �
 document.getElementById('n-books').textContent = MAIN.length;
 document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
-document.getElementById('updated').textContent = fmt(latest.added);
+document.getElementById('updated').textContent = fmt(latest.added) + '.';
 
 const grid = document.getElementById('grid');
 const card = (d) => `
