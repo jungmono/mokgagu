@@ -159,6 +159,7 @@ body{position:relative}
    tone  : ju(주칠) · meok(먹) · hwang(황동) · jjok(쪽빛) · nok(녹색) · jaju(자주) 중 하나
    added : 추가한 날짜 (가장 최근 날짜의 도록이 위 큰 배너에 나옵니다)            */
 const DASHBOARDS = [
+  { path: 'heritage', title: '국가유산 목공예', desc: '국가유산포털 유물·생활공예·목공예 — 국보·보물·민속문화유산 등 지정 문화유산', items: 19, icon: 'ham', tone: 'ju', added: '2026-10-18', group: 'museum' },
   { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
   { path: 'auction', title: '아이옥션 경매 목가구·목기', desc: '2022년 3월~2026년 10월 경매 38회 — 추정가·낙찰가', items: 596, icon: 'bandaji', tone: 'ju', added: '2026-10-17', group: 'auction' },
   { path: 'jikmul', title: '우리나라 전통 무늬 1 직물', desc: '국립문화재연구소 문양 조사보고서(2006)', items: 184, icon: 'ham', tone: 'jaju', added: '2026-10-17', group: 'ref' },
@@ -203,10 +204,10 @@ const fmt = (s) => s.replaceAll('-', '. ');
 
 const latest = DASHBOARDS.reduce((a, b) => (b.added > a.added ? b : a), DASHBOARDS[0]);
 const newest = DASHBOARDS.filter((d) => d.added === latest.added);
-const MAIN = DASHBOARDS.filter((d) => !d.group), REFS = DASHBOARDS.filter((d) => d.group === 'ref'), AUCS = DASHBOARDS.filter((d) => d.group === 'auction');
-const FOLDERS = [['auction', '경매자료', '경매에 나온 목가구·목기 — 추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
+const MAIN = DASHBOARDS.filter((d) => !d.group), REFS = DASHBOARDS.filter((d) => d.group === 'ref'), AUCS = DASHBOARDS.filter((d) => d.group === 'auction'), MUSE = DASHBOARDS.filter((d) => d.group === 'museum');
+const FOLDERS = [['museum', '박물관자료', '박물관·국가유산으로 지정된 목공예 유물', MUSE], ['auction', '경매자료', '경매에 나온 목가구·목기 — 추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
 document.getElementById('n-books').textContent = MAIN.length;
-document.getElementById('n-refs').innerHTML = (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '');
+document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 document.getElementById('updated').textContent = fmt(latest.added);
 
