@@ -104,6 +104,29 @@ dialog::backdrop{background:rgba(20,20,24,.58)}
 .pic .mk{display:block;width:100%;margin-top:4px;border:0;background:none;font-size:12px;color:var(--muted);padding:0}
 .pic.first .mk{color:var(--fg);font-weight:900}
 .pic .bz{position:absolute;inset:0;bottom:22px;display:grid;place-items:center;background:rgba(255,255,255,.75);font-size:12px;border-radius:10px}
+.pic .cr-b{display:block;width:100%;margin-top:2px;border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;font-weight:700;color:var(--fg);padding:3px 0;cursor:pointer}
+#cr{border:0;padding:0;border-radius:16px;width:min(980px,96vw);max-height:96vh;background:#1a1918;color:#fff;overflow:hidden}
+#cr::backdrop{background:rgba(0,0,0,.7)}
+.cr-top{display:flex;align-items:center;gap:10px;padding:12px 16px}.cr-top b{font-size:16px}.cr-sz{font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
+.cr-xx{margin-left:auto;border:0;background:none;color:#fff;font-size:18px;cursor:pointer}
+.cr-st{display:flex;justify-content:center;align-items:center;padding:14px 16px;touch-action:none;user-select:none}
+.cr-wrap{position:relative;line-height:0}
+.cr-clip{position:absolute;inset:0;overflow:hidden;pointer-events:none}.cr-dim{position:absolute;box-shadow:0 0 0 9999px rgba(0,0,0,.55)}
+#cr-cv{display:block}
+.cr-box{position:absolute;outline:2px solid #fff;cursor:move;touch-action:none}
+.cr-g{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.35) 1px,transparent 1px);background-size:33.333% 33.333%;background-position:-1px -1px}
+.cr-box i{position:absolute;width:26px;height:26px;z-index:2;touch-action:none}
+.cr-box i::after{content:"";position:absolute;inset:8px;background:#fff;border-radius:2px;box-shadow:0 0 2px rgba(0,0,0,.6)}
+.cr-box i[data-h=nw]{left:-13px;top:-13px;cursor:nwse-resize}.cr-box i[data-h=se]{right:-13px;bottom:-13px;cursor:nwse-resize}
+.cr-box i[data-h=ne]{right:-13px;top:-13px;cursor:nesw-resize}.cr-box i[data-h=sw]{left:-13px;bottom:-13px;cursor:nesw-resize}
+.cr-box i[data-h=n],.cr-box i[data-h=s]{left:50%;margin-left:-13px;cursor:ns-resize}.cr-box i[data-h=n]{top:-13px}.cr-box i[data-h=s]{bottom:-13px}
+.cr-box i[data-h=e],.cr-box i[data-h=w]{top:50%;margin-top:-13px;cursor:ew-resize}.cr-box i[data-h=e]{right:-13px}.cr-box i[data-h=w]{left:-13px}
+.cr-box i[data-h=n]::after,.cr-box i[data-h=s]::after{inset:10px 4px}.cr-box i[data-h=e]::after,.cr-box i[data-h=w]::after{inset:4px 10px}
+.cr-ft{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 16px}
+.cr-ratio{display:inline-flex;border:1px solid rgba(255,255,255,.35);border-radius:999px;overflow:hidden}
+.cr-ratio button{border:0;background:none;color:#fff;font:inherit;font-size:13px;padding:6px 11px;cursor:pointer}.cr-ratio button.on{background:#fff;color:#111;font-weight:800}
+#cr .btn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.35)}
+#cr .btn.k{margin-left:auto;background:#fff;color:#111;font-weight:800;border-color:#fff}
 .fs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;margin-top:18px}
 .fs .full{grid-column:1/-1}
 .fs label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:#4a453f}
@@ -126,6 +149,13 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
 <dialog id="vw" aria-label="소장품 보기">
   <div class="vw"><div class="big"><div class="main" id="v-main"></div><div class="strip" id="v-strip"></div></div><div class="info" id="v-info"></div></div>
   <div class="ft"><button class="btn" id="v-prev">← 이전</button><span id="v-pos"></span><span style="display:flex;gap:8px"><button class="btn" id="v-next">다음 →</button><button class="btn" id="v-x">닫기</button></span></div>
+</dialog>
+
+<dialog id="cr" aria-label="사진 자르기">
+  <div class="cr-top"><b>✂ 사진 자르기</b><span class="cr-sz" id="cr-sz"></span><button type="button" class="cr-xx" id="cr-x" aria-label="닫기">✕</button></div>
+  <div class="cr-st" id="cr-st"><div class="cr-wrap"><canvas id="cr-cv"></canvas><div class="cr-clip"><div class="cr-dim" id="cr-dim"></div></div><div class="cr-box" id="cr-box"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i><i data-h="n"></i><i data-h="s"></i><i data-h="e"></i><i data-h="w"></i><span class="cr-g"></span></div></div></div>
+  <div class="cr-ft"><span class="seg cr-ratio" id="cr-ratio"><button type="button" data-r="0">자유</button><button type="button" data-r="1">1:1</button><button type="button" data-r="1.3333">4:3</button><button type="button" data-r="0.75">3:4</button></span>
+    <button type="button" class="btn" id="cr-rot">⟳ 돌리기</button><button type="button" class="btn" id="cr-reset">처음대로</button><button type="button" class="btn k" id="cr-go">자르기</button></div>
 </dialog>
 
 <dialog id="fm" aria-label="소장품 넣기">
@@ -271,7 +301,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     });
   }
   function shrink(im, max, qual) {
-    var w = im.naturalWidth, h = im.naturalHeight, s = Math.min(1, max / Math.max(w, h));
+    var w = im.naturalWidth || im.width, h = im.naturalHeight || im.height, s = Math.min(1, max / Math.max(w, h));
     var c = document.createElement('canvas'); c.width = Math.round(w * s); c.height = Math.round(h * s);
     var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
     return new Promise(function (ok) { c.toBlob(ok, 'image/jpeg', qual); });
@@ -281,10 +311,14 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   /* ── 목록 ── */
   function owners(o) { return o === '힌' ? '<span class="ow h">힌</span>' : o === '함께' ? '<span class="ow b" title="거믄·힌 함께">·</span>' : o ? '<span class="ow g">거믄</span>' : ''; }
   function fmtD(d) { if (!d) return ''; var p = String(d).slice(0, 10).split('-'); return p.length === 3 ? p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '.' : d; }
+  /* 맨 앞에 둘 소장품 (이름에 들어 있는 말, 순서대로) — 나머지는 구입일 순 */
+  var PIN = [/언양/, /안궤/];
+  function pin(x) { for (var i = 0; i < PIN.length; i++) if (PIN[i].test(String(x.name || ''))) return i; return PIN.length; }
   function view() {
     var L = items.filter(function (x) { return (stf === '전체' || st(x) === stf) && (!q || [x.name, x.kind, x.place, x.note, x.memo, x.wood, x.era, x.sto].join(' ').toLowerCase().indexOf(q) >= 0); });
     L.sort(function (a, b) {
       if (sort === 'name') return String(a.name).localeCompare(String(b.name), 'ko');
+      var pa = pin(a), pb = pin(b); if (pa !== pb) return pa - pb;
       var x = a.bought || a.created || '', y = b.bought || b.created || '';
       return (x < y ? 1 : x > y ? -1 : 0) * (sort === 'old' ? -1 : 1);
     });
@@ -382,7 +416,8 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     $('pics').innerHTML = pics.map(function (p, i) {
       return '<div class="pic' + (i === 0 ? ' first' : '') + '"><div class="im">' + (p.url ? '<img src="' + p.url + '" alt="">' : '<img data-pid="' + esc(p.t || p.f) + '" alt="">') + '</div>' +
         (p.busy ? '<span class="bz">줄이는 중…</span>' : '') + '<button type="button" class="x" data-x="' + i + '" aria-label="이 사진 빼기">✕</button>' +
-        '<button type="button" class="mk" data-mk="' + i + '">' + (i === 0 ? '★ 대표 사진' : '대표로') + '</button></div>';
+        '<button type="button" class="mk" data-mk="' + i + '">' + (i === 0 ? '★ 대표 사진' : '대표로') + '</button>' +
+        (p.busy ? '' : '<button type="button" class="cr-b" data-cr="' + i + '">✂ 자르기' + (p.crop ? ' ✓' : '') + '</button>') + '</div>';
     }).join('');
     fillImgs($('pics'));
   }
@@ -390,6 +425,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.x != null) { pics.splice(+b.dataset.x, 1); drawPics(); }
     else if (b.dataset.mk != null) { var p = pics.splice(+b.dataset.mk, 1)[0]; pics.unshift(p); drawPics(); }
+    else if (b.dataset.cr != null) cropOpen(pics[+b.dataset.cr]);
   });
   function addFiles(list) {
     var fs = [].filter.call(list, function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic|heif|gif)$/i.test(f.name); });
@@ -397,6 +433,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     fs.forEach(function (file) {
       var p = { busy: true, url: '' }; pics.push(p); drawPics();
       decode(file).then(function (im) {
+        p.orig = im;
         return Promise.all([shrink(im, 1800, .86), shrink(im, 480, .8)]).then(function (r) { p.blobF = r[0]; p.blobT = r[1]; p.url = URL.createObjectURL(r[1]); p.busy = false; drawPics(); });
       }).catch(function () {
         pics.splice(pics.indexOf(p), 1); drawPics();
@@ -429,6 +466,111 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   });
   $('fm-x').addEventListener('click', function () { if (!busy) $('fm').close(); });
   $('fm').addEventListener('cancel', function (e) { if (busy) e.preventDefault(); });
+
+
+  /* ── 사진 자르기: 네 귀퉁이·가장자리를 끌어 고르고, 안쪽을 끌어 옮긴다. 비율·돌리기. 자른 사진으로 새로 저장된다 ── */
+  var CR = { p: null, cv: null, rot: 0, r: null, ratio: 0, sc: 1 };
+  function crBase(p) {
+    if (p.orig) return Promise.resolve(p.orig);
+    return imgURL(p.f).then(function (u) {
+      if (!u) throw new Error('img');
+      return new Promise(function (ok, no) { var im = new Image(); im.onload = function () { ok(im); }; im.onerror = no; im.src = u; });
+    }).then(function (im) { p.orig = im; return im; });
+  }
+  function crRotated() {     // 돌린 원본 (긴 변 3000px까지)
+    var im = CR.p.orig, w0 = im.naturalWidth || im.width, h0 = im.naturalHeight || im.height, k = Math.min(1, 3000 / Math.max(w0, h0));
+    var w = Math.round(w0 * k), h = Math.round(h0 * k), q = CR.rot % 180 !== 0;
+    var c = document.createElement('canvas'); c.width = q ? h : w; c.height = q ? w : h;
+    var g = c.getContext('2d'); g.translate(c.width / 2, c.height / 2); g.rotate(CR.rot * Math.PI / 180); g.drawImage(im, -w / 2, -h / 2, w, h);
+    return c;
+  }
+  function crFull(ratio) {
+    var W = CR.cv.width, H = CR.cv.height;
+    if (!ratio) return { x: 0, y: 0, w: W, h: H };
+    var w = W, h = w / ratio; if (h > H) { h = H; w = h * ratio; }
+    return { x: (W - w) / 2, y: (H - h) / 2, w: w, h: h };
+  }
+  function crLayout() {
+    var st = $('cr-st'), cv = $('cr-cv'), W = CR.cv.width, H = CR.cv.height;
+    var mw = st.clientWidth - 40, mh = Math.max(220, innerHeight - 250);
+    CR.sc = Math.min(mw / W, mh / H, 1);
+    cv.style.width = Math.round(W * CR.sc) + 'px'; cv.style.height = Math.round(H * CR.sc) + 'px';
+    crBox();
+  }
+  function crBox() {
+    var b = $('cr-box'), r = CR.r, s = CR.sc; if (!r) return;
+    [b, $('cr-dim')].forEach(function (el) { el.style.left = (r.x * s) + 'px'; el.style.top = (r.y * s) + 'px'; el.style.width = (r.w * s) + 'px'; el.style.height = (r.h * s) + 'px'; });
+    $('cr-sz').textContent = Math.round(r.w) + ' × ' + Math.round(r.h);
+  }
+  function crDraw() {
+    CR.cv = crRotated();
+    var cv = $('cr-cv'); cv.width = CR.cv.width; cv.height = CR.cv.height; cv.getContext('2d').drawImage(CR.cv, 0, 0);
+    crLayout();
+  }
+  function cropOpen(p) {
+    if (!p || p.busy) return;
+    $('fm-msg').textContent = '';
+    crBase(p).then(function () {
+      CR.p = p; CR.rot = p.crop ? p.crop.rot : 0; CR.ratio = p.crop ? p.crop.ratio : 0;
+      CR.r = null; $('cr').showModal(); crDraw();
+      CR.r = p.crop ? { x: p.crop.x, y: p.crop.y, w: p.crop.w, h: p.crop.h } : crFull(0);
+      crSeg(); crBox();
+    }).catch(function () { $('fm-msg').textContent = '이 사진을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'; });
+  }
+  function crSeg() { [].forEach.call($('cr-ratio').children, function (b) { b.classList.toggle('on', +b.dataset.r === CR.ratio); }); }
+  function crClamp(r) {
+    var W = CR.cv.width, H = CR.cv.height, min = 24 / CR.sc;
+    r.w = Math.max(min, Math.min(r.w, W)); r.h = Math.max(min, Math.min(r.h, H));
+    r.x = Math.max(0, Math.min(r.x, W - r.w)); r.y = Math.max(0, Math.min(r.y, H - r.h));
+    return r;
+  }
+  (function () {
+    var drag = null;
+    $('cr-st').addEventListener('pointerdown', function (e) {
+      var h = e.target.dataset.h || (e.target.id === 'cr-box' ? 'm' : ''); if (!h || !CR.r) return;
+      e.preventDefault(); e.target.setPointerCapture(e.pointerId);
+      drag = { h: h, x: e.clientX, y: e.clientY, r: { x: CR.r.x, y: CR.r.y, w: CR.r.w, h: CR.r.h }, el: e.target };
+    });
+    $('cr-st').addEventListener('pointermove', function (e) {
+      if (!drag) return; e.preventDefault();
+      var dx = (e.clientX - drag.x) / CR.sc, dy = (e.clientY - drag.y) / CR.sc, o = drag.r, r = { x: o.x, y: o.y, w: o.w, h: o.h }, H = drag.h, W0 = CR.cv.width, H0 = CR.cv.height, min = 24 / CR.sc;
+      if (H === 'm') { r.x = o.x + dx; r.y = o.y + dy; CR.r = crClamp(r); crBox(); return; }
+      var L = o.x, T = o.y, R = o.x + o.w, B = o.y + o.h;
+      if (H.indexOf('w') >= 0) L = Math.min(R - min, Math.max(0, o.x + dx));
+      if (H.indexOf('e') >= 0) R = Math.max(L + min, Math.min(W0, R + dx));
+      if (H.indexOf('n') >= 0) T = Math.min(B - min, Math.max(0, o.y + dy));
+      if (H.indexOf('s') >= 0) B = Math.max(T + min, Math.min(H0, B + dy));
+      r = { x: L, y: T, w: R - L, h: B - T };
+      if (CR.ratio) {      // 비율 고정: 끈 쪽 기준으로 맞추고 넘치면 줄인다
+        var k = CR.ratio;
+        if (H === 'n' || H === 's') { r.w = r.h * k; r.x = o.x + (o.w - r.w) / 2; }
+        else { r.h = r.w / k; if (H.indexOf('n') >= 0) r.y = B - r.h; else if (H === 'e' || H === 'w') r.y = o.y + (o.h - r.h) / 2; }
+        if (r.x < 0) { r.w += r.x; r.h = r.w / k; r.x = 0; } if (r.y < 0) { r.h += r.y; r.w = r.h * k; r.y = 0; }
+        if (r.x + r.w > W0) { r.w = W0 - r.x; r.h = r.w / k; } if (r.y + r.h > H0) { r.h = H0 - r.y; r.w = r.h * k; }
+        if (H.indexOf('w') >= 0) r.x = R - r.w; if (H.indexOf('n') >= 0) r.y = B - r.h;
+      }
+      CR.r = r; crBox();
+    });
+    ['pointerup', 'pointercancel'].forEach(function (t) { $('cr-st').addEventListener(t, function () { drag = null; }); });
+  })();
+  $('cr-ratio').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; CR.ratio = +b.dataset.r; CR.r = crFull(CR.ratio); crSeg(); crBox(); });
+  $('cr-rot').addEventListener('click', function () { CR.rot = (CR.rot + 90) % 360; crDraw(); CR.r = crFull(CR.ratio); crBox(); });
+  $('cr-reset').addEventListener('click', function () { CR.rot = 0; CR.ratio = 0; crDraw(); CR.r = crFull(0); crSeg(); crBox(); });
+  $('cr-x').addEventListener('click', function () { $('cr').close(); });
+  window.addEventListener('resize', function () { if ($('cr').open) crLayout(); });
+  $('cr-go').addEventListener('click', function () {
+    var p = CR.p, r = CR.r, c = document.createElement('canvas');
+    c.width = Math.round(r.w); c.height = Math.round(r.h);
+    c.getContext('2d').drawImage(CR.cv, r.x, r.y, r.w, r.h, 0, 0, c.width, c.height);
+    p.busy = true; $('cr').close(); drawPics();
+    Promise.all([shrink(c, 1800, .88), shrink(c, 480, .8)]).then(function (b) {
+      p.blobF = b[0]; p.blobT = b[1]; if (p.url && /^blob:/.test(p.url)) URL.revokeObjectURL(p.url);
+      p.url = URL.createObjectURL(b[1]); delete p.f; delete p.t;      // 자른 사진은 새 사진으로 올라간다
+      p.crop = { x: r.x, y: r.y, w: r.w, h: r.h, rot: CR.rot, ratio: CR.ratio };
+      p.busy = false; drawPics();
+      $('fm-msg').textContent = '잘랐어요. 「저장」을 눌러야 소장품에 반영돼요.';
+    });
+  });
 
   function uploadPic(p, n, total) {
     if (p.f) return Promise.resolve({ f: p.f, t: p.t });
