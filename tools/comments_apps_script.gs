@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v6: 좋아요(별) — 시트 '좋아요' 탭. doGet action=likes(가족만), doPost action=like {cid, who(거믄|힌), on}.
  * v5: 소장품에 상태(소장·판매 예정·판매함)·판매일·판매가·판매처 추가.
  * v4: 소장품 도록(clist·cimg·csave·cphoto·cdel) 추가 — 시트 '소장품' 탭, 사진은 드라이브 비공개 폴더.
  * v3: 'edit'(고치기) 추가 — 거믄·힌 글은 가족 암호, 벗 글은 쓴 기기의 key 로만 고친다.
@@ -36,6 +37,7 @@ function doGet(e) {
   const p = (e && e.parameter) || {};
   const fam = isFam_(p.code);
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
+  if (p.action === 'likes') return likesGet_(fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -66,6 +68,7 @@ function doPost(e) {
       sh.getRange(f.i, 8).setValue('삭제 ' + new Date().toISOString());
       return out_({ ok: true });
     }
+    if (d.action === 'like') return likePost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
@@ -164,3 +167,31 @@ function colPost_(d, fam) {
   return out_({ ok: false, err: 'action' });
 }
 function 소장품준비() { colSheet_(); colFolder_(); }
+
+
+/* ───────── 좋아요(별) ─────────
+   '좋아요' 탭: cid | who | time   — 한 사람이 한 기물에 한 줄. 거두면 그 줄을 지운다. */
+const LIKE_SHEET = '좋아요';
+function likeSheet_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName(LIKE_SHEET);
+  if (!sh) { sh = ss.insertSheet(LIKE_SHEET); sh.appendRow(['cid', 'who', 'time']); sh.setFrozenRows(1); }
+  return sh;
+}
+function likesGet_(fam) {
+  if (!fam) return out_({ ok: true, fam: false, list: [] });
+  const rows = likeSheet_().getDataRange().getValues(); rows.shift();
+  return out_({ ok: true, fam: true, list: rows.filter(r => r[0]).map(r => ({ cid: String(r[0]), who: String(r[1]), t: r[2] instanceof Date ? r[2].toISOString() : String(r[2]) })) });
+}
+function likePost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const who = String(d.who || ''), cid = String(d.cid || '').slice(0, 200);
+  if ((who !== '거믄' && who !== '힌') || !cid) return out_({ ok: false, err: 'bad' });
+  const sh = likeSheet_(), rows = sh.getDataRange().getValues();
+  let at = -1;
+  for (let i = 1; i < rows.length; i++) if (String(rows[i][0]) === cid && String(rows[i][1]) === who) { at = i + 1; break; }
+  if (d.on && at < 0) sh.appendRow([cid, who, new Date().toISOString()]);
+  if (!d.on && at > 0) sh.deleteRow(at);
+  return out_({ ok: true });
+}
+function 좋아요준비() { likeSheet_(); }
