@@ -512,5 +512,6 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   if (saved) { app.innerHTML = '<p style="text-align:center;color:#7a736a;padding:60px 0">여는 중…</p>'; check(saved).then(function () { PW = saved; start(); }).catch(function (er) { if (er && er.message === 'net') lockView('인터넷 연결을 확인해 주세요.'); else { ls.del(K_STUDY); lockView(); } }); } else lockView();
 })();
 </script>
+<script src="zoom.js?v=20261019" defer></script>
 </body>
 </html>

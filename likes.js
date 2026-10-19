@@ -96,11 +96,11 @@
   }
   var css = document.createElement('style');
   css.textContent = [
-    '.lk-st{position:absolute;top:5px;left:5px;z-index:5;display:inline-flex;align-items:center;gap:1px}',
-    '.lk-btn{width:34px;height:34px;border-radius:50%;border:0;padding:0;margin:0;background:rgba(255,255,255,.94);box-shadow:0 1px 4px rgba(0,0,0,.18);display:grid;place-items:center;cursor:pointer;transition:transform .12s}',
-    '.lk-btn:hover{transform:scale(1.08)}.lk-btn:active{transform:scale(.92)}.lk-btn svg{width:21px;height:21px;display:block}',
-    '.lk-btn.on{box-shadow:0 0 0 2px ' + RED + ',0 1px 4px rgba(0,0,0,.18)}',
-    '.lk-other{display:inline-flex;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));pointer-events:none}.lk-other svg{width:17px;height:17px;display:block}',
+    '.lk-st{position:absolute;top:4px;left:4px;z-index:5;display:inline-flex;align-items:center;gap:1px}',
+    '.lk-btn{position:relative;width:22px;height:22px;border-radius:50%;border:0;padding:0;margin:0;background:rgba(255,255,255,.88);box-shadow:0 1px 3px rgba(0,0,0,.16);display:grid;place-items:center;cursor:pointer;transition:transform .12s}.lk-btn::before{content:"";position:absolute;inset:-8px}',
+    '.lk-btn:hover{transform:scale(1.08)}.lk-btn:active{transform:scale(.92)}.lk-btn svg{width:14px;height:14px;display:block}',
+    '.lk-btn.on{box-shadow:0 0 0 1.5px ' + RED + ',0 1px 3px rgba(0,0,0,.16)}',
+    '.lk-other{display:inline-flex;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));pointer-events:none}.lk-other svg{width:13px;height:13px;display:block}',
     '.lk-pop{animation:lkpop .35s ease}@keyframes lkpop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}',
     '#rv .rv-it .lk-st{top:1px;left:1px}#rv .rv-it .lk-btn{display:none}#rv .rv-it .lk-other svg{width:12px;height:12px}',
     '.lk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 0;padding:10px 0;border-top:1px solid #e5e1da;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
