@@ -10,6 +10,8 @@
    comments.js 가 이 파일을 불러온다. 가족 암호·거믄/힌 기억은 comments.js 와 같은 열쇠를 쓴다. */
 (function () {
   if (window.MOKGAGU_LIKES) return;
+  /* 수업 날짜(빠진 날·옮긴 날)는 classes.js 한 곳에서 */
+  if (!window.MOKGAGU_CLASS && !document.querySelector('script[src^="classes.js"]')) { var cs = document.createElement('script'); cs.src = 'classes.js?v=20261019'; document.head.appendChild(cs); }
   var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
   var K_CODE = 'mokgagu_cm_code', K_WHO = 'mokgagu_cm_who', K_FAM = 'mokgagu_cm_fam';
   var K_LIKES = 'mokgagu_lk_cache', K_PEND = 'mokgagu_lk_pending', K_SHARED = 'mokgagu_lk_shared', K_SKIP = 'mokgagu_lk_skip', S_WHO = 'mokgagu_lk_who_s';
@@ -209,11 +211,12 @@
   /* ── 수업일: 매달 둘째·넷째 토요일 (한국 시각) ── */
   function kstToday() { return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10); }
   function classDays(y, m) {          // m: 0~11
-    var out = [], d = new Date(Date.UTC(y, m, 1)), first = (6 - d.getUTCDay() + 7) % 7 + 1;
+    var out = [], d = new Date(Date.UTC(y, m, 1)), first = (6 - d.getUTCDay() + 7) % 7 + 1, ym = new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 7);
     [first + 7, first + 21].forEach(function (dd) { out.push(new Date(Date.UTC(y, m, dd)).toISOString().slice(0, 10)); });
-    return out;
+    return out.sort();
   }
   function nextClass(from) {
+    if (window.MOKGAGU_CLASS) return window.MOKGAGU_CLASS.next(from);
     from = from || kstToday(); var y = +from.slice(0, 4), m = +from.slice(5, 7) - 1;
     for (var k = 0; k < 3; k++) { var L = classDays(y, m).filter(function (x) { return x >= from; }); if (L.length) return L[0]; m++; if (m > 11) { m = 0; y++; } }
     return from;
@@ -235,6 +238,33 @@
       lastQ = q; post({ action: 'log', who: me(), kind: 'search', q: q, page: location.pathname.split('/').pop() || 'index.html' });
     }, 1800);
   });
+
+  /* ── 기물 이야기 속 질문 → 선생님께 여쭤볼 것 (거믄·힌 글만, 글 하나에 한 번) ── */
+  function isAsk(t) {
+    t = String(t || '');
+    if (/[?？]/.test(t)) return true;
+    if (/(궁금|여쭤|여쭈|문의|질문|알고\s?싶|모르겠|선생님께|확인\s?필요)/.test(t)) return true;
+    return t.split(/[\n.!。]+/).some(function (x) { return /(나요|[인은는떤한된운난큰작]가요|까요|는지요|인지요|습니까|할까)\s*$/.test(x.trim()); });
+  }
+  var K_ASKED = 'mokgagu_ask_from_cm';
+  function syncAsk(list) {
+    if (!fam()) return Promise.resolve([]);
+    var done; try { done = JSON.parse(localStorage.getItem(K_ASKED) || '{}'); } catch (e) { done = {}; }
+    var todo = (list || []).filter(function (c) { return (c.author === '거믄' || c.author === '힌') && !c.del && !c.pending && c.id && !done[c.id] && isAsk(c.text); });
+    var cls = nextClass(), made = [];
+    return todo.reduce(function (pr, c) {
+      return pr.then(function () {
+        var q = { id: 'cm_' + c.id, who: c.author, text: String(c.text).trim().slice(0, 2000), cid: c.cid, cls: cls };
+        return post({ action: 'qadd', q: q }).then(function (ok) { if (ok) { done[c.id] = 1; made.push(q); try { localStorage.setItem(K_ASKED, JSON.stringify(done)); } catch (e) {} } });
+      });
+    }, Promise.resolve()).then(function () { if (made.length) toast('기물 이야기 속 질문 ' + made.length + '개를 ' + md(cls) + ' 수업 질문에 넣었어요'); return made; });
+  }
+  function hookComments() {
+    var C = window.MOKGAGU_COMMENTS; if (!C || !C.onChange) return setTimeout(hookComments, 400);
+    var t2 = 0; C.onChange(function () { clearTimeout(t2); t2 = setTimeout(function () { syncAsk(C.list()); }, 1500); });
+    setTimeout(function () { syncAsk(C.list()); }, 3000);
+  }
+  hookComments();
 
   /* ── 사진 창: 선생님께 여쭤보기 ── */
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
@@ -400,6 +430,6 @@
     var home = /(^|\/)(index\.html)?$/.test(location.pathname);
     if (home && !me() && ls.get(K_SKIP, '') !== '1' && !/#see=/.test(location.hash)) setTimeout(ask, 600);
   }
-  window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load, post: post, nextClass: nextClass, classDays: classDays, today: kstToday, star: star, fam: fam };
+  window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load, post: post, nextClass: nextClass, importAsks: syncAsk, isAsk: isAsk, syncAsk: syncAsk, classDays: classDays, today: kstToday, star: star, fam: fam };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

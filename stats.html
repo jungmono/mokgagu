@@ -120,6 +120,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 .qh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
 .ow2{display:inline-block;min-width:2.9em;text-align:center;font-weight:900;font-size:12px;padding:1px 7px;border:1.5px solid #111;line-height:1.35;color:#111}
 .ow2.g{background:#111;color:#fff}
+.qh .from{color:#6b5a2e;background:var(--gold);border:1px solid var(--gold-line);border-radius:999px;padding:0 7px;font-weight:700}
 .qt{font-size:15.5px;line-height:1.7;margin:4px 0 0;white-space:pre-wrap}
 .qi.done .qt{color:#6b665e}
 .qobj{display:inline-flex;align-items:center;gap:8px;margin-top:8px;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:4px 10px 4px 4px;font-size:13px;background:var(--paper)}
@@ -155,6 +156,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   <div id="app"><p class="loading">불러오는 중…</p></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="classes.js?v=20261019"></script>
 <script src="site.js"></script>
 <script src="recent.js" defer></script>
 <script src="search.js" defer></script>
@@ -176,8 +178,9 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 
   /* 날짜 · 수업일 (매달 둘째·넷째 토요일) */
   function today() { return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10); }
-  function classDays(y, m) { var d = new Date(Date.UTC(y, m, 1)), f = (6 - d.getUTCDay() + 7) % 7 + 1; return [f + 7, f + 21].map(function (x) { return new Date(Date.UTC(y, m, x)).toISOString().slice(0, 10); }); }
-  function upcoming(n) { var t = today(), y = +t.slice(0, 4), m = +t.slice(5, 7) - 1, out = []; while (out.length < n) { classDays(y, m).forEach(function (x) { if (x >= t && out.length < n) out.push(x); }); m++; if (m > 11) { m = 0; y++; } } return out; }
+  /* 수업 날짜는 classes.js 한 곳에서 (둘째·넷째 토요일 + 빠진 날·옮긴 날) */
+  var CL = window.MOKGAGU_CLASS;
+  function upcoming(n) { return CL.upcoming(n); }
   function md(d) { if (!d) return '날짜 없음'; var x = new Date(d + 'T00:00:00Z'); return (x.getUTCMonth() + 1) + '월 ' + x.getUTCDate() + '일'; }
   function mdw(d) { var x = new Date(d + 'T00:00:00Z'); return md(d) + '(' + '일월화수목금토'[x.getUTCDay()] + ')'; }
   function dday(d) { var n = Math.round((new Date(d + 'T00:00:00Z') - new Date(today() + 'T00:00:00Z')) / 864e5); return n === 0 ? '오늘' : 'D-' + n; }
@@ -219,7 +222,9 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     ]).then(function (a) {
       if (!a[0] || !a[0].ok) { if (a[0] && a[0].err === 'code') { ls.set(K_FAM, ''); lock('가족 암호를 다시 넣어 주세요.'); return; } app.innerHTML = '<p class="loading">통계를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.</p>'; return; }
       D = a[0]; D.comments = (a[1] && a[1].list) || []; D.vt = a[2] || {};
+      fixSkipped();
       draw();
+      importAsks();
     }).catch(function () { app.innerHTML = '<p class="loading">인터넷 연결을 확인해 주세요.</p>'; });
   }
   function waitIndex() {
@@ -266,7 +271,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   function qiHTML(q) {
     var w = q.who, ed = editId === q.id, an = ansId === q.id;
     return '<div class="qi' + (q.done ? ' done' : '') + '"><button type="button" class="ck" data-done="' + esc(q.id) + '" title="' + (q.done ? '아직 안 여쭤봤어요로' : '여쭤봤어요') + '">' + (q.done ? '✓' : '') + '</button><div>' +
-      '<div class="qh"><span class="ow2 ' + (w === '거믄' ? 'g' : 'h') + '">' + esc(w) + '</span>' + ago(q.t) + (q.done ? ' · 여쭤봤어요' : '') + '</div>' +
+      '<div class="qh"><span class="ow2 ' + (w === '거믄' ? 'g' : 'h') + '">' + esc(w) + '</span>' + ago(q.t) + (q.id.indexOf('cm_') === 0 ? ' · <span class="from">💬 기물 이야기에서</span>' : '') + (q.done ? ' · 여쭤봤어요' : '') + '</div>' +
       (ed ? '<div class="qed"><textarea data-et="' + esc(q.id) + '">' + esc(q.text) + '</textarea><div class="r"><button type="button" data-cancel="1">그만두기</button><button type="button" class="ok" data-esave="' + esc(q.id) + '">고친 내용 저장</button></div></div>' : '<p class="qt">' + esc(q.text) + '</p>') +
       (q.cid ? '<a class="qobj" href="' + link(q.cid) + '">' + (thumb(q.cid) ? '<img src="' + thumb(q.cid) + '" alt="">' : '') + esc(name(q.cid)) + '<small style="color:#8a837a">· ' + esc(BOOK[q.cid.split('/')[0]] || '') + '</small></a>' : '') +
       (q.ans && !an ? '<div class="qans"><b>선생님 말씀</b>' + esc(q.ans) + '</div>' : '') +
@@ -292,7 +297,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<select id="qcls">' + up.map(function (d) { return '<option value="' + d + '">' + mdw(d) + ' 수업</option>'; }).join('') + '</select>' +
       '<select id="qcid"><option value="">기물 붙이기 (안 해도 돼요)</option>' + opts + '</select></div>' +
       '<textarea id="qtext" placeholder="선생님께 여쭤볼 것을 적어 주세요 — 예: 전라도 반닫이와 경상도 반닫이의 장석 차이는?"></textarea>' +
-      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있어요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
+      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있고, 기물 이야기에 적은 질문(?, 궁금, 여쭤볼 것…)은 저절로 들어와요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
     fut.forEach(function (k) {
       var L = groups[k] || [];
       h += '<div class="cls' + (k === nx ? ' now' : '') + '"><h3>' + mdw(k) + ' 수업 <small>' + (k === nx ? dday(k) + ' · ' : '') + L.length + '개</small></h3>' +
@@ -331,9 +336,43 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     app.innerHTML = '<div class="jump"><a href="#all">한눈에</a><a href="#duo">거믄 · 힌</a><a class="ask" href="#ask">✎ ' + md(nx) + ' 수업 질문<small>' + left + '</small></a></div>' +
       '<section id="all"><h2 class="sec">한눈에</h2>' + topHTML() + '</section>' +
       '<section id="duo"><h2 class="sec">거믄 · 힌 <small>각자 남긴 기록 — 좋아요, 찾아본 기물, 검색어, 기물 이야기</small></h2><div class="duo">' + pcHTML('거믄') + pcHTML('힌') + '</div></section>' +
-      '<section id="ask-sec"><h2 class="sec" id="ask">선생님께 여쭤볼 것 <small>둘째·넷째 토요일 동인방 수업</small></h2>' + askHTML() + '</section>' +
+      '<section id="ask-sec"><h2 class="sec" id="ask">선생님께 여쭤볼 것 <small>동인방 수업 — 보통 둘째·넷째 토요일' + changedNote() + '</small></h2>' + askHTML() + '</section>' +
       '<p class="note">「찾아본 기물」과 「찾아본 말」은 거믄·힌으로 들어온 기기에서 2026년 10월 19일부터 쌓입니다.<br>모든 기록은 가족 암호를 넣은 기기에서만 보입니다.</p>';
     if (location.hash === '#ask' && !draw._jumped) { draw._jumped = 1; setTimeout(function () { document.getElementById('ask').scrollIntoView(); }, 50); }
+  }
+
+  /* 수업이 빠진 날로 적힌 질문은 그다음 수업으로 옮긴다 */
+  function changedNote() {
+    var t = today(), L = CL.cancel.filter(function (d) { return d >= t; }).map(function (d) { return md(d) + ' 쉼'; }).concat(CL.add.filter(function (d) { return d >= t; }).map(function (d) { return md(d) + ' 수업'; }));
+    return L.length ? ' · 바뀐 날: ' + L.join(', ') : '';
+  }
+  function fixSkipped() {
+    D.questions.forEach(function (q) { var to = CL.fix(q.cls); if (to && to !== q.cls) { q.cls = to; post({ action: 'qedit', id: q.id, cls: to }); } });
+  }
+  /* 기물 이야기 속 질문을 선생님께 여쭤볼 것으로 (거믄·힌 글, 글 하나에 한 번 — 지운 질문은 다시 넣지 않음) */
+  function isAsk(t) {
+    t = String(t || '');
+    if (/[?？]/.test(t)) return true;
+    if (/(궁금|여쭤|여쭈|문의|질문|알고\s?싶|모르겠|선생님께|확인\s?필요)/.test(t)) return true;
+    return t.split(/[\n.!。]+/).some(function (x) { return /(나요|[인은는떤한된운난큰작]가요|까요|는지요|인지요|습니까|할까)\s*$/.test(x.trim()); });
+  }
+  function importAsks() {
+    var have = {}; D.questions.forEach(function (q) { have[q.id] = 1; });
+    var gone; try { gone = JSON.parse(localStorage.getItem('mokgagu_ask_from_cm') || '{}'); } catch (e) { gone = {}; }
+    var todo = D.comments.filter(function (c) { return (c.author === '거믄' || c.author === '힌') && c.id && !have['cm_' + c.id] && !gone[c.id] && isAsk(c.text); });
+    if (!todo.length) return;
+    var cls = upcoming(1)[0], n = 0;
+    todo.reduce(function (pr, c) {
+      return pr.then(function () {
+        var q = { id: 'cm_' + c.id, who: c.author, text: String(c.text).trim().slice(0, 2000), cid: c.cid, cls: cls, t: c.t || new Date().toISOString(), done: false, ans: '' };
+        return fetch(API, { method: 'POST', body: JSON.stringify({ action: 'qadd', q: q, code: ls.get(K_CODE) }) }).then(function (r) { return r.json(); }).then(function (j) {
+          if (j && j.ok) { gone[c.id] = 1; if (!j.dup) { n++; D.questions.push(q); } }
+        }).catch(function () {});
+      });
+    }, Promise.resolve()).then(function () {
+      try { localStorage.setItem('mokgagu_ask_from_cm', JSON.stringify(gone)); } catch (e) {}
+      if (n) { draw(); toast('기물 이야기 속 질문 ' + n + '개를 ' + md(cls) + ' 수업 질문에 넣었어요'); }
+    });
   }
 
   /* ── 시트에 쓰기 ── */

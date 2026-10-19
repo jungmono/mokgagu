@@ -264,7 +264,8 @@ function qPost_(d, fam) {
   if (d.action === 'qadd' && d.q) {
     const q = d.q, who = famWho_(q.who), text = String(q.text || '').trim();
     if (!who || !text) return out_({ ok: false, err: 'bad' });
-    if (find(q.id) < 0) sh.appendRow([String(q.id).slice(0, 40), who, text.slice(0, 2000), String(q.cid || '').slice(0, 200), String(q.cls || '').slice(0, 10), new Date().toISOString(), '', '', '', '']);
+    if (find(q.id) >= 0) return out_({ ok: true, dup: true });   // 이미 있거나 지운 질문은 다시 넣지 않는다
+    sh.appendRow([String(q.id).slice(0, 40), who, text.slice(0, 2000), String(q.cid || '').slice(0, 200), String(q.cls || '').slice(0, 10), new Date().toISOString(), '', '', '', '']);
     return out_({ ok: true });
   }
   const at = find(d.id); if (at < 0) return out_({ ok: false, err: 'none' });
