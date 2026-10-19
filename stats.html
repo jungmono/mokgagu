@@ -173,6 +173,22 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 .lsq{background:#f3f8f4}.lsq p{margin:6px 0 0;font-size:13.5px;line-height:1.6;color:#2b2825;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.lsq p.more{color:var(--muted)}
 .lsq b{color:#2f6b45}
 #ses-more{margin-top:12px}
+/* 사진 창 (통계 안에서) */
+#dlg{border:none;border-radius:18px;padding:0;width:min(1100px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+#dlg::backdrop{background:rgba(20,20,24,.55)}
+.d-body{display:flex;gap:24px;padding:22px;max-height:calc(92vh - 64px);overflow:auto}
+.d-img{flex:1 1 60%;display:grid;place-items:center;min-height:300px;background:#fafaf8;border-radius:12px}
+.d-img img{max-width:100%;max-height:72vh;object-fit:contain}
+.d-info{flex:1 1 40%;min-width:220px}
+.d-info .cat{color:#3550c8;font-weight:700;font-size:14px}
+.d-info h3{margin:4px 0 12px;font-size:28px;font-weight:900;letter-spacing:-.04em}.d-info h3 small{font-size:16px;color:var(--muted);font-weight:500;margin-left:8px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 12px;font-size:15px}.d-info dt{color:var(--muted)}.d-info dd{margin:0}
+.d-book{display:inline-block;margin-top:6px;color:#fff;background:var(--fg);text-decoration:none;font-weight:700;font-size:14px;border-radius:10px;padding:10px 16px}
+.d-ask{display:flex;flex-direction:column;gap:8px;margin:0 0 10px}.d-ask1{background:var(--gold);border:1px solid var(--gold-line);border-radius:12px;padding:9px 12px}.d-ask1 p{margin:4px 0 0;font-size:14.5px;line-height:1.6;white-space:pre-wrap}.d-ask1 small{font-size:12px;color:#2f6b45;font-weight:700;margin-left:6px}
+.d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}.d-foot button:disabled{opacity:.35}
+.d-r{display:flex;gap:8px}
+@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.d-foot{padding:10px 12px}}
 /* 수업용 인쇄: 다음 수업 질문만 */
 @media print{
   body.pr .hd,body.pr #app > *:not(#ask-sec){display:none!important}
@@ -192,6 +208,10 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   <div id="app"><p class="loading">불러오는 중…</p></div>
 </div>
 <div class="toast" id="toast"></div>
+<dialog id="dlg" aria-label="기물 사진">
+  <div class="d-body"><div class="d-img"><img id="d-img" alt=""></div><div class="d-info" id="d-info"></div></div>
+  <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos"></span><span class="d-r"><button id="d-next">다음 →</button><button id="d-close">닫기</button></span></div>
+</dialog>
 <script src="classes.js?v=20261019"></script>
 <script src="site.js"></script>
 <script src="recent.js" defer></script>
@@ -239,7 +259,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   function thumb(cid) { var r = rec(cid); return r && r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : ''; }
   function name(cid) { var r = rec(cid); return r ? r.name : String(cid || '').split('/').pop(); }
   function link(cid) { return 'index.html#see=' + String(cid).split('/').map(encodeURIComponent).join('/'); }
-  function thA(cid, badge, grp) { return '<a href="' + link(cid) + '" data-seq="' + grp + '" data-cid="' + esc(cid) + '" title="' + esc(name(cid)) + '">' + (thumb(cid) ? '<img loading="lazy" src="' + thumb(cid) + '" alt="">' : '') + (badge ? '<i>' + badge + '</i>' : '') + '<span>' + esc(name(cid)) + '</span></a>'; }
+  function thA(cid, badge, grp) { return '<a href="' + link(cid) + '" data-seq="' + grp + '" data-k="' + esc(cid) + '" title="' + esc(name(cid)) + '">' + (thumb(cid) ? '<img loading="lazy" src="' + thumb(cid) + '" alt="">' : '') + (badge ? '<i>' + badge + '</i>' : '') + '<span>' + esc(name(cid)) + '</span></a>'; }
 
   /* ── 잠금 ── */
   function lock(msg) {
@@ -335,7 +355,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<div class="blk"><h3>🔍 찾아본 말</h3>' +
         (qk.length ? '<div class="chips">' + qk.map(function (q) { return '<a href="index.html#q=' + encodeURIComponent(q) + '">' + esc(q) + (P.qs[q] > 1 ? '<small>' + P.qs[q] + '</small>' : '') + '</a>'; }).join('') + '</div>' : '<p class="empty">첫 화면이나 도록 안 검색창에 적은 말이 여기 쌓여요.</p>') + '</div>' +
       '<div class="blk"><h3>💬 최근 기물 이야기 <small>' + P.cms.length + '개</small></h3>' +
-        (P.cms.length ? '<div class="cms">' + P.cms.slice(0, 4).map(function (c) { return '<a class="cm1" href="' + link(c.cid) + '" data-seq="' + gc + '" data-cid="' + esc(c.cid) + '">' + (thumb(c.cid) ? '<img src="' + thumb(c.cid) + '" alt="">' : '<span></span>') + '<div><small>' + esc(name(c.cid)) + ' · ' + ago(c.t) + '</small>' + esc(c.text) + '</div></a>'; }).join('') + '</div>' : '<p class="empty">아직 남긴 이야기가 없어요.</p>') + '</div>' +
+        (P.cms.length ? '<div class="cms">' + P.cms.slice(0, 4).map(function (c) { return '<a class="cm1" href="' + link(c.cid) + '" data-seq="' + gc + '" data-k="' + esc(c.cid) + '">' + (thumb(c.cid) ? '<img src="' + thumb(c.cid) + '" alt="">' : '<span></span>') + '<div><small>' + esc(name(c.cid)) + ' · ' + ago(c.t) + '</small>' + esc(c.text) + '</div></a>'; }).join('') + '</div>' : '<p class="empty">아직 남긴 이야기가 없어요.</p>') + '</div>' +
       '</div>';
   }
 
@@ -345,7 +365,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     return '<div class="qi' + (q.done ? ' done' : '') + '"><button type="button" class="ck" data-done="' + esc(q.id) + '" title="' + (q.done ? '아직 안 여쭤봤어요로' : '여쭤봤어요') + '">' + (q.done ? '✓' : '') + '</button><div>' +
       '<div class="qh"><span class="ow2 ' + (w === '거믄' ? 'g' : 'h') + '">' + esc(w) + '</span>' + ago(q.t) + (q.id.indexOf('cm_') === 0 ? ' · <span class="from">💬 기물 이야기에서</span>' : '') + (q.done ? ' · 여쭤봤어요' : '') + '</div>' +
       (ed ? '<div class="qed"><textarea data-et="' + esc(q.id) + '">' + esc(q.text) + '</textarea><div class="r"><button type="button" data-cancel="1">그만두기</button><button type="button" class="ok" data-esave="' + esc(q.id) + '">고친 내용 저장</button></div></div>' : '<p class="qt">' + esc(q.text) + '</p>') +
-      (q.cid ? '<a class="qobj" href="' + link(q.cid) + '" data-seq="' + esc(grp) + '" data-cid="' + esc(q.cid) + '">' + (thumb(q.cid) ? '<img src="' + thumb(q.cid) + '" alt="">' : '') + esc(name(q.cid)) + '<small style="color:#8a837a">· ' + esc(BOOK[q.cid.split('/')[0]] || '') + '</small><em>사진 보기 ›</em></a>' : '') +
+      (q.cid ? '<a class="qobj" href="' + link(q.cid) + '" data-seq="' + esc(grp) + '" data-k="' + esc(q.cid) + '">' + (thumb(q.cid) ? '<img src="' + thumb(q.cid) + '" alt="">' : '') + esc(name(q.cid)) + '<small style="color:#8a837a">· ' + esc(BOOK[q.cid.split('/')[0]] || '') + '</small><em>사진 보기 ›</em></a>' : '') +
       (q.ans && !an ? '<div class="qans"><b>선생님 말씀</b>' + esc(q.ans) + '</div>' : '') +
       (an ? '<div class="qed"><textarea data-at="' + esc(q.id) + '" placeholder="선생님 말씀을 적어 두세요">' + esc(q.ans) + '</textarea><div class="r"><button type="button" data-cancel="1">그만두기</button><button type="button" class="ok" data-asave="' + esc(q.id) + '">말씀 저장</button></div></div>' : '') +
       (ed || an ? '' : '<div class="qact"><button type="button" data-ans="' + esc(q.id) + '">✎ 선생님 말씀 ' + (q.ans ? '고치기' : '적기') + '</button><button type="button" data-edit="' + esc(q.id) + '">질문 고치기</button>' +
@@ -383,7 +403,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<select id="qcls">' + up.map(function (d) { return '<option value="' + d + '">' + mdw(d) + ' 수업</option>'; }).join('') + '</select>' +
       '<select id="qcid"><option value="">기물 붙이기 (안 해도 돼요)</option>' + opts + '</select></div>' +
       '<textarea id="qtext" placeholder="선생님께 여쭤볼 것을 적어 주세요 — 예: 전라도 반닫이와 경상도 반닫이의 장석 차이는?">' + esc(draft) + '</textarea>' +
-      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있고, 기물 이야기에 적은 질문(?, 궁금, 여쭤볼 것…)은 저절로 들어와요. 기물 사진은 손가락으로 좌우로 밀면 이 수업 질문의 다음 기물로 넘어가요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
+      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있고, 기물 이야기에 적은 질문(?, 궁금, 여쭤볼 것…)은 저절로 들어와요. 기물 사진은 이 화면에서 바로 열리고, 손가락으로 좌우로 밀면 이 수업 질문의 다음 기물로 넘어가요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
     fut.forEach(function (k) {
       var L = groups[k] || [], g = askSeq(k, L);
       h += '<div class="cls' + (k === nx ? ' now' : '') + '"><h3>' + mdw(k) + ' 수업 <small>' + (k === nx ? dday(k) + ' · ' : '') + L.length + '개</small></h3>' +
@@ -603,11 +623,42 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     post(body).then(function (ok) { if (!ok) { Object.keys(keep).forEach(function (k) { q[k] = keep[k]; }); draw(); toast('저장하지 못했어요. 다시 해 주세요'); } else if (msg) toast(msg); });
   }
   /* 기물 사진으로 가는 고리를 누르면 그 목록 순서를 index.html 사진 창에 넘겨 좌우로 넘길 수 있게 */
+  /* 통계 안에서 바로 여는 사진 창 — 닫으면 통계 그대로, 좌우로 밀면 같은 목록의 이전·다음 기물 */
+  var V = { list: [], at: 0, S: null };
+  function vRow(k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; }
+  function vShow(i) {
+    if (i < 0 || i >= V.list.length) return;
+    V.at = i; var cid = V.list[i], r = rec(cid), dlg = document.getElementById('dlg'), img = document.getElementById('d-img');
+    dlg.dataset.cid = cid;
+    img.onerror = function () { if (r && r.t && img.src.indexOf('/thumbs/') < 0) img.src = 'thumbs/' + r.b + '/' + r.n + '.jpg'; };
+    img.src = r ? (r.h ? 'photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '')) : '';
+    img.alt = name(cid);
+    var notes = V.S && V.S.notes && V.S.notes[cid];
+    document.getElementById('d-info').innerHTML = '<div class="cat">' + esc(BOOK[cid.split('/')[0]] || '') + '</div><h3>' + esc(name(cid)) + (r && r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h3>' +
+      (r ? '<dl>' + vRow('종류', r.kind) + vRow('연대', r.era) + vRow('치수', r.size) + vRow('재질', r.wood) + vRow('소장', r.owner) + vRow('도록', r.page ? r.page + '쪽' : '') + '</dl>' : '') +
+      (notes && notes.length ? '<div class="d-ask">' + notes.map(function (n) { return '<div class="d-ask1"><span class="ow2 ' + (n.who === '힌' ? 'h' : 'g') + '">' + esc(n.who) + '</span>' + (n.done ? '<small>여쭤봤어요</small>' : '') + '<p>' + esc(n.text) + '</p>' + (n.ans ? '<div class="qans"><b>선생님 말씀</b>' + esc(n.ans) + '</div>' : '') + '</div>'; }).join('') + '</div>' : '') +
+      '<a class="d-book" href="' + esc(cid.split('/')[0]) + '.html">도록에서 보기 →</a>';
+    document.getElementById('d-pos').textContent = (V.S ? V.S.label + ' ' : '') + (i + 1) + ' / ' + V.list.length;
+    document.getElementById('d-prev').disabled = i === 0; document.getElementById('d-next').disabled = i === V.list.length - 1;
+    if (!dlg.open) dlg.showModal();
+  }
+  function vOpen(S, cid) {
+    V.S = S; V.list = S.list.filter(rec); var at = V.list.indexOf(cid);
+    if (at < 0) { V.list = [cid].concat(V.list); at = 0; }
+    vShow(at);
+  }
   app.addEventListener('click', function (e) {
     var a = e.target.closest('a[data-seq]'); if (!a) return;
-    var S = SEQ[a.dataset.seq]; if (!S || !S.list || !S.list.length) return;
-    try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ from: S.from, label: S.label, list: S.list, notes: S.notes || null, back: 'stats.html#' + (S.from === 'ask' ? 'ask' : 'duo') })); } catch (x) {}
+    var S = SEQ[a.dataset.seq], cid = a.dataset.k; if (!S || !cid || e.ctrlKey || e.metaKey) return;
+    e.preventDefault();
+    if (rec(cid)) { vOpen(S, cid); return; }
+    toast('기물 목록을 불러오는 중이에요…');
+    waitIndex().then(function () { if (rec(cid)) vOpen(S, cid); else location.href = a.href; });
   });
+  document.getElementById('d-prev').addEventListener('click', function () { vShow(V.at - 1); });
+  document.getElementById('d-next').addEventListener('click', function () { vShow(V.at + 1); });
+  document.getElementById('d-close').addEventListener('click', function () { document.getElementById('dlg').close(); });
+  document.getElementById('dlg').addEventListener('click', function (e) { if (e.target.id === 'dlg') e.target.close(); });
   app.addEventListener('input', function (e) {
     var t = e.target;
     if (t.id === 'qtext') draft = t.value;
@@ -665,5 +716,54 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 </script>
 <script>/* 검색 색인(1.4MB)은 화면을 먼저 그린 뒤에 받는다 */
 (function(){function go(){if(window.SEARCH||document.querySelector('script[src^="search.js"]'))return;var x=document.createElement('script');x.src='search.js';x.async=true;document.head.appendChild(x);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(go,150);});else setTimeout(go,150);})();</script>
+<script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;
+var img=document.getElementById('dlg-img')||document.getElementById('d-img');if(!img)return;
+var nx=function(){return document.getElementById('dlg-next')||document.getElementById('d-next');},pv=function(){return document.getElementById('dlg-prev')||document.getElementById('d-prev');};
+img.setAttribute('draggable','false');img.addEventListener('dragstart',function(e){e.preventDefault();});
+if(img.parentElement)img.parentElement.style.overflow='hidden';
+var sc=1,tx=0,ty=0,sw=0,busy=false;
+function apply(anim){img.style.transition=anim?'transform .22s ease, opacity .22s ease':'none';
+  img.style.transform=(sc===1&&!sw&&!tx&&!ty)?'':'translate('+(tx+sw)+'px,'+ty+'px) scale('+sc+')';
+  img.style.opacity=sw?String(Math.max(.35,1-Math.abs(sw)/600)):'';img.style.touchAction=sc>1?'none':'';img.style.cursor=sc>1?'grab':'';}
+function clampPan(){var w=img.clientWidth,h=img.clientHeight,mx=w*(sc-1)/2,my=h*(sc-1)/2;tx=Math.max(-mx,Math.min(mx,tx));ty=Math.max(-my,Math.min(my,ty));}
+function reset(){sc=1;tx=0;ty=0;sw=0;apply(false);}
+function zoomAt(ns,cx,cy){var r=img.getBoundingClientRect(),ox=cx-(r.left+r.width/2),oy=cy-(r.top+r.height/2);ns=Math.max(1,Math.min(5,ns));var k=ns/sc;tx=(tx-ox)*k+ox;ty=(ty-oy)*k+oy;sc=ns;if(sc===1){tx=0;ty=0;}clampPan();}
+new MutationObserver(function(){if(!busy)reset();}).observe(img,{attributes:true,attributeFilter:['src']});
+function go(dir){var b=dir>0?nx():pv();if(!b||b.disabled){sw=0;apply(true);return;}
+  if(busy)return;busy=true;var w=(d.clientWidth||400)*0.6;sw=-dir*w;apply(true);
+  setTimeout(function(){sc=1;tx=0;ty=0;b.click();sw=dir*w;apply(false);requestAnimationFrame(function(){requestAnimationFrame(function(){sw=0;apply(true);busy=false;});});},200);}
+var x0=null,y0=0,t0=0,dx=0,mode=0,px=0,py=0,pd0=0,ps0=1,lastTap=0,tEnd=0,dxEnd=0;
+function onImg(t){return t===img||(img.parentElement&&img.parentElement.contains(t));}
+function start(x,y,t){if(t&&t.closest&&t.closest('button,a,input,select,textarea'))return;x0=x;y0=y;px=x;py=y;t0=Date.now();dx=0;mode=sc>1&&onImg(t)?4:0;}
+function move(x,y,e){if(x0===null)return;
+  if(mode===4){tx+=x-px;ty+=y-py;px=x;py=y;clampPan();apply(false);if(e&&e.cancelable)e.preventDefault();return;}
+  var ddx=x-x0,ddy=y-y0;
+  if(!mode){if(Math.abs(ddx)>8&&Math.abs(ddx)>Math.abs(ddy)*1.2)mode=1;else if(Math.abs(ddy)>10)mode=2;}
+  if(mode===1){dx=ddx;sw=dx;apply(false);if(e&&e.cancelable)e.preventDefault();}}
+function end(){if(x0===null)return;tEnd=Date.now();dxEnd=(mode===1||mode===4)?99:0;var fast=Date.now()-t0<300&&Math.abs(dx)>30;var m=mode;x0=null;mode=0;
+  if(m===1&&(Math.abs(dx)>70||fast)){go(dx<0?1:-1);}else if(m===1){sw=0;apply(true);}}
+function dist(a,b){return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);}
+d.addEventListener('touchstart',function(e){
+  if(e.touches.length===2&&onImg(e.target)){x0=null;mode=3;pd0=dist(e.touches[0],e.touches[1]);ps0=sc;return;}
+  if(e.touches.length!==1){x0=null;return;}var p=e.touches[0];start(p.clientX,p.clientY,e.target);},{passive:true});
+d.addEventListener('touchmove',function(e){
+  if(mode===3&&e.touches.length===2){var a=e.touches[0],b=e.touches[1];zoomAt(ps0*dist(a,b)/pd0,(a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);apply(false);if(e.cancelable)e.preventDefault();return;}
+  var p=e.touches[0];if(p)move(p.clientX,p.clientY,e);},{passive:false});
+d.addEventListener('touchend',function(e){
+  if(mode===3){if(e.touches.length===0){mode=0;if(sc<1.05){reset();apply(true);}}tEnd=Date.now();dxEnd=99;return;}
+  var tap=x0!==null&&mode===0&&Date.now()-t0<250;var tg=e.target;end();
+  if(tap&&onImg(tg)){var now=Date.now();if(now-lastTap<320){var c=e.changedTouches[0];if(sc>1){sc=1;tx=0;ty=0;}else zoomAt(2.5,c.clientX,c.clientY);apply(true);lastTap=0;if(e.cancelable)e.preventDefault();}else lastTap=now;}});
+d.addEventListener('touchcancel',function(){x0=null;mode=0;sw=0;apply(true);});
+var mouse=false;
+d.addEventListener('mousedown',function(e){if(e.button!==0)return;mouse=true;start(e.clientX,e.clientY,e.target);if(mode===4)img.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){if(mouse)move(e.clientX,e.clientY,e);});
+window.addEventListener('mouseup',function(){if(mouse){mouse=false;end();apply(false);}});
+img.addEventListener('wheel',function(e){e.preventDefault();zoomAt(sc*(e.deltaY<0?1.2:1/1.2),e.clientX,e.clientY);apply(false);},{passive:false});
+img.addEventListener('dblclick',function(e){if(sc>1){sc=1;tx=0;ty=0;}else zoomAt(2.5,e.clientX,e.clientY);apply(true);});
+d.addEventListener('click',function(e){if(e.isTrusted&&Date.now()-tEnd<400&&dxEnd){e.stopPropagation();e.preventDefault();}},true);
+d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}else if(e.key==='+'||e.key==='='){zoomAt(sc*1.3,innerWidth/2,innerHeight/2);apply(true);}else if(e.key==='-'){zoomAt(sc/1.3,innerWidth/2,innerHeight/2);apply(true);}});
+d.addEventListener('close',reset);
+})();</script>
+<style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 </body>
 </html>
