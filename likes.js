@@ -72,7 +72,14 @@
     var w = me(); if (!w) { ask(); return; }
     var on = !isOn(cid, w), t = new Date().toISOString();
     pend = pend.filter(function (p) { return !(p.cid === cid && p.who === w); });
-    pend.push({ cid: cid, who: w, on: on, t: t }); save(); paintAll(cid);
+    pend.push({ cid: cid, who: w, on: on, t: t }); save();
+    // 누른 자리부터 바로 바꾼다 — 나머지(떠 있는 창·사진 창)는 곧이어 다시 그린다
+    document.querySelectorAll('[data-lk="' + cid.replace(/"/g, '\\"') + '"]').forEach(function (b) {
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+      if (b.classList.contains('lk-big')) b.innerHTML = star(on ? w : '') + (on ? '좋아요 했어요' : '좋아요');
+      else { b.innerHTML = star(on ? w : ''); b.classList.remove('lk-pop'); void b.offsetWidth; b.classList.add('lk-pop'); }
+    });
+    paintAll(cid);
     toast(on ? w + '의 좋아요 ★' : '좋아요를 거뒀어요');
     flush();
   }
@@ -108,8 +115,8 @@
     '#lk-box .lk-hint{font-size:10.5px;color:#8a837a;text-align:center;line-height:1.3;border:0;background:none;cursor:pointer;padding:0;font:inherit;font-size:10.5px}',
     '@media (max-width:720px){#lk-box{width:56px;padding:5px 3px}#lk-box .lk-me span{font-size:9.5px;padding:1px 3px}#lk-box .lk-open{font-size:9.5px}}',
     /* 누구세요? · 모아보기 창 */
-    '#lk-who,#lk-col{border:0;border-radius:16px;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#1d1b18}',
-    '#lk-who::backdrop,#lk-col::backdrop{background:rgba(20,18,15,.55)}',
+    '#lk-who{border:0;border-radius:16px;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#1d1b18}',
+    '#lk-who::backdrop{background:rgba(20,18,15,.55)}',
     '#lk-who{width:min(420px,92vw);text-align:center;padding:26px 22px 20px}',
     '#lk-who h2{margin:0 0 6px;font-size:22px;font-weight:900}#lk-who p{margin:0 0 14px;color:#6b665e;font-size:14px;line-height:1.6}',
     '#lk-who .lk-err{color:#8a2f22;font-size:13px;min-height:18px;margin:0 0 6px}',
@@ -120,14 +127,19 @@
     '#lk-who .lk-pick b{font-size:25px;font-weight:900;letter-spacing:.05em}#lk-who .lk-pick small{font-size:12px;opacity:.8}#lk-who .lk-pick svg{width:28px;height:28px}',
     '#lk-who label{font-size:13px;color:#6b665e;display:flex;gap:6px;justify-content:center;align-items:center}',
     '#lk-who .lk-skip{margin-top:10px;font:inherit;font-size:13px;color:#8a837a;background:none;border:0;text-decoration:underline;cursor:pointer}',
-    '#lk-col{width:min(980px,94vw);max-height:90vh}',
-    '#lk-col .lc-hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid #e5e1da;position:sticky;top:0;background:#fff;z-index:2}',
+    '#lk-col{position:fixed;inset:0;z-index:1500;background:rgba(20,18,15,.55);display:none;align-items:center;justify-content:center;padding:3vh 3vw;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#1d1b18}',
+    '#lk-col.on{display:flex}',
+    '#lk-col .lc-panel{width:min(980px,100%);max-height:94vh;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden}',
+    'html.lk-lock,html.lk-lock body{overflow:hidden!important}',
+    '#lk-col .lc-hd{flex:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid #e5e1da;background:#fff}',
     '#lk-col h2{margin:0;font-size:20px;font-weight:900;display:flex;align-items:center;gap:6px;color:#1d1b18}#lk-col h2 svg{width:22px;height:22px}',
     '#lk-col .lc-chips{display:flex;gap:6px;flex-wrap:wrap}',
     '#lk-col .lc-chips button{font:inherit;font-size:13px;border:1px solid #d9d4cc;background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#1d1b18}#lk-col .lc-chips svg{width:14px;height:14px}',
     '#lk-col .lc-chips button.on{background:#1d1b18;color:#fff;border-color:#1d1b18}',
     '#lk-col .lc-x{margin-left:auto;font:inherit;border:1px solid #d9d4cc;background:#fff;border-radius:8px;padding:5px 12px;cursor:pointer}',
-    '#lk-col .lc-body{padding:16px 20px 22px;overflow:auto;max-height:calc(90vh - 70px)}',
+    '#lk-col .lc-body{flex:1 1 auto;min-height:0;padding:16px 18px 24px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}',
+    '#lk-col .lc-x{font-size:15px;padding:7px 16px}',
+    '@media (max-width:720px){#lk-col{padding:0;align-items:flex-end}#lk-col .lc-panel{max-height:88vh;border-radius:16px 16px 0 0}#lk-col .lc-grid{grid-template-columns:repeat(2,1fr)!important;gap:10px}#lk-col h2{font-size:17px}}',
     '#lk-col .lc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}',
     '#lk-col .lc-it{position:relative;display:flex;flex-direction:column;text-align:left;font:inherit;color:inherit;background:#fff;border:1px solid #e5e1da;border-radius:12px;padding:0;overflow:hidden;cursor:pointer}',
     '#lk-col .lc-it:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}',
@@ -174,7 +186,7 @@
   function infoBox(d) { return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d; }
   function paintDlg() {
     document.querySelectorAll('dialog[open]').forEach(function (d) {
-      if (d.id === 'lk-who' || d.id === 'lk-col') return;
+      if (d.id === 'lk-who') return;
       var cid = d.dataset.cid, box = infoBox(d), bar = box.querySelector(':scope > .lk-bar');
       if (!cid || !fam()) { if (bar) bar.remove(); return; }
       var w = me(), s = state()[cid] || {};
@@ -202,7 +214,7 @@
     box.innerHTML = '<button type="button" class="lk-me" data-lkask="1" title="누구인지 바꾸기"><span class="g' + (w === '거믄' ? ' cur' : '') + '">거믄</span><span class="h' + (w === '힌' ? ' cur' : '') + '">힌</span></button>' +
       '<button type="button" class="lk-open" id="lk-open" title="좋아요 모아보기">' + star(w || '거믄') + '<span>좋아요</span><b>' + n + '</b></button>';
   }
-  box.addEventListener('click', function (e) { if (e.target.closest('#lk-open')) openCol(); });
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#lk-open')) { e.preventDefault(); e.stopPropagation(); openCol(); } }, true);
 
   /* ── 처음 화면 왼쪽 위 「거믄 힌」 표시 ── */
   function paintTop() {
@@ -253,32 +265,35 @@
   }
 
   /* ── 좋아요 모아보기 ── */
-  var colDlg, colView = '';
+  var colDlg, colPanel, colOpen = false, colView = '';
   function needIndex() {
     if (window.SEARCH) return Promise.resolve();
     return new Promise(function (res) { var s = document.createElement('script'); s.src = 'search.js'; s.onload = res; s.onerror = res; document.head.appendChild(s); });
   }
   function openCol() {
     if (!colDlg) {
-      colDlg = document.createElement('dialog'); colDlg.id = 'lk-col'; colDlg.setAttribute('aria-label', '좋아요 모아보기');
+      colDlg = document.createElement('div'); colDlg.id = 'lk-col'; colDlg.setAttribute('role', 'dialog'); colDlg.setAttribute('aria-label', '좋아요 모아보기');
+      colDlg.innerHTML = '<div class="lc-panel"></div>'; colPanel = colDlg.firstChild;
       document.body.appendChild(colDlg);
       colDlg.addEventListener('click', function (e) {
-        if (e.target === colDlg || e.target.closest('.lc-x')) { colDlg.close(); return; }
+        if (e.target === colDlg || e.target.closest('.lc-x')) { closeCol(); return; }
         var c = e.target.closest('[data-v]'); if (c) { colView = c.dataset.v; drawCol(); return; }
         var it = e.target.closest('.lc-it'); if (it) {
           var ids = [].map.call(colDlg.querySelectorAll('.lc-it'), function (x) { return x.dataset.key; });
           try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ from: 'likes', list: ids })); } catch (x) {}
           var target = 'see=' + it.dataset.key.split('/').map(encodeURIComponent).join('/');
-          colDlg.close();
+          closeCol();
           if (window.RV_OPEN && /(^|\/)(index\.html)?$/.test(location.pathname)) location.hash = target; else location.href = 'index.html#' + target;
         }
       });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && colOpen) closeCol(); });
     }
-    colView = colView || me() || 'all';
-    colDlg.innerHTML = '<div class="lc-body"><p class="lc-empty">불러오는 중…</p></div>';
-    if (!colDlg.open) colDlg.showModal();
+    colView = colView || 'all';
+    colPanel.innerHTML = '<div class="lc-hd"><h2>' + star('거믄') + '좋아요 모아보기</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body"><p class="lc-empty">불러오는 중…</p></div>';
+    colOpen = true; colDlg.classList.add('on'); document.documentElement.classList.add('lk-lock');
     needIndex().then(drawCol);
   }
+  function closeCol() { colOpen = false; if (colDlg) colDlg.classList.remove('on'); document.documentElement.classList.remove('lk-lock'); }
   function drawCol() {
     var m = state(), IX = {};
     (window.SEARCH || []).forEach(function (r) { IX[r.b + '/' + r.pid] = r; });
@@ -301,12 +316,14 @@
         '<span class="lc-stars">' + st + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>';
     }).join('') + '</div>';
     if (pend.length) html += '<p class="lc-note">' + (serverOk ? '별 ' + pend.length + '개를 시트에 올리는 중이에요.' : '별 ' + pend.length + '개가 아직 이 기기에만 있어요. 시트 연결이 열리면 저절로 올라가요.') + '</p>';
-    colDlg.innerHTML = html + '</div>';
+    var keepTop = colPanel.querySelector('.lc-body') ? colPanel.querySelector('.lc-body').scrollTop : 0;
+    colPanel.innerHTML = html + '</div>';
+    colPanel.querySelector('.lc-body').scrollTop = keepTop;
   }
 
   /* ── 다시 그리기 ── */
   var t = 0, popId = '';
-  function paintAll(pop) { if (pop) popId = pop; clearTimeout(t); t = setTimeout(function () { paintCards(popId); popId = ''; paintDlg(); paintBox(); paintTop(); if (colDlg && colDlg.open) drawCol(); }, 30); }
+  function paintAll(pop) { if (pop) popId = pop; clearTimeout(t); t = setTimeout(function () { paintCards(popId); popId = ''; paintDlg(); paintBox(); paintTop(); if (colOpen) drawCol(); }, 30); }
 
   function start() {
     paintAll();
