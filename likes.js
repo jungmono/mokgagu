@@ -208,11 +208,13 @@
     if (!box.parentNode) rv.insertBefore(box, rv.firstChild);
     var w = me(), m = state(), n = Object.keys(m).filter(function (k) { return w ? m[k][w] : m[k]['거믄'] || m[k]['힌']; }).length;
     if (!fam() && !w) {
-      box.innerHTML = '<button type="button" class="lk-hint" data-lkask="1">' + star('') + '<br>거믄·힌<br>들어오기</button>';
+      var h0 = '<button type="button" class="lk-hint" data-lkask="1">' + star('') + '<br>거믄·힌<br>들어오기</button>';
+      if (box._h !== h0) { box._h = h0; box.innerHTML = h0; }
       return;
     }
-    box.innerHTML = '<button type="button" class="lk-me" data-lkask="1" title="누구인지 바꾸기"><span class="g' + (w === '거믄' ? ' cur' : '') + '">거믄</span><span class="h' + (w === '힌' ? ' cur' : '') + '">힌</span></button>' +
+    var h1 = '<button type="button" class="lk-me" data-lkask="1" title="누구인지 바꾸기"><span class="g' + (w === '거믄' ? ' cur' : '') + '">거믄</span><span class="h' + (w === '힌' ? ' cur' : '') + '">힌</span></button>' +
       '<button type="button" class="lk-open" id="lk-open" title="좋아요 모아보기">' + star(w || '거믄') + '<span>좋아요</span><b>' + n + '</b></button>';
+    if (box._h !== h1) { box._h = h1; box.innerHTML = h1; }
   }
   document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#lk-open')) { e.preventDefault(); e.stopPropagation(); openCol(); } }, true);
 
@@ -221,9 +223,9 @@
     var t = document.querySelector('.eyebrow.eb-top'); if (!t) return;
     var w = me();
     t.classList.add('lk-me-top'); t.classList.toggle('lk-g', w === '거믄'); t.classList.toggle('lk-h', w === '힌');
-    t.title = w ? w + '으로 보는 중 — 눌러서 바꾸기' : '누구세요? 눌러서 고르기';
+    var tt = w ? w + '으로 보는 중 — 눌러서 바꾸기' : '누구세요? 눌러서 고르기'; if (t.title !== tt) t.title = tt;
     if (!t.dataset.lkBound) { t.dataset.lkBound = '1'; t.addEventListener('click', ask); }
-    var rest = t.querySelector('.ew-rest'); if (rest) rest.textContent = w ? w + '으로 보는 중' : '고미술공부방';
+    var rest = t.querySelector('.ew-rest'), txt = w ? w + '으로 보는 중' : '고미술공부방'; if (rest && rest.textContent !== txt) rest.textContent = txt;
   }
 
   /* ── 누구세요? ── */
@@ -328,7 +330,7 @@
   function start() {
     paintAll();
     new MutationObserver(function (ms) {
-      for (var i = 0; i < ms.length; i++) { var x = ms[i].target; if (x.closest && x.closest('.lk-st,.lk-bar,#lk-box,#lk-col,#lk-who,.lk-toast')) continue; paintAll(); return; }
+      for (var i = 0; i < ms.length; i++) { var x = ms[i].target; if (x.closest && x.closest('.lk-st,.lk-bar,#lk-box,#lk-col,#lk-who,.lk-toast,.eyebrow.eb-top')) continue; paintAll(); return; }
     }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['open', 'data-cid'] });
     load();
     window.addEventListener('storage', function (e) { if (e.key === K_LIKES || e.key === K_PEND || e.key === K_WHO || e.key === K_FAM) { likes = ls.json(K_LIKES, []); pend = ls.json(K_PEND, []); paintAll(); } });

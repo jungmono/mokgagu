@@ -303,4 +303,4 @@
 })();
 
 /* 좋아요(빨간 별)와 「누구세요?」는 likes.js — 기물 이야기가 붙는 모든 페이지에 함께 불러온다 */
-(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js'; s.defer = true; document.head.appendChild(s); })();
+(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js?v=20261019c'; s.defer = true; document.head.appendChild(s); })();
