@@ -415,15 +415,16 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
       else { b.dataset.sure = '1'; b.textContent = '정말 지울까요? 한 번 더 누르면 지워요'; }
     }
   });
-  $('vw').addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight' && vi < shown.length - 1) openView(vi + 1);
-    else if (e.key === 'ArrowLeft' && vi > 0) openView(vi - 1);
-  });
-  (function () { var x0 = null; var m = $('v-main');
-    m.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
-    m.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; var P = (shown[vi].photos || []);
-      if (Math.abs(dx) > 50 && P.length > 1) { vp = (vp + (dx < 0 ? 1 : -1) + P.length) % P.length; drawView(); } });
-  })();
+  /* 사진 확대·끌기·넘기기 — 첫 화면 사진 창과 같은 손놀림 (photozoom.js). 밀면 같은 기물의 다음 사진, 마지막 사진 다음은 다음 기물 */
+  function pzInit() {
+    if (!window.MOKGAGU_PHOTOZOOM) { setTimeout(pzInit, 100); return; }
+    var n = function () { return (shown[vi] && shown[vi].photos || []).length; };
+    MOKGAGU_PHOTOZOOM.attach({ dialog: $('vw'), area: $('v-main'),
+      canNext: function () { return vp < n() - 1 || vi < shown.length - 1; }, canPrev: function () { return vp > 0 || vi > 0; },
+      next: function () { if (vp < n() - 1) { vp++; drawView(); } else { openView(vi + 1); } },
+      prev: function () { if (vp > 0) { vp--; drawView(); } else { var j = vi - 1; openView(j); vp = Math.max(0, n() - 1); drawView(); } } });
+  }
+  pzInit();
 
   /* ── 입력 창 ── */
   var editing = null, pics = [], owner = ls.get(K_OWNER) || '함께', busy = false;
@@ -685,6 +686,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   if (saved) { app.innerHTML = '<p style="text-align:center;color:#7a736a;padding:60px 0">여는 중…</p>'; check(saved).then(function () { PW = saved; start(); }).catch(function (er) { if (er && er.message === 'net') lockView('인터넷 연결을 확인해 주세요.'); else { ls.del(K_STUDY); lockView(); } }); } else lockView();
 })();
 </script>
+<script src="photozoom.js?v=20261019"></script>
 <script src="zoom.js?v=20261019" defer></script>
 </body>
 </html>
