@@ -209,9 +209,9 @@
     var t = document.querySelector('.eyebrow.eb-top'); if (!t) return;
     var w = me();
     t.classList.add('lk-me-top'); t.classList.toggle('lk-g', w === '거믄'); t.classList.toggle('lk-h', w === '힌');
-    t.title = w ? w + '로 보는 중 — 눌러서 바꾸기' : '누구세요? 눌러서 고르기';
+    t.title = w ? w + '으로 보는 중 — 눌러서 바꾸기' : '누구세요? 눌러서 고르기';
     if (!t.dataset.lkBound) { t.dataset.lkBound = '1'; t.addEventListener('click', ask); }
-    var rest = t.querySelector('.ew-rest'); if (rest) rest.textContent = w ? w + '로 보는 중' : '고미술공부방';
+    var rest = t.querySelector('.ew-rest'); if (rest) rest.textContent = w ? w + '으로 보는 중' : '고미술공부방';
   }
 
   /* ── 누구세요? ── */
@@ -233,7 +233,7 @@
         var err = whoDlg.querySelector('.lk-err'), code = whoDlg.querySelector('.lk-code');
         var pick = function () {
           ls.set(K_SHARED, whoDlg.querySelector('.lk-shared').checked ? '1' : ''); setMe(b.dataset.w); ls.del(K_SKIP);
-          whoDlg.close(); toast(b.dataset.w + '로 들어왔어요'); load(); paintAll();
+          whoDlg.close(); toast(b.dataset.w + '으로 들어왔어요'); load(); paintAll();
           if (window.MOKGAGU_COMMENTS && window.MOKGAGU_COMMENTS.reload) window.MOKGAGU_COMMENTS.reload();
         };
         if (fam()) { pick(); return; }
