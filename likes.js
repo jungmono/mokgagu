@@ -14,7 +14,7 @@
   if (!window.MOKGAGU_CLASS && !document.querySelector('script[src^="classes.js"]')) { var cs = document.createElement('script'); cs.src = 'classes.js?v=20261019'; document.head.appendChild(cs); }
   var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
   var K_CODE = 'mokgagu_cm_code', K_WHO = 'mokgagu_cm_who', K_FAM = 'mokgagu_cm_fam';
-  var K_LIKES = 'mokgagu_lk_cache', K_PEND = 'mokgagu_lk_pending', K_SHARED = 'mokgagu_lk_shared', K_SKIP = 'mokgagu_lk_skip', S_WHO = 'mokgagu_lk_who_s';
+  var K_BEOT = 'mokgagu_lk_beot', K_LIKES = 'mokgagu_lk_cache', K_PEND = 'mokgagu_lk_pending', K_SHARED = 'mokgagu_lk_shared', K_SKIP = 'mokgagu_lk_skip', S_WHO = 'mokgagu_lk_who_s';
   var ls = {
     get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } },
     set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -24,15 +24,19 @@
   var ss = { get: function (k) { try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: function (k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} } };
   var FAMW = { '거믄': 1, '힌': 1 };
   var likes = ls.json(K_LIKES, []);       // [{cid, who, t}]
+  var beot = ls.json(K_BEOT, {});        // 벗의 좋아요 {cid: 시각} — 이 기기에만, 거믄·힌 기록과 섞지 않는다
   var pend = ls.json(K_PEND, []);         // [{cid, who, on, t}] 시트에 아직 못 올린 것
   var serverOk = true;                    // 시트 스크립트가 좋아요를 알아듣는지
   function fam() { return ls.get(K_FAM, '') === '1' && !!ls.get(K_CODE, ''); }
   function shared() { return ls.get(K_SHARED, '') === '1'; }
   function me() {
-    if (!fam()) return '';
     var w = shared() ? ss.get(S_WHO) : ls.get(K_WHO, '');
+    if (w === '벗') return '벗';
+    if (!fam()) return '';
     return FAMW[w] ? w : '';
   }
+  function canStar() { return fam() || me() === '벗'; }
+  function icon(w, on) { return w === '벗' ? star(on ? '벗' : '벗0') : star(on ? w : ''); }
   function setMe(w) { ls.set(K_WHO, w); ss.set(S_WHO, w); }
 
   /* ── 지금 상태: 시트 목록 + 이 기기의 아직 못 올린 것 ── */
@@ -40,6 +44,7 @@
     var m = {};
     likes.forEach(function (x) { if (FAMW[x.who]) (m[x.cid] = m[x.cid] || {})[x.who] = x.t || 1; });
     pend.forEach(function (p) { var o = m[p.cid] = m[p.cid] || {}; if (p.on) o[p.who] = p.t; else delete o[p.who]; });
+    Object.keys(beot).forEach(function (cid) { (m[cid] = m[cid] || {})['벗'] = beot[cid]; });
     return m;
   }
   function isOn(cid, w) { var s = state()[cid]; return !!(s && s[w]); }
@@ -73,6 +78,15 @@
   function toggle(cid) {
     var w = me(); if (!w) { ask(); return; }
     var on = !isOn(cid, w), t = new Date().toISOString();
+    if (w === '벗') {
+      if (on) beot[cid] = t; else delete beot[cid];
+      ls.set(K_BEOT, JSON.stringify(beot));
+      document.querySelectorAll('[data-lk="' + cid.replace(/"/g, '\\"') + '"]').forEach(function (b) {
+        b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+        b.innerHTML = b.classList.contains('lk-big') ? icon(w, on) + (on ? '좋아요 했어요' : '좋아요') : icon(w, on);
+      });
+      paintAll(cid); toast(on ? '벗의 좋아요 — 이 기기에 담아 둘게요' : '좋아요를 거뒀어요'); return;
+    }
     pend = pend.filter(function (p) { return !(p.cid === cid && p.who === w); });
     pend.push({ cid: cid, who: w, on: on, t: t }); save();
     // 누른 자리부터 바로 바꾼다 — 나머지(떠 있는 창·사진 창)는 곧이어 다시 그린다
@@ -92,8 +106,10 @@
   function star(kind) {
     if (kind === '거믄') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SP + '" fill="' + RED + '" stroke="' + RED + '" stroke-width="1.6" stroke-linejoin="round"/></svg>';
     if (kind === '힌') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SP + '" fill="#fff" stroke="' + RED + '" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+    if (kind === '벗' || kind === '벗0') return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + BUB + '" fill="' + (kind === '벗' ? RED : 'none') + '" stroke="' + (kind === '벗' ? RED : '#a39c92') + '" stroke-width="1.8" stroke-linejoin="round"/></svg>';
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SP + '" fill="none" stroke="#a39c92" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   }
+  var BUB = 'M5 4.5h14A2.5 2.5 0 0 1 21.5 7v8.5A2.5 2.5 0 0 1 19 18h-7.2l-4.6 3.6c-.4.3-.9 0-.9-.5V18H5a2.5 2.5 0 0 1-2.5-2.5V7A2.5 2.5 0 0 1 5 4.5z';
   var css = document.createElement('style');
   css.textContent = [
     '.lk-st{position:absolute;top:4px;left:4px;z-index:5;display:inline-flex;align-items:center;gap:1px}',
@@ -115,7 +131,7 @@
     '#lk-box{background:#fff;border:1px solid #e3ded6;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:7px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;width:80px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
     '#lk-box .lk-me{display:flex;border:0;background:none;padding:0;cursor:pointer;font:inherit}',
     '#lk-box .lk-me span{font-size:11px;font-weight:900;padding:1px 5px;border:1.5px solid #111;line-height:1.25;opacity:.25}',
-    '#lk-box .lk-me span.g{background:#111;color:#fff}#lk-box .lk-me span.h{background:#fff;color:#111}#lk-box .lk-me span.cur{opacity:1}',
+    '#lk-box .lk-me span.b{background:#fff;color:#6b665e;border-style:dashed;border-color:#a39c92}#lk-box .lk-me span.g{background:#111;color:#fff}#lk-box .lk-me span.h{background:#fff;color:#111}#lk-box .lk-me span.cur{opacity:1}',
     '#lk-box .lk-open{border:0;background:#fdf1f0;border-radius:9px;width:100%;padding:6px 2px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;color:' + RED + ';font:inherit;font-size:11px;font-weight:800}',
     '#lk-box .lk-open svg{width:22px;height:22px}#lk-box .lk-open b{font-size:12px}',
     '#lk-box .lk-hint{font-size:10.5px;color:#8a837a;text-align:center;line-height:1.3;border:0;background:none;cursor:pointer;padding:0;font:inherit;font-size:10.5px}',
@@ -127,9 +143,12 @@
     '#lk-who h2{margin:0 0 6px;font-size:22px;font-weight:900}#lk-who p{margin:0 0 14px;color:#6b665e;font-size:14px;line-height:1.6}',
     '#lk-who .lk-err{color:#8a2f22;font-size:13px;min-height:18px;margin:0 0 6px}',
     '#lk-who .lk-code{font:inherit;font-size:16px;width:180px;padding:9px 14px;border:1.5px solid #111;border-radius:10px;text-align:center;margin:0 0 12px}',
-    '#lk-who .lk-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}',
-    '#lk-who .lk-pick button{font:inherit;cursor:pointer;border-radius:14px;padding:16px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid #111}',
-    '#lk-who .lk-pick button.g{background:#111;color:#fff}#lk-who .lk-pick button.h{background:#fff;color:#111}',
+    '#lk-who{width:min(460px,94vw);box-sizing:border-box;padding:24px 16px 18px}#lk-who *{box-sizing:border-box}#lk-who .lk-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 12px}',
+    '#lk-who .lk-pick button{font:inherit;cursor:pointer;border-radius:14px;padding:16px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;border:2px solid #111;background:#fff;color:#111;min-height:118px;justify-content:center}',
+    '#lk-who .lk-pick button.bt{border:2px dashed #a39c92;color:#4a463f}#lk-who .lk-pick button.sel{box-shadow:0 0 0 3px #fff,0 0 0 5px ' + RED + '}',
+    '#lk-who .lk-step{margin:0 0 12px;padding:12px;border-radius:12px;background:#faf8f5;text-align:left}#lk-who .lk-st-t{font-size:13.5px;color:#4a463f;margin-bottom:8px;line-height:1.5}',
+    '#lk-who .lk-row{display:flex;gap:8px}#lk-who .lk-row .lk-code{flex:1;width:auto;margin:0}#lk-who .lk-go{font:inherit;font-weight:800;border:0;border-radius:10px;background:#111;color:#fff;padding:0 16px;cursor:pointer}',
+    '#lk-who .lk-step .lk-err{margin:6px 0 0;min-height:0}',
     '#lk-who .lk-pick b{font-size:25px;font-weight:900;letter-spacing:.05em}#lk-who .lk-pick small{font-size:12px;opacity:.8}#lk-who .lk-pick svg{width:28px;height:28px}',
     '#lk-who label{font-size:13px;color:#6b665e;display:flex;gap:6px;justify-content:center;align-items:center}',
     '#lk-who .lk-skip{margin-top:10px;font:inherit;font-size:13px;color:#8a837a;background:none;border:0;text-decoration:underline;cursor:pointer}',
@@ -156,7 +175,7 @@
     '.lk-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#1d1b18;color:#fff;font:600 14px system-ui,sans-serif;padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;z-index:2000}',
     '.lk-toast.on{opacity:1;transform:translateX(-50%)}',
     '.eyebrow.eb-top.lk-me-top{cursor:pointer}.eyebrow.eb-top.lk-me-top:hover{opacity:.85}',
-    '.eyebrow.eb-top.lk-g .ew-wht,.eyebrow.eb-top.lk-h .ew-blk{opacity:.25}',
+    '.eyebrow.eb-top.lk-g .ew-wht,.eyebrow.eb-top.lk-h .ew-blk,.eyebrow.eb-top.lk-b .ew-wht,.eyebrow.eb-top.lk-b .ew-blk{opacity:.25}',
     '@media print{.lk-st,.lk-bar,#lk-box{display:none}}'
   ].join('');
   document.head.appendChild(css);
@@ -168,14 +187,14 @@
   /* ── 목록 사진 위 별 ── */
   var SKIP = '.cm,.lk-st,#lk-col,#lk-box';
   function paintCards(pop) {
-    var w = me(), m = state(), on = fam();
+    var w = me(), m = state(), on = canStar();
     document.querySelectorAll('[data-cid]').forEach(function (el) {
       if (el.tagName === 'DIALOG' || el.classList.contains('cm') || el.closest(SKIP)) return;
       var cid = el.dataset.cid, s = m[cid] || {}, b = el.querySelector(':scope > .lk-st');
       var inRv = !!el.closest('#rv');
       var others = ['거믄', '힌'].filter(function (k) { return s[k] && (k !== w || inRv); });
       if (!on || (!w && !others.length) || (inRv && !others.length)) { if (b) b.remove(); return; }
-      var mine = w && !inRv ? '<button type="button" class="lk-btn' + (s[w] ? ' on' : '') + (pop === cid ? ' lk-pop' : '') + '" data-lk="' + esc(cid) + '" aria-pressed="' + !!s[w] + '" aria-label="' + w + '의 좋아요" title="' + (s[w] ? '좋아요 거두기' : w + '의 좋아요') + '">' + star(s[w] ? w : '') + '</button>' : '';
+      var mine = w && !inRv ? '<button type="button" class="lk-btn' + (s[w] ? ' on' : '') + (pop === cid ? ' lk-pop' : '') + '" data-lk="' + esc(cid) + '" aria-pressed="' + !!s[w] + '" aria-label="' + w + '의 좋아요" title="' + (s[w] ? '좋아요 거두기' : w + '의 좋아요') + '">' + icon(w, !!s[w]) + '</button>' : '';
       var oth = others.length ? '<span class="lk-other" title="' + others.join(' · ') + '이(가) 좋아해요">' + others.map(star).join('') + '</span>' : '';
       var html = mine + oth;
       if (!b) { b = document.createElement('span'); b.className = 'lk-st'; el.appendChild(b); }
@@ -194,12 +213,12 @@
     document.querySelectorAll('dialog[open]').forEach(function (d) {
       if (d.id === 'lk-who') return;
       var cid = d.dataset.cid, box = infoBox(d), bar = box.querySelector(':scope > .lk-bar');
-      if (!cid || !fam()) { if (bar) bar.remove(); return; }
+      if (!cid || !canStar()) { if (bar) bar.remove(); return; }
       var w = me(), s = state()[cid] || {};
-      var whoTxt = ['거믄', '힌'].filter(function (k) { return s[k]; });
-      if (w) logView(cid);
-      var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + star(s[w] ? w : '') + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>' +
-                      '<button type="button" class="lk-askq" data-lkq="' + esc(cid) + '">✎ 선생님께 여쭤보기</button>'
+      var whoTxt = fam() ? ['거믄', '힌'].filter(function (k) { return s[k]; }) : [];
+      if (w && w !== '벗') logView(cid);
+      var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + icon(w, !!s[w]) + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>' +
+                      (w !== '벗' ? '<button type="button" class="lk-askq" data-lkq="' + esc(cid) + '">✎ 선생님께 여쭤보기</button>' : '')
                     : '<button type="button" class="lk-big" data-lkask="1">' + star('') + '누구세요? 고르고 별 달기</button>') +
         (whoTxt.length ? '<span class="lk-who">' + whoTxt.map(star).join('') + whoTxt.join(' · ') + (whoTxt.length > 1 ? ' 둘 다' : '') + ' 좋아해요</span>' : '');
       if (!bar) { bar = document.createElement('div'); bar.className = 'lk-bar'; var cm = box.querySelector(':scope > .cm'); box.insertBefore(bar, cm || null); }
@@ -299,11 +318,11 @@
     if (!box.parentNode) rv.insertBefore(box, rv.firstChild);
     var w = me(), m = state(), n = Object.keys(m).filter(function (k) { return w ? m[k][w] : m[k]['거믄'] || m[k]['힌']; }).length;
     if (!fam() && !w) {
-      var h0 = '<button type="button" class="lk-hint" data-lkask="1">' + star('') + '<br>거믄·힌<br>들어오기</button>';
+      var h0 = '<button type="button" class="lk-hint" data-lkask="1">' + star('') + '<br>누구세요?</button>';
       if (box._h !== h0) { box._h = h0; box.innerHTML = h0; }
       return;
     }
-    var h1 = '<button type="button" class="lk-me" data-lkask="1" title="누구인지 바꾸기"><span class="g' + (w === '거믄' ? ' cur' : '') + '">거믄</span><span class="h' + (w === '힌' ? ' cur' : '') + '">힌</span></button>' +
+    var h1 = '<button type="button" class="lk-me" data-lkask="1" title="누구인지 바꾸기">' + (w === '벗' ? '<span class="b cur">벗</span>' : '<span class="g' + (w === '거믄' ? ' cur' : '') + '">거믄</span><span class="h' + (w === '힌' ? ' cur' : '') + '">힌</span>') + '</button>' +
       '<button type="button" class="lk-open" id="lk-open" title="좋아요 모아보기">' + star(w || '거믄') + '<span>좋아요</span><b>' + n + '</b></button>';
     if (box._h !== h1) { box._h = h1; box.innerHTML = h1; }
   }
@@ -313,7 +332,7 @@
   function paintTop() {
     var t = document.querySelector('.eyebrow.eb-top'); if (!t) return;
     var w = me();
-    t.classList.add('lk-me-top'); t.classList.toggle('lk-g', w === '거믄'); t.classList.toggle('lk-h', w === '힌');
+    t.classList.add('lk-me-top'); t.classList.toggle('lk-g', w === '거믄'); t.classList.toggle('lk-h', w === '힌'); t.classList.toggle('lk-b', w === '벗');
     var tt = w ? w + '으로 보는 중 — 눌러서 바꾸기' : '누구세요? 눌러서 고르기'; if (t.title !== tt) t.title = tt;
     if (!t.dataset.lkBound) { t.dataset.lkBound = '1'; t.addEventListener('click', ask); }
     var rest = t.querySelector('.ew-rest'), txt = w ? w + '으로 보는 중' : '고미술공부방'; if (rest && rest.textContent !== txt) rest.textContent = txt;
@@ -324,35 +343,44 @@
   function ask() {
     if (!whoDlg) {
       whoDlg = document.createElement('dialog'); whoDlg.id = 'lk-who'; whoDlg.setAttribute('aria-label', '누구세요');
-      whoDlg.innerHTML = '<h2>누구세요?</h2><p>이 기기에서 누가 보고 있는지 알려 주세요.<br>좋아요 별과 기물 이야기에 이름이 붙어요.</p>' +
-        '<div class="lk-err"></div><input class="lk-code" type="password" inputmode="numeric" placeholder="가족 암호" autocomplete="off">' +
-        '<div class="lk-pick"><button type="button" class="g" data-w="거믄">' + star('거믄') + '<b>거믄</b><small>빨간 별</small></button>' +
-        '<button type="button" class="h" data-w="힌">' + star('힌') + '<b>힌</b><small>테두리 빨간 별</small></button></div>' +
-        '<label><input type="checkbox" class="lk-shared"> 이 기기는 같이 써요 (새로 열 때마다 물어보기)</label>' +
-        '<button type="button" class="lk-skip">구경만 할게요</button>';
+      whoDlg.innerHTML = '<h2>누구세요?</h2><p>고르면 좋아요와 기물 이야기에 이름이 붙어요.</p>' +
+        '<div class="lk-pick"><button type="button" data-w="거믄">' + star('거믄') + '<b>거믄</b></button>' +
+        '<button type="button" data-w="힌">' + star('힌') + '<b>힌</b></button>' +
+        '<button type="button" class="bt" data-w="벗">' + star('벗') + '<b>벗</b><small>함께 보는 분</small></button></div>' +
+        '<div class="lk-step" hidden><div class="lk-st-t"></div><div class="lk-row"><input class="lk-code" type="password" inputmode="numeric" placeholder="가족 암호" autocomplete="off"><button type="button" class="lk-go">들어가기</button></div><div class="lk-err"></div></div>' +
+        '<label><input type="checkbox" class="lk-shared"> 이 기기는 같이 써요 (새로 열 때마다 물어보기)</label>';
       document.body.appendChild(whoDlg);
+      var want = '';
+      var step = whoDlg.querySelector('.lk-step'), err = whoDlg.querySelector('.lk-err'), code = whoDlg.querySelector('.lk-code'), go = whoDlg.querySelector('.lk-go');
+      var pick = function (w) {
+        ls.set(K_SHARED, whoDlg.querySelector('.lk-shared').checked ? '1' : ''); setMe(w); ls.del(K_SKIP);
+        whoDlg.close(); toast(w === '벗' ? '벗으로 둘러봐요' : w + '으로 들어왔어요'); load(); paintAll();
+        if (window.MOKGAGU_COMMENTS && window.MOKGAGU_COMMENTS.reload) window.MOKGAGU_COMMENTS.reload();
+      };
+      var check = function () {
+        var v = (code.value || '').trim(); if (!v) { err.textContent = '가족 암호를 넣어 주세요.'; code.focus(); return; }
+        go.disabled = true; err.textContent = '확인하는 중…';
+        var C = window.MOKGAGU_COMMENTS;
+        var c = C && C.login ? C.login(v) : fetch(API + '?action=list&code=' + encodeURIComponent(v)).then(function (r) { return r.json(); }).then(function (j) { if (j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); } return !!j.fam; });
+        c.then(function (ok) { go.disabled = false; if (ok && fam()) { err.textContent = ''; pick(want); } else { err.textContent = '가족 암호가 맞지 않아요. 가족이 아니면 「벗」을 골라 주세요.'; code.select(); } })
+          .catch(function () { go.disabled = false; err.textContent = '인터넷 연결을 확인해 주세요.'; });
+      };
       whoDlg.addEventListener('click', function (e) {
         if (e.target === whoDlg) { whoDlg.close(); return; }
-        if (e.target.closest('.lk-skip')) { ls.set(K_SKIP, '1'); whoDlg.close(); return; }
+        if (e.target.closest('.lk-go')) { check(); return; }
         var b = e.target.closest('[data-w]'); if (!b) return;
-        var err = whoDlg.querySelector('.lk-err'), code = whoDlg.querySelector('.lk-code');
-        var pick = function () {
-          ls.set(K_SHARED, whoDlg.querySelector('.lk-shared').checked ? '1' : ''); setMe(b.dataset.w); ls.del(K_SKIP);
-          whoDlg.close(); toast(b.dataset.w + '으로 들어왔어요'); load(); paintAll();
-          if (window.MOKGAGU_COMMENTS && window.MOKGAGU_COMMENTS.reload) window.MOKGAGU_COMMENTS.reload();
-        };
-        if (fam()) { pick(); return; }
-        var v = (code.value || '').trim(); if (!v) { err.textContent = '가족 암호를 먼저 넣어 주세요.'; code.focus(); return; }
-        b.disabled = true; err.textContent = '확인하는 중…';
-        var C = window.MOKGAGU_COMMENTS;
-        var check = C && C.login ? C.login(v) : fetch(API + '?action=list&code=' + encodeURIComponent(v)).then(function (r) { return r.json(); }).then(function (j) { if (j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); } return !!j.fam; });
-        check.then(function (ok) { b.disabled = false; if (ok) { err.textContent = ''; pick(); } else { err.textContent = '가족 암호가 맞지 않아요.'; code.select(); } })
-          .catch(function () { b.disabled = false; err.textContent = '인터넷 연결을 확인해 주세요.'; });
+        var w = b.dataset.w;
+        [].forEach.call(whoDlg.querySelectorAll('[data-w]'), function (x) { x.classList.toggle('sel', x === b); });
+        if (w === '벗' || fam()) { pick(w); return; }
+        want = w; step.hidden = false; err.textContent = '';
+        whoDlg.querySelector('.lk-st-t').textContent = w + '으로 들어가려면 가족 암호를 넣어 주세요. 이 기기에서 한 번만 물어요.';
+        code.value = ''; code.focus();
       });
-      whoDlg.querySelector('.lk-code').addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+      code.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+      code.addEventListener('input', function () { err.textContent = ''; });
     }
-    whoDlg.querySelector('.lk-err').textContent = '';
-    whoDlg.querySelector('.lk-code').style.display = fam() ? 'none' : '';
+    whoDlg.querySelector('.lk-step').hidden = true;
+    [].forEach.call(whoDlg.querySelectorAll('[data-w]'), function (x) { x.classList.toggle('sel', x.dataset.w === me()); });
     whoDlg.querySelector('.lk-shared').checked = shared();
     if (!whoDlg.open) whoDlg.showModal();
   }
@@ -382,7 +410,7 @@
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && colOpen) closeCol(); });
     }
     colView = colView || 'all';
-    colPanel.innerHTML = '<div class="lc-hd"><h2>' + star('거믄') + '좋아요 모아보기</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body"><p class="lc-empty">불러오는 중…</p></div>';
+    colPanel.innerHTML = '<div class="lc-hd"><h2>' + star(me() === '벗' ? '벗' : '거믄') + '좋아요 모아보기</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body"><p class="lc-empty">불러오는 중…</p></div>';
     colOpen = true; colDlg.classList.add('on'); document.documentElement.classList.add('lk-lock');
     needIndex().then(drawCol);
   }
@@ -390,6 +418,7 @@
   function drawCol() {
     var m = state(), IX = {};
     (window.SEARCH || []).forEach(function (r) { IX[r.b + '/' + r.pid] = r; });
+    if (me() === '벗') return drawColBeot(m, IX);
     var count = function (f) { return Object.keys(m).filter(f).length; };
     var fG = function (k) { return m[k]['거믄']; }, fH = function (k) { return m[k]['힌']; };
     var F = { all: function (k) { return fG(k) || fH(k); }, '거믄': fG, '힌': fH, both: function (k) { return fG(k) && fH(k); } };
@@ -414,6 +443,17 @@
     colPanel.querySelector('.lc-body').scrollTop = keepTop;
   }
 
+  function drawColBeot(m, IX) {
+    var keys = Object.keys(beot).sort(function (a, b) { return String(beot[b]).localeCompare(String(beot[a])); });
+    var html = '<div class="lc-hd"><h2>' + star('벗') + '벗의 좋아요</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body">';
+    html += keys.length ? '<div class="lc-grid">' + keys.map(function (k) { var r = IX[k];
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" src="thumbs/' + r.b + '/' + r.n + '.jpg" alt="">' : '') +
+        '<span class="lc-stars">' + star('벗') + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>'; }).join('') + '</div>'
+      : '<p class="lc-empty">아직 좋아요 한 기물이 없어요. 사진 왼쪽 위 말풍선을 눌러 보세요.</p>';
+    html += '<p class="lc-note">벗의 좋아요는 이 기기에만 담겨요.</p>';
+    colPanel.innerHTML = html + '</div>';
+  }
+
   /* ── 다시 그리기 ── */
   var t = 0, popId = '';
   function paintAll(pop) { if (pop) popId = pop; clearTimeout(t); t = setTimeout(function () { paintCards(popId); popId = ''; paintDlg(); paintBox(); paintTop(); if (colOpen) drawCol(); }, 30); }
@@ -426,7 +466,7 @@
     load();
     window.addEventListener('storage', function (e) { if (e.key === K_LIKES || e.key === K_PEND || e.key === K_WHO || e.key === K_FAM) { likes = ls.json(K_LIKES, []); pend = ls.json(K_PEND, []); paintAll(); } });
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') load(); });
-    // 처음 들어온 기기: 첫 화면에서 한 번 물어본다 (구경만 고르면 다시 묻지 않음)
+    // 처음 들어온 기기: 첫 화면에서 한 번 물어본다 (한 번 고르면 다시 묻지 않음)
     var home = /(^|\/)(index\.html)?$/.test(location.pathname);
     if (home && !me() && ls.get(K_SKIP, '') !== '1' && !/#see=/.test(location.hash)) setTimeout(ask, 600);
   }
