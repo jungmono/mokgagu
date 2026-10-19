@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v7: 방문자 수 — 시트 '방문' 탭. doGet action=visit(&new=1 이면 오늘 +1) → {today, total}.
  * v6: 좋아요(별) — 시트 '좋아요' 탭. doGet action=likes(가족만), doPost action=like {cid, who(거믄|힌), on}.
  * v5: 소장품에 상태(소장·판매 예정·판매함)·판매일·판매가·판매처 추가.
  * v4: 소장품 도록(clist·cimg·csave·cphoto·cdel) 추가 — 시트 '소장품' 탭, 사진은 드라이브 비공개 폴더.
@@ -38,6 +39,7 @@ function doGet(e) {
   const fam = isFam_(p.code);
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
   if (p.action === 'likes') return likesGet_(fam);
+  if (p.action === 'visit') return visit_(p);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -195,3 +197,24 @@ function likePost_(d, fam) {
   return out_({ ok: true });
 }
 function 좋아요준비() { likeSheet_(); }
+
+
+/* ───────── 방문자 수 ─────────
+   '방문' 탭: day(yyyy-MM-dd, 한국 날짜) | count.  누적 = 모든 날의 합. */
+function visit_(p) {
+  const day = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd');
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName('방문');
+  if (!sh) { sh = ss.insertSheet('방문'); sh.appendRow(['day', 'count']); sh.setFrozenRows(1); }
+  const lock = LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    const rows = sh.getDataRange().getDisplayValues();
+    let at = -1, total = 0, today = 0;
+    for (let i = 1; i < rows.length; i++) { const n = Number(rows[i][1]) || 0; total += n; if (rows[i][0] === day) { at = i + 1; today = n; } }
+    if (p.new === '1') {
+      today++; total++;
+      if (at > 0) sh.getRange(at, 2).setValue(today); else { sh.appendRow([day, 1]); sh.getRange(sh.getLastRow(), 1).setNumberFormat('@').setValue(day); }
+    }
+    return out_({ ok: true, day: day, today: today, total: total });
+  } finally { lock.releaseLock(); }
+}
