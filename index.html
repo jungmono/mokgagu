@@ -269,7 +269,7 @@ const ORDER = DASHBOARDS.map((d) => d.path);
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let hits = [], shown = [], only = '', cur = -1, seqFrom = '';
+let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
 
 function search(raw) {
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
@@ -277,7 +277,7 @@ function search(raw) {
   const all = window.SEARCH || [];
   hits = all.filter((r) => terms.some((q) => r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
-  only = ''; seqFrom = '';
+  only = ''; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
 }
@@ -299,6 +299,11 @@ function drawResults(label) {
 $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; only = c.dataset.k; drawResults(); });
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
 
+/* 통계의 「선생님께 여쭤볼 것」에서 왔으면 사진 창에 그 기물에 대한 질문과 선생님 말씀을 함께 */
+function askNotes(cid) {
+  const L = seqNotes && seqNotes[cid]; if (!L || !L.length) return '';
+  return `<div class="d-ask">${L.map((n) => `<div class="d-ask1"><span class="d-ow ${n.who === '힌' ? 'h' : 'g'}">${esc(n.who)}</span>${n.done ? '<small>여쭤봤어요</small>' : ''}<p>${esc(n.text)}</p>${n.ans ? `<div class="d-ans"><b>선생님 말씀</b>${esc(n.ans)}</div>` : ''}</div>`).join('')}</div>`;
+}
 function openItem(i) {
   cur = i; const r = shown[i]; if (!r) return; $('dlg').dataset.cid = r.b + '/' + r.pid;
   const img = $('d-img');
@@ -309,8 +314,8 @@ function openItem(i) {
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
     <dl>${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
-    <a href="${r.b}.html">도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}`;
-  $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : '') + `${i + 1} / ${shown.length}`;
+    ${askNotes(r.b + '/' + r.pid)}<a href="${r.b}.html">도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
+  $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : seqLabel ? seqLabel + ' ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
 }
@@ -334,9 +339,9 @@ function openSeen() {
     const IX = {}; window.SEARCH.forEach((x) => { IX[x.b + '/' + x.pid] = x; });
     const L = seq.list.map((k) => IX[k]).filter(Boolean);
     const at = L.indexOf(r);
-    if (at >= 0) { shown = L; seqFrom = seq.from || ''; openItem(at); return; }
+    if (at >= 0) { shown = L; seqFrom = seq.from || ''; seqLabel = seq.label || ''; seqBack = seq.back || ''; seqNotes = seq.notes || null; openItem(at); return; }
   }
-  seqFrom = ''; shown = [r]; openItem(0);
+  seqFrom = ''; seqLabel = ''; seqBack = (seq && seq.back) || ''; seqNotes = (seq && seq.notes) || null; shown = [r]; openItem(0);
 }
 window.addEventListener('hashchange', openSeen);
 /* 통계 페이지의 「찾아본 말」에서 넘어오면 그 말로 찾기 */
@@ -367,6 +372,7 @@ let tmr; $('q').addEventListener('input', (e) => { clearTimeout(tmr); tmr = setT
 <button type="button" id="to-top" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
 <style>#to-top{position:fixed;right:22px;bottom:22px;z-index:900;width:52px;height:52px;border-radius:50%;border:2px solid #111;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s,background .15s}#to-top.show{opacity:1;visibility:visible;transform:none}#to-top:hover{background:#fff;color:#111}#to-top:focus-visible{outline:3px solid #8a2f22;outline-offset:3px}@media (max-width:640px){#to-top{right:14px;bottom:14px;width:46px;height:46px}}@media print{#to-top{display:none}}</style>
 <script>(function(){var b=document.getElementById('to-top');function u(){b.classList.toggle('show',window.scrollY>500);}window.addEventListener('scroll',u,{passive:true});u();b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();</script>
+<style>.d-ask{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}.d-ask1{background:#fbf6e9;border:1px solid #e7d9b4;border-radius:12px;padding:9px 12px}.d-ask1 p{margin:4px 0 0;font-size:14.5px;line-height:1.6;white-space:pre-wrap}.d-ask1 small{font-size:12px;color:#2f6b45;font-weight:700;margin-left:6px}.d-ow{display:inline-block;min-width:2.9em;text-align:center;font-weight:900;font-size:12px;padding:1px 7px;border:1.5px solid #111;line-height:1.35}.d-ow.g{background:#111;color:#fff}.d-ow.h{background:#fff;color:#111}.d-ans{margin-top:6px;border-left:3px solid #2f6b45;background:#f3f8f4;border-radius:0 8px 8px 0;padding:6px 10px;font-size:14px;line-height:1.6;white-space:pre-wrap}.d-ans b{display:block;font-size:11.5px;color:#2f6b45}</style>
 <script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;
 var img=document.getElementById('dlg-img')||document.getElementById('d-img');if(!img)return;
 var nx=function(){return document.getElementById('dlg-next')||document.getElementById('d-next');},pv=function(){return document.getElementById('dlg-prev')||document.getElementById('d-prev');};
