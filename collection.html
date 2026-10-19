@@ -252,25 +252,49 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   function apiPost(body) { body.code = PW; return fetch(API, { method: 'POST', body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
 
   var urls = {};   // 사진 id → 화면용 주소
-  function imgURL(id) {
+  /* 시트에서 사진 받기는 한 번에 4장씩 (한꺼번에 수십 장을 부르면 모두 느려진다) */
+  var netQ = [], netN = 0;
+  function netGet(id, front) {
+    return new Promise(function (ok, no) { var job = { id: id, ok: ok, no: no }; if (front) netQ.unshift(job); else netQ.push(job); pump(); });
+  }
+  function pump() {
+    while (netN < 4 && netQ.length) {
+      var j = netQ.shift(); netN++;
+      (function (j) { apiGet({ action: 'cimg', id: j.id }).then(j.ok, j.no).then(function () { netN--; pump(); }); })(j);
+    }
+  }
+  var inflight = {};
+  function imgURL(id, front) {
     if (!id) return Promise.resolve('');
     if (urls[id]) return Promise.resolve(urls[id]);
-    return idb.get('img', id).catch(function () { return null; }).then(function (blob) {
+    if (inflight[id]) return inflight[id];
+    return inflight[id] = idb.get('img', id).catch(function () { return null; }).then(function (blob) {
       if (blob) return blob;
       if (/^L/.test(id)) return null;
-      return apiGet({ action: 'cimg', id: id }).then(function (j) {
+      return netGet(id, front).then(function (j) {
         if (!j.ok) return null;
         var b = new Blob([b64u(j.data)], { type: j.type || 'image/jpeg' });
         idb.put('img', b, id).catch(function () {});
         return b;
       });
-    }).then(function (b) { return b ? (urls[id] = URL.createObjectURL(b)) : ''; }).catch(function () { return ''; });
+    }).then(function (b) { delete inflight[id]; return b ? (urls[id] = URL.createObjectURL(b)) : ''; }).catch(function () { delete inflight[id]; return ''; });
+  }
+  /* 화면에 보이는(곧 보일) 사진부터 채운다. 이 기기에 저장된 사진은 바로 */
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); fillOne(e.target, true); } });
+  }, { rootMargin: '600px 0px' }) : null;
+  function fillOne(im, front) {
+    var id = im.dataset.pid; if (!id) return; im.removeAttribute('data-pid');
+    imgURL(id, front).then(function (u) { if (u) im.src = u; else im.replaceWith(Object.assign(document.createElement('img'), { src: 'mark_angwe.png', className: 'none', alt: '' })); });
   }
   function fillImgs(root) {
     (root || document).querySelectorAll('img[data-pid]').forEach(function (im) {
-      var id = im.dataset.pid; im.removeAttribute('data-pid');
-      imgURL(id).then(function (u) { if (u) im.src = u; else im.replaceWith(Object.assign(document.createElement('img'), { src: 'mark_angwe.png', className: 'none', alt: '' })); });
+      var id = im.dataset.pid;
+      if (urls[id]) { im.removeAttribute('data-pid'); im.src = urls[id]; return; }
+      if (io && im.closest('#grid')) io.observe(im); else fillOne(im, true);
     });
+    clearTimeout(fillImgs.t);       // 보이는 사진을 먼저 채운 뒤, 나머지도 천천히 미리 받아 둔다
+    fillImgs.t = setTimeout(function () { document.querySelectorAll('#grid img[data-pid]').forEach(function (im) { if (io) io.unobserve(im); fillOne(im, false); }); }, 1500);
   }
 
   function load() {
@@ -281,14 +305,21 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     }).catch(function (e) { if (e && e.message === 'code') throw e; mode = mode === 'server' ? 'offline' : mode; return null; });
   }
   function start() {
-    app.innerHTML = '<p style="text-align:center;color:#7a736a;padding:60px 0">소장품을 불러오는 중…</p>';
+    var cached = null; try { cached = JSON.parse(ls.get('mokgagu_col_cache') || 'null'); } catch (e) {}
+    var shownKey = '';
+    if (cached && cached.length) {     // 지난번 목록으로 바로 그리고, 시트에서 새로 받으면 바뀐 것만 다시 그린다
+      idb.all('local').catch(function () { return []; }).then(function (loc) {
+        if (items.length) return;
+        items = cached.concat((loc || []).map(function (x) { x.pending = 1; return x; })); shownKey = JSON.stringify(items); render();
+      });
+    } else app.innerHTML = '<p style="text-align:center;color:#7a736a;padding:60px 0">소장품을 불러오는 중…</p>';
     Promise.all([load(), idb.all('local').catch(function () { return []; })]).then(function (r) {
       var server = r[0], loc = r[1] || [];
       if (server === null) { server = JSON.parse(ls.get('mokgagu_col_cache') || '[]'); note = '인터넷에 연결되지 않아 이 기기에 저장해 둔 목록을 보여 드려요.'; }
       else ls.set('mokgagu_col_cache', JSON.stringify(server));
       if (mode === 'local') note = '아직 구글 시트 스크립트를 새로 배포하지 않아, 넣은 소장품이 <b>이 기기에만</b> 저장돼요. 배포하고 나면 다음에 열 때 자동으로 시트로 올라가 모든 기기에서 보여요.';
       items = server.concat(loc.map(function (x) { x.pending = 1; return x; }));
-      render();
+      if (JSON.stringify(items) !== shownKey || note) { var y = window.scrollY; render(); if (shownKey) window.scrollTo(0, y); }
       if (mode === 'server' && loc.length) syncLocal(loc);
     }).catch(function (e) { lockView(e && e.message === 'code' ? '암호가 바뀌었어요. 다시 넣어 주세요.' : '불러오지 못했어요.'); });
   }
