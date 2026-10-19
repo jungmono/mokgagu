@@ -104,6 +104,10 @@
     '.lk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 0;padding:10px 0;border-top:1px solid #e5e1da;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
     '.lk-big{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14.5px;font-weight:700;color:#1d1b18;background:#fff;border:1.5px solid #d9d4cc;border-radius:999px;padding:7px 15px;cursor:pointer}',
     '.lk-big.on{border-color:' + RED + ';color:' + RED + '}.lk-big svg{width:19px;height:19px}',
+    '.lk-askq{font:inherit;font-size:13.5px;font-weight:700;color:#1d1b18;background:#fbf6e9;border:1.5px solid #e7d9b4;border-radius:999px;padding:7px 13px;cursor:pointer}.lk-askq:hover{background:#f5ecd4}',
+    '.lk-qf{margin:0 0 10px;padding:12px;border:1px solid #e7d9b4;background:#fdfaf2;border-radius:12px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}.lk-qh{font-size:13px;color:#6b5a2e;margin-bottom:6px}',
+    '.lk-qf textarea{width:100%;box-sizing:border-box;min-height:70px;font:inherit;font-size:14px;line-height:1.6;border:1px solid #ddd2b8;border-radius:8px;padding:8px 10px;resize:vertical}',
+    '.lk-qr{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:6px}.lk-qr a{margin-right:auto;font-size:12.5px;color:#6b665e}.lk-qr button{font:inherit;font-size:13.5px;border-radius:8px;padding:6px 12px;cursor:pointer;border:1px solid #d9d4cc;background:#fff}.lk-qr .lk-qgo{background:#1d1b18;color:#fff;border-color:#1d1b18;font-weight:700}',
     '.lk-who{font-size:13px;color:#6b665e;display:inline-flex;align-items:center;gap:4px}.lk-who svg{width:15px;height:15px}',
     /* 떠 있는 창 맨 위 상자 */
     '#lk-box{background:#fff;border:1px solid #e3ded6;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.14);padding:7px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;width:80px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
@@ -191,7 +195,9 @@
       if (!cid || !fam()) { if (bar) bar.remove(); return; }
       var w = me(), s = state()[cid] || {};
       var whoTxt = ['거믄', '힌'].filter(function (k) { return s[k]; });
-      var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + star(s[w] ? w : '') + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>'
+      if (w) logView(cid);
+      var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + star(s[w] ? w : '') + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>' +
+                      '<button type="button" class="lk-askq" data-lkq="' + esc(cid) + '">✎ 선생님께 여쭤보기</button>'
                     : '<button type="button" class="lk-big" data-lkask="1">' + star('') + '누구세요? 고르고 별 달기</button>') +
         (whoTxt.length ? '<span class="lk-who">' + whoTxt.map(star).join('') + whoTxt.join(' · ') + (whoTxt.length > 1 ? ' 둘 다' : '') + ' 좋아해요</span>' : '');
       if (!bar) { bar = document.createElement('div'); bar.className = 'lk-bar'; var cm = box.querySelector(':scope > .cm'); box.insertBefore(bar, cm || null); }
@@ -199,6 +205,61 @@
     });
   }
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-lkask]'); if (b) { e.preventDefault(); ask(); } });
+
+  /* ── 수업일: 매달 둘째·넷째 토요일 (한국 시각) ── */
+  function kstToday() { return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10); }
+  function classDays(y, m) {          // m: 0~11
+    var out = [], d = new Date(Date.UTC(y, m, 1)), first = (6 - d.getUTCDay() + 7) % 7 + 1;
+    [first + 7, first + 21].forEach(function (dd) { out.push(new Date(Date.UTC(y, m, dd)).toISOString().slice(0, 10)); });
+    return out;
+  }
+  function nextClass(from) {
+    from = from || kstToday(); var y = +from.slice(0, 4), m = +from.slice(5, 7) - 1;
+    for (var k = 0; k < 3; k++) { var L = classDays(y, m).filter(function (x) { return x >= from; }); if (L.length) return L[0]; m++; if (m > 11) { m = 0; y++; } }
+    return from;
+  }
+  function md(d) { var x = new Date(d + 'T00:00:00Z'); return (x.getUTCMonth() + 1) + '월 ' + x.getUTCDate() + '일'; }
+
+  /* ── 찾아본 기물 · 검색어 기록 (거믄·힌으로 들어온 기기만) ── */
+  function seenSet() { try { return JSON.parse(sessionStorage.getItem('mokgagu_lg_seen') || '{}'); } catch (e) { return {}; } }
+  function logView(cid) {
+    var S = seenSet(), k = me() + '|' + cid; if (S[k]) return; S[k] = 1;
+    try { sessionStorage.setItem('mokgagu_lg_seen', JSON.stringify(S)); } catch (e) {}
+    post({ action: 'log', who: me(), kind: 'view', cid: cid, page: location.pathname.split('/').pop() || 'index.html' });
+  }
+  var qT = 0, lastQ = '';
+  document.addEventListener('input', function (e) {
+    var el = e.target; if (!el || !/^(q|st-q)$/.test(el.id || '')) return;
+    clearTimeout(qT); qT = setTimeout(function () {
+      var q = (el.value || '').trim(); if (q.length < 2 || q === lastQ || !me()) return;
+      lastQ = q; post({ action: 'log', who: me(), kind: 'search', q: q, page: location.pathname.split('/').pop() || 'index.html' });
+    }, 1800);
+  });
+
+  /* ── 사진 창: 선생님께 여쭤보기 ── */
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-lkq]'); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var bar = b.closest('.lk-bar'), f = bar.nextElementSibling;
+    if (f && f.classList.contains('lk-qf')) { f.remove(); return; }
+    var cls = nextClass();
+    f = document.createElement('div'); f.className = 'lk-qf';
+    f.innerHTML = '<div class="lk-qh">' + esc(me()) + '의 질문 · <b>' + md(cls) + ' 수업</b>에 여쭤볼게요</div>' +
+      '<textarea placeholder="이 기물에 대해 선생님께 여쭤볼 것을 적어 주세요 (예: 이 장석은 언제쯤 것인가요?)"></textarea>' +
+      '<div class="lk-qr"><a href="stats.html#ask">모아보기 →</a><button type="button" class="lk-qno">그만두기</button><button type="button" class="lk-qgo">질문에 넣기</button></div>';
+    bar.parentNode.insertBefore(f, bar.nextSibling);
+    var ta = f.querySelector('textarea'); ta.focus();
+    f.querySelector('.lk-qno').onclick = function () { f.remove(); };
+    f.querySelector('.lk-qgo').onclick = function () {
+      var text = ta.value.trim(); if (!text) { ta.focus(); return; }
+      var btn = this; btn.disabled = true; btn.textContent = '넣는 중…';
+      post({ action: 'qadd', q: { id: uid(), who: me(), text: text, cid: b.dataset.lkq, cls: cls } }).then(function (ok) {
+        if (ok) { f.remove(); toast(md(cls) + ' 수업 질문에 넣었어요'); }
+        else { btn.disabled = false; btn.textContent = '질문에 넣기'; toast('넣지 못했어요. 인터넷 연결을 확인해 주세요'); }
+      });
+    };
+  });
 
   /* ── 떠 있는 창 맨 위: 이름표 + 좋아요 모아보기 ── */
   var box = document.createElement('div'); box.id = 'lk-box';
@@ -339,6 +400,6 @@
     var home = /(^|\/)(index\.html)?$/.test(location.pathname);
     if (home && !me() && ls.get(K_SKIP, '') !== '1' && !/#see=/.test(location.hash)) setTimeout(ask, 600);
   }
-  window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load };
+  window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load, post: post, nextClass: nextClass, classDays: classDays, today: kstToday, star: star, fam: fam };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

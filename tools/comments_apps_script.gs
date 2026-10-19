@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v8: 통계 — doGet action=stats(가족만), doPost log(찾아본 기물·검색어) · qadd/qedit/qdel(선생님께 여쭤볼 것). 시트 '기록'·'질문' 탭.
  * v7: 방문자 수 — 시트 '방문' 탭. doGet action=visit(&new=1 이면 오늘 +1) → {today, total}.
  * v6: 좋아요(별) — 시트 '좋아요' 탭. doGet action=likes(가족만), doPost action=like {cid, who(거믄|힌), on}.
  * v5: 소장품에 상태(소장·판매 예정·판매함)·판매일·판매가·판매처 추가.
@@ -40,6 +41,7 @@ function doGet(e) {
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
   if (p.action === 'likes') return likesGet_(fam);
   if (p.action === 'visit') return visit_(p);
+  if (p.action === 'stats') return statsGet_(fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -71,6 +73,8 @@ function doPost(e) {
       return out_({ ok: true });
     }
     if (d.action === 'like') return likePost_(d, fam);
+    if (d.action === 'log') return logPost_(d, fam);
+    if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
@@ -217,4 +221,60 @@ function visit_(p) {
     }
     return out_({ ok: true, day: day, today: today, total: total });
   } finally { lock.releaseLock(); }
+}
+
+
+/* ───────── 통계 · 찾아본 기록 · 선생님께 여쭤볼 것 (v8) ─────────
+   '기록' 탭: time | who | kind(view|search) | cid | q | page
+   '질문' 탭: id | who | text | cid | cls(수업일 yyyy-MM-dd) | time | done | ans | ans_time | deleted  */
+const LOG_SHEET = '기록', Q_SHEET = '질문';
+const Q_HEAD = ['id', 'who', 'text', 'cid', 'cls', 'time', 'done', 'ans', 'ans_time', 'deleted'];
+function tab_(name, head) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName(name);
+  if (!sh) { sh = ss.insertSheet(name); sh.appendRow(head); sh.setFrozenRows(1); sh.getRange('A:Z').setNumberFormat('@'); }
+  return sh;
+}
+function iso_(v) { return v instanceof Date ? v.toISOString() : String(v || ''); }
+function day_(v) { return v instanceof Date ? Utilities.formatDate(v, 'Asia/Seoul', 'yyyy-MM-dd') : String(v || ''); }
+function statsGet_(fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const lg = tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).getDataRange().getValues(); lg.shift();
+  const logs = lg.slice(-3000).filter(r => r[0]).map(r => ({ t: iso_(r[0]), who: String(r[1]), kind: String(r[2]), cid: String(r[3]), q: String(r[4]) }));
+  const qs = tab_(Q_SHEET, Q_HEAD).getDataRange().getValues(); qs.shift();
+  const questions = qs.filter(r => r[0] && !r[9]).map(r => ({ id: String(r[0]), who: String(r[1]), text: String(r[2]), cid: String(r[3]), cls: day_(r[4]), t: iso_(r[5]), done: String(r[6]) === '1', ans: String(r[7] || ''), at: iso_(r[8]) }));
+  const ss = SpreadsheetApp.openById(SHEET_ID), vs = ss.getSheetByName('방문');
+  const visits = vs ? vs.getDataRange().getDisplayValues().slice(1).filter(r => r[0]).map(r => ({ day: r[0], n: Number(r[1]) || 0 })) : [];
+  const lk = ss.getSheetByName(LIKE_SHEET);
+  const likes = lk ? lk.getDataRange().getValues().slice(1).filter(r => r[0]).map(r => ({ cid: String(r[0]), who: String(r[1]), t: iso_(r[2]) })) : [];
+  return out_({ ok: true, logs: logs, questions: questions, visits: visits, likes: likes });
+}
+function famWho_(w) { w = String(w || ''); return (w === '거믄' || w === '힌') ? w : ''; }
+function logPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const who = famWho_(d.who); if (!who) return out_({ ok: false, err: 'bad' });
+  const kind = d.kind === 'search' ? 'search' : 'view';
+  tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).appendRow([new Date().toISOString(), who, kind, String(d.cid || '').slice(0, 200), String(d.q || '').slice(0, 60), String(d.page || '').slice(0, 60)]);
+  return out_({ ok: true });
+}
+function qPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const sh = tab_(Q_SHEET, Q_HEAD);
+  const find = id => { const v = sh.getDataRange().getValues(); for (let i = 1; i < v.length; i++) if (String(v[i][0]) === String(id)) return i + 1; return -1; };
+  if (d.action === 'qadd' && d.q) {
+    const q = d.q, who = famWho_(q.who), text = String(q.text || '').trim();
+    if (!who || !text) return out_({ ok: false, err: 'bad' });
+    if (find(q.id) < 0) sh.appendRow([String(q.id).slice(0, 40), who, text.slice(0, 2000), String(q.cid || '').slice(0, 200), String(q.cls || '').slice(0, 10), new Date().toISOString(), '', '', '', '']);
+    return out_({ ok: true });
+  }
+  const at = find(d.id); if (at < 0) return out_({ ok: false, err: 'none' });
+  if (d.action === 'qdel') { sh.getRange(at, 10).setValue('삭제 ' + new Date().toISOString()); return out_({ ok: true }); }
+  if (d.action === 'qedit') {
+    if (typeof d.text === 'string' && d.text.trim()) sh.getRange(at, 3).setValue(d.text.trim().slice(0, 2000));
+    if (typeof d.cls === 'string') sh.getRange(at, 5).setValue(d.cls.slice(0, 10));
+    if (typeof d.done === 'boolean') sh.getRange(at, 7).setValue(d.done ? '1' : '');
+    if (typeof d.ans === 'string') { sh.getRange(at, 8).setValue(d.ans.slice(0, 4000)); sh.getRange(at, 9).setValue(new Date().toISOString()); }
+    return out_({ ok: true });
+  }
+  return out_({ ok: false, err: 'action' });
 }

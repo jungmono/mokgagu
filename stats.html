@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light">
+<title>거믄 힌의 통계 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+/* 거믄 힌의 통계 — 포털 전체 숫자, 거믄·힌 각자의 기록(좋아요·찾아본 기물·검색어·기물 이야기),
+   수업 날 선생님께 여쭤볼 것. 가족 암호로 잠근다. 자료는 구글 시트(통계·기록·질문·방문·좋아요 탭). */
+:root{--fg:#1d1b18;--muted:#756e65;--line:#e6e1d9;--paper:#fbfaf7;--ink:#111;--red:#d0312d;--gold:#fbf6e9;--gold-line:#e7d9b4}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--fg)}
+body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 90px}
+a{color:inherit}
+.hd{text-align:center;margin:26px 0 8px}
+.hd .mk{display:inline-flex;font-weight:900;font-size:15px}.hd .mk span{display:inline-block;min-width:2.9em;padding:.12em .45em;border:1.5px solid #111;line-height:1.25}
+.hd .mk .b{background:#111;color:#fff}.hd .mk .w{background:#fff;color:#111}
+.hd h1{margin:12px 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(28px,4.4vw,42px);letter-spacing:-.03em}
+.hd p{margin:0;color:var(--muted);font-weight:500}
+.jump{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0 26px}
+.jump a{text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:14px;font-weight:700;background:#fff}
+.jump a:hover{border-color:#111}.jump a.ask{background:var(--gold);border-color:var(--gold-line)}
+.jump a small{font-weight:500;color:var(--muted);margin-left:3px}
+h2.sec{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;white-space:nowrap;margin:34px 0 14px;font-size:21px;font-weight:900;letter-spacing:-.02em}
+h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:normal}
+/* 잠금 */
+.lock{max-width:380px;margin:40px auto;text-align:center;border:1px solid var(--line);border-radius:18px;padding:30px 24px;background:var(--paper)}
+.lock .ic{font-size:40px}.lock h2{margin:8px 0 4px;font-size:19px;font-weight:900}
+.lock p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.6}
+.lock input{font:inherit;font-size:22px;letter-spacing:.4em;text-align:center;width:180px;border:1.5px solid #cfc8bd;border-radius:10px;padding:10px;background:#fff}
+.lock button{display:block;margin:14px auto 0;font:inherit;font-weight:800;font-size:15px;border:0;border-radius:10px;background:#111;color:#fff;padding:10px 26px;cursor:pointer}
+.lock .err{color:#8a2f22;font-size:13.5px;margin-top:10px;min-height:1.2em}
+.loading{text-align:center;color:var(--muted);padding:40px 0}
+/* 한눈에 */
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.tile{border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;background:#fff}
+.tile .k{font-size:12.5px;color:var(--muted);font-weight:700}
+.tile .v{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;color:var(--muted);margin-top:2px}
+.tile.ask{background:var(--gold);border-color:var(--gold-line)}
+.chart{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px 16px 10px}
+.chart .t{font-size:13px;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between}.chart .t span{font-weight:500;color:var(--muted)}
+.bars{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;align-items:end;height:110px;padding-top:18px}
+.bars div{position:relative;background:#1d1b18;border-radius:4px 4px 0 0;min-height:2px}
+.bars div.z{background:#e6e1d9}
+.bars div b{position:absolute;top:-17px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:700;color:#3b3833}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;margin-top:4px}.days span{text-align:center;font-size:10.5px;color:var(--muted)}
+@media (max-width:860px){.tiles{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:480px){.tiles{grid-template-columns:repeat(2,1fr)}.bars,.days{gap:3px}.bars div b{font-size:9px}}
+/* 거믄 · 힌 */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.duo{grid-template-columns:1fr}}
+.pc{border:1.5px solid #111;border-radius:18px;padding:18px 18px 8px;background:#fff}
+.pc.h{background:#fff}.pc.g .ph{background:#111;color:#fff}
+.ph{display:flex;align-items:center;gap:10px;margin:-18px -18px 14px;padding:14px 18px;border-radius:16px 16px 0 0;border-bottom:1.5px solid #111}
+.ph b{font-size:22px;font-weight:900;letter-spacing:.04em}
+.ph .ow{display:inline-block;min-width:2.9em;text-align:center;font-weight:900;font-size:13px;padding:2px 8px;border:1.5px solid currentColor;line-height:1.3}
+.ph svg{width:22px;height:22px}
+.ph .me{margin-left:auto;font-size:12px;font-weight:700;opacity:.7}
+.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+.nums div{text-align:center;background:var(--paper);border-radius:10px;padding:8px 2px}
+.nums b{display:block;font-size:20px;font-weight:900;font-variant-numeric:tabular-nums}
+.nums span{font-size:11.5px;color:var(--muted);font-weight:700}
+.blk{margin:0 0 16px}
+.blk h3{display:flex;align-items:baseline;gap:6px;margin:0 0 8px;font-size:14.5px;font-weight:900}
+.blk h3 small{font-weight:500;color:var(--muted);font-size:12px}
+.blk h3 button{margin-left:auto;font:inherit;font-size:12px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;cursor:pointer;color:#4a463f}
+.th{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.th a{position:relative;display:block;aspect-ratio:1;border:1px solid #ece8e1;border-radius:8px;background:#f6f5f2;overflow:hidden}
+.th a img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.th a span{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.3;background:rgba(0,0,0,.55);color:#fff;padding:1px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th a i{position:absolute;top:2px;right:2px;font-style:normal;font-size:10px;font-weight:800;background:#1d1b18;color:#fff;border-radius:999px;padding:0 5px}
+@media (max-width:480px){.th{grid-template-columns:repeat(4,1fr)}}
+.empty{font-size:13px;color:var(--muted);margin:0;padding:6px 0}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.rank li{display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:center;font-size:13px}
+.rank li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank li i{display:block;height:8px;border-radius:4px;background:#1d1b18}
+.pc.h .rank li i{background:#fff;border:1.5px solid #1d1b18}
+.rank li b{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips a{text-decoration:none;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:#fff}
+.chips a small{color:var(--muted);margin-left:3px}
+.cms{display:flex;flex-direction:column;gap:8px}
+.cm1{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;text-decoration:none}
+.cm1 img{width:44px;height:44px;object-fit:contain;background:#f6f5f2;border-radius:6px;mix-blend-mode:multiply}
+.cm1 div{font-size:13px;line-height:1.55;color:#2b2825;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cm1 small{display:block;color:var(--muted);font-size:11.5px}
+/* 선생님께 여쭤볼 것 */
+.next{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--gold);border:1px solid var(--gold-line);border-radius:16px;padding:14px 18px;margin-bottom:14px}
+.next b{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:900}
+.next .dd{font-size:13px;font-weight:900;color:#fff;background:#1d1b18;border-radius:6px;padding:2px 8px}
+.next span{color:#6b5a2e;font-size:14px}
+.next button{margin-left:auto;font:inherit;font-size:13.5px;font-weight:700;border:1px solid #d9c99c;background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer}
+.qform{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:18px;background:#fff}
+.qrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.seg{display:inline-flex;border:1.5px solid #111;border-radius:999px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;font-weight:800;border:0;background:#fff;padding:6px 16px;cursor:pointer}
+.seg button+button{border-left:1.5px solid #111}
+.seg button.on[data-w="거믄"]{background:#111;color:#fff}.seg button.on[data-w="힌"]{box-shadow:inset 0 0 0 3px #111}
+.qform select{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:6px 12px;background:#fff;max-width:100%}
+.qform textarea{width:100%;min-height:84px;font:inherit;font-size:15px;line-height:1.65;border:1px solid #d9d4cc;border-radius:10px;padding:10px 12px;resize:vertical}
+.qform .go{font:inherit;font-weight:800;font-size:15px;border:0;border-radius:10px;background:#111;color:#fff;padding:9px 22px;cursor:pointer;margin-left:auto}
+.qform .go:disabled{opacity:.5}
+.qform .hint{font-size:12.5px;color:var(--muted)}
+.cls{margin:0 0 18px}
+.cls h3{display:flex;align-items:baseline;gap:8px;margin:0 0 8px;font-size:16px;font-weight:900}
+.cls h3 small{font-weight:500;color:var(--muted);font-size:12.5px}
+.cls.past h3{color:#6b665e}
+.ql{display:flex;flex-direction:column;gap:8px}
+.qi{display:grid;grid-template-columns:auto 1fr;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff}
+.qi.done{background:#faf9f6}
+.qi .ck{width:26px;height:26px;border-radius:50%;border:2px solid #cfc8bd;background:#fff;cursor:pointer;display:grid;place-items:center;padding:0;margin-top:2px;font-size:14px;color:#fff}
+.qi.done .ck{background:#2f6b45;border-color:#2f6b45}
+.qh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.ow2{display:inline-block;min-width:2.9em;text-align:center;font-weight:900;font-size:12px;padding:1px 7px;border:1.5px solid #111;line-height:1.35;color:#111}
+.ow2.g{background:#111;color:#fff}
+.qt{font-size:15.5px;line-height:1.7;margin:4px 0 0;white-space:pre-wrap}
+.qi.done .qt{color:#6b665e}
+.qobj{display:inline-flex;align-items:center;gap:8px;margin-top:8px;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:4px 10px 4px 4px;font-size:13px;background:var(--paper)}
+.qobj img{width:36px;height:36px;object-fit:contain;mix-blend-mode:multiply;background:#f0eee9;border-radius:6px}
+.qans{margin-top:8px;border-left:3px solid #2f6b45;background:#f3f8f4;border-radius:0 10px 10px 0;padding:8px 12px;font-size:14.5px;line-height:1.7;white-space:pre-wrap}
+.qans b{display:block;font-size:12px;color:#2f6b45;margin-bottom:2px}
+.qact{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.qact button{font:inherit;font-size:12.5px;border:0;background:none;color:#8a837a;cursor:pointer;padding:0}
+.qact button:hover{color:#1d1b18}.qact .del:hover{color:#8a2f22}
+.qed textarea{width:100%;min-height:70px;font:inherit;font-size:14.5px;line-height:1.6;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;margin-top:8px}
+.qed .r{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.qed button{font:inherit;font-size:13px;border:1px solid #d9d4cc;background:#fff;border-radius:8px;padding:5px 12px;cursor:pointer}.qed .ok{background:#1d1b18;color:#fff;border-color:#1d1b18;font-weight:700}
+.past-t{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:#4a463f}
+.note{font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:26px;text-align:center}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#1d1b18;color:#fff;font-size:14px;padding:9px 16px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%)}
+/* 수업용 인쇄: 다음 수업 질문만 */
+@media print{
+  body.pr .wrap > *:not(#ask-sec){display:none!important}
+  body.pr #ask-sec .qform,body.pr #ask-sec .next button,body.pr .qact,body.pr .past-t,body.pr .cls:not(.now),body.pr #rv,body.pr .st-top{display:none!important}
+  body.pr .qi{break-inside:avoid;border-color:#999}
+  #rv,#lk-box{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <span class="mk"><span class="b">거믄</span><span class="w">힌</span></span>
+    <h1>거믄 힌의 통계</h1>
+    <p>좋아요 · 찾아본 기물 · 기물 이야기 · 선생님께 여쭤볼 것</p>
+  </div>
+  <div id="app"><p class="loading">불러오는 중…</p></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="site.js"></script>
+<script src="recent.js" defer></script>
+<script src="search.js" defer></script>
+<script src="comments.js" defer></script>
+<script>
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
+  var K_CODE = 'mokgagu_cm_code', K_FAM = 'mokgagu_cm_fam', K_WHO = 'mokgagu_cm_who';
+  var ls = { get: function (k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  var app = document.getElementById('app');
+  var D = null, IX = {}, BOOK = {}, past = false, editId = '', ansId = '', formWho = '';
+  var SP = 'M12 2.6l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.4l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z';
+  function star(w) { return '<svg viewBox="0 0 24 24" width="16" height="16" style="flex:none"><path d="' + SP + '" fill="' + (w === '거믄' ? '#d0312d' : '#fff') + '" stroke="#d0312d" stroke-width="' + (w === '거믄' ? 1.6 : 2.2) + '" stroke-linejoin="round"/></svg>'; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmt(n) { return Number(n || 0).toLocaleString('ko-KR'); }
+  function toast(t) { var e = document.getElementById('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(e._t); e._t = setTimeout(function () { e.classList.remove('on'); }, 1800); }
+  function fam() { return ls.get(K_FAM) === '1' && !!ls.get(K_CODE); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+  /* 날짜 · 수업일 (매달 둘째·넷째 토요일) */
+  function today() { return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10); }
+  function classDays(y, m) { var d = new Date(Date.UTC(y, m, 1)), f = (6 - d.getUTCDay() + 7) % 7 + 1; return [f + 7, f + 21].map(function (x) { return new Date(Date.UTC(y, m, x)).toISOString().slice(0, 10); }); }
+  function upcoming(n) { var t = today(), y = +t.slice(0, 4), m = +t.slice(5, 7) - 1, out = []; while (out.length < n) { classDays(y, m).forEach(function (x) { if (x >= t && out.length < n) out.push(x); }); m++; if (m > 11) { m = 0; y++; } } return out; }
+  function md(d) { if (!d) return '날짜 없음'; var x = new Date(d + 'T00:00:00Z'); return (x.getUTCMonth() + 1) + '월 ' + x.getUTCDate() + '일'; }
+  function mdw(d) { var x = new Date(d + 'T00:00:00Z'); return md(d) + '(' + '일월화수목금토'[x.getUTCDay()] + ')'; }
+  function dday(d) { var n = Math.round((new Date(d + 'T00:00:00Z') - new Date(today() + 'T00:00:00Z')) / 864e5); return n === 0 ? '오늘' : 'D-' + n; }
+  function ago(iso) { if (!iso) return ''; var t = new Date(iso), k = new Date(t.getTime() + 9 * 3600e3).toISOString(); return (+k.slice(5, 7)) + '/' + (+k.slice(8, 10)) + ' ' + k.slice(11, 16); }
+
+  /* 기물 찾기 (검색 색인) */
+  function rec(cid) { return IX[cid]; }
+  function thumb(cid) { var r = rec(cid); return r && r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : ''; }
+  function name(cid) { var r = rec(cid); return r ? r.name : cid.split('/').pop(); }
+  function link(cid) { return 'index.html#see=' + cid.split('/').map(encodeURIComponent).join('/'); }
+  function thA(cid, badge) { return '<a href="' + link(cid) + '" title="' + esc(name(cid)) + '">' + (thumb(cid) ? '<img loading="lazy" src="' + thumb(cid) + '" alt="">' : '') + (badge ? '<i>' + badge + '</i>' : '') + '<span>' + esc(name(cid)) + '</span></a>'; }
+
+  /* ── 잠금 ── */
+  function lock(msg) {
+    app.innerHTML = '<div class="lock"><div class="ic">🔒</div><h2>가족 암호를 넣어 주세요</h2><p>공부방과 같은 암호예요.<br>이 기기에 기억해 둡니다.</p>' +
+      '<input id="lk-code" type="password" inputmode="numeric" autocomplete="off"><button id="lk-go">열기</button><div class="err">' + esc(msg || '') + '</div></div>';
+    var go = function () {
+      var v = document.getElementById('lk-code').value.trim(); if (!v) return;
+      document.getElementById('lk-go').disabled = true;
+      fetch(API + '?action=list&code=' + encodeURIComponent(v)).then(function (r) { return r.json(); }).then(function (j) {
+        if (j && j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); if (window.MOKGAGU_COMMENTS) window.MOKGAGU_COMMENTS.reload(); load(); }
+        else lock('가족 암호가 맞지 않아요.');
+      }).catch(function () { lock('인터넷 연결을 확인해 주세요.'); });
+    };
+    document.getElementById('lk-go').onclick = go;
+    document.getElementById('lk-code').onkeydown = function (e) { if (e.key === 'Enter') go(); };
+  }
+
+  /* ── 자료 불러오기 ── */
+  function load() {
+    if (!fam()) { lock(); return; }
+    if (!D) app.innerHTML = '<p class="loading">불러오는 중…</p>';
+    var code = encodeURIComponent(ls.get(K_CODE));
+    Promise.all([
+      fetch(API + '?action=stats&code=' + code, { cache: 'no-store' }).then(function (r) { return r.json(); }),
+      fetch(API + '?action=list&code=' + code, { cache: 'no-store' }).then(function (r) { return r.json(); }),
+      fetch(API + '?action=visit', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }),
+      waitIndex()
+    ]).then(function (a) {
+      if (!a[0] || !a[0].ok) { if (a[0] && a[0].err === 'code') { ls.set(K_FAM, ''); lock('가족 암호를 다시 넣어 주세요.'); return; } app.innerHTML = '<p class="loading">통계를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.</p>'; return; }
+      D = a[0]; D.comments = (a[1] && a[1].list) || []; D.vt = a[2] || {};
+      draw();
+    }).catch(function () { app.innerHTML = '<p class="loading">인터넷 연결을 확인해 주세요.</p>'; });
+  }
+  function waitIndex() {
+    return new Promise(function (res) {
+      (function chk(n) {
+        if (window.SEARCH) { window.SEARCH.forEach(function (r) { IX[r.b + '/' + r.pid] = r; BOOK[r.b] = r.cat; }); return res(); }
+        if (n > 100) return res(); setTimeout(function () { chk(n + 1); }, 100);
+      })(0);
+    });
+  }
+
+  /* ── 한 사람 정리 ── */
+  function person(w) {
+    var likes = D.likes.filter(function (x) { return x.who === w; }).sort(function (a, b) { return b.t.localeCompare(a.t); });
+    var views = D.logs.filter(function (x) { return x.who === w && x.kind === 'view' && x.cid; });
+    var seen = {}, order = [];
+    views.slice().reverse().forEach(function (x) { if (!seen[x.cid]) { seen[x.cid] = 0; order.push(x.cid); } seen[x.cid]++; });
+    var books = {}; views.forEach(function (x) { var b = x.cid.split('/')[0]; books[b] = (books[b] || 0) + 1; });
+    var qs = {}; D.logs.forEach(function (x) { if (x.who === w && x.kind === 'search' && x.q) qs[x.q] = (qs[x.q] || 0) + 1; });
+    var cms = D.comments.filter(function (c) { return c.author === w; }).sort(function (a, b) { return b.t.localeCompare(a.t); });
+    var ask = D.questions.filter(function (q) { return q.who === w; });
+    return { likes: likes, order: order, seen: seen, books: books, qs: qs, cms: cms, ask: ask };
+  }
+  function pcHTML(w) {
+    var P = person(w), me = window.MOKGAGU_LIKES && window.MOKGAGU_LIKES.me && window.MOKGAGU_LIKES.me();
+    var bk = Object.keys(P.books).sort(function (a, b) { return P.books[b] - P.books[a]; }).slice(0, 5), mx = bk.length ? P.books[bk[0]] : 1;
+    var qk = Object.keys(P.qs).sort(function (a, b) { return P.qs[b] - P.qs[a]; }).slice(0, 14);
+    return '<div class="pc ' + (w === '거믄' ? 'g' : 'h') + '"><div class="ph">' + star(w) + '<b>' + w + '</b>' + (me === w ? '<span class="me">이 기기</span>' : '') + '</div>' +
+      '<div class="nums"><div><b>' + P.likes.length + '</b><span>좋아요</span></div><div><b>' + P.order.length + '</b><span>찾아본 기물</span></div><div><b>' + Object.keys(P.qs).length + '</b><span>검색어</span></div><div><b>' + P.cms.length + '</b><span>기물 이야기</span></div><div><b>' + P.ask.filter(function (q) { return !q.done; }).length + '</b><span>남은 질문</span></div></div>' +
+      '<div class="blk"><h3>' + star(w) + ' 좋아요 한 기물 <small>' + P.likes.length + '점</small>' + (P.likes.length ? '<button type="button" data-col="' + w + '">모아보기</button>' : '') + '</h3>' +
+        (P.likes.length ? '<div class="th">' + P.likes.slice(0, 12).map(function (x) { return thA(x.cid); }).join('') + '</div>' : '<p class="empty">아직 별을 단 기물이 없어요.</p>') + '</div>' +
+      '<div class="blk"><h3>👀 최근 찾아본 기물 <small>' + P.order.length + '점</small></h3>' +
+        (P.order.length ? '<div class="th">' + P.order.slice(0, 12).map(function (c) { return thA(c, P.seen[c] > 1 ? P.seen[c] + '번' : ''); }).join('') + '</div>' : '<p class="empty">이 기능을 켠 뒤로 찾아본 기물이 여기 쌓여요.</p>') + '</div>' +
+      '<div class="blk"><h3>📚 많이 본 도록</h3>' +
+        (bk.length ? '<ul class="rank">' + bk.map(function (b) { return '<li><span>' + esc(BOOK[b] || b) + '</span><i style="width:' + Math.max(6, P.books[b] / mx * 100) + '%"></i><b>' + P.books[b] + '번</b></li>'; }).join('') + '</ul>' : '<p class="empty">아직 기록이 없어요.</p>') + '</div>' +
+      '<div class="blk"><h3>🔍 찾아본 말</h3>' +
+        (qk.length ? '<div class="chips">' + qk.map(function (q) { return '<a href="index.html#q=' + encodeURIComponent(q) + '">' + esc(q) + (P.qs[q] > 1 ? '<small>' + P.qs[q] + '</small>' : '') + '</a>'; }).join('') + '</div>' : '<p class="empty">첫 화면이나 도록 안 검색창에 적은 말이 여기 쌓여요.</p>') + '</div>' +
+      '<div class="blk"><h3>💬 최근 기물 이야기 <small>' + P.cms.length + '개</small></h3>' +
+        (P.cms.length ? '<div class="cms">' + P.cms.slice(0, 4).map(function (c) { return '<a class="cm1" href="' + link(c.cid) + '">' + (thumb(c.cid) ? '<img src="' + thumb(c.cid) + '" alt="">' : '<span></span>') + '<div><small>' + esc(name(c.cid)) + ' · ' + ago(c.t) + '</small>' + esc(c.text) + '</div></a>'; }).join('') + '</div>' : '<p class="empty">아직 남긴 이야기가 없어요.</p>') + '</div>' +
+      '</div>';
+  }
+
+  /* ── 선생님께 여쭤볼 것 ── */
+  function qiHTML(q) {
+    var w = q.who, ed = editId === q.id, an = ansId === q.id;
+    return '<div class="qi' + (q.done ? ' done' : '') + '"><button type="button" class="ck" data-done="' + esc(q.id) + '" title="' + (q.done ? '아직 안 여쭤봤어요로' : '여쭤봤어요') + '">' + (q.done ? '✓' : '') + '</button><div>' +
+      '<div class="qh"><span class="ow2 ' + (w === '거믄' ? 'g' : 'h') + '">' + esc(w) + '</span>' + ago(q.t) + (q.done ? ' · 여쭤봤어요' : '') + '</div>' +
+      (ed ? '<div class="qed"><textarea data-et="' + esc(q.id) + '">' + esc(q.text) + '</textarea><div class="r"><button type="button" data-cancel="1">그만두기</button><button type="button" class="ok" data-esave="' + esc(q.id) + '">고친 내용 저장</button></div></div>' : '<p class="qt">' + esc(q.text) + '</p>') +
+      (q.cid ? '<a class="qobj" href="' + link(q.cid) + '">' + (thumb(q.cid) ? '<img src="' + thumb(q.cid) + '" alt="">' : '') + esc(name(q.cid)) + '<small style="color:#8a837a">· ' + esc(BOOK[q.cid.split('/')[0]] || '') + '</small></a>' : '') +
+      (q.ans && !an ? '<div class="qans"><b>선생님 말씀</b>' + esc(q.ans) + '</div>' : '') +
+      (an ? '<div class="qed"><textarea data-at="' + esc(q.id) + '" placeholder="선생님 말씀을 적어 두세요">' + esc(q.ans) + '</textarea><div class="r"><button type="button" data-cancel="1">그만두기</button><button type="button" class="ok" data-asave="' + esc(q.id) + '">말씀 저장</button></div></div>' : '') +
+      (ed || an ? '' : '<div class="qact"><button type="button" data-ans="' + esc(q.id) + '">✎ 선생님 말씀 ' + (q.ans ? '고치기' : '적기') + '</button><button type="button" data-edit="' + esc(q.id) + '">질문 고치기</button>' +
+        (!q.done ? '<button type="button" data-later="' + esc(q.id) + '">다음 수업으로 미루기</button>' : '') + '<button type="button" class="del" data-del="' + esc(q.id) + '">지우기</button></div>') +
+      '</div></div>';
+  }
+  function askHTML() {
+    var up = upcoming(4), nx = up[0], t = today();
+    var Q = D.questions.slice().sort(function (a, b) { return a.t.localeCompare(b.t); });
+    var groups = {}; Q.forEach(function (q) { var k = q.cls || nx; (groups[k] = groups[k] || []).push(q); });
+    var keys = Object.keys(groups).sort();
+    var fut = keys.filter(function (k) { return k >= t; }), old = keys.filter(function (k) { return k < t; }).reverse();
+    if (fut.indexOf(nx) < 0) fut.unshift(nx);
+    var left = (groups[nx] || []).filter(function (q) { return !q.done; }).length;
+    var me = (window.MOKGAGU_LIKES && window.MOKGAGU_LIKES.me && window.MOKGAGU_LIKES.me()) || ls.get(K_WHO);
+    formWho = formWho || (me === '힌' ? '힌' : '거믄');
+    var pick = {}; ['거믄', '힌'].forEach(function (w) { var P = person(w); P.likes.forEach(function (x) { pick[x.cid] = 1; }); P.order.slice(0, 20).forEach(function (c) { pick[c] = 1; }); });
+    var opts = Object.keys(pick).filter(rec).map(function (c) { return '<option value="' + esc(c) + '">' + esc(name(c)) + ' · ' + esc(BOOK[c.split('/')[0]] || '') + '</option>'; }).join('');
+    var h = '<div class="next"><span class="dd">' + dday(nx) + '</span><div><b>' + mdw(nx) + ' 수업</b><br><span>여쭤볼 것 ' + left + '개' + ((groups[nx] || []).length - left ? ' · 여쭤본 것 ' + ((groups[nx] || []).length - left) + '개' : '') + '</span></div><button type="button" id="pr">🖨 수업용으로 인쇄</button></div>' +
+      '<div class="qform"><div class="qrow"><span class="seg">' + ['거믄', '힌'].map(function (w) { return '<button type="button" data-w="' + w + '" class="' + (formWho === w ? 'on' : '') + '">' + w + '</button>'; }).join('') + '</span>' +
+      '<select id="qcls">' + up.map(function (d) { return '<option value="' + d + '">' + mdw(d) + ' 수업</option>'; }).join('') + '</select>' +
+      '<select id="qcid"><option value="">기물 붙이기 (안 해도 돼요)</option>' + opts + '</select></div>' +
+      '<textarea id="qtext" placeholder="선생님께 여쭤볼 것을 적어 주세요 — 예: 전라도 반닫이와 경상도 반닫이의 장석 차이는?"></textarea>' +
+      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있어요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
+    fut.forEach(function (k) {
+      var L = groups[k] || [];
+      h += '<div class="cls' + (k === nx ? ' now' : '') + '"><h3>' + mdw(k) + ' 수업 <small>' + (k === nx ? dday(k) + ' · ' : '') + L.length + '개</small></h3>' +
+        (L.length ? '<div class="ql">' + L.map(qiHTML).join('') + '</div>' : '<p class="empty">아직 적은 질문이 없어요.</p>') + '</div>';
+    });
+    if (old.length) {
+      h += '<button type="button" class="past-t" id="past">' + (past ? '지난 수업 접기' : '지난 수업 질문 보기 (' + old.reduce(function (s, k) { return s + groups[k].length; }, 0) + '개)') + '</button>';
+      if (past) old.forEach(function (k) { h += '<div class="cls past" style="margin-top:14px"><h3>' + mdw(k) + ' 수업 <small>' + groups[k].length + '개</small></h3><div class="ql">' + groups[k].map(qiHTML).join('') + '</div></div>'; });
+    }
+    return h;
+  }
+
+  /* ── 한눈에 ── */
+  function topHTML() {
+    var t = today(), V = {}; (D.visits || []).forEach(function (v) { V[v.day] = v.n; });
+    var days = []; for (var i = 13; i >= 0; i--) days.push(new Date(new Date(t + 'T00:00:00Z').getTime() - i * 864e5).toISOString().slice(0, 10));
+    var mx = Math.max.apply(null, days.map(function (d) { return V[d] || 0; }).concat([1]));
+    var likeSet = {}; D.likes.forEach(function (x) { likeSet[x.cid] = 1; });
+    var books = {}; (window.SEARCH || []).forEach(function (r) { books[r.b] = 1; });
+    var nx = upcoming(1)[0], left = D.questions.filter(function (q) { return !q.done && (q.cls || nx) >= t; }).length;
+    var vs = D.logs.filter(function (x) { return x.kind === 'view'; }).length;
+    return '<div class="tiles">' +
+      '<div class="tile"><div class="k">오늘 방문</div><div class="v">' + fmt(D.vt.today) + '</div><div class="s">누적 ' + fmt(D.vt.total) + '</div></div>' +
+      '<div class="tile"><div class="k">도록 · 자료</div><div class="v">' + Object.keys(books).length + '</div><div class="s">기물 ' + fmt((window.SEARCH || []).length) + '점</div></div>' +
+      '<div class="tile"><div class="k">좋아요 한 기물</div><div class="v">' + Object.keys(likeSet).length + '</div><div class="s">별 ' + D.likes.length + '개</div></div>' +
+      '<div class="tile"><div class="k">찾아본 횟수</div><div class="v">' + fmt(vs) + '</div><div class="s">검색 ' + D.logs.filter(function (x) { return x.kind === 'search'; }).length + '번</div></div>' +
+      '<div class="tile"><div class="k">기물 이야기</div><div class="v">' + D.comments.length + '</div><div class="s">거믄 ' + D.comments.filter(function (c) { return c.author === '거믄'; }).length + ' · 힌 ' + D.comments.filter(function (c) { return c.author === '힌'; }).length + '</div></div>' +
+      '<div class="tile ask"><div class="k">여쭤볼 것</div><div class="v">' + left + '</div><div class="s">' + md(nx) + ' 수업</div></div></div>' +
+      '<div class="chart"><div class="t">최근 14일 방문<span>한 기기는 하루 한 번만 셉니다</span></div><div class="bars">' +
+      days.map(function (d) { var n = V[d] || 0; return '<div class="' + (n ? '' : 'z') + '" style="height:' + (n ? Math.max(6, n / mx * 100) : 2) + '%" title="' + d + ' · ' + n + '명">' + (n ? '<b>' + n + '</b>' : '') + '</div>'; }).join('') +
+      '</div><div class="days">' + days.map(function (d) { return '<span>' + (+d.slice(8, 10)) + '</span>'; }).join('') + '</div></div>';
+  }
+
+  function draw() {
+    var nx = upcoming(1)[0], left = D.questions.filter(function (q) { return !q.done && (q.cls || nx) === nx; }).length;
+    app.innerHTML = '<div class="jump"><a href="#all">한눈에</a><a href="#duo">거믄 · 힌</a><a class="ask" href="#ask">✎ ' + md(nx) + ' 수업 질문<small>' + left + '</small></a></div>' +
+      '<section id="all"><h2 class="sec">한눈에</h2>' + topHTML() + '</section>' +
+      '<section id="duo"><h2 class="sec">거믄 · 힌 <small>각자 남긴 기록 — 좋아요, 찾아본 기물, 검색어, 기물 이야기</small></h2><div class="duo">' + pcHTML('거믄') + pcHTML('힌') + '</div></section>' +
+      '<section id="ask-sec"><h2 class="sec" id="ask">선생님께 여쭤볼 것 <small>둘째·넷째 토요일 동인방 수업</small></h2>' + askHTML() + '</section>' +
+      '<p class="note">「찾아본 기물」과 「찾아본 말」은 거믄·힌으로 들어온 기기에서 2026년 10월 19일부터 쌓입니다.<br>모든 기록은 가족 암호를 넣은 기기에서만 보입니다.</p>';
+    if (location.hash === '#ask' && !draw._jumped) { draw._jumped = 1; setTimeout(function () { document.getElementById('ask').scrollIntoView(); }, 50); }
+  }
+
+  /* ── 시트에 쓰기 ── */
+  function post(d) {
+    d.code = ls.get(K_CODE);
+    return fetch(API, { method: 'POST', body: JSON.stringify(d) }).then(function (r) { return r.json(); }).then(function (j) { return !!(j && j.ok); }).catch(function () { return false; });
+  }
+  function qset(id, patch, msg) {
+    var q = D.questions.filter(function (x) { return x.id === id; })[0]; if (!q) return;
+    var keep = JSON.parse(JSON.stringify(q)); Object.keys(patch).forEach(function (k) { q[k] = patch[k]; }); editId = ansId = ''; draw();
+    var body = { action: 'qedit', id: id }; Object.keys(patch).forEach(function (k) { body[k] = patch[k]; });
+    post(body).then(function (ok) { if (!ok) { Object.keys(keep).forEach(function (k) { q[k] = keep[k]; }); draw(); toast('저장하지 못했어요. 다시 해 주세요'); } else if (msg) toast(msg); });
+  }
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || !D) return;
+    if (b.dataset.w) { formWho = b.dataset.w; b.parentNode.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); return; }
+    if (b.id === 'qgo') {
+      var ta = document.getElementById('qtext'), text = ta.value.trim(); if (!text) { ta.focus(); return; }
+      var q = { id: uid(), who: formWho, text: text, cid: document.getElementById('qcid').value, cls: document.getElementById('qcls').value, t: new Date().toISOString(), done: false, ans: '' };
+      b.disabled = true;
+      post({ action: 'qadd', q: q }).then(function (ok) {
+        b.disabled = false;
+        if (ok) { D.questions.push(q); draw(); toast(md(q.cls) + ' 수업 질문에 넣었어요'); } else toast('넣지 못했어요. 인터넷 연결을 확인해 주세요');
+      });
+      return;
+    }
+    if (b.dataset.done) { var q1 = D.questions.filter(function (x) { return x.id === b.dataset.done; })[0]; qset(b.dataset.done, { done: !q1.done }, q1.done ? '' : '여쭤봤어요 ✓'); return; }
+    if (b.dataset.edit) { editId = b.dataset.edit; ansId = ''; draw(); var et = app.querySelector('[data-et]'); if (et) et.focus(); return; }
+    if (b.dataset.ans) { ansId = b.dataset.ans; editId = ''; draw(); var at = app.querySelector('[data-at]'); if (at) at.focus(); return; }
+    if (b.dataset.cancel) { editId = ansId = ''; draw(); return; }
+    if (b.dataset.esave) { var v = app.querySelector('[data-et]').value.trim(); if (v) qset(b.dataset.esave, { text: v }, '고쳤어요'); return; }
+    if (b.dataset.asave) { qset(b.dataset.asave, { ans: app.querySelector('[data-at]').value.trim(), done: true }, '선생님 말씀을 적어 두었어요'); return; }
+    if (b.dataset.later) { var q2 = D.questions.filter(function (x) { return x.id === b.dataset.later; })[0], up = upcoming(4), cur = q2.cls || up[0], nxt = up.filter(function (d) { return d > cur; })[0] || up[1]; qset(b.dataset.later, { cls: nxt }, md(nxt) + ' 수업으로 미뤘어요'); return; }
+    if (b.dataset.del) {
+      if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = '정말 지울까요? 한 번 더 누르세요'; setTimeout(function () { if (b.isConnected) { b.dataset.sure = ''; b.textContent = '지우기'; } }, 3000); return; }
+      var id = b.dataset.del, keepQ = D.questions.slice(); D.questions = D.questions.filter(function (x) { return x.id !== id; }); draw();
+      post({ action: 'qdel', id: id }).then(function (ok) { if (!ok) { D.questions = keepQ; draw(); toast('지우지 못했어요'); } else toast('지웠어요'); });
+      return;
+    }
+    if (b.id === 'past') { past = !past; draw(); return; }
+    if (b.id === 'pr') { document.body.classList.add('pr'); window.print(); setTimeout(function () { document.body.classList.remove('pr'); }, 500); return; }
+    if (b.dataset.col) { if (window.MOKGAGU_LIKES && window.MOKGAGU_LIKES.open) window.MOKGAGU_LIKES.open(); return; }
+  });
+  window.addEventListener('afterprint', function () { document.body.classList.remove('pr'); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && D && !editId && !ansId && !(document.getElementById('qtext') || {}).value) load(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load); else load();
+})();
+</script>
+</body>
+</html>

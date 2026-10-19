@@ -246,13 +246,15 @@ const FD_ICON = {
 };
 const STUDY = `<a class="card folder study" href="study.html"><div class="cover fd">${FOLDER_SVG}<span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 공부방</h3><p>동인방 정대영 선생님 수업<br>거믄의 노트 · 힌의 노트<br>날짜별 정리</p><div class="meta">암호로 잠금</div></div></a>`;
 const COLLECTION = `<a class="card folder study col" href="collection.html"><div class="cover fd"><img src="mark_angwe.png" alt="" class="col-ico"><span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 소장품</h3><p>우리 집에 들인 목가구·기물<br>사진 · 구입일 · 구입처 · 비고</p><div class="meta">암호로 잠금</div></div></a>`;
+const STATS_SVG = '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>';
+const STATS = `<a class="card folder study st" href="stats.html"><div class="cover fd">${STATS_SVG}<span class="lk">🔒</span></div><div style="min-width:0"><h3><span class="ew"><b>거믄</b><i>힌</i></span>의 통계</h3><p>좋아요 · 찾아본 기물 · 기물 이야기<br>선생님께 여쭤볼 것</p><div class="meta">암호로 잠금</div></div></a>`;
 function render(q = '') {
   const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
   let html = '';
   if (fd) {
     html = fd[3].map(card).join('');
   } else {
-    html = STUDY + COLLECTION + MAIN.map(card).join('') + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p}<br>${L.map((d) => d.title).join('<br>')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
+    html = STUDY + COLLECTION + STATS + MAIN.map(card).join('') + FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="card folder" href="#${k}"><div class="cover fd fd-${k}">${FD_ICON[k] || FOLDER_SVG}</div><div style="min-width:0"><h3>${name}</h3><p>${p}<br>${L.map((d) => d.title).join('<br>')}</p><div class="meta">${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건</div></div></a>`).join('');
   }
   grid.innerHTML = html;
   const h = document.getElementById('grid-title'); if (h) h.textContent = fd ? fd[1] : '';
@@ -337,6 +339,8 @@ function openSeen() {
   seqFrom = ''; shown = [r]; openItem(0);
 }
 window.addEventListener('hashchange', openSeen);
+/* 통계 페이지의 「찾아본 말」에서 넘어오면 그 말로 찾기 */
+(function () { const m = location.hash.match(/^#q=(.+)$/); if (!m) return; const q = document.getElementById('q'); if (!q) return; q.value = decodeURIComponent(m[1]); q.dispatchEvent(new Event('input', { bubbles: true })); history.replaceState(null, '', location.pathname); setTimeout(() => q.scrollIntoView({ block: 'center' }), 100); })();
 window.addEventListener('load', openSeen);
 openSeen();
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
