@@ -39,6 +39,13 @@
   const load = () => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { return {}; } };
   const save = (o) => { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
 
+  const API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
+  const ls = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const code = () => ls('mokgagu_cm_code') || ls('mokgagu_study_pw');
+  const who = () => ls('mokgagu_write_who') || (ls('mokgagu_cm_who') === '힌' ? '힌' : '거믄');
+  const get = (a) => fetch(API + '?action=' + a + '&code=' + encodeURIComponent(code()), { cache: 'no-store' }).then((r) => r.json());
+  const post = (o) => fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ code: code() }, o)) }).then((r) => r.json());
+
   function pins() {
     const all = (window.SEARCH || []).filter((r) => /반닫이/.test(r.name + (r.hanja || '')));
     const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], o: [] }; });
@@ -51,9 +58,18 @@
     });
     return { by, prov };
   }
+  /* 우리 소장품(가족 시트): 이름·종류에 반닫이가 들어 있고 지금 소장 중인 것만 */
+  function addOwn(P, list) {
+    (list || []).filter((c) => /반닫이/.test((c.name || '') + (c.kind || '')) && !c.sold && (!c.status || c.status === '소장')).forEach((c) => {
+      const hay = (c.name || '') + (c.kind || '') + (c.note || '') + (c.place || '') + (c.memo || '');
+      let hit = false;
+      R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { P.by[g[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id }); hit = true; } });
+      if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) P.prov[p[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id }); });
+    });
+  }
 
   function mount(el) {
-    const P = pins(), edits = load(); let on = { m: true, a: true, o: true }, sel = '';
+    const P = pins(), local = load(), edits = Object.assign({}, local), meta = {}; let on = { m: true, a: true, o: true }, sel = '';
     const cnt = (o) => (on.m ? o.m.length : 0) + (on.a ? o.a.length : 0) + (on.o ? o.o.length : 0);
     const W = 130, H = 86;
     el.innerHTML = `<div class="bm"><style>
@@ -91,19 +107,20 @@
     }
     function items(o) {
       return TYPES.filter(([k]) => on[k] && o[k] && o[k].length).map(([k, n, c]) => o[k].map((r) =>
+        r.own ? `<button type="button" data-own="1"><span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
         `<button type="button" data-cid="${esc(r.b + '/' + r.pid)}"><img loading="lazy" alt="" src="thumbs/${r.b}/${r.n}.jpg" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || n).slice(0, 12))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`).join('')).join('');
     }
     function show(id) {
       sel = id; draw(); const r = R.find((x) => x[0] === id), p = P.by[id], d = edits[id] != null ? edits[id] : r[8];
       panel.innerHTML = `<h3>${esc(r[1])} <small style="font-weight:400;color:#7a6c50">${r[2]}</small></h3><div id="bm-d" style="white-space:pre-wrap;line-height:1.65">${esc(d)}</div>
-<div class="src">출처: ${esc(r[9])}${edits[id] != null ? ' · (고친 글)' : ''}</div>
+<div class="src">출처: ${esc(r[9])}${edits[id] != null ? ' · (고친 글' + (meta[id] && meta[id].editor ? ' · ' + esc(meta[id].editor) : '') + ')' : ''}</div>
 <div class="bm-b"><button type="button" id="bm-e">설명 고치기</button>${KEY ? '<button type="button" id="bm-kk">실제 위치(카카오맵)</button>' : ''}</div><div id="bm-k" hidden></div>
 <div class="bm-it">${items(p) || '<span class="src">이 지역으로 분류된 기물이 아직 없어요.</span>'}</div>`;
       panel.querySelector('#bm-e').onclick = () => {
         panel.querySelector('#bm-d').outerHTML = `<textarea id="bm-ta">${esc(d)}</textarea>`;
         panel.querySelector('.bm-b').innerHTML = '<button type="button" id="bm-s">저장</button><button type="button" id="bm-r">처음 글로</button>';
-        panel.querySelector('#bm-s').onclick = () => { edits[id] = panel.querySelector('#bm-ta').value; save(edits); show(id); };
-        panel.querySelector('#bm-r').onclick = () => { delete edits[id]; save(edits); show(id); };
+        panel.querySelector('#bm-s').onclick = () => { const t = panel.querySelector('#bm-ta').value; edits[id] = t; local[id] = t; save(local); show(id); if (code() && who()) post({ action: 'rsave', id, text: t, editor: who() }).then((j) => { if (!j || !j.ok) alert('시트에 저장하지 못했어요. 이 기기에는 저장됐어요.'); }).catch(() => {}); };
+        panel.querySelector('#bm-r').onclick = () => { delete edits[id]; delete local[id]; save(local); show(id); if (code() && who()) post({ action: 'rsave', id, text: '', editor: who() }).catch(() => {}); };
       };
       const kk = panel.querySelector('#bm-kk');
       if (kk) kk.onclick = () => kakao(panel.querySelector('#bm-k'), r[6], r[7]);
@@ -120,10 +137,15 @@
     el.querySelector('#bm-t').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; on[b.dataset.k] = !on[b.dataset.k]; b.setAttribute('aria-pressed', on[b.dataset.k]); draw(); provs(); if (sel) show(sel); });
     g.addEventListener('click', (e) => { const b = e.target.closest('.bx'); if (b) show(b.dataset.id); });
     el.addEventListener('click', (e) => {
+      const ow = e.target.closest('[data-own]'); if (ow && el.contains(ow)) { location.href = 'collection.html'; return; }
       const it = e.target.closest('[data-cid]'); if (it && el.contains(it)) { location.href = 'index.html#see=' + it.dataset.cid; return; }
       const pv = e.target.closest('[data-p]'); if (pv) { sel = ''; draw(); const p = P.prov[pv.dataset.p]; panel.innerHTML = `<h3>${pv.dataset.p}</h3><div class="src">지역(고을)이 적혀 있지 않고 도 이름만 있는 기물입니다.</div><div class="bm-it">${items(p)}</div>`; }
     });
     draw(); provs();
+    if (code()) {   // 가족 암호가 있으면: 시트의 고친 설명과 우리 소장품을 받아 온다
+      get('rlist').then((j) => { if (j && j.ok) { Object.keys(j.map).forEach((k) => { edits[k] = j.map[k].text; meta[k] = j.map[k]; }); if (sel) show(sel); } }).catch(() => {});
+      get('clist').then((j) => { if (j && j.ok && Array.isArray(j.list)) { addOwn(P, j.list); draw(); provs(); if (sel) show(sel); } }).catch(() => {});
+    }
   }
   window.MOKGAGU_BMAP = { mount };
 })();

@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v10: 반닫이 지도 지역 설명 — doGet action=rlist(가족만), doPost rsave. 시트 '지역설명' 탭(id|text|editor|updated), 고치기 전 글은 '지역설명이력'에 남김.
  * v9: 질문에 사진 첨부(질문 탭 photos 열) · 「바로 쓰기」 게시판 — doGet action=wlist(가족만), doPost wsave·wdel. 시트 '쓰기'·'쓰기이력' 탭. 사진은 cphoto/cimg(드라이브 비공개 폴더) 그대로 쓴다.
  * v8: 통계 — doGet action=stats(가족만), doPost log(찾아본 기물·검색어) · qadd/qedit/qdel(선생님께 여쭤볼 것). 시트 '기록'·'질문' 탭.
  * v7: 방문자 수 — 시트 '방문' 탭. doGet action=visit(&new=1 이면 오늘 +1) → {today, total}.
@@ -44,6 +45,7 @@ function doGet(e) {
   if (p.action === 'visit') return visit_(p);
   if (p.action === 'stats') return statsGet_(fam);
   if (p.action === 'wlist') return wGet_(fam);
+  if (p.action === 'rlist') return rGet_(fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -78,6 +80,7 @@ function doPost(e) {
     if (d.action === 'log') return logPost_(d, fam);
     if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
     if (d.action === 'wsave' || d.action === 'wdel') return wPost_(d, fam);
+    if (d.action === 'rsave') return rPost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
@@ -338,3 +341,25 @@ function wPost_(d, fam) {
   return out_({ ok: true, item: wRow_(nv) });
 }
 function 쓰기준비() { tab_(W_SHEET, W_HEAD); tab_(WH_SHEET, WH_HEAD); qSheet_(); }
+
+/* ───────── 반닫이 지도 지역 설명 (v10) ───────── */
+const R_SHEET = '지역설명', R_HEAD = ['id', 'text', 'editor', 'updated'], RH_SHEET = '지역설명이력', RH_HEAD = ['time', 'id', 'editor', 'text'];
+function rGet_(fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const rows = tab_(R_SHEET, R_HEAD).getDataRange().getValues(); rows.shift();
+  const map = {}; rows.forEach(r => { if (r[0]) map[String(r[0])] = { text: String(r[1]), editor: String(r[2] || ''), updated: iso_(r[3]) }; });
+  return out_({ ok: true, map: map });
+}
+function rPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const id = String(d.id || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40), editor = famWho_(d.editor);
+  if (!id || !editor) return out_({ ok: false, err: 'bad' });
+  const text = String(d.text || '').slice(0, 5000), sh = tab_(R_SHEET, R_HEAD), now = new Date().toISOString();
+  const v = sh.getDataRange().getValues(); let at = 0;
+  for (let i = 1; i < v.length; i++) if (String(v[i][0]) === id) { at = i + 1; break; }
+  if (at) tab_(RH_SHEET, RH_HEAD).appendRow([now, id, String(v[at - 1][2]), String(v[at - 1][1])]);
+  if (!text.trim()) { if (at) sh.deleteRow(at); return out_({ ok: true, reset: true }); }   // 비우면 처음 글로
+  if (at) sh.getRange(at, 1, 1, 4).setValues([[id, text, editor, now]]); else sh.appendRow([id, text, editor, now]);
+  return out_({ ok: true, item: { text: text, editor: editor, updated: now } });
+}
+function 지역설명준비() { tab_(R_SHEET, R_HEAD); tab_(RH_SHEET, RH_HEAD); }
