@@ -148,6 +148,7 @@ body{position:relative}
 
   <section id="results" hidden>
     <div class="r-head"><h2 id="r-title"></h2><div class="r-chips" id="r-chips"></div></div>
+    <div id="bmap-box" hidden><details open><summary style="cursor:pointer;font-weight:800;margin:6px 0">지역별 반닫이 지도 <a href="bandaji-map.html" style="font-weight:400;font-size:13px;margin-left:8px">크게 보기 →</a></summary><div id="bmap"></div></details></div>
     <div class="r-grid" id="r-grid"></div>
   </section>
 
@@ -289,6 +290,13 @@ function search(raw) {
   only = ''; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
+  bmapShow(raw.trim());
+}
+let bmapOn = false;
+function bmapShow(q) {
+  const yes = /반닫이/.test(q); $('bmap-box').hidden = !yes;
+  if (!yes || bmapOn) return; bmapOn = true;
+  const s = document.createElement('script'); s.src = 'bmap.js?v=1'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
 function drawResults(label) {
   const counts = {};
