@@ -49,6 +49,7 @@
     '#wr .wr-ow{display:inline-block;min-width:2.9em;text-align:center;font-style:normal;font-weight:900;font-size:12px;padding:1px 7px;border:1.5px solid #111;line-height:1.35}' +
     '#wr .wr-ow.g{background:#111;color:#fff}#wr .wr-ow.h{background:#fff;color:#111}' +
     '#wr .wr-msg{font-size:13px;color:#8a2f22;min-height:1.2em}' +
+    '@media (max-width:620px){#wr .wr-foot{padding-right:54px}}' +
     '#wr-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:700;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}' +
     '#wr-toast.on{opacity:1}';
   document.head.appendChild(css);
