@@ -230,7 +230,7 @@ ${base()}
     }
     function mapOf(id) {
       const r = R.find((x) => x[0] === id), box = panel.querySelector('#bm-k'); if (!box) return;
-      const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); const m = new K.maps.Map(box, { center: c, level: 11, scrollwheel: true }); m.setZoomable(true); m.addControl(new K.maps.ZoomControl(), K.maps.ControlPosition.RIGHT); new K.maps.Marker({ position: c, map: m }); const fix = () => { m.relayout(); m.setCenter(c); }; requestAnimationFrame(fix); [100, 400, 900, 1800].forEach((t) => setTimeout(fix, t)); }); };
+      const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); const m = new K.maps.Map(box, { center: c, level: 12, scrollwheel: true }); m.setZoomable(true); m.addControl(new K.maps.ZoomControl(), K.maps.ControlPosition.RIGHT); new K.maps.Marker({ position: c, map: m }); const fix = () => { m.relayout(); m.setCenter(c); }; requestAnimationFrame(fix); [100, 400, 900, 1800].forEach((t) => setTimeout(fix, t)); }); };
       if (window.kakao && window.kakao.maps) return go();
       const s = document.createElement('script'); s.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=' + KEY; s.onload = go; document.head.appendChild(s);
     }
