@@ -75,7 +75,8 @@
   const clean = (n) => String(n || '').replace(/\([^)]*\)|[^가-힣]/g, '');
   const KIND = /(반닫이|궤|장|함)$/;
   const isKind = (r) => /반닫이/.test(r.name + (r.hanja || '')) || (KIND.test(clean(r.name)) && !(r.b === 'soban' || /소반|장인|무형/.test(r.name)));
-  const hayOf = (r) => { const q = /반닫이/.test(r.name + (r.hanja || '')) ? (r.q || '') : String(r.q || '').split(/\s+/).filter((w) => !/박물관|연구소|옥션|경매|도록|보고서/.test(w)).join(' '); return r.name + (r.hanja || '') + q; };
+  const hayOf = (r) => { const q = /반닫이/.test(r.name + (r.hanja || '')) ? (r.q || '') : String(r.q || '').split(/\s+/).filter((w) => !/박물관|연구소|옥션|경매|도록|보고서/.test(w)).join(' '); return (r.name + (r.hanja || '') + q).replace(/나전/g, ''); };   // 나전주흑칠…의 '전주'는 지역이 아니다
+  
   function pins() {
     const all = (window.SEARCH || []).filter(isKind);
     const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], e: [], o: [] }; });
