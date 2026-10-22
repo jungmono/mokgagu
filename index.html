@@ -233,7 +233,7 @@ document.getElementById('n-books').textContent = MAIN.length;
 document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-10-22';
+const SITE_UPDATED = '2026-10-23';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -299,7 +299,7 @@ let bmapOn = false;
 function bmapShow(q) {
   const yes = false;
   if (!yes || bmapOn) return; bmapOn = true;
-  const s = document.createElement('script'); s.src = 'bmap.js?v=26'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
+  const s = document.createElement('script'); s.src = 'bmap.js?v=27'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
 function drawResults(label) {
   const counts = {};
