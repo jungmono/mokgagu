@@ -14,9 +14,9 @@
 html,body{margin:0;background:#fff;color:var(--fg)}
 body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
 .wrap{max-width:640px;margin:0 auto;padding:18px 16px 72px}
-.hd{text-align:center;margin:22px 0 14px}
-.hd h1{margin:0 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(26px,5vw,34px);letter-spacing:-.03em}
-.hd p{margin:0;color:var(--muted);font-weight:500;font-size:14px}
+.hd{text-align:center;margin:14px 0 16px;background:#2f6b45;color:#fff;border-radius:18px;padding:20px 16px}
+.hd h1{margin:0 0 6px;color:#fff;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(26px,5vw,34px);letter-spacing:-.03em}
+.hd p{margin:0;color:#dcebe0;font-weight:500;font-size:14px}
 .back{display:block;text-align:center;margin:0 0 6px;font-size:13px}.back a{color:var(--muted)}
 .lock{max-width:380px;margin:30px auto;text-align:center;border:1px solid var(--line);border-radius:18px;padding:30px 24px;background:var(--paper)}
 .lock h2{margin:8px 0 4px;font-size:19px;font-weight:900}
@@ -27,28 +27,28 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .card{border:1px solid var(--line);border-radius:18px;padding:20px 18px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04);margin-bottom:16px}
 .sum{display:flex;gap:10px;margin-bottom:14px}
 .sum div{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
-.sum b{display:block;font-size:22px;font-weight:900}.sum span{font-size:12px;color:var(--muted)}
+.sum b{display:block;font-size:24px;font-weight:900;color:#2f6b45}.sum span{font-size:12px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
 .chips button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--fg)}
-.chips button.on{background:#111;color:#fff;border-color:#111}
+.chips button.on{background:#2f6b45;color:#fff;border-color:#2f6b45}
 .chips button small{font-weight:500;opacity:.7;margin-left:3px}
 .lab{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
-.big{display:block;width:100%;font:inherit;font-weight:900;font-size:16px;border:0;border-radius:12px;background:#111;color:#fff;padding:14px;cursor:pointer;margin-top:8px}
-.big.sub{background:#fff;color:#111;border:1.5px solid #111}
+.big{display:block;width:100%;font:inherit;font-weight:900;font-size:17px;border:0;border-radius:12px;background:#2f6b45;color:#fff;padding:14px;cursor:pointer;margin-top:8px}
+.big.sub{background:#fff;color:#2f6b45;border:2px solid #2f6b45}
 .big:disabled{opacity:.4;cursor:default}
-.bar{height:6px;background:#eee8df;border-radius:6px;overflow:hidden;margin:0 0 14px}.bar i{display:block;height:100%;background:#111;transition:width .25s}
+.bar{height:10px;background:#eee8df;border-radius:6px;overflow:hidden;margin:0 0 14px}.bar i{display:block;height:100%;background:#2f6b45;transition:width .25s}
 .pg{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px}
-.src{display:inline-block;font-size:12px;font-weight:700;background:#f3f1ec;border-radius:6px;padding:2px 8px;color:#4a463f;margin-bottom:10px}
-.q{font-size:18px;font-weight:900;line-height:1.55;margin:0 0 14px;letter-spacing:-.01em}
-.opt{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;font-weight:500;line-height:1.5;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;margin:0 0 8px;cursor:pointer;color:var(--fg)}
+.src{display:inline-block;font-size:13px;font-weight:800;background:#e8f1ea;border-radius:8px;padding:3px 10px;color:#1f4d31;margin-bottom:10px}
+.q{font-size:20px;font-weight:900;line-height:1.55;margin:0 0 14px;letter-spacing:-.01em}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;font-size:16.5px;font-weight:600;line-height:1.45;border:2px solid #d9d2c6;background:#fff;border-radius:14px;padding:14px 14px;margin:0 0 10px;cursor:pointer;color:var(--fg)}.opt .n{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#efe9df;font-size:14px;font-weight:900;color:#4a463f}
 .opt:active{background:#f6f3ee}
-.opt.ok{border-color:var(--ok);background:var(--okbg);color:#1f4d31;font-weight:700}
-.opt.no{border-color:var(--bad);background:var(--badbg);color:var(--bad);font-weight:700}
+.opt.ok{border-color:var(--ok);background:#dff0e4;color:#14391f;font-weight:800}.opt.ok .n{background:var(--ok);color:#fff}
+.opt.no{border-color:var(--bad);background:#f8dcd7;color:#6e2218;font-weight:800}.opt.no .n{background:var(--bad);color:#fff}
 .opt[disabled]{cursor:default}
-.ex{margin:12px 0 0;border-left:3px solid var(--ok);background:var(--okbg);border-radius:0 10px 10px 0;padding:10px 14px;line-height:1.7;font-size:14.5px}
+.ex{margin:12px 0 0;border-left:5px solid var(--ok);background:var(--okbg);border-radius:0 10px 10px 0;padding:12px 14px;line-height:1.7;font-size:15.5px}
 .ex.bad{border-color:var(--bad);background:var(--badbg)}
-.ex b{display:block;font-size:12.5px;color:var(--ok);margin-bottom:2px}.ex.bad b{color:var(--bad)}
-.score{text-align:center;margin:4px 0 14px}.score b{font-family:"Noto Serif KR",serif;font-size:44px;font-weight:900}.score span{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.ex b{display:block;font-size:15px;color:var(--ok);margin-bottom:2px}.ex.bad b{color:var(--bad)}
+.score{text-align:center;margin:4px 0 14px}.score b{font-family:"Noto Serif KR",serif;font-size:52px;font-weight:900;color:#2f6b45}.score span{display:block;color:var(--muted);font-size:14px;margin-top:2px}
 .miss{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--paper);font-size:14px;line-height:1.65}
 .miss b{font-weight:800}.miss span{display:block;color:var(--ok);font-weight:700}
 .note{margin-top:22px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.7}
@@ -121,7 +121,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   function ask() {
     var q = run.L[run.i], opts = shuffle(q.o.map(function (t, k) { return { t: t, c: k === 0 }; }));
     app.innerHTML = '<div class="card"><div class="pg"><span>' + (run.i + 1) + ' / ' + run.L.length + '</span><span>맞힌 것 ' + run.ok + '</span></div><div class="bar"><i style="width:' + (run.i / run.L.length * 100) + '%"></i></div>' +
-      '<span class="src">' + esc(q.s) + '</span><p class="q">' + esc(q.q) + '</p><div id="opts">' + opts.map(function (o, k) { return '<button class="opt" data-k="' + k + '">' + esc(o.t) + '</button>'; }).join('') + '</div><div id="ex"></div></div>';
+      '<span class="src">' + esc(q.s) + '</span><p class="q">' + esc(q.q) + '</p><div id="opts">' + opts.map(function (o, k) { return '<button class="opt" data-k="' + k + '"><span class="n">' + (k + 1) + '</span><span>' + esc(o.t) + '</span></button>'; }).join('') + '</div><div id="ex"></div></div>';
     document.getElementById('opts').onclick = function (e) {
       var b = e.target.closest('.opt'); if (!b || b.disabled) return;
       var k = +b.dataset.k, good = opts[k].c;
