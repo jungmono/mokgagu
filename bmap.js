@@ -40,7 +40,7 @@
     '경기도': '<circle cx="16" cy="16" r="11"/><path d="M5 16a5.5 5.5 0 0 0 11 0a5.5 5.5 0 0 1 11 0"/><circle cx="10.5" cy="17" r="1.5" fill="currentColor"/><circle cx="21.5" cy="15" r="1.5" fill="currentColor"/>',
     '강원도': '<circle cx="16" cy="16" r="2.4"/><circle cx="16" cy="8.6" r="2.5"/><circle cx="21.79" cy="11.39" r="2.5"/><circle cx="23.21" cy="17.65" r="2.5"/><circle cx="19.21" cy="22.67" r="2.5"/><circle cx="12.79" cy="22.67" r="2.5"/><circle cx="8.79" cy="17.65" r="2.5"/><circle cx="10.21" cy="11.39" r="2.5"/>',
     '충청도': '<path d="M6.5 26V15.5a9.5 9.5 0 0 1 19 0V26z"/><circle cx="11" cy="22" r="1.4" fill="currentColor"/><circle cx="21" cy="22" r="1.4" fill="currentColor"/><circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>',
-    '경상도': '<path d="M16 3.5l12.5 12.5-12.5 12.5L3.5 16z"/><path d="M16 10l6 6-6 6-6-6z"/><circle cx="16" cy="16" r="1.4" fill="currentColor"/>',
+    '경상도': '<path d="M16 2.5Q21.06 10.94 29.5 16Q21.06 21.06 16 29.5Q10.94 21.06 2.5 16Q10.94 10.94 16 2.5Z"/>',
     '전라도': '<rect x="10.5" y="3.5" width="11" height="25" rx="1.8"/><circle cx="16" cy="9.5" r="1.7" fill="currentColor"/><circle cx="16" cy="16" r="1.7" fill="currentColor"/><circle cx="16" cy="22.5" r="1.7" fill="currentColor"/>',
     '제주도': '<path d="M11 29V20.5C11 18.5 7.5 18 5.5 16.5C3 14.5 3 10 6.5 9C9 8.5 11.5 10 12 12.5V6C12 3.5 13.5 2.5 14.5 2.5C15.8 2.5 16 4 16 6C16 4 16.2 2.5 17.5 2.5C18.5 2.5 20 3.5 20 6V12.5C20.5 10 23 8.5 25.5 9C29 10 29 14.5 26.5 16.5C24.5 18 21 18.5 21 20.5V29Z"/><circle cx="16" cy="22.2" r="3.4"/><path d="M16 20v4.4M13.8 22.2h4.4"/>',   // 제주 장석(네 갈래 꽃잎 판, 가운데 둥근 문양)
   };
