@@ -1,5 +1,5 @@
 /* 공부방 「복습 퀴즈」 탭 */
-#qz{max-width:640px;margin:18px auto 0;--ok:#2f6b45;--okbg:#f3f8f4;--bad:#8a2f22;--badbg:#fbf1ef;--line:#e6e1d9}
+#qz{max-width:640px;margin:18px auto 0;--ok:#2f6b45;--okbg:#f3f8f4;--bad:#8a2f22;--badbg:#fbf1ef;--line:#e6e1d9;background:#e3f0e6;border:2px solid #b7d6bf;border-radius:22px;padding:14px 12px 4px}
 #qz .hd{text-align:center;margin:0 0 16px;background:#2f6b45;color:#fff;border-radius:18px;padding:20px 16px}
 #qz .hd h2{margin:0 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(24px,5vw,32px);letter-spacing:-.03em;color:#fff}
 #qz .hd p{margin:0;color:#dcebe0;font-weight:500;font-size:14px}
