@@ -36,6 +36,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .tabs button.on.t-g{background:#111;color:#fff}.tabs button.on.t-g small{color:#ccc}
 .tabs button.on.t-h{background:#fff;color:#111;box-shadow:inset 0 0 0 3px #111}
 .tabs button.on.t-b{background:#f1efeb}
+.tabs button.t-q{color:#2f6b45}.tabs button.on.t-q{background:#2f6b45;color:#fff}
 .tabs button.on.t-k{background:#f3f8f4;box-shadow:inset 0 0 0 3px #2f6b45;color:#1f4d31}
 .ses.tk{border-color:#cfe0d3}.ses.tk .dt .no{background:#2f6b45}
 .tk-memo{white-space:pre-wrap;margin:4px 0 8px}
@@ -58,7 +59,6 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .toc a small{color:var(--muted);font-weight:500;margin-left:4px}
 .tools{display:flex;gap:8px;justify-content:center;align-items:center;margin:18px 0 14px;flex-wrap:wrap}
 .tools input{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(340px,100%)}
-.qzb{display:flex;align-items:center;gap:12px;margin:18px auto 0;max-width:520px;background:#2f6b45;color:#fff;text-decoration:none;border-radius:16px;padding:14px 18px;box-shadow:0 6px 16px rgba(47,107,69,.25)}.qzb i{font-style:normal;font-size:26px}.qzb b{display:block;font-size:17px;font-weight:900}.qzb span{font-size:13px;opacity:.9}.qzb em{margin-left:auto;font-style:normal;font-size:22px;font-weight:900}
 .tools button{font:inherit;font-size:13px;border:1px solid #d9d4cc;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#6b665e}
 /* 수업 */
 .ses{position:relative;border:1px solid var(--line);border-radius:18px;padding:22px 24px 18px;margin:0 0 22px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04)}
@@ -111,7 +111,9 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 </div>
 <dialog id="lb" aria-label="노트 크게 보기"><div class="in" id="lb-in"><img id="lb-img" alt=""></div><div class="cap" id="lb-cap"></div>
   <div class="bar"><button id="lb-prev">← 이전</button><button id="lb-zo">－</button><button id="lb-zi">＋</button><button id="lb-next">다음 →</button><button id="lb-x">닫기</button></div></dialog>
+<link rel="stylesheet" href="quiz.css?v=20261022">
 <script src="site.js"></script>
+<script src="quiz.js?v=20261022"></script>
 <script src="recent.js" defer></script>
 <script>
 (function () {
@@ -185,16 +187,21 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   function fmtDate(d) { var p = d.split('-'); var w = '일월화수목금토'[new Date(d + 'T12:00:00').getDay()]; return p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '. (' + w + ')'; }
   var allImgs = [];
   var K_TAB = 'mokgagu_study_tab';
-  var tab = /^#talk/.test(location.hash) ? '말씀' : (ls.get(K_TAB) || '거믄');
+  var tab = /^#quiz/.test(location.hash) ? '퀴즈' : /^#talk/.test(location.hash) ? '말씀' : (ls.get(K_TAB) || '거믄');
   function render() {
-    if (['거믄', '힌', '함께', '말씀'].indexOf(tab) < 0) tab = '거믄';
+    if (['거믄', '힌', '함께', '말씀', '퀴즈'].indexOf(tab) < 0) tab = '거믄';
     var own = function (o) { return DATA.sessions.filter(function (s) { return (s.owner || '거믄') === o; }); };
     var cnt = { '거믄': own('거믄').length, '힌': own('힌').length };
     var S = (tab === '함께' ? DATA.sessions.slice() : own(tab)).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : ((a.owner || '거믄') < (b.owner || '거믄') ? -1 : 1); });
     allImgs = [];
-    var html = '<a class="qzb" href="quiz.html"><i>❓</i><div><b>복습 퀴즈</b><span>수업 노트로 만든 문제로 다시 꺼내 보기</span></div><em>›</em></a><div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀']].map(function (t) {
-      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
+    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀'], ['퀴즈', '복습 퀴즈']].map(function (t) {
+      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : t[0] === '퀴즈' ? 'q' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : t[0] === '퀴즈' ? '' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
     html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
+    if (tab === '퀴즈') {
+      app.innerHTML = html.split('<div class="tools">')[0] + '<div id="qz"></div>';
+      window.MOKGAGU_QUIZ.mount(document.getElementById('qz'), key);
+      return;
+    }
     if (tab === '말씀') {
       app.innerHTML = html + talkHTML() + '<div class="foot">통계의 「📝 수업 마치고 선생님 말씀 적기」에서 적은 말씀과 메모가 수업 날짜별로 여기 쌓여요.<br><button id="out">이 기기에서 잠그기</button></div>';
       if (location.hash) { var t0 = document.getElementById(location.hash.slice(1)); if (t0) setTimeout(function () { t0.scrollIntoView(); }, 50); }

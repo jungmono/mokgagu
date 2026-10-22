@@ -1,0 +1,35 @@
+/* 공부방 「복습 퀴즈」 탭 */
+#qz{max-width:640px;margin:18px auto 0;--ok:#2f6b45;--okbg:#f3f8f4;--bad:#8a2f22;--badbg:#fbf1ef;--line:#e6e1d9}
+#qz .hd{text-align:center;margin:0 0 16px;background:#2f6b45;color:#fff;border-radius:18px;padding:20px 16px}
+#qz .hd h2{margin:0 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(24px,5vw,32px);letter-spacing:-.03em;color:#fff}
+#qz .hd p{margin:0;color:#dcebe0;font-weight:500;font-size:14px}
+#qz .card{border:1px solid var(--line);border-radius:18px;padding:20px 18px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04);margin-bottom:16px}
+#qz .sum{display:flex;gap:10px;margin-bottom:14px}
+#qz .sum div{flex:1;background:#fbfaf7;border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+#qz .sum b{display:block;font-size:24px;font-weight:900;color:#2f6b45}#qz .sum span{font-size:12px;color:#756e65}
+#qz .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
+#qz .chips button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#1d1b18}
+#qz .chips button.on{background:#2f6b45;color:#fff;border-color:#2f6b45}
+#qz .chips button small{font-weight:500;opacity:.7;margin-left:3px}
+#qz .lab{font-size:13px;font-weight:700;color:#756e65;margin:0 0 6px}
+#qz .big{display:block;width:100%;font:inherit;font-weight:900;font-size:17px;border:0;border-radius:12px;background:#2f6b45;color:#fff;padding:14px;cursor:pointer;margin-top:8px}
+#qz .big.sub{background:#fff;color:#2f6b45;border:2px solid #2f6b45}
+#qz .big:disabled{opacity:.4;cursor:default}
+#qz .bar{height:10px;background:#eee8df;border-radius:6px;overflow:hidden;margin:0 0 14px}#qz .bar i{display:block;height:100%;background:#2f6b45;transition:width .25s}
+#qz .pg{display:flex;justify-content:space-between;font-size:13px;color:#756e65;font-weight:700;margin-bottom:6px}
+#qz .src{display:inline-block;font-size:13px;font-weight:800;background:#e8f1ea;border-radius:8px;padding:3px 10px;color:#1f4d31;margin-bottom:10px}
+#qz .q{font-size:20px;font-weight:900;line-height:1.55;margin:0 0 14px;letter-spacing:-.01em}
+#qz .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;font-size:16.5px;font-weight:600;line-height:1.45;border:2px solid #d9d2c6;background:#fff;border-radius:14px;padding:14px;margin:0 0 10px;cursor:pointer;color:#1d1b18}
+#qz .opt .n{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#efe9df;font-size:14px;font-weight:900;color:#4a463f}
+#qz .opt:active{background:#f6f3ee}
+#qz .opt.ok{border-color:var(--ok);background:#dff0e4;color:#14391f;font-weight:800}#qz .opt.ok .n{background:var(--ok);color:#fff}
+#qz .opt.no{border-color:var(--bad);background:#f8dcd7;color:#6e2218;font-weight:800}#qz .opt.no .n{background:var(--bad);color:#fff}
+#qz .opt[disabled]{cursor:default}
+#qz .ex{margin:12px 0 0;border-left:5px solid var(--ok);background:var(--okbg);border-radius:0 10px 10px 0;padding:12px 14px;line-height:1.7;font-size:15.5px}
+#qz .ex.bad{border-color:var(--bad);background:var(--badbg)}
+#qz .ex b{display:block;font-size:15px;color:var(--ok);margin-bottom:2px}#qz .ex.bad b{color:var(--bad)}
+#qz .score{text-align:center;margin:4px 0 14px}#qz .score b{font-family:"Noto Serif KR",serif;font-size:52px;font-weight:900;color:#2f6b45}#qz .score span{display:block;color:#756e65;font-size:14px;margin-top:2px}
+#qz .miss{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:#fbfaf7;font-size:14px;line-height:1.65}
+#qz .miss b{font-weight:800}#qz .miss span{display:block;color:var(--ok);font-weight:700}
+#qz .note{margin-top:18px;text-align:center;color:#756e65;font-size:12.5px;line-height:1.7}
+#qz .note button{font:inherit;font-size:12.5px;border:0;background:none;color:#a0988e;text-decoration:underline;cursor:pointer}
