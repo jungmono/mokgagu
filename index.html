@@ -275,7 +275,9 @@ function search(raw) {
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
   if (!terms.length) { $('results').hidden = true; grid.hidden = false; return; }
   const all = window.SEARCH || [];
-  hits = all.filter((r) => terms.some((q) => r.q.includes(q)));
+  /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주 이름은 뺌) */
+  const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주'); };
+  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? nameEnd(r, q) : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = ''; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
