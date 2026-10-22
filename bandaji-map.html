@@ -3,6 +3,27 @@
 <style>*{box-sizing:border-box}body{margin:0;background:#fff;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}main{max-width:760px;margin:0 auto;padding:16px}
 h1{margin:6px 0 14px;font-weight:900;font-size:clamp(28px,7vw,52px);letter-spacing:-.04em;line-height:1.15;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2.6vw,26px);color:#111}
 h1 .t{display:block}h1 img{flex:none;display:block;width:auto;height:clamp(32px,6.5vw,58px);margin-bottom:6px;user-select:none}h1 img.a{height:clamp(28px,5.6vw,50px)}
-h1 a.h{display:block;line-height:0}h1 a.h:hover{transform:translateY(-2px)}a{color:#0F6E56}</style></head>
+h1 a.h{display:block;line-height:0}h1 a.h:hover{transform:translateY(-2px)}a{color:#0F6E56}
+#dlg{border:none;border-radius:18px;padding:0;width:min(1100px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2433}
+#dlg::backdrop{background:rgba(20,20,24,.55)}
+.d-body{display:flex;gap:24px;padding:22px;max-height:calc(92vh - 64px);overflow:auto}
+.d-img{flex:1 1 60%;display:grid;place-items:center;min-height:300px;background:#fafaf8;border-radius:12px}
+.d-img img{max-width:100%;max-height:72vh;object-fit:contain}
+.d-info{flex:1 1 40%;min-width:220px}
+.d-info .cat{color:#4b55d6;font-weight:700;font-size:14px}
+.d-info h3{margin:4px 0 12px;font-size:28px;font-weight:900;letter-spacing:-.04em}
+.d-info h3 small{font-size:16px;color:#6b7183;font-weight:500;margin-left:8px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}
+.d-info dt{color:#6b7183}.d-info dd{margin:0}
+.d-info a{display:inline-block;margin-top:18px;color:#fff;background:#1f2433;text-decoration:none;font-weight:700;font-size:14px;border-radius:10px;padding:10px 16px}
+.d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid #e6e8f0;font-size:14px;color:#6b7183}
+.d-foot button{font:inherit;background:#fff;border:1px solid #e6e8f0;border-radius:8px;padding:6px 12px;cursor:pointer;color:#1f2433}.d-foot button:disabled{opacity:.4}
+.d-r{display:flex;gap:8px}
+.bm-st{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.bm-st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}.bm-st button.on{border-color:#111}.bm-st img{width:100%;height:100%;object-fit:cover}
+@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}}
+#dlg img{-webkit-user-drag:none;user-select:none}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}
+</style></head>
 <body><main><h1><a class="h" href="index.html" title="처음 화면으로"><img class="a" src="mark_angwe.png" width="328" height="200" alt="안궤 — 처음 화면으로"></a><span class="t">반닫이(궤)여지도</span><img src="mark_yeoji.svg" width="220" height="243" alt="정대영 선생님 지도"></h1><div id="m"></div></main>
-<script src="search.js"></script><script src="bmap.js?v=24"></script><script>MOKGAGU_BMAP.mount(document.getElementById('m'))</script></body></html>
+<dialog id="dlg" aria-label="기물 사진"><div class="d-body"><div class="d-img"><img id="d-img" alt=""></div><div class="d-info" id="d-info"></div></div>
+<div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos"></span><span class="d-r"><button id="d-next">다음 →</button><button id="d-close">닫기</button></span></div></dialog>
+<script src="search.js"></script><script src="photozoom.js"></script><script src="bmap.js?v=25"></script><script>MOKGAGU_BMAP.mount(document.getElementById('m'))</script><script src="recent.js" defer></script><script src="comments.js" defer></script></body></html>

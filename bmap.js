@@ -148,11 +148,6 @@
 .bm .bm-b button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:14px;cursor:pointer;margin:6px 6px 0 0}
 .bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
-#bm-dlg{border:0;border-radius:14px;padding:0;max-width:min(94vw,760px);width:100%}#bm-dlg::backdrop{background:rgba(0,0,0,.55)}
-#bm-dlg{touch-action:pan-y}#bm-dlg img{-webkit-user-drag:none;user-select:none}#bm-dlg .d{display:flex;flex-direction:column}#bm-dlg img{width:100%;max-height:60vh;object-fit:contain;background:#f4f0e6}
-#bm-dlg .i{padding:12px 16px 14px;font-size:14px;line-height:1.6}#bm-dlg h3{margin:0 0 4px;font-size:18px}#bm-dlg dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:6px 0}#bm-dlg dt{color:#7a6c50}#bm-dlg dd{margin:0}
-#bm-dlg .own .mn{background:#faf9f6;text-align:center}#bm-dlg .own .mn img{max-height:62vh}#bm-dlg .st{display:flex;gap:8px;padding:8px 16px}#bm-dlg .st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}#bm-dlg .st button.on{border-color:#111}#bm-dlg .st img{width:100%;height:100%;object-fit:cover;max-height:none}
-#bm-dlg .n{display:flex;gap:8px;align-items:center;padding:0 16px 14px}#bm-dlg .n button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}#bm-dlg .n span{flex:1;text-align:center;color:#7a6c50}
 </style>
 <div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
 <div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><i style="background:${c}"></i></button>`).join('')}</div>
@@ -165,9 +160,8 @@ ${base()}
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
 <div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">출처: 동인방</div>
-<div id="bm-p"><div class="src">위의 도 이름이나 지도의 고을 상자를 눌러 보세요. 도를 누르면 그 도에 속한 고을의 반닫이가 모두 나옵니다.</div></div>
-<dialog id="bm-dlg"></dialog></div>`;
-    const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = el.querySelector('#bm-dlg');
+<div id="bm-p"><div class="src">위의 도 이름이나 지도의 고을 상자를 눌러 보세요. 도를 누르면 그 도에 속한 고을의 기물이 모두 나옵니다.</div></div></div>`;
+    const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = document.getElementById('dlg');
     function draw() {
       g.innerHTML = R.map((r) => {
         const p = P.by[r[0]], n = cntT(p), x = r[3] - W / 2, y = r[4] - H / 2, pn = provOf[r[0]] || '', c = pn ? PV[pn][0] : '#6f6450';
@@ -190,25 +184,37 @@ ${base()}
           `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="thumbs/${r.b}/${r.n}.jpg" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || r.cat || n).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
       }).join('')).join('');
     }
-    /* 기물 창: 이 지도 화면 위에서 열고, 닫으면 그대로 지도로 돌아온다 */
-    function openOwn(i, vp) {
-      const r = list[i], c = r.c || {}, P = c.photos || []; vp = vp || 0;
-      const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
-      const d = (v) => { const p = String(v || '').slice(0, 10).split('-'); return p.length === 3 ? p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '.' : (v || ''); };
-      dlg.innerHTML = `<div class="d own"><div class="mn">${P.length ? `<img alt="" data-pid="${esc(P[vp].f)}">` : ''}</div>${P.length > 1 ? `<div class="st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : ''}<div class="i"><div style="font-size:13px;color:#4b55d6;font-weight:700">${esc(c.kind || '소장품')}</div><h3>${esc(c.name || '')}</h3><dl>${row('상태', c.status || '소장')}${row('구입일', d(c.bought))}${row('구입처', c.place)}${row('크기', c.size)}${row('연대', c.era)}${row('재질·수종', c.wood)}${row('비고', c.note)}${row('감정·관찰', c.memo)}</dl></div>
-<div class="n"><button type="button" data-d="-1" ${i === 0 ? 'disabled' : ''}>← 이전</button><span>${i + 1} / ${list.length}</span><button type="button" data-d="1" ${i === list.length - 1 ? 'disabled' : ''}>다음 →</button><button type="button" data-d="0">닫기</button></div></div>`;
-      dlg.dataset.i = i; if (!dlg.open) dlg.showModal(); fillOwn(dlg);
+    /* 기물 창: 도록과 같은 사진 창(#dlg) — 이 지도 화면 위에서 열고, 닫으면 지도로 돌아온다. 크게 보기·확대·밀어 넘기기는 도록과 같다 */
+    let cur = -1;
+    const $d = (id) => document.getElementById(id);
+    const dRow = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
+    const dDate = (v) => { const p = String(v || '').slice(0, 10).split('-'); return p.length === 3 ? p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '.' : (v || ''); };
+    function open(i, vp) {
+      const r = list[i]; if (!r || !dlg) return; cur = i; vp = vp || 0;
+      const img = $d('d-img'), c = r.c || {}, P = c.photos || [];
+      if (r.own) {
+        delete dlg.dataset.cid; img.removeAttribute('src'); img.alt = c.name || '';
+        if (P[vp]) photo(P[vp].f).then((u) => { if (cur === i && u) img.src = u; });
+        $d('d-info').innerHTML = `<div class="cat">우리 소장품 · ${esc(c.kind || '소장품')}</div><h3>${esc(c.name || '')}</h3><dl>${dRow('상태', c.status || '소장')}${dRow('구입일', dDate(c.bought))}${dRow('구입처', c.place)}${dRow('크기', c.size)}${dRow('연대', c.era)}${dRow('재질·수종', c.wood)}${dRow('비고', c.note)}${dRow('감정·관찰', c.memo)}</dl>` +
+          (P.length > 1 ? `<div class="bm-st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : '') + '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 →</a>';
+        fillOwn($d('d-info'));
+      } else {
+        dlg.dataset.cid = r.b + '/' + r.pid;
+        img.src = r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
+        img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
+        img.alt = r.name;
+        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}</dl><a href="${r.b}.html">도록으로 돌아가기 →</a>`;
+      }
+      $d('d-pos').textContent = `${i + 1} / ${list.length}`; $d('d-prev').disabled = i === 0; $d('d-next').disabled = i === list.length - 1;
+      if (!dlg.open) dlg.showModal();
     }
-    function open(i) {
-      const r = list[i]; if (!r) return;
-      if (r.own) return openOwn(i);
-      const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
-      const src = r.own ? '' : (r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`);
-      dlg.innerHTML = `<div class="d">${src ? `<img src="${src}" alt="" onerror="this.src='thumbs/${r.b}/${r.n}.jpg'">` : (r.f ? `<img alt="" data-pid="${esc(r.f)}">` : '')}<div class="i"><h3>${esc(r.name || '')}${r.hanja ? ' <small style="font-weight:400">' + esc(r.hanja) + '</small>' : ''}</h3><dl>${row('분류', r.cat)}${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>${r.own ? '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 (새 창) →</a>' : ''}</div>
-<div class="n"><button type="button" data-d="-1" ${i === 0 ? 'disabled' : ''}>← 이전</button><span>${i + 1} / ${list.length}</span><button type="button" data-d="1" ${i === list.length - 1 ? 'disabled' : ''}>다음 →</button><button type="button" data-d="0">닫기</button></div></div>`;
-      dlg.dataset.i = i; if (!dlg.open) dlg.showModal(); fillOwn(dlg);
+    if (dlg && !dlg.__bm) {
+      dlg.__bm = 1;
+      $d('d-prev').addEventListener('click', () => open(cur - 1)); $d('d-next').addEventListener('click', () => open(cur + 1)); $d('d-close').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); const ph = e.target.closest('.bm-st [data-p]'); if (ph) open(cur, Number(ph.dataset.p)); });
+      if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: dlg.querySelector('.d-img'), next: () => open(cur + 1), prev: () => open(cur - 1), canNext: () => cur < list.length - 1, canPrev: () => cur > 0 });
     }
-    dlg.addEventListener('click', (e) => { const ph = e.target.closest('[data-p]'); if (ph) { openOwn(Number(dlg.dataset.i), Number(ph.dataset.p)); return; } const b = e.target.closest('[data-d]'); if (b) { const d = Number(b.dataset.d); if (!d) dlg.close(); else open(Number(dlg.dataset.i) + d); } else if (e.target === dlg) dlg.close(); });
+
     /* 우리 소장품 사진: 소장품 도록과 같은 이 기기 저장소(IndexedDB)를 먼저 보고, 없으면 시트에서 받는다 */
     const b64u = (t) => { t = t.replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
     const urls = {};
@@ -222,24 +228,6 @@ ${base()}
       const keys = o ? [].concat(...TYPES.filter(([k]) => on[k]).map(([k]) => (o[k] || []).filter((r) => !r.own).map((r) => r.b + '/' + r.n))) : null;
       window.dispatchEvent(new CustomEvent('bmap:filter', { detail: { keys, label: o ? (selP || (R.find((x) => x[0] === sel) || [])[1] || '') : '' } }));
     }
-    /* 새 창 손가락(마우스) 좌우 넘기기: 왼쪽으로 밀면 다음, 오른쪽으로 밀면 이전 */
-    (function () {
-      let x0 = null, y0 = 0, dx = 0, t0 = 0, m = 0, moved = false;
-      const card = () => dlg.querySelector('.d');
-      const set = (v, anim) => { const c = card(); if (!c) return; c.style.transition = anim ? 'transform .2s ease, opacity .2s ease' : 'none'; c.style.transform = v ? 'translateX(' + v + 'px)' : ''; c.style.opacity = v ? String(Math.max(.4, 1 - Math.abs(v) / 700)) : ''; };
-      const st = (x, y, t) => { if (t.closest && t.closest('button,a,.st')) { x0 = null; return; } x0 = x; y0 = y; dx = 0; m = 0; moved = false; t0 = Date.now(); };
-      const mv = (x, y, e) => { if (x0 === null) return; const ax = x - x0, ay = y - y0; if (!m) { if (Math.abs(ax) > 8 && Math.abs(ax) > Math.abs(ay) * 1.2) m = 1; else if (Math.abs(ay) > 10) m = 2; } if (m === 1) { dx = ax; moved = true; set(dx, false); if (e && e.cancelable) e.preventDefault(); } };
-      const en = () => { if (x0 === null) return; const fast = Date.now() - t0 < 300 && Math.abs(dx) > 30, was = m; x0 = null; m = 0; if (was !== 1) return;
-        const b = dlg.querySelector('[data-d="' + (dx < 0 ? 1 : -1) + '"]');
-        if ((Math.abs(dx) > 70 || fast) && b && !b.disabled) { set(dx < 0 ? -dlg.clientWidth * .6 : dlg.clientWidth * .6, true); setTimeout(() => { b.click(); set(dx < 0 ? dlg.clientWidth * .4 : -dlg.clientWidth * .4, false); requestAnimationFrame(() => requestAnimationFrame(() => set(0, true))); }, 180); } else set(0, true); };
-      dlg.addEventListener('touchstart', (e) => { if (e.touches.length === 1) st(e.touches[0].clientX, e.touches[0].clientY, e.target); else x0 = null; }, { passive: true });
-      dlg.addEventListener('touchmove', (e) => { const p = e.touches[0]; if (p) mv(p.clientX, p.clientY, e); }, { passive: false });
-      dlg.addEventListener('touchend', en); dlg.addEventListener('touchcancel', () => { x0 = null; set(0, true); });
-      let ms = false; dlg.addEventListener('mousedown', (e) => { if (e.button === 0) { ms = true; st(e.clientX, e.clientY, e.target); } });
-      window.addEventListener('mousemove', (e) => { if (ms) mv(e.clientX, e.clientY, e); }); window.addEventListener('mouseup', () => { if (ms) { ms = false; en(); } });
-      dlg.addEventListener('keydown', (e) => { const b = dlg.querySelector('[data-d="' + (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0) + '"]'); if (b && !b.disabled && e.key.startsWith('Arrow')) b.click(); });
-      dlg.addEventListener('click', (e) => { if (moved && e.isTrusted) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
-    })();
     function mapOf(id) {
       const r = R.find((x) => x[0] === id), box = panel.querySelector('#bm-k'); if (!box) return;
       const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); const m = new K.maps.Map(box, { center: c, level: 11, scrollwheel: true }); m.setZoomable(true); m.addControl(new K.maps.ZoomControl(), K.maps.ControlPosition.RIGHT); new K.maps.Marker({ position: c, map: m }); const fix = () => { m.relayout(); m.setCenter(c); }; requestAnimationFrame(fix); [100, 400, 900, 1800].forEach((t) => setTimeout(fix, t)); }); };
