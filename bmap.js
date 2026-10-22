@@ -110,7 +110,7 @@
     }
     function kakao(box, lat, lng) {
       box.hidden = false;
-      const go = () => kakao_.maps.load(() => { const c = new kakao_.maps.LatLng(lat, lng); const m = new kakao_.maps.Map(box, { center: c, level: 9 }); new kakao_.maps.Marker({ position: c, map: m }); });
+      const go = () => kakao_.maps.load(() => { const c = new kakao_.maps.LatLng(lat, lng); const m = new kakao_.maps.Map(box, { center: c, level: 9 }); new kakao_.maps.Marker({ position: c, map: m }); setTimeout(() => { m.relayout(); m.setCenter(c); }, 120); });
       if (window.kakao && window.kakao.maps) { window.kakao_ = window.kakao; return go(); }
       const s = document.createElement('script'); s.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=' + KEY; s.onload = () => { window.kakao_ = window.kakao; go(); }; document.head.appendChild(s);
     }
