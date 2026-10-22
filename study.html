@@ -53,6 +53,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .ses.o-h{background:#fdfcfa;border-color:#d8d2c7}
 .ses.o-h .body h3{border-left-color:#bbb}
 @media (max-width:480px){.tabs button{padding:8px 11px;font-size:14px}}
+@media (max-width:600px){.tabs{display:grid;grid-template-columns:repeat(8,1fr);gap:1.5px;background:#111;width:auto;overflow:hidden}.tabs button,.tabs button+button{grid-column:span 2;border:0;padding:10px 2px;font-size:13px;white-space:nowrap;min-width:0}.tabs button.t-w,.tabs button.t-q{grid-column:span 4;font-size:14px}}
 /* 목차 */
 .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 26px}
 .toc a{text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;background:#fff}
