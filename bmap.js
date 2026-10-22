@@ -34,15 +34,15 @@
   ];
   /* 도 이름표 아이콘: 그 지방 반닫이 장석의 특징을 단순한 선으로 */
   const PI = {
-    '평안도': '<rect x="5" y="9" width="22" height="14" rx="2"/><circle cx="11" cy="14" r="1.3"/><circle cx="16" cy="14" r="1.3"/><circle cx="21" cy="14" r="1.3"/><circle cx="11" cy="19" r="1.3"/><circle cx="16" cy="19" r="1.3"/><circle cx="21" cy="19" r="1.3"/>',   // 박천 숭숭이 장석(투각판)
-    '함경도': '<circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="3"/>',   // 둥근 앞바탕(자료 보강 필요)
-    '황해도': '<rect x="6" y="6" width="20" height="20" rx="4"/><path d="M16 10v12M10 16h12"/>',   // 해주 투각 장석(자료 보강 필요)
-    '경기도': '<circle cx="16" cy="16" r="10"/><path d="M16 6a5 5 0 0 1 0 10a5 5 0 0 0 0 10"/><circle cx="16" cy="11" r="1.1"/><circle cx="16" cy="21" r="1.1"/>',   // 태극무늬 장석
-    '강원도': '<g id="pt"><ellipse cx="16" cy="9" rx="2.8" ry="4.2"/></g><use href="#pt" transform="rotate(60 16 16)"/><use href="#pt" transform="rotate(120 16 16)"/><use href="#pt" transform="rotate(180 16 16)"/><use href="#pt" transform="rotate(240 16 16)"/><use href="#pt" transform="rotate(300 16 16)"/><circle cx="16" cy="16" r="2"/>',   // 화형 광두정 장석
-    '충청도': '<rect x="7" y="7" width="18" height="18"/><circle cx="16" cy="16" r="2"/>',   // 정방형 장석
-    '경상도': '<path d="M16 4l12 12-12 12L4 16z"/><path d="M16 11l5 5-5 5-5-5z"/>',   // 진주 마름모 장석
-    '전라도': '<rect x="3.5" y="10" width="25" height="12" rx="1"/><path d="M8 16h16"/><circle cx="16" cy="16" r="1.5"/>',   // 나주 장방형 장석
-    '제주도': '<circle cx="16" cy="18.5" r="8"/><path d="M11.5 11.5l1.5-5 3 3 3-3 1.5 5"/><path d="M12.5 17q3.5 3 7 0M12.5 22q3.5-2.5 7 0"/>',   // 석류 장석
+    '평안도': '<clipPath id="pyc"><rect x="8" y="8" width="16" height="16"/></clipPath><rect x="4.5" y="4.5" width="23" height="23" rx="2"/><g clip-path="url(#pyc)" stroke-width="1.1"><path d="M8 -8 L24 8 M8 8 L24 -8M8 -4 L24 12 M8 12 L24 -4M8 0 L24 16 M8 16 L24 0M8 4 L24 20 M8 20 L24 4M8 8 L24 24 M8 24 L24 8M8 12 L24 28 M8 28 L24 12M8 16 L24 32 M8 32 L24 16M8 20 L24 36 M8 36 L24 20M8 24 L24 40 M8 40 L24 24"/></g><circle cx="7.3" cy="24.7" r="1" fill="currentColor"/><circle cx="24.7" cy="24.7" r="1" fill="currentColor"/>',
+    '함경도': '<circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="6.5"/><circle cx="16" cy="16" r="1.6" fill="currentColor"/>',
+    '황해도': '<rect x="5" y="5" width="22" height="22" rx="5"/><path d="M16 10v12M10 16h12"/><circle cx="16" cy="16" r="2.2"/>',
+    '경기도': '<circle cx="16" cy="16" r="11"/><path d="M5 16a5.5 5.5 0 0 0 11 0a5.5 5.5 0 0 1 11 0"/><circle cx="10.5" cy="17" r="1.5" fill="currentColor"/><circle cx="21.5" cy="15" r="1.5" fill="currentColor"/>',
+    '강원도': '<circle cx="16" cy="16" r="2.4"/><circle cx="16" cy="8.6" r="2.5"/><circle cx="21.79" cy="11.39" r="2.5"/><circle cx="23.21" cy="17.65" r="2.5"/><circle cx="19.21" cy="22.67" r="2.5"/><circle cx="12.79" cy="22.67" r="2.5"/><circle cx="8.79" cy="17.65" r="2.5"/><circle cx="10.21" cy="11.39" r="2.5"/>',
+    '충청도': '<path d="M6.5 26V15.5a9.5 9.5 0 0 1 19 0V26z"/><circle cx="11" cy="22" r="1.4" fill="currentColor"/><circle cx="21" cy="22" r="1.4" fill="currentColor"/><circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>',
+    '경상도': '<path d="M16 3.5l12.5 12.5-12.5 12.5L3.5 16z"/><path d="M16 10l6 6-6 6-6-6z"/><circle cx="16" cy="16" r="1.4" fill="currentColor"/>',
+    '전라도': '<rect x="10.5" y="3.5" width="11" height="25" rx="1.8"/><path d="M16 8v11"/><circle cx="13.8" cy="24" r="1.3" fill="currentColor"/><circle cx="18.2" cy="24" r="1.3" fill="currentColor"/>',
+    '제주도': '<circle cx="16" cy="18.5" r="8.5"/><path d="M11 11.2l1.2-5 2.6 2.8L16 5.2l1.2 3.8 2.6-2.8 1.2 5"/><path d="M11.5 17.5q4.5 3.2 9 0M11.8 22.2q4.2-2.6 8.4 0M16 13.5v3.5"/>',
   };
   const PROV = [['평안도', ['평안']], ['함경도', ['함경']], ['황해도', ['황해']], ['경기도', ['경기']], ['강원도', ['강원']], ['충청도', ['충청']], ['경상도', ['경상']], ['전라도', ['전라']], ['제주도', ['제주도']]];
   /* 도 → 선생님 지도에 있는 고을. 색·글자 자리는 지도 위에 도를 크게 적어 두기 위한 것 */
@@ -59,6 +59,12 @@
   };
   const AUC = { auction: 1, myart: 1 };
   const MUS = { nmk: 1, heritage: 1 };   // 박물관자료 폴더(국립중앙박물관 소장품·국가유산)
+  const TICON = {
+    m: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M1.5 15.5h45v3h-45z" fill="currentColor"/><path d="M3 18.5v13h14v-13M31 18.5v13h14v-13"/><path d="M3 23h14M3 27h14M31 23h14M31 27h14" stroke-width="1.2"/><path d="M17 31.5h14M15.5 34h17M14 36.5h20" stroke-width="1.6"/><path d="M1.5 31.5h12.5M34 31.5h12.5"/><path d="M6 40.5h36" stroke-width="1.5"/><path d="M11 43.5h26" stroke-width="1.2"/></svg>',
+    a: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-40 22 18)"><rect x="12" y="10" width="20" height="9" rx="2"/><path d="M15 10v9M29 10v9"/><path d="M22 19v19"/></g><path d="M26 41h17"/><rect x="28.5" y="36.5" width="12" height="4.5" rx="1"/><path d="M8 8l2.5 2.5M5 14h3.5M13 4.5v3.5" stroke-width="1.8"/></svg>',
+    e: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 15 24 5l20 10z"/><path d="M6 15v27h36V15"/><path d="M6 28.5h36M4 42h40"/><path d="M10 27.5v-9M13.5 27.5v-7M17 27.5v-9M20.5 27.5v-8M25 27.5l3-8.5M31 27.5v-9M34.5 27.5v-7M38 27.5v-9"/><path d="M10 41v-9M13.5 41v-7.5M17 41v-9M21 41v-6.5M24.5 41v-9M28 41v-8M33 41l2.5-8M38 41v-9"/><circle cx="24" cy="11.5" r="1.6"/></svg>',
+    o: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="25" height="16.5" rx=".8"/><path d="M3.5 15.5h25"/><path d="M5 24.5v3M27 24.5v3"/><path d="M8.5 8v5.5h3V8M20.5 8v5.5h3V8"/><path d="M13.5 15.5h5v4.2l-2.5 1.8-2.5-1.8z"/></svg>',
+  };
   const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111']];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const load = () => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { return {}; } };
@@ -119,15 +125,15 @@
     };
     el.innerHTML = `<div class="bm"><style>
 .bm{font-family:inherit}
-.bm .bm-pb{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
-.bm .bm-pb button{border:2.5px solid var(--c);background:#fff;color:var(--c);border-radius:12px;padding:7px 13px;font:inherit;font-size:19px;font-weight:900;cursor:pointer;line-height:1.1}
-.bm .bm-pb button small{font-size:14px;font-weight:800;margin-left:5px;opacity:.9}
-.bm .bm-pb button .bi{display:inline-grid;place-items:center;width:32px;height:32px;background:#f1efeb;border-radius:9px;vertical-align:middle;margin:-3px 7px -3px -6px}.bm .bm-pb button .bi svg{width:26px;height:26px}.bm .bm-pb button{display:inline-flex;align-items:center}
-.bm .bm-pb button[aria-pressed=true]{background:var(--c);color:#fff}
-.bm .bm-t{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
-.bm .bm-t button{border:1.5px solid #cdbf9f;background:#fff;border-radius:999px;padding:6px 13px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;color:#fff;border-color:transparent}
-.bm .bm-t button[aria-pressed=false]{background:#fff!important;color:#8a7f66;border-color:#cdbf9f}
 .bm .bm-sv{width:100%;height:auto;max-height:90vh;background:#fbf6ea;border:1px solid #e3d6b8;border-radius:14px;display:block}
+.bm .bm-pb,.bm .bm-t{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 12px}
+.bm .bm-pb button,.bm .bm-t button{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;padding:10px 2px 8px;font:inherit;font-size:13px;font-weight:700;color:#1f2433;background:#fff;border:1px solid #e6e8f0;border-radius:14px;cursor:pointer;transition:transform .15s,border-color .15s;line-height:1.2}
+.bm .bm-pb button:hover,.bm .bm-t button:hover{transform:translateY(-2px);border-color:#6b7183}
+.bm .bm-pb button[aria-pressed=true],.bm .bm-t button[aria-pressed=true]{border-color:#1f2433;box-shadow:inset 0 0 0 1px #1f2433}
+.bm .bm-t button{width:96px}.bm .bm-t button[aria-pressed=false]{opacity:.45}
+.bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bm-t .bi svg{width:34px;height:34px}
+.bm .bm-pb button small{display:block;font-size:12px;color:#6b7183;font-weight:700;min-height:1em;margin-top:-3px}
+.bm .bm-t button i{position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%}
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
 .bm .bx text{fill:#2b2418;pointer-events:none;text-anchor:middle}.bm .bx .hj{font-size:28px;font-family:serif}.bm .bx .hg{font-size:36px;font-weight:900}
 .bm .bx.dim{opacity:.4}
@@ -148,8 +154,8 @@
 #bm-dlg .own .mn{background:#faf9f6;text-align:center}#bm-dlg .own .mn img{max-height:62vh}#bm-dlg .st{display:flex;gap:8px;padding:8px 16px}#bm-dlg .st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}#bm-dlg .st button.on{border-color:#111}#bm-dlg .st img{width:100%;height:100%;object-fit:cover;max-height:none}
 #bm-dlg .n{display:flex;gap:8px;align-items:center;padding:0 16px 14px}#bm-dlg .n button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}#bm-dlg .n span{flex:1;text-align:center;color:#7a6c50}
 </style>
-<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" style="--c:${PV[p][0]}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="#1d1b18" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
-<div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true" style="background:${c}">${n}</button>`).join('')}</div>
+<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
+<div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><i style="background:${c}"></i></button>`).join('')}</div>
 <svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="정대영 선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
 <g stroke="#9c9179" stroke-width="3" stroke-dasharray="14 10" fill="none" opacity=".9">
