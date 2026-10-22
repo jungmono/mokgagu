@@ -32,6 +32,18 @@
     ['tongyeong', '통영', '統營', 830, 1712, ['통영', '충무'], 34.85, 128.43, '옛 충무. 경상도 반닫이 중 높이가 가장 낮고 옆으로 퍼진 해안지방 반닫이입니다.', S1],
     ['jeju', '제주', '濟州', 250, 1885, ['제주'], 33.5, 126.53, '느티나무·먹구슬나무 등을 쓰고 전라도(특히 서·남해안) 영향이 큽니다. 실패형 경첩, 배가 부른 마름모꼴 광두정, 긴 팽감잡이가 전면을 꽉 채워 남성적이고 강렬합니다.', S1],
   ];
+  /* 도 이름표 아이콘: 그 지방 반닫이 장석의 특징을 단순한 선으로 */
+  const PI = {
+    '평안도': '<rect x="5" y="9" width="22" height="14" rx="2"/><circle cx="11" cy="14" r="1.3"/><circle cx="16" cy="14" r="1.3"/><circle cx="21" cy="14" r="1.3"/><circle cx="11" cy="19" r="1.3"/><circle cx="16" cy="19" r="1.3"/><circle cx="21" cy="19" r="1.3"/>',   // 박천 숭숭이 장석(투각판)
+    '함경도': '<circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="3"/>',   // 둥근 앞바탕(자료 보강 필요)
+    '황해도': '<rect x="6" y="6" width="20" height="20" rx="4"/><path d="M16 10v12M10 16h12"/>',   // 해주 투각 장석(자료 보강 필요)
+    '경기도': '<circle cx="16" cy="16" r="10"/><path d="M16 6a5 5 0 0 1 0 10a5 5 0 0 0 0 10"/><circle cx="16" cy="11" r="1.1"/><circle cx="16" cy="21" r="1.1"/>',   // 태극무늬 장석
+    '강원도': '<g id="pt"><ellipse cx="16" cy="9" rx="2.8" ry="4.2"/></g><use href="#pt" transform="rotate(60 16 16)"/><use href="#pt" transform="rotate(120 16 16)"/><use href="#pt" transform="rotate(180 16 16)"/><use href="#pt" transform="rotate(240 16 16)"/><use href="#pt" transform="rotate(300 16 16)"/><circle cx="16" cy="16" r="2"/>',   // 화형 광두정 장석
+    '충청도': '<rect x="7" y="7" width="18" height="18"/><circle cx="16" cy="16" r="2"/>',   // 정방형 장석
+    '경상도': '<path d="M16 4l12 12-12 12L4 16z"/><path d="M16 11l5 5-5 5-5-5z"/>',   // 진주 마름모 장석
+    '전라도': '<rect x="3.5" y="10" width="25" height="12" rx="1"/><path d="M8 16h16"/><circle cx="16" cy="16" r="1.5"/>',   // 나주 장방형 장석
+    '제주도': '<circle cx="16" cy="18.5" r="8"/><path d="M11.5 11.5l1.5-5 3 3 3-3 1.5 5"/><path d="M12.5 17q3.5 3 7 0M12.5 22q3.5-2.5 7 0"/>',   // 석류 장석
+  };
   const PROV = [['평안도', ['평안']], ['함경도', ['함경']], ['황해도', ['황해']], ['경기도', ['경기']], ['강원도', ['강원']], ['충청도', ['충청']], ['경상도', ['경상']], ['전라도', ['전라']], ['제주도', ['제주도']]];
   /* 도 → 선생님 지도에 있는 고을. 색·글자 자리는 지도 위에 도를 크게 적어 두기 위한 것 */
   const PV = {
@@ -101,7 +113,7 @@
       const f = `<defs><filter id="${uid}e" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="16"/></filter><filter id="${uid}b" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="38"/></filter><filter id="${uid}s"><feGaussianBlur stdDeviation="9"/></filter></defs>`;
       const isle = `<ellipse cx="290" cy="1888" rx="150" ry="72" fill="#fbf6ea" stroke="#3a352b" stroke-width="4" filter="url(#${uid}e)"/>`;
       if (ink === 'a') return f + `<rect width="1319" height="1960" fill="#e4d9bd"/><g filter="url(#${uid}b)" fill="#6d6551" opacity=".22"><ellipse cx="80" cy="700" rx="140" ry="380"/><ellipse cx="1260" cy="1200" rx="150" ry="420"/><ellipse cx="700" cy="60" rx="520" ry="110"/></g><path d="${LAND}" fill="#fbf6ea"/><path d="${LAND}" fill="none" stroke="#2f2a21" stroke-width="7" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle}`;
-      if (ink === 'b') return f + `<rect width="1319" height="1960" fill="#d9d0ba"/><g filter="url(#${uid}s)" fill="#5d584a"><path d="M0 1960 L0 1500 L110 1380 L170 1450 L260 1300 L330 1420 L420 1960 Z" opacity=".16"/><path d="M1319 1960 L1319 1000 L1230 880 L1160 1000 L1100 930 L1090 1960 Z" opacity=".2"/><path d="M0 560 L60 420 L120 500 L180 330 L240 560 Z" opacity=".15"/><path d="M1319 330 L1260 180 L1180 300 L1110 120 L1090 330 Z" opacity=".14"/></g><g filter="url(#${uid}b)" fill="#fffaf0" opacity=".55"><ellipse cx="90" cy="1100" rx="110" ry="40"/><ellipse cx="1230" cy="640" rx="120" ry="40"/></g><path d="${LAND}" fill="#fbf6ea"/><path d="${LAND}" fill="none" stroke="#3a352b" stroke-width="6" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle}`;
+      if (ink === 'b') return f + `<path d="${LAND}" fill="#fbf6ea"/><path d="${LAND}" fill="none" stroke="#3a352b" stroke-width="6" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle}`;
       return f + `<rect width="1319" height="1960" fill="#2b2925"/><g filter="url(#${uid}b)" fill="#fff" opacity=".07"><ellipse cx="90" cy="900" rx="130" ry="400"/><ellipse cx="1240" cy="1300" rx="140" ry="420"/></g><path d="${LAND}" fill="#fbf6ea" stroke="#0b0a09" stroke-width="16" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle.replace('stroke="#3a352b"', 'stroke="#0b0a09"')}`;
     };
     el.innerHTML = `<div class="bm"><style>
@@ -109,6 +121,7 @@
 .bm .bm-pb{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
 .bm .bm-pb button{border:2.5px solid var(--c);background:#fff;color:var(--c);border-radius:12px;padding:7px 13px;font:inherit;font-size:19px;font-weight:900;cursor:pointer;line-height:1.1}
 .bm .bm-pb button small{font-size:14px;font-weight:800;margin-left:5px;opacity:.9}
+.bm .bm-pb button .bi{display:inline-grid;place-items:center;width:32px;height:32px;background:#f1efeb;border-radius:9px;vertical-align:middle;margin:-3px 7px -3px -6px}.bm .bm-pb button .bi svg{width:26px;height:26px}.bm .bm-pb button{display:inline-flex;align-items:center}
 .bm .bm-pb button[aria-pressed=true]{background:var(--c);color:#fff}
 .bm .bm-t{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
 .bm .bm-t button{border:1.5px solid #cdbf9f;background:#fff;border-radius:999px;padding:6px 13px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;color:#fff;border-color:transparent}
@@ -117,7 +130,7 @@
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
 .bm .bx text{fill:#2b2418;pointer-events:none;text-anchor:middle}.bm .bx .hj{font-size:28px;font-family:serif}.bm .bx .hg{font-size:36px;font-weight:900}
 .bm .bx.dim{opacity:.4}
-.bm .pl{font-weight:900;font-size:46px;opacity:.75;cursor:pointer;text-anchor:middle;paint-order:stroke;stroke:#fbf6ea;stroke-width:8px}.bm .pl:hover{opacity:1}
+.bm .pl{font-weight:900;font-size:46px;fill-opacity:.85;cursor:pointer;text-anchor:middle;paint-order:stroke;stroke:#fbf6ea;stroke-width:8px}.bm .pl:hover{opacity:1}
 .bm #bm-p{margin-top:10px;border:1px solid #e3d6b8;background:#fff;border-radius:14px;padding:14px}
 .bm #bm-p h3{margin:0 0 4px;font-size:20px}.bm #bm-p .src{font-size:13px;color:#7a6c50;margin-top:6px}
 .bm .bm-go{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.bm .bm-go button{border:1.5px solid var(--c);background:#fff;color:var(--c);border-radius:999px;padding:4px 11px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
@@ -134,7 +147,7 @@
 #bm-dlg .own .mn{background:#faf9f6;text-align:center}#bm-dlg .own .mn img{max-height:62vh}#bm-dlg .st{display:flex;gap:8px;padding:8px 16px}#bm-dlg .st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}#bm-dlg .st button.on{border-color:#111}#bm-dlg .st img{width:100%;height:100%;object-fit:cover;max-height:none}
 #bm-dlg .n{display:flex;gap:8px;align-items:center;padding:0 16px 14px}#bm-dlg .n button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}#bm-dlg .n span{flex:1;text-align:center;color:#7a6c50}
 </style>
-<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" style="--c:${PV[p][0]}" aria-pressed="false">${p}<small></small></button>`).join('')}</div>
+<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" style="--c:${PV[p][0]}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="#1d1b18" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
 <div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true" style="background:${c}">${n}</button>`).join('')}</div>
 <svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="정대영 선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
