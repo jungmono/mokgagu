@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v9: 질문에 사진 첨부(질문 탭 photos 열) · 「바로 쓰기」 게시판 — doGet action=wlist(가족만), doPost wsave·wdel. 시트 '쓰기'·'쓰기이력' 탭. 사진은 cphoto/cimg(드라이브 비공개 폴더) 그대로 쓴다.
  * v8: 통계 — doGet action=stats(가족만), doPost log(찾아본 기물·검색어) · qadd/qedit/qdel(선생님께 여쭤볼 것). 시트 '기록'·'질문' 탭.
  * v7: 방문자 수 — 시트 '방문' 탭. doGet action=visit(&new=1 이면 오늘 +1) → {today, total}.
  * v6: 좋아요(별) — 시트 '좋아요' 탭. doGet action=likes(가족만), doPost action=like {cid, who(거믄|힌), on}.
@@ -42,6 +43,7 @@ function doGet(e) {
   if (p.action === 'likes') return likesGet_(fam);
   if (p.action === 'visit') return visit_(p);
   if (p.action === 'stats') return statsGet_(fam);
+  if (p.action === 'wlist') return wGet_(fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -75,6 +77,7 @@ function doPost(e) {
     if (d.action === 'like') return likePost_(d, fam);
     if (d.action === 'log') return logPost_(d, fam);
     if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
+    if (d.action === 'wsave' || d.action === 'wdel') return wPost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
@@ -228,7 +231,17 @@ function visit_(p) {
    '기록' 탭: time | who | kind(view|search) | cid | q | page
    '질문' 탭: id | who | text | cid | cls(수업일 yyyy-MM-dd) | time | done | ans | ans_time | deleted  */
 const LOG_SHEET = '기록', Q_SHEET = '질문';
-const Q_HEAD = ['id', 'who', 'text', 'cid', 'cls', 'time', 'done', 'ans', 'ans_time', 'deleted'];
+const Q_HEAD = ['id', 'who', 'text', 'cid', 'cls', 'time', 'done', 'ans', 'ans_time', 'deleted', 'photos'];
+function qSheet_() {
+  const sh = tab_(Q_SHEET, Q_HEAD);
+  if (sh.getRange(1, 11).getValue() !== 'photos') sh.getRange(1, 11).setValue('photos');
+  return sh;
+}
+function photos_(a, max) {
+  if (typeof a === 'string') { try { a = JSON.parse(a); } catch (x) { a = []; } }
+  if (!Array.isArray(a)) return [];
+  return a.slice(0, max).map(p => ({ f: String(p && p.f || '').slice(0, 80), t: String(p && p.t || '').slice(0, 80), c: String(p && p.c || '').slice(0, 80) })).filter(p => p.f || p.t);
+}
 function tab_(name, head) {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   let sh = ss.getSheetByName(name);
@@ -241,8 +254,8 @@ function statsGet_(fam) {
   if (!fam) return out_({ ok: false, err: 'code' });
   const lg = tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).getDataRange().getValues(); lg.shift();
   const logs = lg.slice(-3000).filter(r => r[0]).map(r => ({ t: iso_(r[0]), who: String(r[1]), kind: String(r[2]), cid: String(r[3]), q: String(r[4]) }));
-  const qs = tab_(Q_SHEET, Q_HEAD).getDataRange().getValues(); qs.shift();
-  const questions = qs.filter(r => r[0] && !r[9]).map(r => ({ id: String(r[0]), who: String(r[1]), text: String(r[2]), cid: String(r[3]), cls: day_(r[4]), t: iso_(r[5]), done: String(r[6]) === '1', ans: String(r[7] || ''), at: iso_(r[8]) }));
+  const qs = qSheet_().getDataRange().getValues(); qs.shift();
+  const questions = qs.filter(r => r[0] && !r[9]).map(r => ({ id: String(r[0]), who: String(r[1]), text: String(r[2]), cid: String(r[3]), cls: day_(r[4]), t: iso_(r[5]), done: String(r[6]) === '1', ans: String(r[7] || ''), at: iso_(r[8]), photos: photos_(r[10], 6) }));
   const ss = SpreadsheetApp.openById(SHEET_ID), vs = ss.getSheetByName('방문');
   const visits = vs ? vs.getDataRange().getDisplayValues().slice(1).filter(r => r[0]).map(r => ({ day: r[0], n: Number(r[1]) || 0 })) : [];
   const lk = ss.getSheetByName(LIKE_SHEET);
@@ -259,13 +272,13 @@ function logPost_(d, fam) {
 }
 function qPost_(d, fam) {
   if (!fam) return out_({ ok: false, err: 'code' });
-  const sh = tab_(Q_SHEET, Q_HEAD);
+  const sh = qSheet_();
   const find = id => { const v = sh.getDataRange().getValues(); for (let i = 1; i < v.length; i++) if (String(v[i][0]) === String(id)) return i + 1; return -1; };
   if (d.action === 'qadd' && d.q) {
     const q = d.q, who = famWho_(q.who), text = String(q.text || '').trim();
     if (!who || !text) return out_({ ok: false, err: 'bad' });
     if (find(q.id) >= 0) return out_({ ok: true, dup: true });   // 이미 있거나 지운 질문은 다시 넣지 않는다
-    sh.appendRow([String(q.id).slice(0, 40), who, text.slice(0, 2000), String(q.cid || '').slice(0, 200), String(q.cls || '').slice(0, 10), new Date().toISOString(), '', '', '', '']);
+    sh.appendRow([String(q.id).slice(0, 40), who, text.slice(0, 2000), String(q.cid || '').slice(0, 200), String(q.cls || '').slice(0, 10), new Date().toISOString(), '', '', '', '', JSON.stringify(photos_(q.photos, 6))]);
     return out_({ ok: true });
   }
   const at = find(d.id); if (at < 0) return out_({ ok: false, err: 'none' });
@@ -273,9 +286,55 @@ function qPost_(d, fam) {
   if (d.action === 'qedit') {
     if (typeof d.text === 'string' && d.text.trim()) sh.getRange(at, 3).setValue(d.text.trim().slice(0, 2000));
     if (typeof d.cls === 'string') sh.getRange(at, 5).setValue(d.cls.slice(0, 10));
+    if (Array.isArray(d.photos)) sh.getRange(at, 11).setValue(JSON.stringify(photos_(d.photos, 6)));
     if (typeof d.done === 'boolean') sh.getRange(at, 7).setValue(d.done ? '1' : '');
     if (typeof d.ans === 'string') { sh.getRange(at, 8).setValue(d.ans.slice(0, 4000)); sh.getRange(at, 9).setValue(new Date().toISOString()); }
     return out_({ ok: true });
   }
   return out_({ ok: false, err: 'action' });
 }
+
+
+/* ───────── 공부방 「바로 쓰기」 (v9) ─────────
+   '쓰기' 탭: id | who(처음 쓴 사람) | cls(수업일) | title | body | photos(JSON) | created | updated | editor(마지막으로 고친 사람) | deleted | status(비어 있으면 정리 전, '정리됨')
+   '쓰기이력' 탭: 고치기 전 글을 한 줄씩 남겨 둔다.  거믄·힌은 서로의 글을 고칠 수 있다. */
+const W_SHEET = '쓰기', W_HEAD = ['id', 'who', 'cls', 'title', 'body', 'photos', 'created', 'updated', 'editor', 'deleted', 'status'];
+const WH_SHEET = '쓰기이력', WH_HEAD = ['time', 'id', 'editor', 'title', 'body', 'photos'];
+function wRow_(r) {
+  return { id: String(r[0]), who: String(r[1]), cls: day_(r[2]), title: String(r[3]), body: String(r[4]), photos: photos_(r[5], 12),
+    created: iso_(r[6]), updated: iso_(r[7]), editor: String(r[8] || r[1]), status: String(r[10] || '') };
+}
+function wGet_(fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const rows = tab_(W_SHEET, W_HEAD).getDataRange().getValues(); rows.shift();
+  return out_({ ok: true, list: rows.filter(r => r[0] && !r[9]).map(wRow_) });
+}
+function wPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const sh = tab_(W_SHEET, W_HEAD), now = new Date().toISOString();
+  const find = id => { const v = sh.getDataRange().getValues(); for (let i = 1; i < v.length; i++) if (String(v[i][0]) === String(id)) return { at: i + 1, r: v[i] }; return null; };
+  if (d.action === 'wdel') {
+    const f = find(d.id); if (!f) return out_({ ok: true });
+    sh.getRange(f.at, 10).setValue('삭제 ' + now);
+    return out_({ ok: true });
+  }
+  const it = d.item || {}, id = String(it.id || '').slice(0, 40), who = famWho_(it.who), editor = famWho_(it.editor) || who;
+  if (!id || !who) return out_({ ok: false, err: 'bad' });
+  const title = String(it.title || '').trim().slice(0, 100), body = String(it.body || '').trim().slice(0, 20000);
+  const ph = photos_(it.photos, 12);
+  if (!title && !body && !ph.length) return out_({ ok: false, err: 'text' });
+  const cls = String(it.cls || '').slice(0, 10);
+  const f = find(id);
+  if (f && f.r[9]) return out_({ ok: false, err: 'none' });
+  if (!f) {
+    sh.appendRow([id, who, cls, title, body, JSON.stringify(ph), now, now, editor, '', '']);
+    return out_({ ok: true, item: wRow_([id, who, cls, title, body, JSON.stringify(ph), now, now, editor, '', '']) });
+  }
+  // 다른 사람이 그 사이에 고쳤다면 덮어쓰지 않고 알린다
+  if (it.base && iso_(f.r[7]) !== String(it.base)) return out_({ ok: false, err: 'conflict', item: wRow_(f.r) });
+  tab_(WH_SHEET, WH_HEAD).appendRow([now, id, String(f.r[8] || f.r[1]), String(f.r[3]), String(f.r[4]), String(f.r[5])]);
+  const nv = [id, String(f.r[1]), cls, title, body, JSON.stringify(ph), f.r[6], now, editor, '', ''];   // 고치면 다시 「정리 전」
+  sh.getRange(f.at, 1, 1, W_HEAD.length).setValues([nv]);
+  return out_({ ok: true, item: wRow_(nv) });
+}
+function 쓰기준비() { tab_(W_SHEET, W_HEAD); tab_(WH_SHEET, WH_HEAD); qSheet_(); }
