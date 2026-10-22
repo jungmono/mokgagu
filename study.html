@@ -58,6 +58,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .toc a small{color:var(--muted);font-weight:500;margin-left:4px}
 .tools{display:flex;gap:8px;justify-content:center;align-items:center;margin:18px 0 14px;flex-wrap:wrap}
 .tools input{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(340px,100%)}
+.tools .qzl{font-size:13px;font-weight:800;border:1.5px solid #111;border-radius:999px;padding:5px 12px;color:#111;text-decoration:none;background:#fff}
 .tools button{font:inherit;font-size:13px;border:1px solid #d9d4cc;background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:#6b665e}
 /* 수업 */
 .ses{position:relative;border:1px solid var(--line);border-radius:18px;padding:22px 24px 18px;margin:0 0 22px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04)}
@@ -193,7 +194,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     allImgs = [];
     var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀']].map(function (t) {
       return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
-    html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
+    html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button><a href="quiz.html" class="qzl">복습 퀴즈 ›</a></div>';
     if (tab === '말씀') {
       app.innerHTML = html + talkHTML() + '<div class="foot">통계의 「📝 수업 마치고 선생님 말씀 적기」에서 적은 말씀과 메모가 수업 날짜별로 여기 쌓여요.<br><button id="out">이 기기에서 잠그기</button></div>';
       if (location.hash) { var t0 = document.getElementById(location.hash.slice(1)); if (t0) setTimeout(function () { t0.scrollIntoView(); }, 50); }

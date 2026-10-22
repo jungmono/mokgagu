@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light">
+<title>복습 퀴즈 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{--fg:#1d1b18;--muted:#756e65;--line:#e6e1d9;--paper:#fbfaf7;--ok:#2f6b45;--okbg:#f3f8f4;--bad:#8a2f22;--badbg:#fbf1ef}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--fg)}
+body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 72px}
+.hd{text-align:center;margin:22px 0 14px}
+.hd h1{margin:0 0 6px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(26px,5vw,34px);letter-spacing:-.03em}
+.hd p{margin:0;color:var(--muted);font-weight:500;font-size:14px}
+.back{display:block;text-align:center;margin:0 0 6px;font-size:13px}.back a{color:var(--muted)}
+.lock{max-width:380px;margin:30px auto;text-align:center;border:1px solid var(--line);border-radius:18px;padding:30px 24px;background:var(--paper)}
+.lock h2{margin:8px 0 4px;font-size:19px;font-weight:900}
+.lock p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.6}
+.lock input{font:inherit;font-size:22px;letter-spacing:.4em;text-align:center;width:180px;border:1.5px solid #cfc8bd;border-radius:10px;padding:10px;background:#fff}
+.lock .go{display:block;margin:14px auto 0;font:inherit;font-weight:800;font-size:15px;border:0;border-radius:10px;background:#111;color:#fff;padding:10px 26px;cursor:pointer}
+.lock .err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:1.2em}
+.card{border:1px solid var(--line);border-radius:18px;padding:20px 18px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 8px 22px rgba(0,0,0,.04);margin-bottom:16px}
+.sum{display:flex;gap:10px;margin-bottom:14px}
+.sum div{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.sum b{display:block;font-size:22px;font-weight:900}.sum span{font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
+.chips button{font:inherit;font-size:13.5px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--fg)}
+.chips button.on{background:#111;color:#fff;border-color:#111}
+.chips button small{font-weight:500;opacity:.7;margin-left:3px}
+.lab{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 6px}
+.big{display:block;width:100%;font:inherit;font-weight:900;font-size:16px;border:0;border-radius:12px;background:#111;color:#fff;padding:14px;cursor:pointer;margin-top:8px}
+.big.sub{background:#fff;color:#111;border:1.5px solid #111}
+.big:disabled{opacity:.4;cursor:default}
+.bar{height:6px;background:#eee8df;border-radius:6px;overflow:hidden;margin:0 0 14px}.bar i{display:block;height:100%;background:#111;transition:width .25s}
+.pg{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.src{display:inline-block;font-size:12px;font-weight:700;background:#f3f1ec;border-radius:6px;padding:2px 8px;color:#4a463f;margin-bottom:10px}
+.q{font-size:18px;font-weight:900;line-height:1.55;margin:0 0 14px;letter-spacing:-.01em}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;font-weight:500;line-height:1.5;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;margin:0 0 8px;cursor:pointer;color:var(--fg)}
+.opt:active{background:#f6f3ee}
+.opt.ok{border-color:var(--ok);background:var(--okbg);color:#1f4d31;font-weight:700}
+.opt.no{border-color:var(--bad);background:var(--badbg);color:var(--bad);font-weight:700}
+.opt[disabled]{cursor:default}
+.ex{margin:12px 0 0;border-left:3px solid var(--ok);background:var(--okbg);border-radius:0 10px 10px 0;padding:10px 14px;line-height:1.7;font-size:14.5px}
+.ex.bad{border-color:var(--bad);background:var(--badbg)}
+.ex b{display:block;font-size:12.5px;color:var(--ok);margin-bottom:2px}.ex.bad b{color:var(--bad)}
+.score{text-align:center;margin:4px 0 14px}.score b{font-family:"Noto Serif KR",serif;font-size:44px;font-weight:900}.score span{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.miss{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--paper);font-size:14px;line-height:1.65}
+.miss b{font-weight:800}.miss span{display:block;color:var(--ok);font-weight:700}
+.note{margin-top:22px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.7}
+.note button{font:inherit;font-size:12.5px;border:0;background:none;color:#a0988e;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="back"><a href="study.html">‹ 공부방으로</a></div>
+  <div class="hd"><h1>복습 퀴즈</h1><p>수업 노트로 만든 문제로 배운 것을 다시 꺼내 봐요</p></div>
+  <div id="app"></div>
+</div>
+<script src="site.js"></script>
+<script>
+(function () {
+  var K_CODE = 'mokgagu_cm_code', K_STUDY = 'mokgagu_study_pw', K_QZ = 'mokgagu_quiz_v1', ROUND = 5;
+  var app = document.getElementById('app');
+  var ls = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del: function (k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  var DATA = null, key = null, ST = {}, scope = '', run = null;
+  try { ST = JSON.parse(ls.get(K_QZ) || '{}') || {}; } catch (e) { ST = {}; }
+  function save() { ls.set(K_QZ, JSON.stringify(ST)); }
+  function b64(s) { var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  async function unlock(pw, remember) {
+    var meta = await fetch('study/salt.json', { cache: 'no-store' }).then(function (r) { return r.json(); });
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(meta.salt), iterations: meta.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    var buf = new Uint8Array(await fetch('study/quiz.bin', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('net'); return r.arrayBuffer(); }));
+    var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, key, buf.slice(12));
+    DATA = JSON.parse(new TextDecoder().decode(plain));
+    if (remember) { ls.set(K_STUDY, pw); if (!ls.get(K_CODE)) ls.set(K_CODE, pw); }
+    home();
+  }
+  function lockView(msg) {
+    app.innerHTML = '<div class="lock"><h2>가족 암호를 넣어 주세요</h2><p>수업 노트로 만든 문제라서 암호로 잠겨 있어요.</p><form id="f"><input id="pw" type="password" inputmode="numeric" maxlength="20" aria-label="가족 암호" autofocus><button class="go" id="go">열기</button><div class="err" id="err">' + esc(msg || '') + '</div></form></div>';
+    document.getElementById('f').addEventListener('submit', function (e) {
+      e.preventDefault(); var pw = document.getElementById('pw').value.trim(); if (!pw) return;
+      var b = document.getElementById('go'); b.disabled = true; b.textContent = '여는 중…';
+      unlock(pw, true).catch(function (er) { b.disabled = false; b.textContent = '열기'; document.getElementById('err').textContent = er && er.message === 'net' ? '인터넷 연결을 확인해 주세요.' : '암호가 맞지 않아요.'; });
+    });
+  }
+  function pool() { return DATA.qs.filter(function (q) { return !scope || q.d === scope; }); }
+  function wrongList() { return pool().filter(function (q) { var s = ST[q.id]; return s && s.last === 0; }); }
+  function pick(n) {
+    /* 안 푼 것·틀린 것을 먼저, 맞힌 것은 뒤로 */
+    var P = pool().map(function (q) { var s = ST[q.id]; var w = !s ? 3 : s.last === 0 ? 6 : 1 / (1 + (s.streak || 0)); return { q: q, k: Math.random() / w }; });
+    P.sort(function (a, b) { return a.k - b.k; });
+    return P.slice(0, n).map(function (x) { return x.q; });
+  }
+  function home() {
+    var all = DATA.qs, done = 0, right = 0, wr = 0;
+    all.forEach(function (q) { var s = ST[q.id]; if (s) { done++; right += s.r || 0; wr += s.w || 0; if (s.last === 0) wr += 0; } });
+    var wrongAll = all.filter(function (q) { return ST[q.id] && ST[q.id].last === 0; }).length;
+    var rate = (right + wr) ? Math.round(right / (right + wr) * 100) + '%' : '-';
+    var sess = Object.keys(DATA.sessions).sort();
+    var chips = '<button data-s="" class="' + (!scope ? 'on' : '') + '">전체<small>' + all.length + '</small></button>' + sess.filter(function (k) { return all.some(function (q) { return q.d === k; }); }).map(function (k) {
+      return '<button data-s="' + k + '" class="' + (scope === k ? 'on' : '') + '">' + esc(DATA.sessions[k]) + '<small>' + all.filter(function (q) { return q.d === k; }).length + '</small></button>'; }).join('');
+    var wl = wrongList().length;
+    app.innerHTML = '<div class="card"><div class="sum"><div><b>' + done + '<small style="font-size:13px;font-weight:500">/' + all.length + '</small></b><span>풀어 본 문제</span></div><div><b>' + rate + '</b><span>정답률</span></div><div><b>' + wrongAll + '</b><span>다시 볼 문제</span></div></div>' +
+      '<p class="lab">어느 수업으로 풀까요</p><div class="chips" id="chips">' + chips + '</div>' +
+      '<button class="big" id="go">' + ROUND + '문제 풀기</button><button class="big sub" id="gw"' + (wl ? '' : ' disabled') + '>틀린 것만 다시 (' + wl + ')</button></div>' +
+      '<div class="note">수업 노트에서 뽑은 참고용 문제예요. 노트에 물음표(?)가 있던 내용은 뺐어요.<br>푼 기록은 이 기기에만 저장돼요. <button id="rs">기록 지우기</button></div>';
+    document.getElementById('chips').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; scope = b.dataset.s; home(); };
+    document.getElementById('go').onclick = function () { start(pick(ROUND)); };
+    document.getElementById('gw').onclick = function () { if (wl) start(shuffle(wrongList()).slice(0, ROUND)); };
+    document.getElementById('rs').onclick = function () { if (confirm('푼 기록을 모두 지울까요?')) { ST = {}; save(); home(); } };
+  }
+  function start(list) { if (!list.length) return; run = { L: list, i: 0, ok: 0, miss: [] }; ask(); }
+  function ask() {
+    var q = run.L[run.i], opts = shuffle(q.o.map(function (t, k) { return { t: t, c: k === 0 }; }));
+    app.innerHTML = '<div class="card"><div class="pg"><span>' + (run.i + 1) + ' / ' + run.L.length + '</span><span>맞힌 것 ' + run.ok + '</span></div><div class="bar"><i style="width:' + (run.i / run.L.length * 100) + '%"></i></div>' +
+      '<span class="src">' + esc(q.s) + '</span><p class="q">' + esc(q.q) + '</p><div id="opts">' + opts.map(function (o, k) { return '<button class="opt" data-k="' + k + '">' + esc(o.t) + '</button>'; }).join('') + '</div><div id="ex"></div></div>';
+    document.getElementById('opts').onclick = function (e) {
+      var b = e.target.closest('.opt'); if (!b || b.disabled) return;
+      var k = +b.dataset.k, good = opts[k].c;
+      [].forEach.call(document.querySelectorAll('.opt'), function (x, n) { x.disabled = true; if (opts[n].c) x.classList.add('ok'); });
+      if (!good) b.classList.add('no');
+      var s = ST[q.id] || { r: 0, w: 0, streak: 0 };
+      if (good) { s.r++; s.streak = (s.streak || 0) + 1; s.last = 1; run.ok++; } else { s.w++; s.streak = 0; s.last = 0; run.miss.push(q); }
+      ST[q.id] = s; save();
+      var last = run.i === run.L.length - 1;
+      document.getElementById('ex').innerHTML = '<div class="ex' + (good ? '' : ' bad') + '"><b>' + (good ? '맞았어요' : '아쉬워요') + '</b>' + esc(q.e) + '</div><button class="big" id="nx">' + (last ? '결과 보기' : '다음 문제') + '</button>';
+      document.getElementById('nx').onclick = function () { if (last) finish(); else { run.i++; ask(); } };
+      document.getElementById('nx').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    };
+  }
+  function finish() {
+    var n = run.L.length, msg = run.ok === n ? '모두 맞혔어요' : run.ok >= n * .6 ? '잘했어요' : '다시 보면 더 좋아져요';
+    app.innerHTML = '<div class="card"><div class="score"><b>' + run.ok + ' / ' + n + '</b><span>' + msg + '</span></div>' +
+      (run.miss.length ? '<p class="lab">틀린 문제</p>' + run.miss.map(function (q) { return '<div class="miss"><b>' + esc(q.q) + '</b><span>정답: ' + esc(q.o[0]) + '</span>' + esc(q.e) + '</div>'; }).join('') : '') +
+      '<button class="big" id="again">한 번 더</button><button class="big sub" id="hm">처음으로</button></div>';
+    document.getElementById('again').onclick = function () { start(pick(ROUND)); };
+    document.getElementById('hm').onclick = home;
+  }
+  if (!window.crypto || !crypto.subtle) { app.innerHTML = '<div class="lock"><p>이 브라우저에서는 열 수 없어요. 최신 크롬·사파리로 열어 주세요.</p></div>'; return; }
+  var saved = ls.get(K_STUDY) || ls.get(K_CODE);
+  if (saved) { app.innerHTML = '<p style="text-align:center;color:#756e65;margin:40px 0">여는 중…</p>'; unlock(saved, false).catch(function () { lockView(); }); } else lockView();
+})();
+</script>
+</body>
+</html>
