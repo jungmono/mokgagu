@@ -123,7 +123,7 @@
 .bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 #bm-dlg{border:0;border-radius:14px;padding:0;max-width:min(94vw,760px);width:100%}#bm-dlg::backdrop{background:rgba(0,0,0,.55)}
-#bm-dlg .d{display:flex;flex-direction:column}#bm-dlg img{width:100%;max-height:60vh;object-fit:contain;background:#f4f0e6}
+#bm-dlg{touch-action:pan-y}#bm-dlg img{-webkit-user-drag:none;user-select:none}#bm-dlg .d{display:flex;flex-direction:column}#bm-dlg img{width:100%;max-height:60vh;object-fit:contain;background:#f4f0e6}
 #bm-dlg .i{padding:12px 16px 14px;font-size:14px;line-height:1.6}#bm-dlg h3{margin:0 0 4px;font-size:18px}#bm-dlg dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:6px 0}#bm-dlg dt{color:#7a6c50}#bm-dlg dd{margin:0}
 #bm-dlg .own .mn{background:#faf9f6;text-align:center}#bm-dlg .own .mn img{max-height:62vh}#bm-dlg .st{display:flex;gap:8px;padding:8px 16px}#bm-dlg .st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}#bm-dlg .st button.on{border-color:#111}#bm-dlg .st img{width:100%;height:100%;object-fit:cover;max-height:none}
 #bm-dlg .n{display:flex;gap:8px;align-items:center;padding:0 16px 14px}#bm-dlg .n button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}#bm-dlg .n span{flex:1;text-align:center;color:#7a6c50}
@@ -196,6 +196,24 @@ ${base()}
       const keys = o ? [].concat(...TYPES.filter(([k]) => on[k]).map(([k]) => (o[k] || []).filter((r) => !r.own).map((r) => r.b + '/' + r.n))) : null;
       window.dispatchEvent(new CustomEvent('bmap:filter', { detail: { keys, label: o ? (selP || (R.find((x) => x[0] === sel) || [])[1] || '') : '' } }));
     }
+    /* 새 창 손가락(마우스) 좌우 넘기기: 왼쪽으로 밀면 다음, 오른쪽으로 밀면 이전 */
+    (function () {
+      let x0 = null, y0 = 0, dx = 0, t0 = 0, m = 0, moved = false;
+      const card = () => dlg.querySelector('.d');
+      const set = (v, anim) => { const c = card(); if (!c) return; c.style.transition = anim ? 'transform .2s ease, opacity .2s ease' : 'none'; c.style.transform = v ? 'translateX(' + v + 'px)' : ''; c.style.opacity = v ? String(Math.max(.4, 1 - Math.abs(v) / 700)) : ''; };
+      const st = (x, y, t) => { if (t.closest && t.closest('button,a,.st')) { x0 = null; return; } x0 = x; y0 = y; dx = 0; m = 0; moved = false; t0 = Date.now(); };
+      const mv = (x, y, e) => { if (x0 === null) return; const ax = x - x0, ay = y - y0; if (!m) { if (Math.abs(ax) > 8 && Math.abs(ax) > Math.abs(ay) * 1.2) m = 1; else if (Math.abs(ay) > 10) m = 2; } if (m === 1) { dx = ax; moved = true; set(dx, false); if (e && e.cancelable) e.preventDefault(); } };
+      const en = () => { if (x0 === null) return; const fast = Date.now() - t0 < 300 && Math.abs(dx) > 30, was = m; x0 = null; m = 0; if (was !== 1) return;
+        const b = dlg.querySelector('[data-d="' + (dx < 0 ? 1 : -1) + '"]');
+        if ((Math.abs(dx) > 70 || fast) && b && !b.disabled) { set(dx < 0 ? -dlg.clientWidth * .6 : dlg.clientWidth * .6, true); setTimeout(() => { b.click(); set(dx < 0 ? dlg.clientWidth * .4 : -dlg.clientWidth * .4, false); requestAnimationFrame(() => requestAnimationFrame(() => set(0, true))); }, 180); } else set(0, true); };
+      dlg.addEventListener('touchstart', (e) => { if (e.touches.length === 1) st(e.touches[0].clientX, e.touches[0].clientY, e.target); else x0 = null; }, { passive: true });
+      dlg.addEventListener('touchmove', (e) => { const p = e.touches[0]; if (p) mv(p.clientX, p.clientY, e); }, { passive: false });
+      dlg.addEventListener('touchend', en); dlg.addEventListener('touchcancel', () => { x0 = null; set(0, true); });
+      let ms = false; dlg.addEventListener('mousedown', (e) => { if (e.button === 0) { ms = true; st(e.clientX, e.clientY, e.target); } });
+      window.addEventListener('mousemove', (e) => { if (ms) mv(e.clientX, e.clientY, e); }); window.addEventListener('mouseup', () => { if (ms) { ms = false; en(); } });
+      dlg.addEventListener('keydown', (e) => { const b = dlg.querySelector('[data-d="' + (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0) + '"]'); if (b && !b.disabled && e.key.startsWith('Arrow')) b.click(); });
+      dlg.addEventListener('click', (e) => { if (moved && e.isTrusted) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    })();
     function mapOf(id) {
       const r = R.find((x) => x[0] === id), box = panel.querySelector('#bm-k'); if (!box) return;
       const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); const m = new K.maps.Map(box, { center: c, level: 11, scrollwheel: true }); m.setZoomable(true); m.addControl(new K.maps.ZoomControl(), K.maps.ControlPosition.RIGHT); new K.maps.Marker({ position: c, map: m }); const fix = () => { m.relayout(); m.setCenter(c); }; requestAnimationFrame(fix); [100, 400, 900, 1800].forEach((t) => setTimeout(fix, t)); }); };
