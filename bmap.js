@@ -17,12 +17,12 @@
     ['sangju', '상주', '尙州', 835, 1150, ['상주', '안동', '성주', '봉화'], 36.41, 128.16, '경북 북부(상주·안동·성주·봉화) 반닫이. 강원도처럼 문판이 천판 안으로 들어간 액자형이고 높이가 낮으며, 양 옆널이 길게 내려와 다리 구실을 합니다. 경첩은 반원형, 감잡이는 연봉형을 많이 씁니다.', S2],
     ['yecheon', '예천', '醴泉', 960, 1150, ['예천'], 36.66, 128.45, '경북 북부 권역. 상주와 이웃해 액자형·낮은 높이 계열로 보이나 예천만의 설명은 자료 보강이 필요합니다.', '(자료 보강 필요)'],
     ['geumsan', '금산', '錦山', 480, 1195, ['금산'], 36.11, 127.49, '선생님 지도의 충청·전북 경계 지역. 충청도 반닫이는 장식이 적고 꼭 필요한 곳에만 배치해 다소 둔한 느낌이며 크기는 크지 않습니다.', S1 + ' (충청도 일반) · (금산 자체는 자료 보강 필요)'],
-    ['eonyang', '언양', '彦陽', 1045, 1290, ['언양'], 35.57, 129.12, '울산 언양 반닫이. 경상도 계열(소나무·느티나무, 낮고 긴 형태)이며 언양만의 설명은 자료 보강이 필요합니다.', '(자료 보강 필요)'],
+    ['eonyang', '언양', '彦陽', 1045, 1385, ['언양'], 35.57, 129.12, '울산 언양 반닫이. 경상도 계열(소나무·느티나무, 낮고 긴 형태)이며 언양만의 설명은 자료 보강이 필요합니다.', '(자료 보강 필요)'],
     ['iksan', '익산', '益山', 245, 1320, ['익산'], 35.95, 126.96, '전라도 내륙(전주·익산·남원·완주) 권역. 평야·해안보다 투각이 많아 화려하면서도 장석 크기가 면적에 알맞아 안정감이 있습니다.', S1],
     ['jeonju', '전주', '全州', 390, 1330, ['전주'], 35.82, 127.15, '전주권 반닫이. 장석이 두꺼운 편이고 앞바탕은 네모꼴·변형, 경첩은 네모·불로초 제비초리형, 들쇠는 배꼽장식을 겸한 것이 많고 감잡이는 불로초형을 씁니다. 다른 전라도 권역보다 화려합니다.', S1],
     ['namwon', '남원', '南原', 535, 1330, ['남원'], 35.42, 127.39, '전라도 내륙 권역으로 전주권과 함께 묶여, 투각이 많고 화려하지만 안정된 비례의 장석이 특징입니다.', S1],
-    ['miryang', '밀양', '密陽', 755, 1395, ['밀양'], 35.5, 128.75, '강화와 더불어 최고로 꼽히는 경상도 반닫이. 무쇠에 정교한 투각, 견고한 무쇠 경첩, 앞바탕·감잡이의 만(卍)자문이 특징입니다. 경상도에서 가로·깊이·높이가 전체적으로 큰 편이고 문판과 앞널 비가 1:1.11로 거의 같습니다.', S3 + ' · ' + S1],
-    ['yangsan', '양산', '梁山', 875, 1410, ['양산'], 35.34, 129.04, '경상도 반닫이 중 높이가 가장 높습니다(약 65cm). 경첩이 4개쯤 길게 붙어 꽉 찬 느낌이고, 하단은 제비추리형, 상단은 불로초형 두 가지입니다. 만자·팔괘문이 들어가며, 경첩 아래 만(卍)자를 여러 겹 겹친 문양은 양산에서만 독특하게 나타납니다.', S1],
+    ['miryang', '밀양', '密陽', 760, 1395, ['밀양'], 35.5, 128.75, '강화와 더불어 최고로 꼽히는 경상도 반닫이. 무쇠에 정교한 투각, 견고한 무쇠 경첩, 앞바탕·감잡이의 만(卍)자문이 특징입니다. 경상도에서 가로·깊이·높이가 전체적으로 큰 편이고 문판과 앞널 비가 1:1.11로 거의 같습니다.', S3 + ' · ' + S1],
+    ['yangsan', '양산', '梁山', 905, 1410, ['양산'], 35.34, 129.04, '경상도 반닫이 중 높이가 가장 높습니다(약 65cm). 경첩이 4개쯤 길게 붙어 꽉 찬 느낌이고, 하단은 제비추리형, 상단은 불로초형 두 가지입니다. 만자·팔괘문이 들어가며, 경첩 아래 만(卍)자를 여러 겹 겹친 문양은 양산에서만 독특하게 나타납니다.', S1],
     ['naju', '나주', '羅州', 250, 1505, ['나주'], 35.02, 126.71, '평균 규격이 가장 커서(가로 107·높이 80·깊이 48cm, 부피 1.5배쯤) 전국에서 평양 다음으로 큽니다. 장석은 가장 작고 절제해 목리를 살린 소박하고 단정한 느낌입니다. 사개물림 자리에 광두정이나 큰 쇠못을 박고, 문판 마구리에 문변자를 대며, 마름모꼴 배꼽장석에 만(卍)자를 투각합니다.', S1],
     ['yeonggwang', '영광', '靈光', 395, 1505, ['영광'], 35.28, 126.51, '평야지방(나주·광주·영광·정읍·고창)에 속해 금구장석이 간결하고 필요 이상 쓰지 않아 목리와 좋은 대조를 이룹니다.', S1],
     ['jinju', '진주', '晉州', 685, 1565, ['진주'], 35.18, 128.11, '밀양과 함께 경상남도에서 많이 만든 반닫이. 문판과 앞널의 비가 1:1.34로 경상도에서 가장 크게 차이 나며, 내륙지방이라 투각 장석이 화려합니다.', S1],
@@ -41,7 +41,7 @@
     '경기도': ['#0F6E56', ['gaeseong', 'ganghwa', 'gyeongdo', 'namhan'], 440, 1118, 640, 885],
     '강원도': ['#c2185b', [], 900, 860, 900, 960],
     '충청도': ['#8a6d00', ['geumsan'], 300, 1215, 620, 1190],
-    '경상도': ['#d4541a', ['sangju', 'yecheon', 'eonyang', 'miryang', 'yangsan', 'jinju', 'gimhae', 'namhae', 'tongyeong'], 1000, 1490, 900, 1262],
+    '경상도': ['#d4541a', ['sangju', 'yecheon', 'eonyang', 'miryang', 'yangsan', 'jinju', 'gimhae', 'namhae', 'tongyeong'], 1000, 1690, 900, 1262],
     '전라도': ['#1a7a8c', ['iksan', 'jeonju', 'namwon', 'naju', 'yeonggwang', 'jangheung'], 270, 1430, 530, 1440],
     '제주도': ['#5a7d1a', ['jeju'], 430, 1840, 430, 1840],
   };
@@ -75,8 +75,8 @@
     (list || []).filter((c) => /반닫이/.test((c.name || '') + (c.kind || '')) && !c.sold && (!c.status || c.status === '소장')).forEach((c) => {
       const hay = (c.name || '') + (c.kind || '') + (c.note || '') + (c.place || '') + (c.memo || '');
       let hit = false;
-      R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { P.by[g[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id, f: ((c.photos || [])[0] || {}).f, t: ((c.photos || [])[0] || {}).t }); hit = true; } });
-      if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) P.prov[p[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id, f: ((c.photos || [])[0] || {}).f, t: ((c.photos || [])[0] || {}).t }); });
+      R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { P.by[g[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id, c: c, f: ((c.photos || [])[0] || {}).f, t: ((c.photos || [])[0] || {}).t }); hit = true; } });
+      if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) P.prov[p[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id, c: c, f: ((c.photos || [])[0] || {}).f, t: ((c.photos || [])[0] || {}).t }); });
     });
   }
 
@@ -93,7 +93,7 @@
     const base = () => {
       if (!ink) return `<path d="${LAND}" fill="none" stroke="#9c9179" stroke-width="3" stroke-linejoin="round"/>`;
       const f = `<defs><filter id="${uid}e" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="4"/><feDisplacementMap in="SourceGraphic" scale="16"/></filter><filter id="${uid}b" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="38"/></filter><filter id="${uid}s"><feGaussianBlur stdDeviation="9"/></filter></defs>`;
-      const isle = `<ellipse cx="320" cy="1850" rx="200" ry="95" fill="#fbf6ea" stroke="#3a352b" stroke-width="4" filter="url(#${uid}e)"/>`;
+      const isle = `<ellipse cx="290" cy="1855" rx="135" ry="78" fill="#fbf6ea" stroke="#3a352b" stroke-width="4" filter="url(#${uid}e)"/>`;
       if (ink === 'a') return f + `<rect width="1319" height="1960" fill="#e4d9bd"/><g filter="url(#${uid}b)" fill="#6d6551" opacity=".22"><ellipse cx="80" cy="700" rx="140" ry="380"/><ellipse cx="1260" cy="1200" rx="150" ry="420"/><ellipse cx="700" cy="60" rx="520" ry="110"/></g><path d="${LAND}" fill="#fbf6ea"/><path d="${LAND}" fill="none" stroke="#2f2a21" stroke-width="7" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle}`;
       if (ink === 'b') return f + `<rect width="1319" height="1960" fill="#d9d0ba"/><g filter="url(#${uid}s)" fill="#5d584a"><path d="M0 1960 L0 1500 L110 1380 L170 1450 L260 1300 L330 1420 L420 1960 Z" opacity=".16"/><path d="M1319 1960 L1319 1000 L1230 880 L1160 1000 L1100 930 L1090 1960 Z" opacity=".2"/><path d="M0 560 L60 420 L120 500 L180 330 L240 560 Z" opacity=".15"/><path d="M1319 330 L1260 180 L1180 300 L1110 120 L1090 330 Z" opacity=".14"/></g><g filter="url(#${uid}b)" fill="#fffaf0" opacity=".55"><ellipse cx="90" cy="1100" rx="110" ry="40"/><ellipse cx="1230" cy="640" rx="120" ry="40"/></g><path d="${LAND}" fill="#fbf6ea"/><path d="${LAND}" fill="none" stroke="#3a352b" stroke-width="6" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle}`;
       return f + `<rect width="1319" height="1960" fill="#2b2925"/><g filter="url(#${uid}b)" fill="#fff" opacity=".07"><ellipse cx="90" cy="900" rx="130" ry="400"/><ellipse cx="1240" cy="1300" rx="140" ry="420"/></g><path d="${LAND}" fill="#fbf6ea" stroke="#0b0a09" stroke-width="16" stroke-linejoin="round" filter="url(#${uid}e)"/>${isle.replace('stroke="#3a352b"', 'stroke="#0b0a09"')}`;
@@ -120,11 +120,12 @@
 .bm .bm-it img{width:44px;height:44px;object-fit:cover;border-radius:7px}.bm .bm-it i{width:9px;height:9px;border-radius:50%;display:inline-block}
 .bm textarea{width:100%;min-height:120px;font:inherit;font-size:14px;border:1px solid #cdbf9f;border-radius:8px;padding:8px}
 .bm .bm-b button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:14px;cursor:pointer;margin:6px 6px 0 0}
-.bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
+.bm #bm-k{height:190px;width:min(100%,460px);margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 #bm-dlg{border:0;border-radius:14px;padding:0;max-width:min(94vw,760px);width:100%}#bm-dlg::backdrop{background:rgba(0,0,0,.55)}
 #bm-dlg .d{display:flex;flex-direction:column}#bm-dlg img{width:100%;max-height:60vh;object-fit:contain;background:#f4f0e6}
 #bm-dlg .i{padding:12px 16px 14px;font-size:14px;line-height:1.6}#bm-dlg h3{margin:0 0 4px;font-size:18px}#bm-dlg dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:6px 0}#bm-dlg dt{color:#7a6c50}#bm-dlg dd{margin:0}
+#bm-dlg .own .mn{background:#faf9f6;text-align:center}#bm-dlg .own .mn img{max-height:62vh}#bm-dlg .st{display:flex;gap:8px;padding:8px 16px}#bm-dlg .st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}#bm-dlg .st button.on{border-color:#111}#bm-dlg .st img{width:100%;height:100%;object-fit:cover;max-height:none}
 #bm-dlg .n{display:flex;gap:8px;align-items:center;padding:0 16px 14px}#bm-dlg .n button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}#bm-dlg .n span{flex:1;text-align:center;color:#7a6c50}
 </style>
 <div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" style="--c:${PV[p][0]}" aria-pressed="false">${p}<small></small></button>`).join('')}</div>
@@ -137,6 +138,7 @@ ${base()}
 </g>
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
+<div class="bm-cr" style="margin:6px 2px 0;font-size:12px;color:#7a6c50;text-align:right">ⓒ 동인방 · 지도출처: 동인방</div>
 <div id="bm-p"><div class="src">위의 도 이름이나 지도의 고을 상자를 눌러 보세요. 도를 누르면 그 도에 속한 고을의 반닫이가 모두 나옵니다.</div></div>
 <dialog id="bm-dlg"></dialog></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = el.querySelector('#bm-dlg');
@@ -163,15 +165,24 @@ ${base()}
       }).join('')).join('');
     }
     /* 기물 창: 이 지도 화면 위에서 열고, 닫으면 그대로 지도로 돌아온다 */
+    function openOwn(i, vp) {
+      const r = list[i], c = r.c || {}, P = c.photos || []; vp = vp || 0;
+      const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
+      const d = (v) => { const p = String(v || '').slice(0, 10).split('-'); return p.length === 3 ? p[0] + '. ' + (+p[1]) + '. ' + (+p[2]) + '.' : (v || ''); };
+      dlg.innerHTML = `<div class="d own"><div class="mn">${P.length ? `<img alt="" data-pid="${esc(P[vp].f)}">` : ''}</div>${P.length > 1 ? `<div class="st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : ''}<div class="i"><div style="font-size:13px;color:#4b55d6;font-weight:700">${esc(c.kind || '소장품')}</div><h3>${esc(c.name || '')}</h3><dl>${row('상태', c.status || '소장')}${row('구입일', d(c.bought))}${row('구입처', c.place)}${row('크기', c.size)}${row('연대', c.era)}${row('재질·수종', c.wood)}${row('비고', c.note)}${row('감정·관찰', c.memo)}</dl></div>
+<div class="n"><button type="button" data-d="-1" ${i === 0 ? 'disabled' : ''}>← 이전</button><span>${i + 1} / ${list.length}</span><button type="button" data-d="1" ${i === list.length - 1 ? 'disabled' : ''}>다음 →</button><button type="button" data-d="0">닫기</button></div></div>`;
+      dlg.dataset.i = i; if (!dlg.open) dlg.showModal(); fillOwn(dlg);
+    }
     function open(i) {
       const r = list[i]; if (!r) return;
+      if (r.own) return openOwn(i);
       const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
       const src = r.own ? '' : (r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`);
       dlg.innerHTML = `<div class="d">${src ? `<img src="${src}" alt="" onerror="this.src='thumbs/${r.b}/${r.n}.jpg'">` : (r.f ? `<img alt="" data-pid="${esc(r.f)}">` : '')}<div class="i"><h3>${esc(r.name || '')}${r.hanja ? ' <small style="font-weight:400">' + esc(r.hanja) + '</small>' : ''}</h3><dl>${row('분류', r.cat)}${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>${r.own ? '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 (새 창) →</a>' : ''}</div>
 <div class="n"><button type="button" data-d="-1" ${i === 0 ? 'disabled' : ''}>← 이전</button><span>${i + 1} / ${list.length}</span><button type="button" data-d="1" ${i === list.length - 1 ? 'disabled' : ''}>다음 →</button><button type="button" data-d="0">닫기</button></div></div>`;
       dlg.dataset.i = i; if (!dlg.open) dlg.showModal(); fillOwn(dlg);
     }
-    dlg.addEventListener('click', (e) => { const b = e.target.closest('[data-d]'); if (b) { const d = Number(b.dataset.d); if (!d) dlg.close(); else open(Number(dlg.dataset.i) + d); } else if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('click', (e) => { const ph = e.target.closest('[data-p]'); if (ph) { openOwn(Number(dlg.dataset.i), Number(ph.dataset.p)); return; } const b = e.target.closest('[data-d]'); if (b) { const d = Number(b.dataset.d); if (!d) dlg.close(); else open(Number(dlg.dataset.i) + d); } else if (e.target === dlg) dlg.close(); });
     /* 우리 소장품 사진: 소장품 도록과 같은 이 기기 저장소(IndexedDB)를 먼저 보고, 없으면 시트에서 받는다 */
     const b64u = (t) => { t = t.replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
     const urls = {};
@@ -222,7 +233,7 @@ ${KEY ? '<div id="bm-k"></div>' : ''}
     el.querySelector('#bm-pl').addEventListener('click', (e) => { const t = e.target.closest('[data-p]'); if (t) showProv(t.dataset.p); });
     g.addEventListener('click', (e) => { const b = e.target.closest('.bx'); if (!b) return; if (b.dataset.p) showProv(b.dataset.p); else showRegion(b.dataset.id); });
     panel.addEventListener('click', (e) => {
-      const it = e.target.closest('[data-i]'); if (it) { const r = list[Number(it.dataset.i)]; if (r && r.own) window.open('collection.html#open=' + encodeURIComponent(r.id), '_blank'); else open(Number(it.dataset.i)); return; }
+      const it = e.target.closest('[data-i]'); if (it) { const r = list[Number(it.dataset.i)]; open(Number(it.dataset.i)); return; }
       const rg = e.target.closest('[data-r]'); if (rg) showRegion(rg.dataset.r);
     });
     draw();
