@@ -125,7 +125,7 @@
         '<div class="wr-act"><button type="button" data-edit="' + esc(x.id) + '">고치기</button><button type="button" class="del" data-del="' + esc(x.id) + '">지우기</button></div></article>';
     }
     function draw() {
-      var h = '<p class="wr-tip"><b>수업 내용을 여기서 바로 적어요.</b> 거믄·힌이 서로의 글을 고칠 수 있고, 고치기 전 글은 시트에 남아요. 「정리 전」 글은 Claude에게 <b>「바로 쓰기 정리해줘」</b> 하면 수업 노트·퀴즈로 정리해 올려요.</p>';
+      var h = '<p class="wr-tip"><b>수업 내용을 여기서 바로 적어요.</b> 거믄·힌이 서로의 글을 고칠 수 있고, 고치기 전 글은 시트에 남아요. 「정리 전」 글은 <b>「바로 쓰기 정리해줘」</b> 하면 수업 노트·퀴즈로 정리해 올려요.</p>';
       if (ED) h += edHTML(); else h += '<button type="button" class="wr-new" id="wr-new">＋ 새 글 쓰기' + (ls.get(K_DRAFT) ? ' <small style="font-weight:600">(적던 글이 있어요)</small>' : '') + '</button>';
       var g = groups(), days = Object.keys(g).sort().reverse();
       if (!loaded) h += '<p style="text-align:center;color:#756e65;margin:26px 0">불러오는 중…</p>';
