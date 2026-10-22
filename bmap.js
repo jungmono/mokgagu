@@ -120,7 +120,7 @@
 .bm .bm-it img{width:44px;height:44px;object-fit:cover;border-radius:7px}.bm .bm-it i{width:9px;height:9px;border-radius:50%;display:inline-block}
 .bm textarea{width:100%;min-height:120px;font:inherit;font-size:14px;border:1px solid #cdbf9f;border-radius:8px;padding:8px}
 .bm .bm-b button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:14px;cursor:pointer;margin:6px 6px 0 0}
-.bm #bm-k{height:190px;width:min(100%,460px);margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
+.bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 #bm-dlg{border:0;border-radius:14px;padding:0;max-width:min(94vw,760px);width:100%}#bm-dlg::backdrop{background:rgba(0,0,0,.55)}
 #bm-dlg .d{display:flex;flex-direction:column}#bm-dlg img{width:100%;max-height:60vh;object-fit:contain;background:#f4f0e6}
@@ -198,8 +198,7 @@ ${base()}
     }
     function mapOf(id) {
       const r = R.find((x) => x[0] === id), box = panel.querySelector('#bm-k'); if (!box) return;
-      /* 움직이는 지도는 자리가 어긋나 윗부분이 비는 일이 있어, 위치만 보여 주는 고정 지도(StaticMap)를 쓴다 */
-      const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); new K.maps.StaticMap(box, { center: c, level: 9, marker: { position: c } }); }); };
+      const go = () => { const K = window.kakao; K.maps.load(() => { box.innerHTML = ''; const c = new K.maps.LatLng(r[6], r[7]); const m = new K.maps.Map(box, { center: c, level: 11, scrollwheel: true }); m.setZoomable(true); m.addControl(new K.maps.ZoomControl(), K.maps.ControlPosition.RIGHT); new K.maps.Marker({ position: c, map: m }); const fix = () => { m.relayout(); m.setCenter(c); }; requestAnimationFrame(fix); [100, 400, 900, 1800].forEach((t) => setTimeout(fix, t)); }); };
       if (window.kakao && window.kakao.maps) return go();
       const s = document.createElement('script'); s.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=' + KEY; s.onload = go; document.head.appendChild(s);
     }
