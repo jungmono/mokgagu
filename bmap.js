@@ -46,7 +46,8 @@
     '제주도': ['#5a7d1a', ['jeju'], 540, 1905, 540, 1905],
   };
   const AUC = { auction: 1, myart: 1 };
-  const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['o', '소장품', '#111111']];
+  const MUS = { nmk: 1, heritage: 1 };   // 박물관자료 폴더(국립중앙박물관 소장품·국가유산)
+  const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111']];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const load = () => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { return {}; } };
   const save = (o) => { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
@@ -60,10 +61,10 @@
 
   function pins() {
     const all = (window.SEARCH || []).filter((r) => /반닫이/.test(r.name + (r.hanja || '')));
-    const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], o: [] }; });
-    const prov = {}; PROV.forEach((p) => { prov[p[0]] = { m: [], a: [], o: [] }; });
+    const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], e: [], o: [] }; });
+    const prov = {}; PROV.forEach((p) => { prov[p[0]] = { m: [], a: [], e: [], o: [] }; });
     all.forEach((r) => {
-      const t = AUC[r.b] ? 'a' : 'm', hay = r.name + (r.hanja || '') + (r.q || '');
+      const t = AUC[r.b] ? 'a' : MUS[r.b] ? 'm' : 'e', hay = r.name + (r.hanja || '') + (r.q || '');
       let hit = false;
       R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { by[g[0]][t].push(r); hit = true; } });
       if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) prov[p[0]][t].push(r); });
@@ -82,11 +83,11 @@
 
   function mount(el) {
     const P = pins(), local = load(), edits = Object.assign({}, local), meta = {};
-    let on = { m: true, a: true, o: true }, sel = '', selP = '', list = [];
+    let on = { m: true, a: true, e: true, o: true }, sel = '', selP = '', list = [];
     const W = 130, H = 86, PN = Object.keys(PV);
     const provOf = {}; PN.forEach((p) => PV[p][1].forEach((id) => { provOf[id] = p; }));
-    const cntT = (o) => (on.m ? o.m.length : 0) + (on.a ? o.a.length : 0) + (on.o ? o.o.length : 0);
-    const merge = (ids, pn) => { const o = { m: [], a: [], o: [] }; ids.forEach((id) => { ['m', 'a', 'o'].forEach((k) => o[k].push(...P.by[id][k])); }); if (pn) ['m', 'a', 'o'].forEach((k) => o[k].push(...P.prov[pn][k])); return o; };
+    const cntT = (o) => (on.m ? o.m.length : 0) + (on.a ? o.a.length : 0) + (on.e ? o.e.length : 0) + (on.o ? o.o.length : 0);
+    const merge = (ids, pn) => { const o = { m: [], a: [], e: [], o: [] }; ids.forEach((id) => { ['m', 'a', 'e', 'o'].forEach((k) => o[k].push(...P.by[id][k])); }); if (pn) ['m', 'a', 'e', 'o'].forEach((k) => o[k].push(...P.prov[pn][k])); return o; };
     const ink = el.dataset.ink !== undefined ? el.dataset.ink : (window.MOKGAGU_INK !== undefined ? window.MOKGAGU_INK : 'b'), uid = 'k' + Math.random().toString(36).slice(2, 7);
     const LAND = 'M170 480 L95 420 L225 300 L1010 180 L1190 160 L1240 380 L1085 500 L1085 1800 L170 1780 Z';
     /* 지도 바깥 바탕: 없으면 예전 그대로, a·b·c 는 수묵 시안 */
@@ -146,12 +147,12 @@ ${base()}
       g.innerHTML = R.map((r) => {
         const p = P.by[r[0]], n = cntT(p), x = r[3] - W / 2, y = r[4] - H / 2, pn = provOf[r[0]] || '', c = pn ? PV[pn][0] : '#6f6450';
         const inP = selP && provOf[r[0]] === selP;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 24 + i * 40}" cy="${y + H + 4}" r="17" fill="${col}"/><text x="${x + 24 + i * 40}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 22 + i * 36}" cy="${y + H + 4}" r="16" fill="${col}"/><text x="${x + 22 + i * 36}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
         return `<g class="bx ${n ? 'has' : ''} ${sel === r[0] ? 'sel' : ''} ${inP ? 'pin' : ''} ${selP && !inP ? 'dim' : ''}" data-id="${r[0]}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hj" x="${r[3]}" y="${y + 34}">${r[2]}</text><text class="hg" x="${r[3]}" y="${y + 72}">${esc(r[1]).replace(/\(.*\)/, '')}</text>${dots}</g>`;
       }).join('') + PN.map((pn) => {
         const p = P.prov[pn], n = cntT(p); if (!p || !(p.m.length + p.a.length + p.o.length)) return '';
         const [c, , , , cx, cy] = PV[pn], x = cx - W / 2, y = cy - H / 2;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 24 + i * 40}" cy="${y + H + 4}" r="17" fill="${col}"/><text x="${x + 24 + i * 40}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 22 + i * 36}" cy="${y + H + 4}" r="16" fill="${col}"/><text x="${x + 22 + i * 36}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
         return `<g class="bx pb ${n ? 'has' : ''} ${selP === pn ? 'sel' : ''} ${selP && selP !== pn ? 'dim' : ''}" data-p="${pn}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hg" x="${cx}" y="${y + 56}">${pn}</text>${dots}</g>`;
       }).join('');
       el.querySelectorAll('#bm-pb button').forEach((b) => { const p = b.dataset.p, n = cntT(merge(PV[p][1], p)); b.setAttribute('aria-pressed', selP === p); b.querySelector('small').textContent = n ? n : ''; });
