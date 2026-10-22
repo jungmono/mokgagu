@@ -42,7 +42,7 @@
     '충청도': '<path d="M6.5 26V15.5a9.5 9.5 0 0 1 19 0V26z"/><circle cx="11" cy="22" r="1.4" fill="currentColor"/><circle cx="21" cy="22" r="1.4" fill="currentColor"/><circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>',
     '경상도': '<path d="M16 3.5l12.5 12.5-12.5 12.5L3.5 16z"/><path d="M16 10l6 6-6 6-6-6z"/><circle cx="16" cy="16" r="1.4" fill="currentColor"/>',
     '전라도': '<rect x="10.5" y="3.5" width="11" height="25" rx="1.8"/><path d="M16 8v11"/><circle cx="13.8" cy="24" r="1.3" fill="currentColor"/><circle cx="18.2" cy="24" r="1.3" fill="currentColor"/>',
-    '제주도': '<circle cx="16" cy="18.5" r="8.5"/><path d="M11 11.2l1.2-5 2.6 2.8L16 5.2l1.2 3.8 2.6-2.8 1.2 5"/><path d="M11.5 17.5q4.5 3.2 9 0M11.8 22.2q4.2-2.6 8.4 0M16 13.5v3.5"/>',
+    '제주도': '<circle cx="11" cy="9.2" r="3"/><circle cx="21" cy="9.2" r="3"/><circle cx="16" cy="18" r="9.5" fill="#f1efeb"/><circle cx="16" cy="18" r="5.8"/><circle cx="16" cy="18" r="1.7" fill="currentColor"/>',   // 제주 장석(쌍귀 달린 둥근 꽃판)
   };
   const PROV = [['평안도', ['평안']], ['함경도', ['함경']], ['황해도', ['황해']], ['경기도', ['경기']], ['강원도', ['강원']], ['충청도', ['충청']], ['경상도', ['경상']], ['전라도', ['전라']], ['제주도', ['제주도']]];
   /* 도 → 선생님 지도에 있는 고을. 색·글자 자리는 지도 위에 도를 크게 적어 두기 위한 것 */
