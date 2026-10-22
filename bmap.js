@@ -138,7 +138,7 @@ ${base()}
 </g>
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
-<div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">ⓒ 동인방 · 지도출처: 동인방</div>
+<div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">출처: 동인방</div>
 <div id="bm-p"><div class="src">위의 도 이름이나 지도의 고을 상자를 눌러 보세요. 도를 누르면 그 도에 속한 고을의 반닫이가 모두 나옵니다.</div></div>
 <dialog id="bm-dlg"></dialog></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = el.querySelector('#bm-dlg');
