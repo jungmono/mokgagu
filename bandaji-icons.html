@@ -1,22 +1,24 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>도 아이콘 시안</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
-<style>body{margin:0;background:#fff;color:#2b2418;font-family:"Noto Sans KR",sans-serif}main{max-width:900px;margin:0 auto;padding:16px}h1{font-size:24px}h2{font-size:18px;margin:26px 0 8px}p{color:#7a6c50;margin:0 0 10px}
-.r{display:flex;flex-wrap:wrap;gap:8px}.c{display:inline-flex;align-items:center;gap:7px;border:2.5px solid var(--c);color:var(--c);border-radius:12px;padding:6px 13px 6px 7px;font-size:19px;font-weight:900;background:#fff}.c small{font-size:14px;opacity:.9}
-.c .i{flex:none;width:34px;height:34px;display:grid;place-items:center}
-/* 가: 도장 */.a .i{background:var(--c);color:#fff;border-radius:5px;font-family:"Noto Serif KR",serif;font-weight:900;font-size:15px;line-height:1;padding:0;text-align:center;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 3.5px var(--c);}
-.a .i span{display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1}
-/* 나: 지도 상자 */.b .i{border:2.5px solid var(--c);border-radius:4px;background:#f3e6c4;color:#2b2418;font-family:"Noto Serif KR",serif;font-weight:900;font-size:15px;line-height:1;width:38px;height:30px}
-.b .i::after{content:"";position:absolute}
-/* 다: 장석 */.d .i svg{width:34px;height:34px}
-</style></head><body><main><h1>도 아이콘 시안 3가지</h1><p>「반닫이(궤)여지도」에 어울리게 만든 도 이름표 아이콘이에요. 마음에 드는 것을 알려 주세요.</p>
-<h2>가 · 도장(인장) — 붉은 낙관 느낌, 한자 두 글자</h2><div class="r a" id="a"></div>
-<h2>나 · 지도 상자 — 선생님 지도의 고을 상자와 같은 모양, 한자 한 글자</h2><div class="r b" id="b"></div>
-<h2>다 · 장석 — 반닫이 앞바탕 무쇠 장식 모양에 한자</h2><div class="r d" id="d"></div></main>
+<style>body{margin:0;background:#fff;color:#1f2433;font-family:"Noto Sans KR",sans-serif}main{max-width:900px;margin:0 auto;padding:16px}h1{font-size:24px}h2{font-size:17px;margin:24px 0 8px}p{color:#6b7183;margin:0 0 10px}
+.r{display:flex;flex-wrap:wrap;gap:8px}.c{display:inline-flex;align-items:center;gap:8px;border:1px solid #e6e8f0;color:#1f2433;border-radius:14px;padding:6px 14px 6px 6px;font-size:17px;font-weight:700;background:#fff}.c small{font-size:13px;color:#6b7183;font-weight:700}
+.i{flex:none;width:36px;height:36px;border-radius:10px;background:#f1efeb;color:#1d1b18;display:grid;place-items:center}.i svg{width:32px;height:32px}
+.s1 .i{font-family:"Noto Serif KR",serif;font-weight:900;font-size:19px}.s3 .i{font-family:"Noto Serif KR",serif;font-weight:900;font-size:12px;line-height:1.05;text-align:center}
+</style></head><body><main><h1>도 아이콘 시안 5가지</h1><p>처음 화면의 기물 아이콘처럼 옅은 바탕에 검은 선만 쓴 차분한 시안이에요.</p>
+<h2>1 · 한자 한 글자</h2><div class="r s1" id="s1"></div>
+<h2>2 · 손지도에서 그 도만 칠하기</h2><div class="r" id="s2"></div>
+<h2>3 · 한자 두 글자</h2><div class="r s3" id="s3"></div>
+<h2>4 · 손지도 윤곽에 위치 점</h2><div class="r" id="s4"></div>
+<h2>5 · 반닫이 선화 + 한자 낙관</h2><div class="r" id="s5"></div></main>
 <script>
-var P=[['평안도','平安','#2f6fb0'],['함경도','咸鏡','#6b4fa3'],['황해도','黃海','#b0572f'],['경기도','京畿','#0F6E56'],['강원도','江原','#c2185b'],['충청도','忠淸','#8a6d00'],['경상도','慶尙','#d4541a'],['전라도','全羅','#1a7a8c'],['제주도','濟州','#5a7d1a']];
-function hinge(c,h){return '<svg viewBox="0 0 40 40"><path d="M20 2c3 0 4 4 7 5s7-1 8 3-2 6-1 9 4 5 3 8-5 3-7 5-2 7-5 7-4-3-5-3-3 3-6 3-4-5-6-7-6-2-7-5 2-5 2-8-3-5-2-8 6-1 8-3 3-5 6-5z" fill="'+c+'"/><circle cx="20" cy="20" r="14" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="2 2.4"/><text x="20" y="25.5" text-anchor="middle" font-family="Noto Serif KR,serif" font-weight="900" font-size="'+(h.length>1?13:16)+'" fill="#fff">'+h[0]+'</text></svg>';}
-P.forEach(function(p){var s='style="--c:'+p[2]+'"';
- a.innerHTML+='<span class="c" '+s+'><span class="i"><span><b>'+p[1][0]+'</b><b>'+p[1][1]+'</b></span></span>'+p[0]+' <small>12</small></span>';
- b.innerHTML+='<span class="c" '+s+'><span class="i" style="position:relative">'+p[1][0]+'</span>'+p[0]+' <small>12</small></span>';
- d.innerHTML+='<span class="c" '+s+'><span class="i">'+hinge(p[2],p[1])+'</span>'+p[0]+' <small>12</small></span>';});
+var P=[['평안도','平安',[190,300,570,500]],['함경도','咸鏡',[760,300,325,500]],['황해도','黃海',[190,800,132,175]],['경기도','京畿',[322,800,378,330]],['강원도','江原',[700,800,385,290]],['충청도','忠淸',[190,1130,510,125]],['경상도','慶尙',[700,1090,385,690]],['전라도','全羅',[190,1255,400,525]],['제주도','濟州',[140,1815,300,145]]];
+var LAND='M170 480 L95 420 L225 300 L1010 180 L1190 160 L1240 380 L1085 500 L1085 1800 L170 1780 Z';
+function map(i,mode){var r=P[i][2],g='<svg viewBox="60 140 1220 1860"><path d="'+LAND+'" fill="'+(mode==2?'#fff':'none')+'" stroke="#1d1b18" stroke-width="45" stroke-linejoin="round"/>';
+ if(mode==2)g+='<rect x="'+r[0]+'" y="'+r[1]+'" width="'+r[2]+'" height="'+r[3]+'" fill="#1d1b18" opacity=".85"/>';
+ else g+='<circle cx="'+(r[0]+r[2]/2)+'" cy="'+(r[1]+r[3]/2)+'" r="190" fill="#1d1b18"/>';
+ if(i==8)g+='<ellipse cx="290" cy="1888" rx="150" ry="72" fill="#1d1b18"/>';return g+'</svg>';}
+var BJ='<rect x="3.5" y="8" width="25" height="16.5" rx=".8"/><path d="M3.5 15.5h25"/><path d="M5 24.5v3M27 24.5v3"/><path d="M8.5 8v5.5h3V8M20.5 8v5.5h3V8"/><path d="M13.5 15.5h5v4.2l-2.5 1.8-2.5-1.8z"/>';
+P.forEach(function(p,i){function chip(el,ic){document.getElementById(el).innerHTML+='<span class="c"><span class="i">'+ic+'</span>'+p[0]+' <small>12</small></span>';}
+ chip('s1',p[1][0]);chip('s2',map(i,2));chip('s3',p[1][0]+'<br>'+p[1][1]);chip('s4',map(i,4));
+ chip('s5','<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+BJ+'<rect x="17" y="17" width="13" height="13" rx="2" fill="#f1efeb" stroke-width="1.4"/><text x="23.5" y="27.2" text-anchor="middle" font-family="Noto Serif KR,serif" font-weight="900" font-size="9.5" fill="currentColor" stroke="none">'+p[1][0]+'</text></svg>');});
 </script></body></html>
