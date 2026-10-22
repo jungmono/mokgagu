@@ -278,7 +278,7 @@ const ORDER = DASHBOARDS.map((d) => d.path);
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
+let mapKeys = null, hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
 
 function search(raw) {
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
@@ -288,7 +288,7 @@ function search(raw) {
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
   hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? nameEnd(r, q) : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
-  only = ''; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
+  only = ''; mapKeys = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
   bmapShow(raw.trim());
@@ -297,12 +297,13 @@ let bmapOn = false;
 function bmapShow(q) {
   const yes = /반닫이/.test(q); $('bmap-box').hidden = !yes;
   if (!yes || bmapOn) return; bmapOn = true;
-  const s = document.createElement('script'); s.src = 'bmap.js?v=7'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
+  const s = document.createElement('script'); s.src = 'bmap.js?v=8'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
 function drawResults(label) {
   const counts = {};
   hits.forEach((r) => (counts[r.b] = (counts[r.b] || 0) + 1));
   shown = only ? hits.filter((r) => r.b === only) : hits;
+  if (mapKeys) shown = shown.filter((r) => mapKeys.has(r.b + '/' + r.n));
   $('r-title').innerHTML = `‘${esc(label ?? $('q').value.trim())}’ 검색 결과 <b>${hits.length.toLocaleString('ko-KR')}</b>건`;
   const chips = [['', '전체', hits.length], ...ORDER.filter((k) => counts[k]).map((k) => [k, TITLE[k], counts[k]])];
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
@@ -314,6 +315,7 @@ function drawResults(label) {
       <div class="mt">${esc([r.era, r.size].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';
 }
+window.addEventListener('bmap:filter', (e) => { mapKeys = e.detail.keys ? new Set(e.detail.keys) : null; if (!$('results').hidden) drawResults(); });
 $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; only = c.dataset.k; drawResults(); });
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
 
