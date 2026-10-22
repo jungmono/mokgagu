@@ -167,7 +167,7 @@ ${base()}
       return TYPES.filter(([k]) => on[k] && o[k] && o[k].length).map(([k, n, c]) => o[k].map((r) => {
         list.push(r); const i = list.length - 1;
         return r.own ? `<button type="button" data-i="${i}">${r.t ? `<img class="ow" alt="" data-pid="${esc(r.t)}">` : ''}<span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
-          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="thumbs/${r.b}/${r.n}.jpg" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || n).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
+          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="thumbs/${r.b}/${r.n}.jpg" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || r.cat || n).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
       }).join('')).join('');
     }
     /* 기물 창: 이 지도 화면 위에서 열고, 닫으면 그대로 지도로 돌아온다 */
@@ -245,7 +245,7 @@ ${KEY ? '<div id="bm-k"></div>' : ''}
     function showProv(pn) {
       selP = pn; sel = ''; draw(); const ids = PV[pn][1], o = merge(ids, pn);
       panel.innerHTML = `<h3 style="color:${PV[pn][0]}">${pn} <small style="font-weight:400;color:#7a6c50">${cntT(o)}점</small></h3>
-<div class="src">${ids.length ? `선생님 지도의 ${pn} 고을: ${ids.length}곳 — 고을을 눌러 그 고을만 볼 수 있어요.` : `선생님 지도에는 ${pn}의 고을이 아직 없어요. 지역이 적히지 않은 ${pn} 반닫이만 나옵니다.`}${pn === '경기도' ? ' (강화도 포함)' : ''}</div>
+<div class="src">${ids.length ? `선생님 지도의 ${pn} 고을: ${ids.length}곳 — 고을을 눌러 그 고을만 볼 수 있어요.` : `선생님 지도에는 ${pn}의 고을이 아직 없어요. 지역이 적히지 않은 ${pn} 기물만 나옵니다.`}${pn === '경기도' ? ' (강화도 포함)' : ''}</div>
 <div class="bm-go" style="--c:${PV[pn][0]}">${ids.map((id) => { const r = R.find((x) => x[0] === id); return `<button type="button" data-r="${id}">${esc(r[1])} ${cntT(P.by[id]) || ''}</button>`; }).join('')}</div>
 <div class="bm-it">${items(o) || '<span class="src">이 도로 분류된 기물이 아직 없어요.</span>'}</div>`;
       fillOwn(panel); emit(o);
