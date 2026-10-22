@@ -107,7 +107,7 @@
 .bm .bm-t{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}
 .bm .bm-t button{border:1.5px solid #cdbf9f;background:#fff;border-radius:999px;padding:6px 13px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;color:#fff;border-color:transparent}
 .bm .bm-t button[aria-pressed=false]{background:#fff!important;color:#8a7f66;border-color:#cdbf9f}
-.bm svg{width:100%;height:auto;max-height:90vh;background:#fbf6ea;border:1px solid #e3d6b8;border-radius:14px;display:block}
+.bm .bm-sv{width:100%;height:auto;max-height:90vh;background:#fbf6ea;border:1px solid #e3d6b8;border-radius:14px;display:block}
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
 .bm .bx text{fill:#2b2418;pointer-events:none;text-anchor:middle}.bm .bx .hj{font-size:28px;font-family:serif}.bm .bx .hg{font-size:36px;font-weight:900}
 .bm .bx.dim{opacity:.4}
@@ -130,7 +130,7 @@
 </style>
 <div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" style="--c:${PV[p][0]}" aria-pressed="false">${p}<small></small></button>`).join('')}</div>
 <div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true" style="background:${c}">${n}</button>`).join('')}</div>
-<svg viewBox="0 0 1319 1960" role="img" aria-label="정대영 선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
+<svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="정대영 선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
 <g stroke="#9c9179" stroke-width="3" stroke-dasharray="14 10" fill="none" opacity=".9">
 <path d="M190 800 L1085 800"/><path d="M760 300 L760 800"/><path d="M322 800 L322 975 L190 975"/><path d="M700 800 L700 1090 L1085 1090"/>
