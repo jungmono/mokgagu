@@ -34,7 +34,7 @@
   ];
   /* 도 이름표 아이콘: 그 지방 반닫이 장석의 특징을 단순한 선으로 */
   const PI = {
-    '평안도': '<clipPath id="pyc"><rect x="8" y="8" width="16" height="16"/></clipPath><rect x="4.5" y="4.5" width="23" height="23" rx="2"/><g clip-path="url(#pyc)" stroke-width="1.1"><path d="M8 -8 L24 8 M8 8 L24 -8M8 -4 L24 12 M8 12 L24 -4M8 0 L24 16 M8 16 L24 0M8 4 L24 20 M8 20 L24 4M8 8 L24 24 M8 24 L24 8M8 12 L24 28 M8 28 L24 12M8 16 L24 32 M8 32 L24 16M8 20 L24 36 M8 36 L24 20M8 24 L24 40 M8 40 L24 24"/></g><circle cx="7.3" cy="24.7" r="1" fill="currentColor"/><circle cx="24.7" cy="24.7" r="1" fill="currentColor"/>',
+    '평안도': '<clipPath id="pyc"><rect x="8" y="8" width="16" height="16"/></clipPath><rect x="4.5" y="4.5" width="23" height="23" rx="2"/><g clip-path="url(#pyc)" stroke-width="1.1"><path d="M8 -8 L24 8 M8 8 L24 -8M8 -4 L24 12 M8 12 L24 -4M8 0 L24 16 M8 16 L24 0M8 4 L24 20 M8 20 L24 4M8 8 L24 24 M8 24 L24 8M8 12 L24 28 M8 28 L24 12M8 16 L24 32 M8 32 L24 16M8 20 L24 36 M8 36 L24 20M8 24 L24 40 M8 40 L24 24"/></g><circle cx="7.3" cy="24.7" r="1" fill="currentColor"/><circle cx="24.7" cy="24.7" r="1" fill="currentColor"/><circle cx="7.3" cy="7.3" r="1" fill="currentColor"/><circle cx="24.7" cy="7.3" r="1" fill="currentColor"/>',
     '함경도': '<circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="6.5"/><circle cx="16" cy="16" r="1.6" fill="currentColor"/>',
     '황해도': '<rect x="5" y="5" width="22" height="22" rx="5"/><path d="M16 10v12M10 16h12"/><circle cx="16" cy="16" r="2.2"/>',
     '경기도': '<circle cx="16" cy="16" r="11"/><path d="M5 16a5.5 5.5 0 0 0 11 0a5.5 5.5 0 0 1 11 0"/><circle cx="10.5" cy="17" r="1.5" fill="currentColor"/><circle cx="21.5" cy="15" r="1.5" fill="currentColor"/>',
