@@ -80,6 +80,7 @@ os.makedirs('photos/ewha', exist_ok=True)
 def b64(p, mx):
     im = Image.open(p).convert('RGB'); im.thumbnail((mx, mx)); b = io.BytesIO(); im.save(b, 'JPEG', quality=82)
     return 'data:image/jpeg;base64,' + base64.b64encode(b.getvalue()).decode()
+PORTAL = {'E01': '소반', 'E02': '소반', 'E03': '소반', 'E04': '소반', 'E25': '소반', 'E05': '장·농', 'E06': '사방탁자', 'E07': '사방탁자', 'E08': '사방탁자', 'E09': '장·농', 'E10': '장·농', 'E11': '장·농', 'E12': '장·농', 'E13': '장·농', 'E26': '장·농', 'E27': '장·농', 'E28': '장·농', 'E29': '장·농', 'E14': '함', 'E15': '함', 'E16': '함', 'E17': '함', 'E18': '함', 'E21': '함', 'E22': '함', 'E23': '함', 'E24': '함', 'E19': '서안', 'E30': '서안', 'E31': '서안', 'E20': ''}
 items, dsitems, photos = [], [], []
 for id_, no, off, nm, hj, kind, era, mat, size, desc in R:
     p = f'photos/ewha/{id_}.jpg'
@@ -89,7 +90,7 @@ for id_, no, off, nm, hj, kind, era, mat, size, desc in R:
     url = (CAL % no) if off == 0 else (SRCH % (no, off))
     items.append({'id': id_, 'kind': kind, 'name': nm, 'hanja': hj, 'cls': '목공예(이화여대박물관 분류)', 'era': era, 'mat': mat, 'size': size, 'no': '',
                   'kr': desc, 'imp': False, 'url': url, 'pics': [{'src': p, 'w': w, 'h': h}]})
-    dsitems.append({'id': id_, 'name': nm, 'hanja': hj, 'kind': kind, 'type': kind, 'size_raw': size, 'era': era, 'owner': '이화여자대학교 박물관', 'page': ''})
+    dsitems.append({'portal': PORTAL.get(id_, ''), 'id': id_, 'name': nm, 'hanja': hj, 'kind': kind, 'type': kind, 'size_raw': size, 'era': era, 'owner': '이화여자대학교 박물관', 'page': ''})
     photos.append({'id': id_, 'img': b64(p, 420)})
 J = lambda o: json.dumps(o, ensure_ascii=False)
 L = open('nmk.html', encoding='utf-8').read().split('\n')

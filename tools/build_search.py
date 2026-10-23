@@ -73,8 +73,12 @@ for b in boards:
         hay = set()
         # 넓은 분류(예: '반닫이·궤·뒤주')는 검색어에 넣지 않는다 — 반닫이로 찾을 때 뒤주가 섞이지 않게
         narrow = [x for x in (kind, sub) if x and '·' not in x]
+        portal = r.get('portal') or ''
+        if re.search(r'가께수리|각게수리|갑게수리|각계수리', r.get('name') or ''): portal = '함'   # 가께수리 종류는 모두 함
+        if portal and '·' not in portal: hay |= variants(portal)
+        # 호림·이화여대 도록은 도록 설명(소반·탁자·장·함·서안…)을 검색어로 쓰면 모든 기물이 섞이므로 뺀다
         for s in (r.get('name'), r.get('list_name'), r.get('hanja'), r.get('region'), *narrow,
-                  r.get('wood'), owner, cat_key, b['desc']):
+                  r.get('wood'), owner, cat_key, '' if slug in ('horim', 'ewha') else b['desc']):
             if s: hay |= variants(str(s))
         hay |= variants((r.get('region') or '') + (r.get('name') or ''))
         rows.append({
@@ -83,6 +87,7 @@ for b in boards:
             'era': r.get('era') or '', 'size': size(r), 'wood': r.get('wood') or '',
             'owner': owner, 'page': r.get('page') or '',
             't': r['id'] in thumbs, 'pid': safe(r['id']), 'h': os.path.exists(f"photos/{slug}/{safe(r['id'])}.jpg"),
+            'fam': portal if '·' in portal else '',
             'q': ' '.join(sorted(hay)).lower(),
         })
 

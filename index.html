@@ -296,7 +296,7 @@ function search(raw) {
   const all = window.SEARCH || [];
   /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주·약장은 각자 자리에서) */
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
-  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? nameEnd(r, q) : r.q.includes(q)));
+  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농') : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = ''; mapKeys = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;

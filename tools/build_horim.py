@@ -37,6 +37,7 @@ R = [
 def b64(p, mx):
     im = Image.open(p).convert('RGB'); im.thumbnail((mx, mx)); b = io.BytesIO(); im.save(b, 'JPEG', quality=82)
     return 'data:image/jpeg;base64,' + base64.b64encode(b.getvalue()).decode()
+PORTAL = {'H01': '함', 'H02': '함', 'H03': '반닫이', 'H04': '함', 'H05': '함', 'H06': '서안', 'H07': '서안', 'H08': '함', 'H09': '함', 'H10': '', 'H11': '함', 'H12': '함', 'H13': '함'}
 items, dsitems, photos = [], [], []
 for id_, nm, hj, kind, typ, tech, mat, kr in R:
     import glob
@@ -45,7 +46,7 @@ for id_, nm, hj, kind, typ, tech, mat, kr in R:
     pics = [{'src': p, 'w': w, 'h': h}] + [{'src': e, 'w': Image.open(e).size[0], 'h': Image.open(e).size[1]} for e in extra]
     items.append({'id': id_, 'kind': kind, 'name': nm, 'hanja': hj, 'cls': '나무(호림박물관 분류)', 'tech': tech, 'era': '', 'mat': mat, 'size': '', 'no': '',
                   'kr': kr + NOTE, 'imp': False, 'url': LIST_URL, 'pics': pics})
-    dsitems.append({'id': id_, 'name': nm, 'hanja': hj, 'kind': kind, 'type': typ, 'size_raw': '', 'era': '', 'owner': '호림박물관', 'page': ''})
+    dsitems.append({'portal': PORTAL.get(id_, ''), 'id': id_, 'name': nm, 'hanja': hj, 'kind': kind, 'type': typ, 'size_raw': '', 'era': '', 'owner': '호림박물관', 'page': ''})
     photos.append({'id': id_, 'img': b64(p, 420)})
 J = lambda o: json.dumps(o, ensure_ascii=False)
 L = open('nmk.html', encoding='utf-8').read().split('\n')
