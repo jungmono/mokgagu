@@ -142,6 +142,12 @@ dialog::backdrop{background:rgba(20,20,24,.58)}
 body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요";position:fixed;inset:12px;border:3px dashed var(--fg);border-radius:20px;background:rgba(255,255,255,.85);display:grid;place-items:center;font-size:20px;font-weight:900;z-index:50;pointer-events:none}
 @media (max-width:720px){.hd{flex-wrap:wrap;padding:18px}.hd .out{margin-left:0}.vw{flex-direction:column;padding:14px}.fs{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:10px}.it .nm{font-size:15px}.cnt{margin-left:0;width:100%}}
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<script src="common.js?v=2" defer></script>
 </head>
 <body>
 <div class="wrap" id="app"></div>
