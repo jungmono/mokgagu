@@ -58,7 +58,7 @@
     '제주도': ['#5a7d1a', ['jeju'], 540, 1905, 540, 1905],
   };
   const AUC = { auction: 1, myart: 1 };
-  const MUS = { nmk: 1, heritage: 1, horim: 1 };   // 박물관자료 폴더(국립중앙박물관 소장품·국가유산)
+  const MUS = { nmk: 1, heritage: 1, horim: 1, ewha: 1 };   // 박물관자료 폴더(국립중앙박물관 소장품·국가유산)
   const TICON = {
     m: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M1.5 15.5h45v3h-45z" fill="currentColor"/><path d="M3 18.5v13h14v-13M31 18.5v13h14v-13"/><path d="M3 23h14M3 27h14M31 23h14M31 27h14" stroke-width="1.2"/><path d="M17 31.5h14M15.5 34h17M14 36.5h20" stroke-width="1.6"/><path d="M1.5 31.5h12.5M34 31.5h12.5"/><path d="M6 40.5h36" stroke-width="1.5"/><path d="M11 43.5h26" stroke-width="1.2"/></svg>',
     a: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-40 22 18)"><rect x="12" y="10" width="20" height="9" rx="2"/><path d="M15 10v9M29 10v9"/><path d="M22 19v19"/></g><path d="M26 41h17"/><rect x="28.5" y="36.5" width="12" height="4.5" rx="1"/><path d="M8 8l2.5 2.5M5 14h3.5M13 4.5v3.5" stroke-width="1.8"/></svg>',
