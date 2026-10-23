@@ -39,9 +39,12 @@ def b64(p, mx):
     return 'data:image/jpeg;base64,' + base64.b64encode(b.getvalue()).decode()
 items, dsitems, photos = [], [], []
 for id_, nm, hj, kind, typ, tech, mat, kr in R:
+    import glob
     p = f'photos/horim/{id_}.jpg'; w, h = Image.open(p).size
+    extra = sorted(glob.glob(f'photos/horim/{id_}-*.jpg'))
+    pics = [{'src': p, 'w': w, 'h': h}] + [{'src': e, 'w': Image.open(e).size[0], 'h': Image.open(e).size[1]} for e in extra]
     items.append({'id': id_, 'kind': kind, 'name': nm, 'hanja': hj, 'cls': '나무(호림박물관 분류)', 'tech': tech, 'era': '', 'mat': mat, 'size': '', 'no': '',
-                  'kr': kr + NOTE, 'imp': False, 'url': LIST_URL, 'pics': [{'src': p, 'w': w, 'h': h}]})
+                  'kr': kr + NOTE, 'imp': False, 'url': LIST_URL, 'pics': pics})
     dsitems.append({'id': id_, 'name': nm, 'hanja': hj, 'kind': kind, 'type': typ, 'size_raw': '', 'era': '', 'owner': '호림박물관', 'page': ''})
     photos.append({'id': id_, 'img': b64(p, 420)})
 J = lambda o: json.dumps(o, ensure_ascii=False)
