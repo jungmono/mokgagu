@@ -85,7 +85,7 @@ dialog::backdrop{background:rgba(20,18,15,.55)}
   <div class="filters" id="f-era"><span class="lab">시대</span></div>
   <div class="filters"><span class="lab">찾기</span><input type="search" id="q" placeholder="이름·설명에서 찾기 — 예: 소반, 탁자, 화각, 느티나무" style="font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(360px,100%)"><span id="cnt" style="font-size:13px;color:var(--muted);margin-left:6px"></span></div>
   <div class="grid" id="grid"></div>
-  <p class="note">자료: 이화여자대학교 박물관 누리집(museum.ewha.ac.kr)의 「대표유물—목공예」 7점과 「유물검색」 156건에서 장르가 목공예인 유물 24점, 모두 31점입니다(2026.10.23 확인). 이름·시대·재질·크기·해설과 사진은 누리집에 올라 있는 그대로이고, 사진은 누리집이 제공하는 가장 큰 크기입니다. 누리집에 같은 유물이 두 번 올라 있는 6점(연잎반·시명 책탁자·의걸이장·이층 장·화각 4층 장·십장생문 각게수리)은 한 번만 실었습니다. 대나무로 만든 서안·필통·농 3점은 목기·문방가구라 함께 실었습니다. 더 자세한 내용은 <a href="https://museum.ewha.ac.kr/museum/collection/artifactsSearch.do" target="_blank" rel="noopener">이화여자대학교 박물관 누리집 ↗</a>에서 확인하세요.</p>
+
 </div>
 <div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
 
@@ -165,7 +165,7 @@ function open_(n) {
     <dt>시대</dt><dd>${esc(i.era || '—')}</dd><dt>재질</dt><dd>${esc(i.mat || '—')}</dd><dt>크기</dt><dd>${esc(i.size || '—')}</dd>
     <dt>분류</dt><dd>${esc(i.cls || '—')}</dd><dt>소장</dt><dd>이화여자대학교 박물관</dd></dl>
     ${i.kr ? `<div class="d-desc">${esc(i.kr)}</div>` : ''}
-    <a class="d-src" href="${i.url}" target="_blank" rel="noopener">이화여자대학교 박물관 누리집에서 보기 ↗</a>`;
+    `;
   document.getElementById('d-pos').textContent = `${cur + 1} / ${view.length}`;
   if (!dlg.open) dlg.showModal();
 }

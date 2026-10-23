@@ -98,7 +98,7 @@ def sub(i, a, b):
 sub(3, '국립중앙박물관 소장품 — 조선의 목가구', '이화여자대학교 박물관 목기·목가구 — 조선의 목가구')
 sub(81, '국립중앙박물관 소장품 — 목가구', '이화여자대학교 박물관 소장품 — 목기·목가구')
 sub(86, '예: 강화, 나전, 전라도', '예: 소반, 탁자, 화각, 느티나무')
-L[88 - 1] = '  <p class="note">자료: 이화여자대학교 박물관 누리집(museum.ewha.ac.kr)의 「대표유물—목공예」 7점과 「유물검색」 156건에서 장르가 목공예인 유물 24점, 모두 31점입니다(2026.10.23 확인). 이름·시대·재질·크기·해설과 사진은 누리집에 올라 있는 그대로이고, 사진은 누리집이 제공하는 가장 큰 크기입니다. 누리집에 같은 유물이 두 번 올라 있는 6점(연잎반·시명 책탁자·의걸이장·이층 장·화각 4층 장·십장생문 각게수리)은 한 번만 실었습니다. 대나무로 만든 서안·필통·농 3점은 목기·문방가구라 함께 실었습니다. 더 자세한 내용은 <a href="' + LIST_URL + '" target="_blank" rel="noopener">이화여자대학교 박물관 누리집 ↗</a>에서 확인하세요.</p>'
+L[88 - 1] = ''
 L[103 - 1] = '<script type="application/json" id="ds-items">' + J(dsitems) + '</script>'
 L[104 - 1] = '<script type="application/json" id="ds-photos">' + J(photos) + '</script>'
 L[106 - 1] = 'const ITEMS = ' + J(items) + ';'
@@ -113,7 +113,7 @@ L[120 - 1] = "const TILES = [['', '소장품 전체', ITEMS.length, '전체 보�
 sub(144, "i.hanja + ' ' + i.no", "i.hanja + ' ' + i.mat")
 sub(165, "${esc(i.size || '—')}", "${esc(i.size || '—')}")
 sub(166, "<dt>소장품번호</dt><dd>${esc(i.no || '—')}</dd><dt>소장</dt><dd>국립중앙박물관</dd>", '<dt>소장</dt><dd>이화여자대학교 박물관</dd>')
-sub(168, '국립중앙박물관 누리집에서 보기', '이화여자대학교 박물관 누리집에서 보기')
+sub(168, '<a class="d-src" href="${i.url}" target="_blank" rel="noopener">국립중앙박물관 누리집에서 보기 ↗</a>', '')
 s = '\n'.join(L).replace("'nmk/'", "'ewha/'").replace('nmk/${i.id}', 'ewha/${i.id}')
 open('ewha.html', 'w', encoding='utf-8').write(s)
 im = Image.open('photos/ewha/E10.jpg').convert('RGB'); im.thumbnail((600, 800)); im.save('covers/ewha.jpg', quality=85)
