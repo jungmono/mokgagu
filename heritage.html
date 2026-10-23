@@ -143,7 +143,7 @@ function showPic() {
   const i = view[cur], im = document.getElementById('d-img'), p = i.pics[pi];
   if (p) { im.src = THUMB[i.id] && pi === 0 ? THUMB[i.id] : p.src; if (pi === 0) { const hi = new Image(); hi.onload = () => { if (view[cur] === i && pi === 0) im.src = hi.src; }; hi.src = p.src; } im.alt = i.name; im.hidden = false; }
   else { im.removeAttribute('src'); im.hidden = true; }
-  document.getElementById('d-cap').textContent = p ? `${pi + 1} / ${i.pics.length} · ${p.cap || ''} (원본 ${p.w}×${p.h})` : '국가유산포털에 사진이 아직 없습니다.';
+  document.getElementById('d-cap').textContent = p ? `${pi + 1} / ${i.pics.length} · ${p.cap || ''}` : '국가유산포털에 사진이 아직 없습니다.';
   const multi = i.pics.length > 1;
   document.getElementById('p-prev').hidden = document.getElementById('p-next').hidden = !multi;
   document.querySelectorAll('#d-strip button').forEach((b, k) => b.classList.toggle('on', k === pi));
