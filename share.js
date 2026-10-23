@@ -1,0 +1,35 @@
+/* 기물 창(dialog)에 「공유」 단추를 달고, 홈 화면 공유 칩도 처리한다. */
+(function(){
+var css=document.createElement('style');
+css.textContent='.shr{position:absolute;top:8px;left:8px;z-index:5;background:#fff;color:#111;border:1.5px solid #111;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;cursor:pointer}.shr:active{background:#111;color:#fff}';
+document.head.appendChild(css);
+var BASE='https://jungmono.github.io/mokgagu/';
+function say(t){var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;z-index:2147483647';(document.querySelector('dialog[open]')||document.body).appendChild(d);setTimeout(function(){d.remove();},1800);}
+function share(title,text,url){
+  if(navigator.share){navigator.share({title:title,text:text,url:url}).catch(function(){});return;}
+  var t=text+'\n'+url;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){say('링크를 복사했어요');},function(){prompt('복사해서 보내 주세요',t);});}
+  else prompt('복사해서 보내 주세요',t);
+}
+window.MOKGAGU_SHARE=share;
+function nameOf(dlg){
+  var e=dlg.querySelector('#d-info h1,#d-info h2,#d-info h3,#d-info b,#d-info strong,h1,h2,h3,.d-name,.d-title');
+  return (e&&e.textContent.trim().split('\n')[0])||'';
+}
+function attach(dlg){
+  if(dlg.querySelector('.shr'))return;
+  var b=document.createElement('button');b.className='shr';b.type='button';b.textContent='공유';
+  b.onclick=function(ev){ev.stopPropagation();
+    var n=nameOf(dlg),pg=location.pathname.split('/').pop()||'index.html';
+    var url=BASE+pg,t='함께 배우는 조선의 목가구'+(n?' — '+n:'');
+    share('함께 배우는 조선의 목가구',t,url);};
+  dlg.appendChild(b);
+}
+function scan(){document.querySelectorAll('dialog[open]').forEach(attach);}
+new MutationObserver(scan).observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['open']});
+document.addEventListener('DOMContentLoaded',function(){
+  scan();
+  var s=document.getElementById('site-share');
+  if(s)s.onclick=function(e){e.preventDefault();share('함께 배우는 조선의 목가구','함께 배우는 조선의 목가구 — 거믄 힌 고미술공부방',BASE);};
+});
+})();
