@@ -74,7 +74,8 @@ for b in boards:
         # 넓은 분류(예: '반닫이·궤·뒤주')는 검색어에 넣지 않는다 — 반닫이로 찾을 때 뒤주가 섞이지 않게
         narrow = [x for x in (kind, sub) if x and '·' not in x]
         portal = r.get('portal') or ''
-        if re.search(r'가께수리|각게수리|갑게수리|각계수리|필통', r.get('name') or ''): portal = '함'   # 가께수리·필통 종류는 모두 함
+        nm_ = r.get('name') or ''
+        if re.search(r'가께수리|각게수리|갑게수리|각계수리|필통', nm_) and not (re.search(r'백자|청자|분청|철제|동제|은제|금속', nm_) or slug in ('dojagi', 'geumsok')): portal = '함'   # 가께수리·필통 종류는 모두 함
         if portal and '·' not in portal: hay |= variants(portal)
         # 호림·이화여대 도록은 도록 설명(소반·탁자·장·함·서안…)을 검색어로 쓰면 모든 기물이 섞이므로 뺀다
         for s in (r.get('name'), r.get('list_name'), r.get('hanja'), r.get('region'), *narrow,
