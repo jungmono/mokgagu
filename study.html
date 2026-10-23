@@ -35,7 +35,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .tabs button small{font-weight:500;color:#8a837a;margin-left:2px}
 .tabs button.on.t-g{background:#111;color:#fff}.tabs button.on.t-g small{color:#ccc}
 .tabs button.on.t-h{background:#fff;color:#111;box-shadow:inset 0 0 0 3px #111}
-.tabs button.on.t-b{background:#f1efeb}
+.tabs button.on.t-b{background:#f1efeb}.tabs button.on.t-m{background:#f1efeb}
 .tabs button.t-w{color:#5b3a05;background:#f6ead0;font-weight:900;box-shadow:inset 0 -3px 0 #8a5a12}.tabs button.on.t-w{background:#8a5a12;color:#fff;box-shadow:none}
 .tabs button.t-q{color:#1f4d31;background:#cfe6d5;font-weight:900;box-shadow:inset 0 -3px 0 #2f6b45}.tabs button.on.t-q{background:#2f6b45;color:#fff;box-shadow:none}
 .tabs button.on.t-k{background:#f3f8f4;box-shadow:inset 0 0 0 3px #2f6b45;color:#1f4d31}
@@ -53,7 +53,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .ses.o-h{background:#fdfcfa;border-color:#d8d2c7}
 .ses.o-h .body h3{border-left-color:#bbb}
 @media (max-width:480px){.tabs button{padding:8px 11px;font-size:14px}}
-@media (max-width:600px){.tabs{display:grid;grid-template-columns:repeat(8,1fr);gap:1.5px;background:#111;width:auto;overflow:hidden}.tabs button,.tabs button+button{grid-column:span 2;border:0;padding:10px 2px;font-size:13px;white-space:nowrap;min-width:0}.tabs button.t-w,.tabs button.t-q{grid-column:span 4;font-size:14px}}
+@media (max-width:600px){.tabs{display:grid;grid-template-columns:repeat(12,1fr);gap:1.5px;background:#111;width:auto;overflow:hidden}.tabs button,.tabs button+button{grid-column:span 3;border:0;padding:10px 2px;font-size:13px;white-space:nowrap;min-width:0}.tabs button.t-w,.tabs button.t-q,.tabs button.t-m{grid-column:span 4;font-size:14px}}
 /* 목차 */
 .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 26px}
 .toc a{text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;background:#fff}
@@ -119,6 +119,8 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 <script src="mkphoto.js?v=1"></script>
 <script src="write.js?v=2"></script>
 <script src="quiz.js?v=20261022"></script>
+<script src="d3.min.js"></script>
+<script src="kg.js?v=3"></script>
 <script src="recent.js" defer></script>
 <script>
 (function () {
@@ -194,17 +196,30 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   var K_TAB = 'mokgagu_study_tab';
   var tab = /^#write/.test(location.hash) ? '쓰기' : /^#quiz/.test(location.hash) ? '퀴즈' : /^#talk/.test(location.hash) ? '말씀' : (ls.get(K_TAB) || '거믄');
   function render() {
-    if (['거믄', '힌', '함께', '말씀', '쓰기', '퀴즈'].indexOf(tab) < 0) tab = '거믄';
+    if (['거믄', '힌', '함께', '말씀', '지도', '쓰기', '퀴즈'].indexOf(tab) < 0) tab = '거믄';
     var own = function (o) { return DATA.sessions.filter(function (s) { return (s.owner || '거믄') === o; }); };
     var cnt = { '거믄': own('거믄').length, '힌': own('힌').length };
     var S = (tab === '함께' ? DATA.sessions.slice() : own(tab)).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : ((a.owner || '거믄') < (b.owner || '거믄') ? -1 : 1); });
     allImgs = [];
-    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀'], ['쓰기', '바로 쓰기'], ['퀴즈', '복습 퀴즈']].map(function (t) {
-      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : t[0] === '퀴즈' ? 'q' : t[0] === '쓰기' ? 'w' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : (t[0] === '퀴즈' || t[0] === '쓰기') ? '' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
+    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀'], ['지도', '지식 지도'], ['쓰기', '바로 쓰기'], ['퀴즈', '복습 퀴즈']].map(function (t) {
+      return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : t[0] === '퀴즈' ? 'q' : t[0] === '쓰기' ? 'w' : t[0] === '지도' ? 'm' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : (t[0] === '퀴즈' || t[0] === '쓰기' || t[0] === '지도') ? '' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
     html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
     if (tab === '쓰기') {
       app.innerHTML = html.split('<div class="tools">')[0] + '<div id="wr"></div>';
       window.MOKGAGU_WRITE.mount(document.getElementById('wr'));
+      return;
+    }
+    if (tab === '지도') {
+      app.innerHTML = html.split('<div class="tools">')[0] + '<div id="kgm"></div>';
+      window.MOKGAGU_KG.mount(document.getElementById('kgm'), {
+        sessions: DATA.sessions,
+        load: function () { return dec('study/kg.bin').then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }); },
+        goSession: function (se) {
+          tab = se.owner || '거믄'; ls.set(K_TAB, tab); render();
+          var id = 'd' + (se.owner === '힌' ? 'h' : 'g') + se.date;
+          setTimeout(function () { var a = document.getElementById(id); if (a) a.scrollIntoView(); }, 60);
+        }
+      });
       return;
     }
     if (tab === '퀴즈') {
