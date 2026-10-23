@@ -30,7 +30,7 @@
     '@media print{#rv{display:none}}',
     /* 사진 칸 비율 고정 — 아이패드·아이폰 사파리에서 사진이 칸 밖으로 넘치거나 칸이 길어지지 않게.
        칸 높이를 너비 기준(padding-top)으로 정하고, 사진은 칸 안에 꽉 맞춰(object-fit: contain) 넣는다. */
-    '.r-item .ph,.lk-gal .lk-ph,.grid .card .ph{position:relative!important;overflow:hidden!important;aspect-ratio:auto!important;height:0!important;padding:0!important;padding-top:' + (/(heritage|nmk)\.html/.test(location.pathname) ? '75%' : '100%') + '!important}',
+    '.r-item .ph,.lk-gal .lk-ph,.grid .card .ph{position:relative!important;overflow:hidden!important;aspect-ratio:auto!important;height:0!important;padding:0!important;padding-top:' + (/(heritage|nmk|horim)\.html/.test(location.pathname) ? '75%' : '100%') + '!important}',
     '.r-item .ph img,.grid .card .ph img{position:absolute!important;top:0;left:0;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}',
     '.lk-gal .lk-ph img{position:absolute!important;top:4%;left:4%;width:92%!important;height:92%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}',
     '.grid .card .ph .no{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}',

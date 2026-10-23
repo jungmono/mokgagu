@@ -187,6 +187,7 @@ body{position:relative}
 const DASHBOARDS = [
   { path: 'nmk', title: '국립중앙박물관 소장품', desc: '국립중앙박물관 소장품 검색으로 모은 우리 목가구', items: 432, icon: 'bandaji', tone: 'meok', added: '2026-10-18', group: 'museum' },
   { path: 'heritage', title: '국가유산 목공예', desc: '국가유산포털 유물·생활공예·목공예 — 국보·보물·민속문화유산 등 지정 문화유산', items: 19, icon: 'ham', tone: 'ju', added: '2026-10-18', group: 'museum' },
+  { path: 'horim', title: '호림박물관 목기·목가구', desc: '호림박물관 소장품 나무 분류 13점 — 나전·화각·대모 함과 서안·경상', items: 13, icon: 'ham', tone: 'meok', added: '2026-10-23', group: 'museum' },
   { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
   { path: 'myart', title: '마이아트옥션 경매 목가구·목기', desc: '제52~61회 마이아트옥션 경매(2024.5~2026.9) — 추정가·낙찰가', items: 165, icon: 'ham', tone: 'meok', added: '2026-10-18', group: 'auction' },
   { path: 'auction', title: '아이옥션 경매 목가구·목기', desc: '2022년 3월~2026년 10월 경매 38회 — 추정가·낙찰가', items: 596, icon: 'bandaji', tone: 'ju', added: '2026-10-17', group: 'auction' },
@@ -305,7 +306,7 @@ let bmapOn = false;
 function bmapShow(q) {
   const yes = false;
   if (!yes || bmapOn) return; bmapOn = true;
-  const s = document.createElement('script'); s.src = 'bmap.js?v=33'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
+  const s = document.createElement('script'); s.src = 'bmap.js?v=34'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
 function drawResults(label) {
   const counts = {};
