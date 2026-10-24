@@ -18,7 +18,7 @@ input{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;border:2
 <h1>목가구 용어 사전</h1><p class="s">수업에서 배운 말과 기본 용어를 모았습니다. 도록·공부방 글 속 점선 밑줄 용어를 누르면 뜻이 뜹니다.</p>
 <input id="q" placeholder="용어·한자 검색 (예: 감잡이, 櫃)" autocomplete="off">
 <div class="chips" id="chips"></div><div id="list"></div>
-<script src="glossary.js"></script>
+<script src="glossary.js?v=20261024"></script>
 <script>
 var L=MOKGAGU_GLOSSARY.list.slice().sort(function(a,b){return a[0].localeCompare(b[0],'ko');});
 var cat='',cats=['전체'].concat(Array.from(new Set(L.map(function(g){return g[3];}))));

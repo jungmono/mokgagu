@@ -100,7 +100,7 @@ document.head.appendChild(css);
 var pop=document.createElement('div');pop.id='glpop';document.body.appendChild(pop);
 function show(el){
   var g=IDX[el.getAttribute('data-gl')];if(!g)return;
-  pop.innerHTML='<b>'+g[0]+'</b> '+(g[1]?'<small>'+g[1]+'</small> ':'')+'<small>· '+g[3]+'</small><br>'+g[2]+(g[5]?'<br><small>수업에서 배운 내용</small>':'')+'<br><a href="glossary.html#'+encodeURIComponent(g[0])+'">용어 사전에서 보기</a>';
+  pop.innerHTML='<b>'+g[0]+'</b> '+(g[1]?'<small>'+g[1]+'</small> ':'')+'<small>· '+g[3]+'</small><br>'+g[2]+(g[5]?'<br><small>수업에서 배운 내용</small>':'')+'<br><a href="glossary.html#'+encodeURIComponent(g[0])+'">용어 사전에서 보기</a> · <a href="index.html#q='+encodeURIComponent(g[0])+'">이 말이 나오는 기물 찾기</a>';
   pop.style.display='block';
   var r=el.getBoundingClientRect(),w=pop.offsetWidth,h=pop.offsetHeight;
   var x=Math.max(8,Math.min(innerWidth-w-8,r.left)),y=r.bottom+6;if(y+h>innerHeight-8)y=Math.max(8,r.top-h-6);

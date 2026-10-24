@@ -221,7 +221,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 </dialog>
 <script src="classes.js?v=20261019"></script>
 <script src="site.js"></script>
-<script src="recent.js" defer></script><script src="glossary.js" defer></script><script src="share.js" defer></script>
+<script src="recent.js" defer></script><script src="glossary.js?v=20261024" defer></script><script src="share.js" defer></script>
 <script src="comments.js?v=20261024" defer></script>
 <script src="photozoom.js?v=1"></script>
 <script src="mkphoto.js?v=1"></script>
@@ -559,6 +559,25 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   }
 
   /* ── 한눈에 ── */
+  /* 수업에서 눈여겨본 기종 · 같이 비교한 기물 — 기록 탭의 view·compare 줄을 묶어서 */
+  function focusHTML() {
+    var K = {}, gone = {}, P = {}, n = 0;
+    D.logs.forEach(function (x) { if (x.kind === 'compare' && String(x.q).indexOf('__del__|') === 0) gone[String(x.q).slice(8)] = 1; });
+    function add(cid, w) { var r = rec(cid); if (!r || !r.kind) return; K[r.kind] = (K[r.kind] || 0) + w; n += w; }
+    D.logs.forEach(function (x) {
+      if (x.kind === 'view' && x.cid) add(x.cid, 1);
+      if (x.kind === 'compare' && x.cid && String(x.q).indexOf('__del__') !== 0 && !gone[x.t]) {
+        var ks = String(x.cid).split(' ').filter(Boolean); ks.forEach(function (k) { add(k, 2); });
+        for (var i = 0; i < ks.length; i++) for (var j = i + 1; j < ks.length; j++) { var key = [ks[i], ks[j]].sort().join(' '); P[key] = (P[key] || 0) + 1; }
+      }
+    });
+    var kk = Object.keys(K).sort(function (a, b) { return K[b] - K[a]; }).slice(0, 8), mx = kk.length ? K[kk[0]] : 1;
+    var pp = Object.keys(P).filter(function (k) { return P[k] > 1; }).sort(function (a, b) { return P[b] - P[a]; }).slice(0, 5);
+    function nm(k) { var r = rec(k); return r ? r.name : (k.indexOf('col/') === 0 ? '소장품' : k); }
+    return '<div class="blk"><h3>🔎 수업에서 눈여겨본 기종 <small>찾아본 횟수 + 비교(2배)</small></h3>' +
+      (kk.length ? '<ul class="rank">' + kk.map(function (k) { return '<li><span>' + esc(k) + '</span><i style="width:' + Math.max(6, K[k] / mx * 100) + '%"></i><b>' + K[k] + '</b></li>'; }).join('') + '</ul>' : '<p class="empty">찾아보거나 비교한 기록이 쌓이면 여기 나와요.</p>') + '</div>' +
+      (pp.length ? '<div class="blk"><h3>⚖️ 자주 같이 비교한 기물</h3><ul class="rank">' + pp.map(function (k) { var a = k.split(' '); return '<li><span>' + esc(nm(a[0])) + ' · ' + esc(nm(a[1])) + '</span><i style="width:' + Math.max(6, P[k] / P[pp[0]] * 100) + '%"></i><b>' + P[k] + '번</b></li>'; }).join('') + '</ul></div>' : '');
+  }
   function topHTML() {
     var t = today(), V = {}; (D.visits || []).forEach(function (v) { V[v.day] = v.n; });
     var vt = ls.json('mokgagu_visit_last') || {};
@@ -587,7 +606,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     var sy = window.scrollY;
     var nx = upcoming(1)[0], left = D.questions.filter(function (q) { return !q.done && (q.cls || nx) === nx; }).length;
     app.innerHTML = '<div class="jump"><a href="#all">한눈에</a><a href="#les">수업 정리</a><a href="#duo">거믄 · 힌</a><a class="ask" href="#ask">✎ ' + md(nx) + ' 수업 질문<small>' + left + '</small></a></div>' +
-      '<section id="all"><h2 class="sec">한눈에</h2>' + topHTML() + '</section>' +
+      '<section id="all"><h2 class="sec">한눈에</h2>' + topHTML() + focusHTML() + '</section>' +
       '<section id="les-sec"><h2 class="sec" id="les">지금까지 수업 정리 <small>공부방 노트와 수업 뒤 적은 선생님 말씀 — 누르면 공부방으로</small></h2>' + lessonsHTML() + '</section>' +
       '<section id="ask-sec"><h2 class="sec" id="ask">선생님께 여쭤볼 것 <small>수업 — 보통 둘째·넷째 토요일' + changedNote() + '</small></h2>' + askHTML() + '</section>' +
       '<section id="duo"><h2 class="sec">거믄 · 힌 <small>각자 남긴 기록 — 좋아요, 찾아본 기물, 검색어, 기물 이야기</small></h2><div class="duo">' + pcHTML('거믄') + pcHTML('힌') + '</div></section>' +
