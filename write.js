@@ -203,19 +203,18 @@
     var RC = { on: false, mr: null, sr: null, chunks: [], text: '', interim: '', t0: 0, tm: null, wl: null, stream: null, url: '', ext: 'webm' };
     var bar = document.createElement('div'); bar.id = 'wr-rec'; el.parentNode.insertBefore(bar, el);
     var rcss = document.createElement('style');
-    rcss.textContent = '#wr-rec{margin:0 0 12px;border:1.5px solid #111;border-radius:14px;padding:10px 12px;background:#fff;font-size:14px}#wr-rec .rb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#wr-rec button,#wr-rec a.dl{border:1.5px solid #111;background:#fff;border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-decoration:none}#wr-rec .go{background:#b3261e;color:#fff;border-color:#b3261e}#wr-rec .dot{width:10px;height:10px;border-radius:50%;background:#b3261e;display:inline-block;animation:rcb 1s infinite}@keyframes rcb{50%{opacity:.25}}#wr-rec .tx{margin-top:8px;max-height:110px;overflow:auto;color:#3b3833;font-size:13.5px;line-height:1.6;background:#faf9f6;border-radius:8px;padding:6px 8px}#wr-rec .hint{color:#6b665e;font-size:12.5px;margin-top:6px;line-height:1.5}';
+    rcss.textContent = '#wr-rec{margin:0 0 10px;border:1px solid #d9d4cc;border-radius:12px;padding:5px 8px;background:#fff;font-size:13px}#wr-rec .rb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#wr-rec button,#wr-rec a.dl{border:1.5px solid #111;background:#fff;border-radius:999px;padding:4px 12px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;color:#111;text-decoration:none}#wr-rec .go{background:#b3261e;color:#fff;border-color:#b3261e}#wr-rec .dot{width:10px;height:10px;border-radius:50%;background:#b3261e;display:inline-block;animation:rcb 1s infinite}@keyframes rcb{50%{opacity:.25}}#wr-rec .tx{margin-top:8px;max-height:110px;overflow:auto;color:#3b3833;font-size:13.5px;line-height:1.6;background:#faf9f6;border-radius:8px;padding:6px 8px}#wr-rec .hint{color:#6b665e;font-size:12px;line-height:1.4}@media(max-width:640px){#wr-rec .hint{display:none}}';
     document.head.appendChild(rcss);
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     function mm(n) { n = Math.floor(n / 1000); return Math.floor(n / 60) + ':' + ('0' + (n % 60)).slice(-2); }
     function rpaint() {
       var h = '<div class="rb">';
       if (RC.on) h += '<span class="dot"></span><b>녹음 중 ' + mm(Date.now() - RC.t0) + '</b><button type="button" id="rc-stop">■ 끝내기</button>';
-      else h += '<button type="button" class="go" id="rc-go">🎙 수업 녹음</button><span class="hint" style="margin:0">누르면 녹음하고, 끝내면 받아쓴 글이 새 글에 들어가요</span>';
+      else h += '<button type="button" class="go" id="rc-go">🎙 수업 녹음</button><span class="hint" title="녹음하는 동안 화면을 켜 두세요. 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 앞뒤를 맞춰 정리해요.">끝내면 받아쓴 글이 새 글에 들어가요</span>';
       h += '</div>';
       if (RC.on && SR) h += '<div class="tx">' + esc(RC.text + RC.interim || '말씀을 받아쓰는 중…') + '</div>';
       if (RC.on && !SR) h += '<div class="hint">이 브라우저는 받아쓰기를 지원하지 않아 소리만 녹음해요. (안드로이드·PC 크롬은 받아써 줍니다)</div>';
-      if (!RC.on && RC.url) h += '<div class="rb" style="margin-top:8px"><a class="dl" id="rc-dl" href="' + RC.url + '" download="수업녹음-' + new Date().toISOString().slice(0, 10) + '.' + RC.ext + '">⬇ 녹음 파일 저장</a><span class="hint" style="margin:0">파일은 이 기기에만 있어요. 꼭 저장해 두세요.</span></div>';
-      if (!RC.on) h += '<div class="hint">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 제가 앞뒤를 맞춰 정리해요.</div>';
+      if (!RC.on && RC.url) h += '<div class="rb" style="margin-top:8px"><a class="dl" id="rc-dl" href="' + RC.url + '" download="수업녹음-' + new Date().toISOString().slice(0, 10) + '.' + RC.ext + '">⬇ 녹음 파일 저장</a><span class="hint" style="display:inline">파일은 이 기기에만 있어요. 꼭 저장해 두세요.</span></div>';
       bar.innerHTML = h;
     }
     function startSR() {
