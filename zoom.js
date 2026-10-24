@@ -16,6 +16,7 @@
     '#zv .zv-st{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;cursor:zoom-in}',
     '#zv.zoomed .zv-st{cursor:grab}',
     '#zv img{max-width:100vw;max-height:100vh;object-fit:contain;transform-origin:center center;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;will-change:transform}',
+    '#zv>:not(.zv-st):not(.zv-top):not(.zv-arr):not(.zv-bot):not(.zv-hint){display:none!important}',
     '#zv .zv-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:10px 12px;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,0));z-index:2;font:600 14px "Noto Sans KR",system-ui,sans-serif}',
     '#zv .zv-cap{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 3px #000}',
     '#zv .zv-cap small{font-weight:500;opacity:.75;margin-left:8px}',
