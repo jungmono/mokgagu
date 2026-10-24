@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v12: 틀린 암호 횟수 제한(isFam_) · 매주 자동 백업(backupNow/setupBackup).
  * v10: 반닫이 지도 지역 설명 — doGet action=rlist(가족만), doPost rsave. 시트 '지역설명' 탭(id|text|editor|updated), 고치기 전 글은 '지역설명이력'에 남김.
  * v9: 질문에 사진 첨부(질문 탭 photos 열) · 「바로 쓰기」 게시판 — doGet action=wlist(가족만), doPost wsave·wdel. 시트 '쓰기'·'쓰기이력' 탭. 사진은 cphoto/cimg(드라이브 비공개 폴더) 그대로 쓴다.
  * v8: 통계 — doGet action=stats(가족만), doPost log(찾아본 기물·검색어) · qadd/qedit/qdel(선생님께 여쭤볼 것). 시트 '기록'·'질문' 탭.
@@ -26,7 +27,38 @@ function sheet_() {
   return sh;
 }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
-function isFam_(code) { return String(code || '') === CODE; }
+/* v12: 틀린 암호 횟수 제한 — 15분 안에 서로 다른 틀린 암호가 10번 나오면 15분 동안 모든 암호를 받지 않는다.
+   (같은 틀린 암호를 되풀이하는 옛 기기는 한 번으로 센다. 암호 자체는 저장하지 않고 요약값만 둔다.) */
+function isFam_(code) {
+  code = String(code || ''); if (!code) return false;
+  const c = CacheService.getScriptCache();
+  if (c.get('lock')) return false;
+  if (code === CODE) return true;
+  const h = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, code)).slice(0, 12);
+  let bad = []; try { bad = JSON.parse(c.get('bad') || '[]'); } catch (x) {}
+  if (bad.indexOf(h) < 0) bad.push(h);
+  if (bad.length >= 10) { c.put('lock', '1', 900); c.remove('bad'); }
+  else c.put('bad', JSON.stringify(bad), 900);
+  return false;
+}
+
+/* v12: 자동 백업 — 매주 일요일 새벽에 시트 전체를 드라이브 '목가구 백업' 폴더에 날짜 이름으로 복사하고 12개만 남긴다.
+   처음 한 번 setupBackup() 을 실행해 예약을 건다. */
+function backupNow() {
+  const it = DriveApp.getFoldersByName('목가구 백업');
+  const folder = it.hasNext() ? it.next() : DriveApp.createFolder('목가구 백업');
+  const name = '목가구 시트 ' + Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd');
+  DriveApp.getFileById(SHEET_ID).makeCopy(name, folder);
+  const files = []; const fi = folder.getFiles();
+  while (fi.hasNext()) files.push(fi.next());
+  files.sort((a, b) => b.getDateCreated() - a.getDateCreated());
+  files.slice(12).forEach(f => f.setTrashed(true));
+}
+function setupBackup() {
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'backupNow').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('backupNow').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(3).create();
+  backupNow();
+}
 function row_(r) {
   return { id: String(r[0]), cid: String(r[1]), author: String(r[2]), name: String(r[3]), text: String(r[4]),
     t: r[5] instanceof Date ? r[5].toISOString() : String(r[5]), page: String(r[6]), edited: r[10] instanceof Date ? r[10].toISOString() : String(r[10] || ''), pub: String(r[8]) === '1' || String(r[2]) === '벗' };
