@@ -385,7 +385,7 @@ dash.calc('compare', {
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
   const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / CHUNK);
   const EXTRA = {"N001":1,"N002":1,"N003":1,"N004":1,"N005":1,"N006":1,"N007":3,"N008":5,"N009":1,"N010":1,"N011":1,"N012":1,"N013":1,"N014":2,"N015":1,"N016":1,"N017":1,"N018":1,"N019":2,"N020":2,"N021":4,"N022":4,"N023":1,"N024":1,"N025":1,"N026":2,"N027":3,"N028":1,"N029":1,"N030":1,"N031":3,"N032":7,"N033":1,"N034":3,"N035":2,"N036":1,"N037":1,"N038":5,"N039":5,"N040":1,"N041":1,"N042":1,"N043":1,"N044":4,"N045":5,"N046":1,"N047":1,"N048":2,"N049":3,"N050":3,"N051":1,"N052":1,"N053":5,"N054":3,"N055":1,"N056":1,"N057":1,"N059":1,"N060":5,"N061":3,"N062":5,"N064":1,"N065":2,"N066":1,"N067":1,"N068":4,"N069":1,"N070":1,"N071":5,"N072":5,"N073":1,"N074":1,"N075":2,"N076":1,"N077":4,"N078":1,"N079":7,"N080":5,"N081":1,"N082":8,"N083":1,"N084":2,"N085":1,"N086":4,"N087":1,"N088":1,"N089":1,"N090":1,"N091":1,"N092":1,"N093":1,"N094":2,"N095":3,"N096":2,"N098":2,"N099":9,"N100":1,"N101":1,"N102":1,"N103":1,"N104":1,"N105":3,"N106":1,"N107":4,"N108":1,"N109":1,"N110":3};
-  const hiPhoto = (r) => 'photos/najeon/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
+  const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/najeon/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
   let dlgList = [], dlgIdx = 0;
@@ -406,7 +406,7 @@ dash.calc('compare', {
       const n = EXTRA[r.id] || 0; let box = document.getElementById('dlg-more');
       if (!box) { box = document.createElement('div'); box.id = 'dlg-more'; box.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:8px'; fig.appendChild(box); }
       i2.hidden = true; document.getElementById('dlg-big-a').hidden = true;
-      box.replaceChildren(...Array.from({ length: n }, (_, k) => { const u = 'photos/najeon/' + r.id + '_' + (k + 1) + '.jpg'; const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener';
+      box.replaceChildren(...Array.from({ length: n }, (_, k) => { const u = 'https://jungmono.github.io/mokgagu-photos/photos/najeon/' + r.id + '_' + (k + 1) + '.jpg'; const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener';
         const im2 = document.createElement('img'); im2.loading = 'lazy'; im2.src = u; im2.alt = r.name + ' 사진 ' + (k + 2); im2.style.cssText = 'display:block;width:100%;height:120px;object-fit:contain;background:#faf8f5;border:1px solid #e5e1da;border-radius:8px;cursor:zoom-in'; a.appendChild(im2); return a; }));
       fig.hidden = !n; }
     document.getElementById('dlg-kind').textContent = `${r.tech} · ${r.kind} · ${r.type} (${r.part})`;

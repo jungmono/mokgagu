@@ -642,7 +642,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     V.at = i; var cid = V.list[i], r = rec(cid), dlg = document.getElementById('dlg'), img = document.getElementById('d-img');
     dlg.dataset.cid = cid;
     img.onerror = function () { if (r && r.t && img.src.indexOf('/thumbs/') < 0) img.src = 'thumbs/' + r.b + '/' + r.n + '.jpg'; };
-    img.src = r ? (r.h ? 'photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '')) : '';
+    img.src = r ? (r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '')) : '';
     img.alt = name(cid);
     var notes = V.S && V.S.notes && V.S.notes[cid];
     document.getElementById('d-info').innerHTML = '<div class="cat">' + esc(BOOK[cid.split('/')[0]] || '') + '</div><h3>' + esc(name(cid)) + (r && r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h3>' +

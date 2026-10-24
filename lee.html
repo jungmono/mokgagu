@@ -443,7 +443,7 @@ dash.calc('bandaji_region', {
     return photoMap.get(id) || null;
   };
   const chunkOf = (plate) => 'photos_hi_' + Math.floor((Number(plate) - 1) / 60);
-  const hiPhoto = (r) => 'photos/lee/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
+  const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/lee/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemById = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
   let dlgList = [], dlgIdx = 0;

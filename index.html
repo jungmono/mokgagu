@@ -337,7 +337,7 @@ function askNotes(cid) {
 function openItem(i) {
   cur = i; const r = shown[i]; if (!r) return; $('dlg').dataset.cid = r.b + '/' + r.pid;
   const img = $('d-img');
-  img.src = r.h ? `photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
+  img.src = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
   img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
   img.alt = r.name;
   const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');

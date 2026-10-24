@@ -139,7 +139,7 @@
       var r = hits[i]; if (!r) return; cur = i;
       dlg.dataset.cid = r.b + '/' + r.pid;
       img.onerror = function () { if (r.t && img.src.indexOf('/thumbs/') < 0) img.src = 'thumbs/' + r.b + '/' + r.n + '.jpg'; };
-      img.src = r.h ? 'photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '');
+      img.src = r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '');
       img.alt = r.name;
       var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
       dlg.querySelector('#st-info').innerHTML = '<h4>' + esc(r.name) + (r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h4>' +

@@ -190,7 +190,7 @@ const dlg = document.getElementById('dlg'); let cur = 0;
 function open_(n) {
   cur = (n + view.length) % view.length; const i = view[cur]; dlg.dataset.cid = 'myart/' + i.id;
   const im = document.getElementById('d-img'); im.src = THUMB[i.id]; im.alt = i.name;
-  const hi = new Image(); hi.onload = () => { if (view[cur] === i) im.src = hi.src; }; hi.src = 'photos/myart/' + i.id + '.jpg';
+  const hi = new Image(); hi.onload = () => { if (view[cur] === i) im.src = hi.src; }; hi.src = 'https://jungmono.github.io/mokgagu-photos/photos/myart/' + i.id + '.jpg';
   const ratio = i.hammer && i.est_lo ? ` <span style="font-size:13px;color:var(--muted);font-weight:400">(낮은 추정가의 ${Math.round(i.hammer / i.est_lo * 100)}%)</span>` : '';
   document.getElementById('d-info').innerHTML = `<div class="badge">${i.sale} · ${i.date.replaceAll('-', '. ')} · Lot ${i.lot}</div><h3>${i.name}</h3><div class="hj">${i.hanja || ''}${i.maker ? (i.hanja ? ' · ' : '') + i.maker : ''}</div><dl>
     <dt>종류</dt><dd>${i.kind}</dd><dt>치수</dt><dd>${i.size || '—'}</dd>${i.cond ? `<dt>보존 상태</dt><dd>${i.cond}</dd>` : ''}${i.note ? `<dt>참고</dt><dd>${i.note}</dd>` : ''}

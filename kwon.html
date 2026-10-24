@@ -378,7 +378,7 @@ dash.calc('compare', {
   let photoRows = null, photoMap = new Map();
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
   const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / 25);
-  const hiPhoto = (r) => 'photos/kwon/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
+  const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/kwon/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
   let dlgList = [], dlgIdx = 0;
