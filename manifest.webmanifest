@@ -1,7 +1,7 @@
 {
   "name": "조선의 목가구 — 거믄·힌의 공부방",
   "short_name": "조선의 목가구",
-  "description": "동인방 정대영 선생님께 배우는 조선의 목가구·도자기 공부 포털",
+  "description": "선생님께 배우는 조선의 목가구·도자기 공부 포털",
   "lang": "ko",
   "start_url": "./index.html",
   "scope": "./",
