@@ -1,9 +1,9 @@
-/* 기물 나란히 비교 (최대 3점) — 모든 페이지 공통.
+/* 기물 나란히 비교 (최대 5점) — 모든 페이지 공통.
    · 기물 사진 창에 「비교에 담기」 단추를 단다 (공유 단추 옆).
    · 담은 기물은 이 기기에 기억하고, 화면 아래 작은 띠에 보여 준다. 「나란히 보기」는 compare.html. */
 (function () {
   if (window.MOKGAGU_CMP) return;
-  var KEY = 'mokgagu_cmp', MAX = 3;
+  var KEY = 'mokgagu_cmp', MAX = 5;
   var path = location.pathname.split('/').pop();
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a.slice(0, MAX) : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }

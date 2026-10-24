@@ -55,7 +55,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var PH = 'https://jungmono.github.io/mokgagu-photos/photos/';
-  function list() { try { var a = JSON.parse(localStorage.getItem('mokgagu_cmp') || '[]'); return Array.isArray(a) ? a.slice(0, 3) : []; } catch (e) { return []; } }
+  function list() { try { var a = JSON.parse(localStorage.getItem('mokgagu_cmp') || '[]'); return Array.isArray(a) ? a.slice(0, 5) : []; } catch (e) { return []; } }
 
   /* 크기 글자에서 가로·깊이·높이(cm)를 읽는다. 못 읽으면 null */
   function dims(sz) {
@@ -110,7 +110,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     /* 앞모습 비율을 같은 눈금으로 — 표 위에 크게 */
     var fc = cols.filter(function (c) { return c.dm; }), figH = '';
     if (fc.length >= 2) {
-      var CL = ['#8a2f22', '#1f5f3a', '#2b5d8a'], two = window.innerWidth > 560, colW = Math.min(window.innerWidth, 760) - 56;
+      var CL = ['#8a2f22', '#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c'], two = window.innerWidth > 560, colW = Math.min(window.innerWidth, 760) - 56;
       var maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumW = fc.reduce(function (s, c) { return s + c.dm.w; }, 0);
       var S1 = Math.min(1.5, ((two ? colW / 2 : colW) - 12 * fc.length) / sumW), S2 = Math.min(1.7, (two ? colW / 2 - 10 : colW) / maxW);
       var left = '<div class="fp"><div class="fs">나란히</div><div class="fig">' + cols.map(function (c) { return c.dm ? '<div class="fi"><div class="fr" style="width:' + Math.round(c.dm.w * S1) + 'px;height:' + Math.round(c.dm.h * S1) + 'px"></div><div class="fl"><b>' + esc((c.name || '').slice(0, 8)) + '</b><br>' + fmt(c.dm.w) + '×' + fmt(c.dm.h) + '</div></div>' : ''; }).join('') + '</div></div>';
