@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v13: 비교 기록 — doPost log kind=compare.
  * v12: 틀린 암호 횟수 제한(isFam_) · 매주 자동 백업(backupNow/setupBackup).
  * v10: 반닫이 지도 지역 설명 — doGet action=rlist(가족만), doPost rsave. 시트 '지역설명' 탭(id|text|editor|updated), 고치기 전 글은 '지역설명이력'에 남김.
  * v9: 질문에 사진 첨부(질문 탭 photos 열) · 「바로 쓰기」 게시판 — doGet action=wlist(가족만), doPost wsave·wdel. 시트 '쓰기'·'쓰기이력' 탭. 사진은 cphoto/cimg(드라이브 비공개 폴더) 그대로 쓴다.
@@ -301,8 +302,8 @@ function famWho_(w) { w = String(w || ''); return (w === '거믄' || w === '힌'
 function logPost_(d, fam) {
   if (!fam) return out_({ ok: false, err: 'code' });
   const who = famWho_(d.who); if (!who) return out_({ ok: false, err: 'bad' });
-  const kind = d.kind === 'search' ? 'search' : 'view';
-  tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).appendRow([new Date().toISOString(), who, kind, String(d.cid || '').slice(0, 200), String(d.q || '').slice(0, 60), String(d.page || '').slice(0, 60)]);
+  const kind = d.kind === 'search' ? 'search' : d.kind === 'compare' ? 'compare' : 'view';   // v13: compare = 나란히 본 기물들(cid 에 '도록/번호'를 공백으로 이어 적음, q 에 이름)
+  tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).appendRow([new Date().toISOString(), who, kind, String(d.cid || '').slice(0, 200), String(d.q || '').slice(0, kind === 'compare' ? 200 : 60), String(d.page || '').slice(0, 60)]);
   return out_({ ok: true });
 }
 function qPost_(d, fam) {

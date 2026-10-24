@@ -114,7 +114,18 @@
       '<span class="tx"><b>' + a.length + '/' + MAX + '점</b>비교에 담음</span>' +
       '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html">' + (a.length < 2 ? '2점부터' : '나란히 보기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
   }
+  /* 「나란히 보기」를 누르면 거믄·힌으로 들어온 기기에서는 무엇을 비교했는지 통계에 남긴다 */
+  function logCmp() {
+    try {
+      var L = window.MOKGAGU_LIKES, a = load(); if (!L || !L.me || !L.post || a.length < 2) return;
+      var w = L.me(); if (w !== '거믄' && w !== '힌') return;
+      var keys = a.map(function (x) { return x.k; }).join(' '), S = JSON.parse(sessionStorage.getItem('mokgagu_cmp_seen') || '{}'), sk = w + '|' + keys;
+      if (S[sk]) return; S[sk] = 1; sessionStorage.setItem('mokgagu_cmp_seen', JSON.stringify(S));
+      L.post({ action: 'log', who: w, kind: 'compare', cid: keys, q: a.map(function (x) { return (x.n || '').slice(0, 14); }).join(' | '), page: path || 'index.html' });
+    } catch (e) {}
+  }
   document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('#cmp-tray a.go')) logCmp();
     var r = e.target.closest && e.target.closest('[data-rm]'); if (r) { api.remove(r.getAttribute('data-rm')); scan(); return; }
     if (e.target.closest && e.target.closest('[data-clr]')) { api.clear(); scan(); }
   });

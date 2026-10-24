@@ -196,6 +196,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   body.pr .qi{break-inside:avoid;border-color:#999}
   #rv,#lk-box{display:none!important}
 }
+.cmp1{border:1px solid #e5e1da;border-radius:12px;padding:8px 10px;margin:0 0 8px;background:#fff}.cmp-h{font-size:12px;color:#6b665e;margin-bottom:4px}.cmp-n{font-size:12.5px;margin-top:4px;color:#3b3833}.cmp1 button{margin-top:6px;border:1.5px solid #111;background:#fff;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}.cmpc{display:inline-block;font-size:12px;border:1px dashed #a39c92;border-radius:8px;padding:6px 8px;margin-right:4px}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#111111">
@@ -341,7 +342,8 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     var qs = {}; D.logs.forEach(function (x) { if (x.who === w && x.kind === 'search' && x.q) qs[x.q] = (qs[x.q] || 0) + 1; });
     var cms = D.comments.filter(function (c) { return c.author === w; }).sort(function (a, b) { return String(b.t).localeCompare(a.t); });
     var ask = D.questions.filter(function (q) { return q.who === w; });
-    return { likes: likes, order: order, seen: seen, books: books, qs: qs, cms: cms, ask: ask };
+    var cmps = D.logs.filter(function (x) { return x.who === w && x.kind === 'compare' && x.cid; }).slice().reverse();
+    return { cmps: cmps, likes: likes, order: order, seen: seen, books: books, qs: qs, cms: cms, ask: ask };
   }
   var SEQ = {};   /* 사진 창에서 좌우로 넘길 목록들 */
   function pcHTML(w) {
@@ -358,6 +360,11 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
         (P.likes.length ? '<div class="th">' + P.likes.slice(0, 12).map(function (x) { return thA(x.cid, '', gl); }).join('') + '</div>' : '<p class="empty">아직 별을 단 기물이 없어요.</p>') + '</div>' +
       '<div class="blk"><h3>👀 최근 찾아본 기물 <small>' + P.order.length + '점</small></h3>' +
         (P.order.length ? '<div class="th">' + P.order.slice(0, 12).map(function (c) { return thA(c, P.seen[c] > 1 ? P.seen[c] + '번' : '', gv); }).join('') + '</div>' : '<p class="empty">이 기능을 켠 뒤로 찾아본 기물이 여기 쌓여요.</p>') + '</div>' +
+      '<div class="blk"><h3>⚖️ 나란히 비교해 본 기물 <small>' + P.cmps.length + '번</small></h3>' +
+        (P.cmps.length ? '<div class="cmps">' + P.cmps.slice(0, 8).map(function (x) {
+          var ks = x.cid.split(' '), nm = (x.q || '').split(' | ');
+          return '<div class="cmp1"><div class="cmp-h">' + ago(x.t) + '</div><div class="th">' + ks.map(function (k, i) { return k.indexOf('col/') === 0 ? '<span class="cmpc" title="소장품">' + esc(nm[i] || '소장품') + '</span>' : thA(k, '', 'cmp-' + w); }).join('') + '</div><div class="cmp-n">' + esc(nm.join(' · ')) + '</div>' + (ks.some(function (k) { return k.indexOf('col/') === 0; }) ? '' : '<button type="button" data-recmp="' + esc(x.cid) + '">다시 비교하기</button>') + '</div>';
+        }).join('') + '</div>' : '<p class="empty">아직 나란히 비교해 본 기물이 없어요. 기물 사진 창의 「비교에 담기」로 시작해요.</p>') + '</div>' +
       '<div class="blk"><h3>📚 많이 본 도록</h3>' +
         (bk.length ? '<ul class="rank">' + bk.map(function (b) { return '<li><span>' + esc(BOOK[b] || b) + '</span><i style="width:' + Math.max(6, P.books[b] / mx * 100) + '%"></i><b>' + P.books[b] + '번</b></li>'; }).join('') + '</ul>' : '<p class="empty">아직 기록이 없어요.</p>') + '</div>' +
       '<div class="blk"><h3>🔍 찾아본 말</h3>' +
@@ -367,6 +374,11 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '</div>';
   }
 
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-recmp]'); if (!b) return;
+    var ks = b.dataset.recmp.split(' '); try { localStorage.setItem('mokgagu_cmp', JSON.stringify(ks.map(function (k) { return { k: k, n: name(k) || '', u: '' }; }))); } catch (x) {}
+    location.href = 'compare.html';
+  });
   /* ── 선생님께 여쭤볼 것 ── */
   function qiHTML(q, grp) {
     var w = q.who, ed = editId === q.id, an = ansId === q.id;
