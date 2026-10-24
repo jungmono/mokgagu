@@ -30,7 +30,7 @@ td.mu{color:#a39d92}
 a.lk{color:var(--acc);font-weight:700;font-size:12px}
 dialog{border:0;padding:0;background:#fff;color:#1d1b18;width:min(640px,96vw);max-height:92vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
 dialog::backdrop{background:rgba(20,20,24,.6)}
-#lb,#lb *{touch-action:pan-y pinch-zoom}#lb .box{background:#f4f1ea;display:grid;place-items:center;height:min(46vh,420px)}
+#lb .box{background:#f4f1ea;display:grid;place-items:center;height:min(46vh,420px)}
 #lb .box{overflow:hidden}#lb img{display:block;max-width:100%;max-height:min(46vh,420px);width:auto;height:auto;object-fit:contain;user-select:none}
 #lb .inf{padding:12px 16px 4px;max-height:28vh;overflow:auto}#lb .inf h3{margin:0 0 6px;font-size:18px}#lb .inf h3 small{font-weight:400;color:#6b665e;margin-left:6px;font-size:14px}
 #lb dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px;margin:0 0 6px}#lb dt{color:#6b665e}#lb dd{margin:0}
@@ -49,6 +49,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   <div id="app"></div>
 </div>
 <dialog id="lb" aria-label="기물 보기"><div class="box"><img id="lb-img" alt=""></div><div class="inf" id="lb-inf"></div><div class="ft"><button type="button" id="lb-p">← 이전</button><span id="lb-pos"></span><button type="button" id="lb-n">다음 →</button><button type="button" id="lb-x">닫기</button></div></dialog>
+<script src="photozoom.js?v=20261019"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -75,7 +76,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       $('app').innerHTML = '<div class="empty"><b>비교할 기물이 ' + (n ? '한 점뿐' : '아직 없어요') + '.</b><br>도록에서 기물 사진 창을 열고 위쪽의 <b>「비교에 담기」</b>를 누르면 최대 3점까지 담겨요. 두 점 이상 담으면 이 화면에서 나란히 볼 수 있어요.<br><a href="index.html">처음 화면으로</a></div>';
       return;
     }
-    $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서 옆으로 밀면 다음·이전 기물로 넘어가요.';
+    $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
     var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
@@ -133,8 +134,12 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   }
   function step(d) { cur = (cur + d + window.__cols.length) % window.__cols.length; showLb(); }
   $('lb-p').onclick = function () { step(-1); }; $('lb-n').onclick = function () { step(1); }; $('lb-x').onclick = function () { lb.close(); };
+  /* 사진 확대·축소·끌기·두 번 톡 확대, 좌우로 밀기 — 다른 도록의 기물 창과 같은 손놀림(photozoom.js) */
+  if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: lb, area: lb.querySelector('.box'),
+    canNext: function () { return window.__cols && window.__cols.length > 1; }, canPrev: function () { return window.__cols && window.__cols.length > 1; },
+    next: function () { step(1); }, prev: function () { step(-1); } });
   var sx = null, sy = null;
-  lb.addEventListener('pointerdown', function (e) { if (e.target.closest('button')) { sx = null; return; } sx = e.clientX; sy = e.clientY; });
+  lb.addEventListener('pointerdown', function (e) { if (e.target.closest('button') || e.target.closest('.box')) { sx = null; return; } sx = e.clientX; sy = e.clientY; });
   lb.addEventListener('pointerup', function (e) { if (sx == null) return; var dx = e.clientX - sx, dy = e.clientY - sy; sx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1); });
   lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
 
