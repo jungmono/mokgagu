@@ -129,6 +129,7 @@ footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-
 .eyebrow.eb-top{position:absolute;top:14px;left:16px;right:auto;justify-content:flex-start;margin:0;z-index:5}
 body{position:relative}
 .ew .mid{margin:0 .3em;font-weight:900;color:#111}
+.r-fac{margin:0 0 12px}.r-fg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 6px}.r-fl{font-size:12.5px;color:#6b665e;min-width:36px}.r-sub{font-size:14px;font-weight:600;color:#8a2f22}.r-clr{border-color:#8a2f22!important;color:#8a2f22}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#111111">
@@ -156,6 +157,7 @@ body{position:relative}
 
   <section id="results" hidden>
     <div class="r-head"><h2 id="r-title"></h2><div class="r-chips" id="r-chips"></div></div>
+    <div id="r-fac" class="r-fac"></div>
     <div class="r-grid" id="r-grid"></div>
   </section>
 
@@ -306,7 +308,7 @@ function search(raw) {
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
   hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농') : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
-  only = ''; mapKeys = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
+  only = ''; fa = {}; lastLabel = null; mapKeys = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
   bmapShow(raw.trim());
@@ -317,12 +319,34 @@ function bmapShow(q) {
   if (!yes || bmapOn) return; bmapOn = true;
   const s = document.createElement('script'); s.src = 'bmap.js?v=35'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
+/* ── 걸러 보기: 지역·시대·수종 (도록에 적힌 것만 센다) ── */
+let fa = {}, lastLabel = null;
+const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
+const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? ({안동:'경상',진주:'경상',통영:'경상',밀양:'경상',울산:'경상',동래:'경상',나주:'전라',남원:'전라',전주:'전라',평양:'평안',박천:'평안',해주:'황해',개성:'경기',강화:'경기'}[m[0]] || m[0]) : ''; };
+const eraOf = (r) => { const e = r.era || ''; if (!e || /미상/.test(e)) return '시대 미상'; if (/고려/.test(e)) return '고려'; if (/(19|20)세기.*(20)세기|20세기|일제|근대/.test(e) && !/^조선 19세기$|^19세기$/.test(e)) return '19말~20세기'; if (/15세기|16세기|조선 전기/.test(e)) return '조선 전기'; if (/17세기|18세기|조선 후기/.test(e)) return '조선 후기'; if (/19세기/.test(e)) return '19세기'; return '조선(세기 미상)'; };
+const woodsOf = (r) => (r.wood || '').split(/\s*[,·]\s*/).filter(Boolean);
+const FAC = [['지역', '지역', (r) => [regOf(r)].filter(Boolean)], ['시대', '시대', (r) => [eraOf(r)]], ['수종', '수종', woodsOf]];
+const facOk = (r, skip) => FAC.every(([k, , f]) => k === skip || !fa[k] || f(r).includes(fa[k]));
+function drawFacets(base) {
+  const out = FAC.map(([k, lab, f]) => {
+    const cnt = {}; base.filter((r) => facOk(r, k)).forEach((r) => f(r).forEach((v) => (cnt[v] = (cnt[v] || 0) + 1)));
+    const ent = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    if (ent.length < 2 && !fa[k]) return '';
+    return `<div class="r-fg"><span class="r-fl">${lab}</span>${ent.map(([v, n]) => `<button class="r-chip" data-fk="${k}" data-fv="${esc(v)}" aria-pressed="${fa[k] === v}">${esc(v)}<small>${n}</small></button>`).join('')}</div>`;
+  }).join('');
+  const on = Object.values(fa).some(Boolean);
+  $('r-fac').innerHTML = base.length > 1 ? out + (on ? '<button class="r-chip r-clr" data-clr="1">조건 풀기 ✕</button>' : '') : '';
+}
 function drawResults(label) {
   const counts = {};
   hits.forEach((r) => (counts[r.b] = (counts[r.b] || 0) + 1));
   shown = only ? hits.filter((r) => r.b === only) : hits;
   if (mapKeys) shown = shown.filter((r) => mapKeys.has(r.b + '/' + r.n));
-  $('r-title').innerHTML = `‘${esc(label ?? $('q').value.trim())}’ 검색 결과 <b>${hits.length.toLocaleString('ko-KR')}</b>건`;
+  const base = shown; drawFacets(base);
+  shown = base.filter((r) => facOk(r));
+  const conds = Object.values(fa).filter(Boolean);
+  if (label != null) lastLabel = label;
+  $('r-title').innerHTML = `‘${esc(lastLabel ?? $('q').value.trim())}’ 검색 결과 <b>${hits.length.toLocaleString('ko-KR')}</b>건` + (conds.length ? ` <span class="r-sub">→ ${esc(conds.join(' + '))} <b>${shown.length}</b>점</span>` : '');
   const chips = [['', '전체', hits.length], ...ORDER.filter((k) => counts[k]).map((k) => [k, TITLE[k], counts[k]])];
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
     `<button class="r-chip" data-k="${k}" aria-pressed="${only === k}">${esc(t)}<small>${n}</small></button>`).join('') : '';
@@ -330,10 +354,11 @@ function drawResults(label) {
     <button class="r-item" data-i="${i}" data-cid="${esc(r.b + '/' + r.pid)}">
       <div class="ph">${r.t ? `<img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="">` : ''}</div>
       <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat)}</div>
-      <div class="mt">${esc([r.era, r.size].filter(Boolean).join(' · '))}</div></div>
+      <div class="mt">${esc([r.era, r.size, r.wood].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';
 }
 window.addEventListener('bmap:filter', (e) => { mapKeys = e.detail.keys ? new Set(e.detail.keys) : null; if (!$('results').hidden) drawResults(); });
+$('r-fac').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; if (c.dataset.clr) fa = {}; else fa[c.dataset.fk] = fa[c.dataset.fk] === c.dataset.fv ? '' : c.dataset.fv; drawResults(); });
 $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; only = c.dataset.k; drawResults(); });
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
 
