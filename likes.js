@@ -389,7 +389,7 @@
   var colDlg, colPanel, colOpen = false, colView = '';
   function needIndex() {
     var ld = function (src) { return new Promise(function (res) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = res; document.head.appendChild(s); }); };
-    return Promise.all([window.SEARCH ? 0 : ld('search.js'), window.LK_EXTRA ? 0 : ld('likes-extra.js?v=20261024')]);
+    return Promise.all([window.SEARCH ? 0 : ld('search.js'), window.LK_EXTRA ? 0 : ld('likes-extra.js?v=20261024b')]);
   }
   function openCol() {
     if (!colDlg) {
@@ -418,7 +418,7 @@
   function drawCol() {
     var m = state(), IX = {};
     (window.SEARCH || []).forEach(function (r) { IX[r.b + '/' + r.pid] = r; });
-    Object.keys(window.LK_EXTRA || {}).forEach(function (k) { var e = window.LK_EXTRA[k], p = k.split('/'); IX[k] = { b: p[0], pid: p[1], n: p[1], name: e[0], cat: e[1], t: true, x: 1 }; });
+    Object.keys(window.LK_EXTRA || {}).forEach(function (k) { var e = window.LK_EXTRA[k], p = k.split('/'); IX[k] = { b: p[0], pid: p[1], n: p[1], name: e[0], cat: e[1], t: true, x: 1, u: e[2] || '' }; });
     if (me() === '벗') return drawColBeot(m, IX);
     var count = function (f) { return Object.keys(m).filter(f).length; };
     var fG = function (k) { return m[k]['거믄']; }, fH = function (k) { return m[k]['힌']; };
@@ -435,7 +435,7 @@
     else html += '<div class="lc-grid">' + keys.map(function (k) {
       var r = IX[k], s = m[k];
       var st = (s['거믄'] ? star('거믄') : '') + (s['힌'] ? star('힌') : '');
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" src="thumbs/' + r.b + '/' + r.n + '.jpg" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
         '<span class="lc-stars">' + st + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>';
     }).join('') + '</div>';
     if (pend.length) html += '<p class="lc-note">' + (serverOk ? '별 ' + pend.length + '개를 시트에 올리는 중이에요.' : '별 ' + pend.length + '개가 아직 이 기기에만 있어요. 시트 연결이 열리면 저절로 올라가요.') + '</p>';
@@ -448,7 +448,7 @@
     var keys = Object.keys(beot).sort(function (a, b) { return String(beot[b]).localeCompare(String(beot[a])); });
     var html = '<div class="lc-hd"><h2>' + star('벗') + '벗의 좋아요</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body">';
     html += keys.length ? '<div class="lc-grid">' + keys.map(function (k) { var r = IX[k];
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" src="thumbs/' + r.b + '/' + r.n + '.jpg" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
         '<span class="lc-stars">' + star('벗') + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>'; }).join('') + '</div>'
       : '<p class="lc-empty">아직 좋아요 한 기물이 없어요. 사진 왼쪽 위 말풍선을 눌러 보세요.</p>';
     html += '<p class="lc-note">벗의 좋아요는 이 기기에만 담겨요.</p>';
