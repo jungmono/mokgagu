@@ -3,6 +3,8 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v14: 수업 녹음을 드라이브 '조선의 목가구 수업 녹음' 폴더(비공개)에 저장 — doPost aup(3MB씩 나눠 올림), doGet aget(나눠 받아 재생). 「쓰기」 탭에 audio 열.
+ *      처음 한 번 녹음준비() 를 실행해 권한(외부 요청)을 허락한다.
  * v13: 비교 기록 — doPost log kind=compare.
  * v12: 틀린 암호 횟수 제한(isFam_) · 매주 자동 백업(backupNow/setupBackup).
  * v10: 반닫이 지도 지역 설명 — doGet action=rlist(가족만), doPost rsave. 시트 '지역설명' 탭(id|text|editor|updated), 고치기 전 글은 '지역설명이력'에 남김.
@@ -79,6 +81,7 @@ function doGet(e) {
   if (p.action === 'stats') return statsGet_(fam);
   if (p.action === 'wlist') return wGet_(fam);
   if (p.action === 'rlist') return rGet_(fam);
+  if (p.action === 'aget') return auGet_(p, fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -88,6 +91,7 @@ function doPost(e) {
   let d = {};
   try { d = JSON.parse(e.postData.contents); } catch (x) { return out_({ ok: false, err: 'json' }); }
   const fam = isFam_(d.code);
+  if (d.action === 'aup') return auPost_(d, fam);   // 녹음 올리기는 시간이 걸려 다른 일을 막지 않게 잠그지 않는다
   const lock = LockService.getScriptLock(); lock.waitLock(10000);
   try {
     const sh = sheet_();
@@ -332,22 +336,27 @@ function qPost_(d, fam) {
 
 
 /* ───────── 공부방 「바로 쓰기」 (v9) ─────────
-   '쓰기' 탭: id | who(처음 쓴 사람) | cls(수업일) | title | body | photos(JSON) | created | updated | editor(마지막으로 고친 사람) | deleted | status(비어 있으면 정리 전, '정리됨')
+   '쓰기' 탭: id | who(처음 쓴 사람) | cls(수업일) | title | body | photos(JSON) | created | updated | editor(마지막으로 고친 사람) | deleted | status(비어 있으면 정리 전, '정리됨') | audio(JSON, v14)
    '쓰기이력' 탭: 고치기 전 글을 한 줄씩 남겨 둔다.  거믄·힌은 서로의 글을 고칠 수 있다. */
-const W_SHEET = '쓰기', W_HEAD = ['id', 'who', 'cls', 'title', 'body', 'photos', 'created', 'updated', 'editor', 'deleted', 'status'];
-const WH_SHEET = '쓰기이력', WH_HEAD = ['time', 'id', 'editor', 'title', 'body', 'photos'];
+const W_SHEET = '쓰기', W_HEAD = ['id', 'who', 'cls', 'title', 'body', 'photos', 'created', 'updated', 'editor', 'deleted', 'status', 'audio'];
+const WH_SHEET = '쓰기이력', WH_HEAD = ['time', 'id', 'editor', 'title', 'body', 'photos', 'audio'];
+function wSheet_() {
+  const sh = tab_(W_SHEET, W_HEAD);
+  if (sh.getRange(1, 12).getValue() !== 'audio') sh.getRange(1, 12).setValue('audio');
+  return sh;
+}
 function wRow_(r) {
   return { id: String(r[0]), who: String(r[1]), cls: day_(r[2]), title: String(r[3]), body: String(r[4]), photos: photos_(r[5], 12),
-    created: iso_(r[6]), updated: iso_(r[7]), editor: String(r[8] || r[1]), status: String(r[10] || '') };
+    created: iso_(r[6]), updated: iso_(r[7]), editor: String(r[8] || r[1]), status: String(r[10] || ''), audio: audios_(r[11]) };
 }
 function wGet_(fam) {
   if (!fam) return out_({ ok: false, err: 'code' });
-  const rows = tab_(W_SHEET, W_HEAD).getDataRange().getValues(); rows.shift();
+  const rows = wSheet_().getDataRange().getValues(); rows.shift();
   return out_({ ok: true, list: rows.filter(r => r[0] && !r[9]).map(wRow_) });
 }
 function wPost_(d, fam) {
   if (!fam) return out_({ ok: false, err: 'code' });
-  const sh = tab_(W_SHEET, W_HEAD), now = new Date().toISOString();
+  const sh = wSheet_(), now = new Date().toISOString();
   const find = id => { const v = sh.getDataRange().getValues(); for (let i = 1; i < v.length; i++) if (String(v[i][0]) === String(id)) return { at: i + 1, r: v[i] }; return null; };
   if (d.action === 'wdel') {
     const f = find(d.id); if (!f) return out_({ ok: true });
@@ -358,22 +367,25 @@ function wPost_(d, fam) {
   if (!id || !who) return out_({ ok: false, err: 'bad' });
   const title = String(it.title || '').trim().slice(0, 100), body = String(it.body || '').trim().slice(0, 20000);
   const ph = photos_(it.photos, 12);
-  if (!title && !body && !ph.length) return out_({ ok: false, err: 'text' });
+  const hasAu = Array.isArray(it.audio), au = audios_(it.audio);
+  if (!title && !body && !ph.length && !au.length) return out_({ ok: false, err: 'text' });
   const cls = String(it.cls || '').slice(0, 10);
   const f = find(id);
   if (f && f.r[9]) return out_({ ok: false, err: 'none' });
   if (!f) {
-    sh.appendRow([id, who, cls, title, body, JSON.stringify(ph), now, now, editor, '', '']);
-    return out_({ ok: true, item: wRow_([id, who, cls, title, body, JSON.stringify(ph), now, now, editor, '', '']) });
+    const row = [id, who, cls, title, body, JSON.stringify(ph), now, now, editor, '', '', JSON.stringify(au)];
+    sh.appendRow(row);
+    return out_({ ok: true, item: wRow_(row) });
   }
   // 다른 사람이 그 사이에 고쳤다면 덮어쓰지 않고 알린다
   if (it.base && iso_(f.r[7]) !== String(it.base)) return out_({ ok: false, err: 'conflict', item: wRow_(f.r) });
-  tab_(WH_SHEET, WH_HEAD).appendRow([now, id, String(f.r[8] || f.r[1]), String(f.r[3]), String(f.r[4]), String(f.r[5])]);
-  const nv = [id, String(f.r[1]), cls, title, body, JSON.stringify(ph), f.r[6], now, editor, '', ''];   // 고치면 다시 「정리 전」
+  tab_(WH_SHEET, WH_HEAD).appendRow([now, id, String(f.r[8] || f.r[1]), String(f.r[3]), String(f.r[4]), String(f.r[5]), String(f.r[11] || '')]);
+  const keepAu = hasAu ? JSON.stringify(au) : String(f.r[11] || '[]');   // 녹음 칸을 모르는 옛 화면에서 고쳐도 녹음은 남긴다
+  const nv = [id, String(f.r[1]), cls, title, body, JSON.stringify(ph), f.r[6], now, editor, '', '', keepAu];   // 고치면 다시 「정리 전」
   sh.getRange(f.at, 1, 1, W_HEAD.length).setValues([nv]);
   return out_({ ok: true, item: wRow_(nv) });
 }
-function 쓰기준비() { tab_(W_SHEET, W_HEAD); tab_(WH_SHEET, WH_HEAD); qSheet_(); }
+function 쓰기준비() { wSheet_(); tab_(WH_SHEET, WH_HEAD); qSheet_(); }
 
 /* ───────── 반닫이 지도 지역 설명 (v10) ───────── */
 const R_SHEET = '지역설명', R_HEAD = ['id', 'text', 'editor', 'updated'], RH_SHEET = '지역설명이력', RH_HEAD = ['time', 'id', 'editor', 'text'];
@@ -396,3 +408,72 @@ function rPost_(d, fam) {
   return out_({ ok: true, item: { text: text, editor: editor, updated: now } });
 }
 function 지역설명준비() { tab_(R_SHEET, R_HEAD); tab_(RH_SHEET, RH_HEAD); }
+
+
+/* ───────── 수업 녹음 (v14) ─────────
+   녹음은 이 스크립트를 배포한 계정의 드라이브 '조선의 목가구 수업 녹음' 폴더(비공개)에 한 파일로 저장한다.
+   · 올리기 aup : 화면이 녹음을 3MB씩 잘라 차례로 보낸다(base64). 첫 조각에서 드라이브 이어 올리기를 열고,
+                  그 주소를 6시간 기억해 두었다가 조각마다 이어 붙인다. 마지막 조각이 들어가면 파일 id 를 돌려준다.
+   · 듣기 aget  : 가족 암호가 있는 화면만 3MB씩 받아 이어 붙여 재생한다(드라이브 공유 설정은 필요 없다).
+   · 글에 붙은 녹음은 「쓰기」 탭 audio 열에 [{id, name, dur(초), size, mime}] 로 남는다.                      */
+const AU_FOLDER = '조선의 목가구 수업 녹음', AU_CHUNK = 3 * 1024 * 1024, AU_MAX = 500 * 1024 * 1024;
+function auFolder_() {
+  const it = DriveApp.getFoldersByName(AU_FOLDER);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(AU_FOLDER);
+}
+function audios_(a) {
+  if (typeof a === 'string') { try { a = JSON.parse(a || '[]'); } catch (x) { a = []; } }
+  if (!Array.isArray(a)) return [];
+  return a.slice(0, 6).map(x => ({ id: String(x && x.id || '').replace(/[^\w-]/g, '').slice(0, 80), name: String(x && x.name || '').slice(0, 100),
+    dur: Math.max(0, Math.round(Number(x && x.dur) || 0)), size: Math.max(0, Math.round(Number(x && x.size) || 0)), mime: String(x && x.mime || '').slice(0, 40) })).filter(x => x.id);
+}
+function auMime_(m) { m = String(m || '').split(';')[0].trim(); return /^audio\/(webm|mp4|ogg|mpeg|aac|x-m4a|wav)$/.test(m) ? m : 'audio/webm'; }
+function auPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const u = d.up || {}, id = String(u.id || '').replace(/[^\w-]/g, '').slice(0, 40);
+  const i = Math.floor(Number(u.i)), n = Math.floor(Number(u.n)), size = Math.floor(Number(u.size));
+  if (!id || !(n > 0) || !(i >= 0 && i < n) || !(size > 0) || size > AU_MAX || n !== Math.ceil(size / AU_CHUNK)) return out_({ ok: false, err: 'bad' });
+  const mime = auMime_(u.mime), bytes = Utilities.base64Decode(String(u.data || ''));
+  const start = i * AU_CHUNK, want = i < n - 1 ? AU_CHUNK : size - start;
+  if (bytes.length !== want) return out_({ ok: false, err: 'size' });
+  const cache = CacheService.getScriptCache(), key = 'au_' + id, auth = { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() };
+  let sess = cache.get(key);
+  if (i === 0 && !(u.retry && sess)) {
+    const meta = { name: String(u.name || ('수업녹음 ' + id)).slice(0, 100), mimeType: mime, parents: [auFolder_().getId()], description: '조선의 목가구 공부방 수업 녹음 (' + id + ')' };
+    const r = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id', {
+      method: 'post', contentType: 'application/json; charset=UTF-8', payload: JSON.stringify(meta), muteHttpExceptions: true,
+      headers: Object.assign({ 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(size) }, auth) });
+    const h = r.getHeaders(); sess = h.Location || h.location;
+    if (r.getResponseCode() !== 200 || !sess) return out_({ ok: false, err: 'start', status: r.getResponseCode() });
+    cache.put(key, sess, 21600);
+  }
+  if (!sess) return out_({ ok: false, err: 'session' });   // 6시간이 지났거나 기억이 지워짐 → 화면이 처음부터 다시 올린다
+  const end = start + want - 1;
+  if (u.retry) {   // 다시 보내는 조각이면 드라이브가 이미 받은 데까지 확인해 겹치지 않게 한다
+    const q = UrlFetchApp.fetch(sess, { method: 'put', payload: '', muteHttpExceptions: true, headers: { 'Content-Range': 'bytes */' + size } });
+    const qc = q.getResponseCode();
+    if (qc === 200 || qc === 201) { cache.remove(key); return out_({ ok: true, done: true, id: JSON.parse(q.getContentText()).id, size: size }); }
+    if (qc === 308) { const rg = q.getHeaders().Range || q.getHeaders().range || ''; const got = rg ? Number(String(rg).split('-')[1]) : -1; if (got >= end) return out_({ ok: true, next: i + 1 }); if (got !== start - 1) return out_({ ok: false, err: 'session' }); }
+    else return out_({ ok: false, err: 'session' });
+  }
+  const r2 = UrlFetchApp.fetch(sess, { method: 'put', contentType: mime, payload: bytes, muteHttpExceptions: true, headers: { 'Content-Range': 'bytes ' + start + '-' + end + '/' + size } });
+  const c = r2.getResponseCode();
+  if (c === 308) return out_({ ok: true, next: i + 1 });
+  if (c === 200 || c === 201) { cache.remove(key); return out_({ ok: true, done: true, id: JSON.parse(r2.getContentText()).id, size: size }); }
+  return out_({ ok: false, err: 'put', status: c });
+}
+function auGet_(p, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const id = String(p.id || '').replace(/[^\w-]/g, '');
+  let f; try { f = DriveApp.getFileById(id); } catch (x) { return out_({ ok: false, err: 'none' }); }
+  const ps = f.getParents(); if (!ps.hasNext() || ps.next().getName() !== AU_FOLDER) return out_({ ok: false, err: 'none' });
+  const size = f.getSize(), n = Math.max(1, Math.ceil(size / AU_CHUNK)), i = Math.floor(Number(p.i) || 0);
+  if (i < 0 || i >= n) return out_({ ok: false, err: 'bad' });
+  const start = i * AU_CHUNK, end = Math.min(size, start + AU_CHUNK) - 1;
+  const r = UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media', { muteHttpExceptions: true,
+    headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), Range: 'bytes=' + start + '-' + end } });
+  if (r.getResponseCode() !== 206 && r.getResponseCode() !== 200) return out_({ ok: false, err: 'read', status: r.getResponseCode() });
+  return out_({ ok: true, i: i, n: n, size: size, type: f.getMimeType(), data: Utilities.base64Encode(r.getContent()) });
+}
+/* 처음 한 번 편집기에서 실행: 폴더를 만들고, 드라이브 이어 올리기에 필요한 '외부 요청' 권한을 허락받는다 */
+function 녹음준비() { auFolder_(); wSheet_(); tab_(WH_SHEET, WH_HEAD); UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } }); }
