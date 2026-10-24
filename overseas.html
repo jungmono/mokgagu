@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>해외경매 한국 목가구·칠기(크리스티·소더비)</title>
+<meta name="color-scheme" content="light">
+<style>
+:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--accent:#8a2f22;--ok:#1f5f3a;--warn:#9a6a10;
+  --sans:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;--serif:"Noto Serif KR","AppleMyungjo","Nanum Myeongjo","Batang",serif}
+*{box-sizing:border-box}
+html{background:#fff}
+body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:24px 16px 48px;word-break:keep-all}
+.wrap{max-width:1200px;margin:0 auto}
+.sa-top{max-width:1200px;margin:0 auto 18px}
+.sa-home{display:inline-flex;align-items:center;gap:10px;color:#111;background:#fff;border:2px solid #111;border-radius:999px;padding:8px 18px;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .15s,background .15s}
+.sa-home:hover{background:#f2f0ec;transform:translateY(-1px)}
+.sa-home img{height:34px;width:auto;display:block}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);margin:4px 0 8px}
+ul.lead{margin:0 0 20px;padding-left:20px;color:#3b3833;line-height:1.75;font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:0 0 22px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.tile .k{font-size:13px;color:var(--muted)}.tile .v{font-family:var(--serif);font-size:28px;margin-top:4px}.tile .v small{font-size:14px;color:var(--muted);margin-left:2px}
+.tile .s{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+h2{font-size:18px;margin:26px 0 10px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{position:sticky;top:0;font-weight:600;color:var(--muted);background:var(--panel);font-size:13px}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer}tbody tr:hover{background:#f6f4ef}tbody tr.on{background:#efe9df}
+.filters{display:flex;flex-direction:column;gap:10px;margin:8px 0 16px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.row .lab{font-size:13px;color:var(--muted);min-width:44px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;color:var(--fg);font-family:inherit}
+.chip:hover{border-color:#bdb6aa}
+.chip.on{background:#1d1b18;color:#fff;border-color:#1d1b18}
+.chip .n{opacity:.6;margin-left:4px;font-size:12px}
+select{font:inherit;font-size:13.5px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.count{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s;text-align:left;padding:0;font:inherit;color:inherit}
+.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-1px)}
+.card .ph{aspect-ratio:1/1;background:#fff;display:grid;place-items:center;padding:10px;border-bottom:1px solid #f0ede8}
+.card .ph img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.card .bd{padding:10px 12px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.badge{font-size:11.5px;color:var(--muted)}
+.card .nm{font-weight:600;font-size:15px;line-height:1.35}
+.card .mk{font-size:12.5px;color:var(--muted)}
+.card .sz{font-size:12.5px;color:var(--muted)}
+.price{margin-top:auto;padding-top:6px;font-size:12.5px;line-height:1.55}
+.price .est{color:var(--muted)}
+.price .ham{font-size:15px;font-weight:700;color:var(--accent)}
+.price .fail{font-size:14px;font-weight:600;color:#8b857b}
+.price .pre{font-size:14px;font-weight:600;color:var(--warn)}
+.note{font-size:13px;color:var(--muted);line-height:1.7;margin:22px 0 0}
+dialog{border:0;border-radius:14px;padding:0;max-width:min(1100px,96vw);width:96vw;max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+dialog::backdrop{background:rgba(20,18,15,.55)}
+.d-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px;padding:20px;max-height:calc(94vh - 60px);overflow:auto}
+.d-img{display:grid;place-items:center;min-height:300px}
+.d-img img{max-width:100%;max-height:74vh;object-fit:contain;-webkit-user-drag:none;user-select:none}
+.d-info h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:2px 0 4px}
+.d-info .hj{color:var(--muted);margin-bottom:12px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14.5px}
+.d-info dt{color:var(--muted)}.d-info dd{margin:0}
+.d-info .big{font-size:20px;font-weight:700;color:var(--accent)}
+.d-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.d-foot button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer}
+@media (max-width:720px){.d-body{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card .nm{font-size:14px}}
+#to-top{position:fixed;right:22px;bottom:22px;z-index:900;width:52px;height:52px;border-radius:50%;border:2px solid #111;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s,background .15s}
+#to-top.show{opacity:1;visibility:visible;transform:none}#to-top:hover{background:#fff;color:#111}
+.rep{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#7a4b12;background:#fbf1de;border:1px solid #ecd6ad;border-radius:999px;padding:1px 7px;margin-top:2px;align-self:flex-start}.rep.f{color:#8a2f22;background:#fbeeea;border-color:#efcfc8}.hist{margin:16px 0 0;padding:12px 14px;background:#faf8f3;border:1px solid #ece6da;border-radius:12px}.hist h4{margin:0 0 8px;font-size:14px;font-weight:800;color:#1d1b18}.hist h4 small{font-weight:400;color:#8a837a;margin-left:6px}.hist ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}.hist li button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;width:100%;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:13.5px;line-height:1.4}.hist li button:hover{background:#f1ece2}.hist li.cur button{background:#fff;box-shadow:inset 0 0 0 1.5px #1d1b18;cursor:default}.hist .hd{color:#6b665e;font-size:12.5px;white-space:nowrap}.hist .hs{white-space:nowrap;font-weight:700}.hist .hs.ok{color:var(--accent)}.hist .hs.no{color:#8b857b}.hist .hs.pre{color:var(--warn)}.hist .hn{color:#3b3833}.hist .hn small{color:#8a837a}/*FOOT_V2*/.sa-foot{max-width:1200px;margin:44px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}.sa-foot .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}.sa-foot .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}.sa-foot .ft-mark .ew-blk{background:#fff;color:#111}.sa-foot .ft-mark .ew-wht{background:#111;color:#fff}.sa-foot .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}
+/*HOME_V2*/.sa-home,.sa-home:hover{border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;border-radius:0!important}.sa-home:hover{transform:translateY(-1px);opacity:.8}.sa-home img{height:40px!important;width:auto!important}</style><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<script src="common.js?v=6" defer></script>
+</head>
+<body>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="wrap">
+  <h1>해외경매 — 한국 목가구·칠기</h1>
+  <ul class="lead">
+   <li>크리스티(Christie's)와 소더비(Sotheby's)가 2020년 이후 연 경매 중 조선 목가구·칠기를 골랐습니다. 나전칠기가 가장 많습니다.</li>
+   <li>해외 낙찰가는 <b>구매수수료가 포함된 값</b>이고 통화도 달라(달러·유로·홍콩달러) 국내 경매와 곧바로 비교할 수 없습니다. 그래서 경매시세 통계에는 넣지 않았습니다.</li>
+   <li>크리스티 사진은 크리스티 서버에서 바로 불러오며, 소더비 사진은 이 도록에 저장한 것입니다. 사진을 누르면 크게 보고, 원문 페이지로 갈 수 있습니다.</li>
+  </ul>
+  <div class="tiles" id="tiles"></div>
+  <div class="filters">
+    <div class="row" id="f-house"><span class="lab">경매사</span></div>
+    <div class="row" id="f-year"><span class="lab">연도</span></div>
+    <div class="row" id="f-kind"><span class="lab">종류</span></div>
+    <div class="row" id="f-nj"><span class="lab">재질</span></div>
+    <div class="row"><span class="lab">정렬</span><select id="sort"><option value="d">최근 경매부터</option><option value="p">낙찰가 높은 순</option><option value="r">추정가 대비 높은 순</option></select></div>
+  </div>
+  <p class="count" id="count"></p>
+  <div class="grid" id="grid"></div>
+  <p class="note">자료: 크리스티·소더비 누리집의 지난 경매 결과(2020~2026년 10월). 한국 목가구·칠기 가운데 눈에 띄는 것만 모았으며 도자기·서화는 제외했습니다. 추정가는 경매 전 예상 범위, 낙찰가는 구매수수료 포함입니다. 같은 물건이 다시 나온 경우(예: 화각함 2022·2023, 붉은 칠 원반 2022·2024, 낮은 상 2024·2026, 인신함 2021·2022)는 설명에 적었습니다. 2026년 하반기에는 두 곳 모두 한국 목가구 출품이 없었습니다.</p>
+</div>
+<div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>사진과 캡션의 저작권은 각 경매사에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
+<button type="button" id="to-top" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
+<dialog id="dlg" aria-label="자세히 보기">
+  <div class="d-body"><div class="d-img"><img id="d-img" alt=""></div><div class="d-info" id="d-info"></div></div>
+  <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos" style="font-size:13px;color:var(--muted)"></span><span><button id="d-next">다음 →</button> <button id="d-close">닫기</button></span></div>
+</dialog>
+<script>
+const ITEMS = [{"house": "크리스티", "id": "CH-19017-252", "sale": "19017", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2020-09-22", "lot": "252", "name": "나전칠 문방함", "en": "A Mother-of-Pearl Inlaid Lacquer Stationery Box", "era": "조선 16~17세기", "size": "39.1×31.4×10.2cm", "cur": "USD", "lo": 50000, "hi": 70000, "price": 81250, "kind": "함·상자", "note": "뚜껑과 몸체에 연꽃과 봉오리를 나전으로 촘촘히 박은 검갈색 칠 문방함.", "url": "https://www.christies.com/en/lot/lot-6277386", "img": "https://www.christies.com/img/LotImages/2020/NYR/2020_NYR_19017_0252_000(a_mother-of-pearl_inlaid_lacquer_stationery_box_joseon_dynasty035307).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-19017-253", "sale": "19017", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2020-09-22", "lot": "253", "name": "나전 낮은 상", "en": "A Mother-of-Pearl Inlaid Low Table", "era": "조선 16~17세기", "size": "52.5×13×31cm", "cur": "USD", "lo": 20000, "hi": 30000, "price": 25000, "kind": "소반·쟁반", "note": "네 개의 짧은 만곡형 다리. 윗면과 옆면에 나전과 황동선으로 덩굴꽃과 꽃살 무늬.", "url": "https://www.christies.com/en/lot/lot-6277387", "img": "https://www.christies.com/img/LotImages/2020/NYR/2020_NYR_19017_0253_000(a_mother-of-pearl_inlaid_low_table_joseon_dynasty035335).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-18923-124", "sale": "18923", "at": "파리 경매", "city": "파리", "date": "2020-12-10", "lot": "124", "name": "나전칠 이층장", "en": "Cabinet en laque incrusté de nacre", "era": "조선 19~20세기", "size": "", "cur": "EUR", "lo": 6000, "hi": 8000, "price": 32500, "kind": "궤·장", "note": "두 개의 궤를 위아래로 포개고 네 다리 받침 위에 올린 형태. 각 궤는 앞쪽 두 짝 문. 기하무늬 나전과 나비 모양 도금 금속 장석. 뒷면에도 대나무 나전 장식.", "url": "https://www.christies.com/en/lot/lot-6300588", "img": "https://www.christies.com/img/LotImages/2020/PAR/2020_PAR_18923_0124_000(cabinet_en_laque_incruste_de_nacre_coree_dynastie_joseon_xixeme-xxeme_d6300588025050).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-20621-274", "sale": "20621", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-03-22", "lot": "274", "name": "나전칠 육각 소반", "en": "A Mother-of-Pearl Inlaid Lacquer Table (hexafoil)", "era": "조선 17~18세기", "size": "42.5×26.4×20.6cm", "cur": "USD", "lo": 6000, "hi": 9000, "price": 113400, "kind": "소반·쟁반", "note": "육각형 상판에 여섯 개의 만곡형 다리. 흑칠 바탕에 기하무늬와 국화 덩굴 나전, 안쪽은 붉은 칠. 추정가의 열두 배 넘게 낙찰.", "url": "https://www.christies.com/en/lot/lot-6362387", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_20621_0274_000(a_mother-of-pearl_inlaid_lacquer_table_joseon_dynasty123626).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-20621-275", "sale": "20621", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-03-22", "lot": "275", "name": "나전 엽형 쟁반", "en": "A Mother-of-Pearl-Inlaid Foliate-Shaped Tray", "era": "조선 16세기", "size": "길이 44.1cm", "cur": "USD", "lo": 20000, "hi": 30000, "price": 226800, "kind": "소반·쟁반", "note": "안팎에 연꽃 덩굴과 원형 기하무늬를 나전으로 박고, 굽 안쪽은 붉은 칠. 이 도록에서 가장 높게 낙찰.", "url": "https://www.christies.com/en/lot/lot-6362388", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_20621_0275_000(a_mother-of-pearl-inlaid_foliate-shaped_tray_joseon_dynasty123641).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-20991-293", "sale": "20991", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-09-20", "lot": "293", "name": "나전칠 낮은 상", "en": "A Mother-of-Pearl Inlaid Lacquer Low Table", "era": "조선 17세기", "size": "56.8×33×18.1cm", "cur": "USD", "lo": 20000, "hi": 30000, "price": 47880, "kind": "소반·쟁반", "note": "네 개의 안으로 굽은 짧은 다리. 윗면·옆면에 국화 덩굴과 꽃살 무늬를 나전·황동선으로 장식, 안쪽은 검은 칠.", "url": "https://www.christies.com/en/lot/lot-6389370", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_20991_0293_000(a_mother-of-pearl_inlaid_lacquer_low_table_joseon_dynasty022343).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-20991-294", "sale": "20991", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-09-20", "lot": "294", "name": "상어가죽 팔각 인함", "en": "A Wood Octagonal Seal Box Covered in Shagreen", "era": "조선 19세기", "size": "", "cur": "USD", "lo": 2000, "hi": 3000, "price": 3528, "kind": "함·상자", "note": "나무판 위에 상어가죽을 여러 조각 덮고 황동 꺾쇠로 이은 팔각 인장함. 안쪽은 검은 칠.", "url": "https://www.christies.com/en/lot/lot-6389371", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_20991_0294_000(a_wood_octagonal_seal_box_covered_in_shagreen_joseon_period022400).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-20912-106", "sale": "20912", "at": "온라인 경매", "city": "뉴욕", "date": "2022-09-14", "lot": "106", "name": "나전칠 이층장(받침 포함)", "en": "A Two-Tiered Lacquer and Mother-of-Pearl Chest with a Stand", "era": "조선 19~20세기", "size": "134×74.6×33.3cm", "cur": "USD", "lo": 5000, "hi": 7000, "price": 9450, "kind": "궤·장", "note": "", "url": "https://onlineonly.christies.com/sso?ObjectID=20912.106&LotNumber=106", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_20912_0106_000(a_two-tiered_lacquer_and_mother-of-pearl_chest_with_a_stand_joseon_dyn023538).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-21607-502", "sale": "21607", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-10-23", "lot": "502", "name": "이층장", "en": "A Korean Two-Tiered Chest", "era": "조선 19세기", "size": "높이 44.5cm", "cur": "USD", "lo": 8000, "hi": 12000, "price": 21420, "kind": "궤·장", "note": "위아래 각 칸에 두 짝 문. 황동 자물쇠판·경첩·모서리 장석.", "url": "https://www.christies.com/en/lot/lot-6387298", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_21607_0502_000(a_korean_two-tiered_chest_joseon_dynasty094842).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-21607-579", "sale": "21607", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2022-10-23", "lot": "579", "name": "화각함", "en": "A Korean Reverse-Painted Oxhorn-Applied Accessory Box (Hwagak Haem)", "era": "조선 19세기", "size": "", "cur": "USD", "lo": 20000, "hi": 30000, "price": 63000, "kind": "함·상자", "note": "네 발 달린 직사각 함. 뚜껑·옆면에 소뿔을 얇게 펴 뒷면에 용·봉황·거북·호랑이·사슴·잉어 등 길상 그림을 그려 붙임. 자물쇠판과 걸쇠.", "url": "https://www.christies.com/en/lot/lot-6387375", "img": "https://www.christies.com/img/LotImages/2022/NYR/2022_NYR_21607_0579_000(a_korean_reverse-painted_oxhorn-applied_accessory_box_joseon_dynasty103258).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-20845-3129", "sale": "20845", "at": "홍콩 온라인 경매", "city": "홍콩", "date": "2022-11-22", "lot": "3129", "name": "붉은 칠 원반", "en": "A Red-Lacquered Circular Table", "era": "조선 20세기 초", "size": "지름 90×높이 47cm", "cur": "HKD", "lo": 30000, "hi": 50000, "price": 107100, "kind": "소반·쟁반", "note": "높은 만곡형 다리 사이를 띠장과 매듭무늬 살대로 연결한 붉은 칠 원반. 바닥에 한글 제작 기록.", "url": "https://onlineonly.christies.com/sso?ObjectID=20845.3129&LotNumber=3129", "img": "https://www.christies.com/img/LotImages/2022/HGK/2022_HGK_20845_3129_000(a_red-lacquered_circular_table_korea_joseon_dynasty_early_20th_century120327).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-21109-262", "sale": "21109", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2023-10-18", "lot": "262", "name": "붉은 칠 나전 궤", "en": "A Korean Red Lacquer Chest", "era": "조선 19~20세기", "size": "67.9×27.6×36.5cm", "cur": "USD", "lo": 3000, "hi": 4000, "price": 3780, "kind": "궤·장", "note": "네 발 달린 직사각 궤. 덩굴꽃 나전, 청동 장석, 안쪽은 붉은 칠.", "url": "https://www.christies.com/en/lot/lot-6444372", "img": "https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21109_0262_000(a_korean_red_lacquer_chest_joseon_dynasty_d6444372091118).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-21110-574", "sale": "21110", "at": "온라인 경매", "city": "뉴욕", "date": "2023-10-06", "lot": "574", "name": "화각함", "en": "A Korean Reverse-Painted Oxhorn-Applied Accessory Box (Hwagak Haem)", "era": "조선 19세기", "size": "", "cur": "USD", "lo": 20000, "hi": 30000, "price": 13860, "kind": "함·상자", "note": "2022년 10월 같은 화각함이 63,000달러에 낙찰된 뒤 다시 나옴.", "url": "https://onlineonly.christies.com/sso?ObjectID=21110.574&LotNumber=574", "img": "https://www.christies.com/img/LotImages/2023/NYR/2023_NYR_21110_0574_000(a_korean_reverse-painted_oxhorn-applied_accessory_box_joseon_dynasty024305).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-22712-214", "sale": "22712", "at": "온라인 경매", "city": "뉴욕", "date": "2024-03-13", "lot": "214", "name": "나전 붉은칠 수납 궤", "en": "A Mother-of-Pearl Inlaid Red Lacquer Storage Chest", "era": "조선 19~20세기", "size": "83.5×58.4×42.5cm", "cur": "USD", "lo": 2000, "hi": 3000, "price": 5670, "kind": "궤·장", "note": "", "url": "https://onlineonly.christies.com/sso?ObjectID=22712.214&LotNumber=214", "img": "https://www.christies.com/img/LotImages/2024/NYR/2024_NYR_22712_0214_000(a_mother-of-pearl_inlaid_red_lacquer_storage_chest_korea_joseon_dynast115050).jpg", "status": "낙찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-22643-229", "sale": "22643", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2024-03-19", "lot": "229", "name": "흑칠 긴 상자", "en": "A Black Lacquer Rectangular Box", "era": "조선 17~18세기", "size": "56.8×15.2×12.7cm", "cur": "USD", "lo": 10000, "hi": 20000, "price": 18900, "kind": "함·상자", "note": "네 면에 금칠로 봉황과 구름을 그린 흑칠 긴 상자. 안쪽에 경전 종이를 바르고 철 장석.", "url": "https://www.christies.com/en/lot/lot-6472659", "img": "https://www.christies.com/img/LotImages/2024/NYR/2024_NYR_22643_0229_000(a_black_lacquer_rectangular_box_joseon_dynasty052422).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-22643-230", "sale": "22643", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2024-03-19", "lot": "230", "name": "붉은 칠 필기함", "en": "A Red Lacquer Writing Box", "era": "조선 17~18세기", "size": "22.5×15.2×4.8cm", "cur": "USD", "lo": 7000, "hi": 9000, "price": 11340, "kind": "함·상자", "note": "붉은 칠 직사각 함, 까치발 모양 다리, 안쪽과 바닥은 흑칠, 황동 장석.", "url": "https://www.christies.com/en/lot/lot-6472660", "img": "https://www.christies.com/img/LotImages/2024/NYR/2024_NYR_22643_0230_000(a_red_lacquer_writing_box_joseon_period052442).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-23064-3158", "sale": "23064", "at": "홍콩 온라인 경매", "city": "홍콩", "date": "2024-05-21", "lot": "3158", "name": "붉은 칠 원반", "en": "A Red-Lacquered Circular Table", "era": "조선 20세기 초", "size": "지름 90×높이 47cm", "cur": "HKD", "lo": 30000, "hi": 50000, "price": 37800, "kind": "소반·쟁반", "note": "2022년 11월 107,100홍콩달러에 낙찰된 같은 원반(바닥 한글 기록 동일)이 다시 나와 37,800홍콩달러에 낙찰.", "url": "https://onlineonly.christies.com/sso?ObjectID=23064.3158&LotNumber=3158", "img": "https://www.christies.com/img/LotImages/2024/HGK/2024_HGK_23064_3158_000(a_red-lacquered_circular_table_korea_joseon_dynasty_early_20th_century_d6486601034025).jpg", "status": "낙찰", "ext": 1, "nj": false}, {"house": "크리스티", "id": "CH-23151-283", "sale": "23151", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2024-09-17", "lot": "283", "name": "나전칠 낮은 상", "en": "A Mother-of-Pearl Inlaid Lacquer Low Table", "era": "조선 17세기", "size": "59.4×27.6×19.7cm", "cur": "USD", "lo": 25000, "hi": 35000, "price": null, "kind": "소반·쟁반", "note": "네 개의 안으로 굽은 짧은 다리. 나전·황동선으로 국화 덩굴과 꽃살 무늬.", "url": "https://www.christies.com/en/lot/lot-6496021", "img": "https://www.christies.com/img/LotImages/2024/NYR/2024_NYR_23151_0283_000(a_mother-of-pearl_inlaid_lacquer_low_table_joseon_dynasty105156).jpg", "status": "유찰", "ext": 1, "nj": true}, {"house": "크리스티", "id": "CH-24346-154", "sale": "24346", "at": "뉴욕 아시아 위크", "city": "뉴욕", "date": "2026-03-24", "lot": "154", "name": "나전칠 낮은 상", "en": "A Mother-of-Pearl Inlaid Lacquer Low Table", "era": "조선 17세기", "size": "59.4×27.6×19.7cm", "cur": "USD", "lo": 15000, "hi": 20000, "price": null, "kind": "소반·쟁반", "note": "2024년 9월 유찰된 같은 상(치수·무늬 동일)이 추정가를 낮춰 다시 나왔으나 다시 유찰.", "url": "https://www.christies.com/en/lot/lot-6577824", "img": "https://www.christies.com/img/LotImages/2026/NYR/2026_NYR_24346_0154_000(a_mother-of-pearl_inlaid_lacquer_low_table_joseon_dynasty050539).jpg", "status": "유찰", "ext": 1, "nj": true}, {"house": "소더비", "id": "SO-N10641-578", "sale": "N10641", "at": "The Hundred Antiques", "city": "뉴욕", "date": "2021-03-24", "lot": "578", "name": "가죽·황동 목제 인신함", "en": "A Korean Leather and Brass-Mounted Wood Seal Box", "era": "조선 말기", "size": "31.7×31.7×39.4cm", "cur": "USD", "lo": 10000, "hi": 15000, "price": null, "kind": "함·상자", "note": "", "url": "https://www.sothebys.com/en/buy/auction/2021/the-hundred-antiques-fine-and-decorative-asian-art/a-korean-leather-and-brass-mounted-wood-seal-box", "img": "https://sothebys-md.brightspotcdn.com/cb/9f/ab9e128840c8ac3adc6cbdabc0f2/289n10641-9brzm-01.jpg", "status": "유찰", "ext": 0, "nj": false}, {"house": "소더비", "id": "SO-N10918-680", "sale": "N10918", "at": "CHINA / 5000 YEARS", "city": "뉴욕", "date": "2022-03-29", "lot": "680", "name": "가죽·황동 목제 인신함", "en": "A Korean Leather and Brass-Mounted Wood Seal Box", "era": "조선 말기", "size": "31.7×31.7×39.4cm", "cur": "USD", "lo": 2500, "hi": 3500, "price": 2520, "kind": "함·상자", "note": "2021년 3월 10,000~15,000달러로 나왔다 유찰된 같은 인신함이 추정가를 크게 낮춰 다시 나와 낙찰.", "url": "https://www.sothebys.com/en/buy/auction/2022/china-5000-years-2/a-korean-leather-and-brass-mounted-wood-seal-box", "img": "https://sothebys-md.brightspotcdn.com/bd/cc/e27faa964e2a87d9a011614856ba/064n10918-9brzm-01.jpg", "status": "낙찰", "ext": 0, "nj": false}, {"house": "소더비", "id": "SO-N11000-524", "sale": "N11000", "at": "SUBLIME BEAUTY: Korean Ceramics from a Private Collection", "city": "뉴욕", "date": "2022-09-22", "lot": "524", "name": "나전칠 꽃무늬 문방함", "en": "A Mother-of-Pearl-Inlaid Lacquered 'Floral' Stationery Box and Cover", "era": "조선 16세기", "size": "46×31×13.4cm", "cur": "USD", "lo": 80000, "hi": 120000, "price": 107100, "kind": "함·상자", "note": "일본 목제 상자(덧상자)가 딸림.", "url": "https://www.sothebys.com/en/buy/auction/2022/sublime-beauty-korean-ceramics-from-a-private-collection/a-mother-of-pearl-inlaid-lacquered-floral", "img": "https://sothebys-md.brightspotcdn.com/63/58/1f930858440b9a319c5d2d29d20a/030n11000-c9m2w-t1-02-a.jpg", "status": "낙찰", "ext": 0, "nj": true}, {"house": "소더비", "id": "SO-N11075-828", "sale": "N11075", "at": "CHINA / 5000 YEARS", "city": "뉴욕", "date": "2022-09-27", "lot": "828", "name": "철 장식 목제 두 폭 병풍", "en": "A Two-Panel Wood Screen with Iron Mounts", "era": "20세기 초", "size": "높이 180, 폭 43cm(한 폭)", "cur": "USD", "lo": 1500, "hi": 2500, "price": 630, "kind": "병풍·기타", "note": "", "url": "https://www.sothebys.com/en/buy/auction/2022/china-5000-years-7/a-two-panel-wood-screen-with-iron-mounts-korea", "img": "https://sothebys-md.brightspotcdn.com/9b/7c/09a8f4784ff7ab081e750beac828/219n11075-4bcr9-t3-01.jpg", "status": "낙찰", "ext": 0, "nj": false}, {"house": "소더비", "id": "SO-PF2407-229", "sale": "PF2407", "at": "Arts d'Asie", "city": "파리", "date": "2024-06-14", "lot": "229", "name": "나전칠 쟁반", "en": "A Rare Mother-of-Pearl Inlaid Lacquer Tray", "era": "조선 16세기", "size": "41×28cm", "cur": "EUR", "lo": 6000, "hi": 8000, "price": 7200, "kind": "소반·쟁반", "note": "샘·미르나 마이어스 부부 개인 소장품.", "url": "https://www.sothebys.com/en/buy/auction/2024/arts-dasie-pf2407/a-rare-mother-of-pearl-inlaid-lacquer-tray-korea", "img": "https://sothebys-md.brightspotcdn.com/webnative/images/5f/7f/8383401d4fc3a7945614f3ae1480/pf2407-czhq9-t2-03.jpg", "status": "낙찰", "ext": 0, "nj": true}, {"house": "소더비", "id": "SO-PF2407-230", "sale": "PF2407", "at": "Arts d'Asie", "city": "파리", "date": "2024-06-14", "lot": "230", "name": "나전칠 상자", "en": "A Mother-of-Pearl Inlaid Lacquer Box", "era": "조선 16세기", "size": "32×21×21.5cm", "cur": "EUR", "lo": 10000, "hi": 15000, "price": 12000, "kind": "함·상자", "note": "샘·미르나 마이어스 부부 개인 소장품.", "url": "https://www.sothebys.com/en/buy/auction/2024/arts-dasie-pf2407/a-mother-of-pearl-inlaid-lacquer-box-korea-joseon", "img": "https://sothebys-md.brightspotcdn.com/webnative/images/18/f2/6eced20e4dc5afac8994c0655b6d/pf2407-czhqb-t2-02.jpg", "status": "낙찰", "ext": 0, "nj": true}, {"house": "소더비", "id": "SO-PF2417-211", "sale": "PF2417", "at": "Asian Arts / 5000 Years", "city": "파리", "date": "2024-12-12", "lot": "211", "name": "나전칠 궤(뚜껑 포함)", "en": "A Mother-of-Pearl Inlaid Lacquer Chest and Cover", "era": "조선 16세기", "size": "길이 45.7cm", "cur": "EUR", "lo": 6000, "hi": 8000, "price": null, "kind": "함·상자", "note": "프랑스 개인 소장품.", "url": "https://www.sothebys.com/en/buy/auction/2024/asian-arts-5000-years/a-mother-of-pearl-inlaid-lacquer-chest-korea", "img": "https://sothebys-md.brightspotcdn.com/1b/37/9d26bc684071996e5695322159d0/pf2417-czhqc-t2-02.jpg", "status": "유찰", "ext": 0, "nj": true}, {"house": "소더비", "id": "SO-PF2517-98", "sale": "PF2517", "at": "Asian Art / 5000 Years", "city": "파리", "date": "2025-12-12", "lot": "98", "name": "책가도 6폭 병풍", "en": "A Six-Panel Chaekgeori Screen", "era": "20세기 초", "size": "폭당 193×70cm", "cur": "EUR", "lo": 10000, "hi": 15000, "price": 27940, "kind": "병풍·기타", "note": "프랑스제 목제 틀.", "url": "https://www.sothebys.com/en/buy/auction/2025/asian-art-5000-years-pf2517/a-six-panel-chaekgeori-screen-korea-early-20th", "img": "https://sothebys-md.brightspotcdn.com/e0/99/77a2a4d24ef3bf1f0114c9e2663d/pf2517-df7w6-t2-01.jpg", "status": "낙찰", "ext": 0, "nj": false}];
+const SYM = { USD: '$', EUR: '€', HKD: 'HK$' };
+const money = (c, v) => v == null ? '' : (SYM[c] || '') + v.toLocaleString('en-US');
+const th = (i) => i.ext ? i.img + '?w=400' : 'thumbs/overseas/' + i.id + '.jpg';
+const big = (i) => i.ext ? i.img + '?w=1000' : 'https://jungmono.github.io/mokgagu-photos/photos/overseas/' + i.id + '.jpg';
+const KINDS = ['함·상자', '소반·쟁반', '궤·장', '병풍·기타'];
+const st = { house: '', year: '', kind: '', nj: '', sort: 'd' };
+let view = [], cur = 0;
+const cnt = (f) => ITEMS.filter(f).length;
+function chips(id, arr, key) {
+  const el = document.getElementById(id);
+  el.insertAdjacentHTML('beforeend', ['', ...arr].map((v) => `<button type="button" class="chip${st[key] === v ? ' on' : ''}" data-v="${v}">${v || '전체'}</button>`).join(''));
+  el.onclick = (e) => { const b = e.target.closest('.chip'); if (!b) return; st[key] = b.dataset.v; el.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c === b)); paint(); };
+}
+chips('f-house', ['크리스티', '소더비'], 'house');
+chips('f-year', [...new Set(ITEMS.map((i) => i.date.slice(0, 4)))].sort().reverse(), 'year');
+chips('f-kind', KINDS, 'kind');
+chips('f-nj', ['나전'], 'nj');
+document.getElementById('sort').onchange = (e) => { st.sort = e.target.value; paint(); };
+const ratio = (i) => i.price && i.lo ? i.price / i.lo : -1;
+function price(i) {
+  const e = `<span class="est">추정 ${money(i.cur, i.lo)}~${money(i.cur, i.hi)}</span>`;
+  return e + '<br>' + (i.price ? `<span class="ham">${money(i.cur, i.price)}</span>` : '<span class="fail">유찰</span>');
+}
+function paint() {
+  view = ITEMS.filter((i) => (!st.house || i.house === st.house) && (!st.year || i.date.startsWith(st.year)) && (!st.kind || i.kind === st.kind) && (!st.nj || i.nj));
+  if (st.sort === 'd') view.sort((a, b) => b.date.localeCompare(a.date) || a.lot - b.lot);
+  else if (st.sort === 'p') view.sort((a, b) => (b.price ? b.price * ({ USD: 1, EUR: 1.08, HKD: .128 }[b.cur]) : -1) - (a.price ? a.price * ({ USD: 1, EUR: 1.08, HKD: .128 }[a.cur]) : -1));
+  else view.sort((a, b) => ratio(b) - ratio(a));
+  document.getElementById('count').textContent = `${view.length}점` + (st.sort === 'p' ? ' · 달러·유로·홍콩달러를 대략 환산해 정렬' : '');
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}"><div class="ph"><img loading="lazy" referrerpolicy="no-referrer" src="${th(i)}" alt="${i.name}"></div><div class="bd"><span class="badge"><b style="color:${i.house === '크리스티' ? '#8a2f22' : '#1f4f7a'}">${i.house}</b> · ${i.city} · ${i.date.replaceAll('-', '.')}</span><span class="nm">${i.name}</span><span class="mk">${i.era}</span><span class="sz">${i.size}</span><div class="price">${price(i)}</div></div></button>`).join('');
+}
+document.getElementById('grid').onclick = (e) => { const c = e.target.closest('.card'); if (c) open(+c.dataset.n); };
+function open(n) {
+  cur = n; const i = view[n], d = document.getElementById('dlg');
+  const im = document.getElementById('d-img'); im.referrerPolicy = 'no-referrer'; im.src = th(i); im.alt = i.name;
+  const hi = new Image(); hi.referrerPolicy = 'no-referrer'; hi.onload = () => { if (view[cur] === i) im.src = hi.src; }; hi.src = big(i);
+  const r = i.price && i.lo ? ` <span style="font-size:13px;color:var(--muted);font-weight:400">(낮은 추정가의 ${Math.round(i.price / i.lo * 100)}%)</span>` : '';
+  document.getElementById('d-info').innerHTML = `<h3>${i.name}</h3><div class="hj">${i.en}</div><dl>
+    <dt>경매사</dt><dd><b>${i.house}</b> (${i.house === '크리스티' ? "Christie's" : "Sotheby's"})</dd>
+    <dt>경매</dt><dd>${i.city} · ${i.date.replaceAll('-', '.')}<br>${i.at} (${i.sale})</dd>
+    <dt>Lot</dt><dd>${i.lot}</dd>
+    <dt>시대</dt><dd>${i.era}</dd>
+    ${i.size ? `<dt>크기</dt><dd>${i.size}</dd>` : ''}
+    <dt>추정가</dt><dd>${money(i.cur, i.lo)} ~ ${money(i.cur, i.hi)}</dd>
+    <dt>낙찰가</dt><dd>${i.price ? `<span class="big">${money(i.cur, i.price)}</span>${r}<br><small style="color:var(--muted)">구매수수료 포함 · ${i.cur}</small>` : '유찰'}</dd></dl>
+    ${i.note ? `<p style="margin:14px 0 0;font-size:14px;line-height:1.7">${i.note}</p>` : ''}
+    <p style="margin:14px 0 0"><a href="${i.url}" target="_blank" rel="noopener">${i.house} 원문 페이지 ↗</a></p>`;
+  document.getElementById('d-pos').textContent = `${n + 1} / ${view.length}`;
+  if (!d.open) d.showModal();
+}
+document.getElementById('d-prev').onclick = () => open((cur + view.length - 1) % view.length);
+document.getElementById('d-next').onclick = () => open((cur + 1) % view.length);
+document.getElementById('d-close').onclick = () => document.getElementById('dlg').close();
+document.getElementById('dlg').addEventListener('click', (e) => { if (e.target.id === 'dlg') e.target.close(); });
+document.addEventListener('keydown', (e) => { const d = document.getElementById('dlg'); if (!d.open) return; if (e.key === 'ArrowLeft') document.getElementById('d-prev').click(); if (e.key === 'ArrowRight') document.getElementById('d-next').click(); });
+const tb = document.getElementById('to-top'); addEventListener('scroll', () => tb.classList.toggle('show', scrollY > 400)); tb.onclick = () => scrollTo({ top: 0, behavior: 'smooth' });
+const T = document.getElementById('tiles'), ch = ITEMS.filter((i) => i.house === '크리스티').length, so = ITEMS.length - ch, nj = ITEMS.filter((i) => i.nj).length;
+T.innerHTML = [['수록', ITEMS.length + '점', `크리스티 ${ch} · 소더비 ${so}`], ['나전칠기', nj + '점', '전체의 ' + Math.round(nj / ITEMS.length * 100) + '%'], ['최고 낙찰', '$226,800', '나전 엽형 쟁반 · 크리스티 2022.3 (추정 $20~30k)'], ['기간', '2020~2026', '2026년 하반기 출품 없음']].map((t) => `<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join('');
+paint();
+</script>
+</body></html>
