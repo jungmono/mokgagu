@@ -290,7 +290,7 @@ const ORDER = DASHBOARDS.map((d) => d.path);
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let mapKeys = null, hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
+let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
 
 /* 검색 색인(search.js, 1.5MB)은 처음 화면에서는 받지 않고, 검색창을 누르거나 검색·기물 열기가 필요할 때 불러온다 */
 let idxLoading = null;
@@ -308,16 +308,9 @@ function search(raw) {
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
   hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농') : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
-  only = ''; fa = {}; lastLabel = null; mapKeys = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
+  only = ''; fa = {}; lastLabel = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; grid.hidden = true;
   drawResults(raw.trim());
-  bmapShow(raw.trim());
-}
-let bmapOn = false;
-function bmapShow(q) {
-  const yes = false;
-  if (!yes || bmapOn) return; bmapOn = true;
-  const s = document.createElement('script'); s.src = 'bmap.js?v=35'; s.onload = () => window.MOKGAGU_BMAP.mount($('bmap')); document.head.appendChild(s);
 }
 /* ── 걸러 보기: 지역·시대·수종 (도록에 적힌 것만 센다) ── */
 let fa = {}, lastLabel = null;
@@ -341,7 +334,6 @@ function drawResults(label) {
   const counts = {};
   hits.forEach((r) => (counts[r.b] = (counts[r.b] || 0) + 1));
   shown = only ? hits.filter((r) => r.b === only) : hits;
-  if (mapKeys) shown = shown.filter((r) => mapKeys.has(r.b + '/' + r.n));
   const base = shown; drawFacets(base);
   shown = base.filter((r) => facOk(r));
   const conds = Object.values(fa).filter(Boolean);
@@ -357,7 +349,6 @@ function drawResults(label) {
       <div class="mt">${esc([r.era, r.size, r.wood].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';
 }
-window.addEventListener('bmap:filter', (e) => { mapKeys = e.detail.keys ? new Set(e.detail.keys) : null; if (!$('results').hidden) drawResults(); });
 $('r-fac').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; if (c.dataset.clr) fa = {}; else fa[c.dataset.fk] = fa[c.dataset.fk] === c.dataset.fv ? '' : c.dataset.fv; drawResults(); });
 $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; only = c.dataset.k; drawResults(); });
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
