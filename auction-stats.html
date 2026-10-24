@@ -43,7 +43,10 @@ var ALL=[],view='year',site='전체',yr='전체',sel=null;
 function parse(it,src){var o=it.owner||'',m=o.match(/^(\S+)\s.*?\((\d{4})\)\s*Lot\s*(\S+)/),pr=o.match(/낙찰\s*([\d,]+)원/);
  return {id:it.id,name:it.name,kind:it.kind,site:m?m[1]:'',year:m?+m[2]:0,lot:m?m[3]:'',price:pr?+pr[1].replace(/,/g,''):null,fail:/유찰/.test(o),src:src,type:it.type};}
 function grab(f,src){return fetch(f).then(function(r){return r.text()}).then(function(t){var m=t.match(/id="ds-items">([\s\S]*?)<\/script>/);return m?JSON.parse(m[1]).map(function(i){return parse(i,src)}):[]});}
-Promise.all([grab('auction.html','auction'),grab('myart.html','myart'),grab('seoulauction.html','seoulauction')]).then(function(r){ALL=r[0].concat(r[1]).concat(r[2]).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
+/* 새 경매사 도록을 만들면 이 목록에 [파일, 이름]을 한 줄만 더하면 경매 시세에 자동으로 들어옵니다(도록 파일에 id="ds-items" 자료가 있어야 함) */
+var SOURCES=[['auction.html','auction'],['myart.html','myart'],['seoulauction.html','seoulauction']];
+Promise.all(SOURCES.map(function(s){return grab(s[0],s[1])})).then(function(r){ALL=[].concat.apply([],r).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
+function sites(){var o=[];ALL.forEach(function(x){if(x.site&&o.indexOf(x.site)<0)o.push(x.site)});return o;}
 function med(a){a=a.slice().sort(function(x,y){return x-y});var n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;}
 function man(v){var m=v/10000;return (m>=10000?(m/10000).toFixed(m%10000?1:0)+'억':(m>=1000?Math.round(m).toLocaleString():(Math.round(m*10)/10))+'만');}
 function won(v){return v.toLocaleString()+'원';}
@@ -71,7 +74,7 @@ function init(){
 function draw(){
  var years=[].concat.apply([],[]),ys={};ALL.forEach(function(x){ys[x.year]=1});years=Object.keys(ys).map(Number).sort();
  var f1=document.getElementById('f1'),f2=document.getElementById('f2');
- if(view==='year'){chips(f1,'경매사',['전체','아이옥션','마이아트옥션'],site,function(v){site=v;sel=null;draw()});f2.style.display='none';}
+ if(view==='year'){chips(f1,'경매사',['전체'].concat(sites()),site,function(v){site=v;sel=null;draw()});f2.style.display='none';}
  else{chips(f1,'연도',['전체'].concat(years.map(String)),yr,function(v){yr=v;sel=null;draw()});f2.style.display='none';}
  var data=ALL.filter(function(x){return x.price&&(view==='year'?(site==='전체'||x.site===site):(yr==='전체'||String(x.year)===yr))});
  var kinds=Object.keys(COL).filter(function(k){return data.some(function(x){return x.kind===k})});
@@ -80,7 +83,7 @@ function draw(){
  data.forEach(function(x){var g=(view==='year'?x.year:x.site)+'|'+x.kind;(groups[g]=groups[g]||[]).push(x)});
  Object.keys(groups).forEach(function(g){var m=med(groups[g].map(function(x){return x.price}));groups[g].m=m;if(m>maxv)maxv=m;});
  var step=Math.pow(10,Math.floor(Math.log10(maxv||1))),top=Math.ceil(maxv/step)*step;if(top/step<2)top=2*step;
- var X=view==='year'?years:['아이옥션','마이아트옥션'];
+ var X=view==='year'?years:sites();
  function y(v){return T+(H-T-B)*(1-v/top)}
  for(var i=0;i<=4;i++){var v=top*i/4;h+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#e5e1da"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="12" fill="#6b665e">'+man(v)+'</text>';}
  var bw=(W-L-R)/X.length;
