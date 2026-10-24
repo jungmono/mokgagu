@@ -156,6 +156,7 @@
     '#lk-col.on{display:flex}',
     '#lk-col .lc-panel{width:min(980px,100%);max-height:94vh;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden}',
     'html.lk-lock,html.lk-lock body{overflow:hidden!important}',
+    'html.lk-lock body>*:not(#lk-col):not(script):not(style){visibility:hidden!important}html.lk-lock #lk-col{background:#2b2925}',
     '#lk-col .lc-hd{flex:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid #e5e1da;background:#fff}',
     '#lk-col h2{margin:0;font-size:20px;font-weight:900;display:flex;align-items:center;gap:6px;color:#1d1b18}#lk-col h2 svg{width:22px;height:22px}',
     '#lk-col .lc-chips{display:flex;gap:6px;flex-wrap:wrap}',
