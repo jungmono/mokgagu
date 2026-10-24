@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>나란히 보기 — 조선의 목가구</title>
+<meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--acc:#8a2f22;--sans:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+*{box-sizing:border-box}html{background:#fff}
+body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:20px 14px 70px;word-break:keep-all}
+.wrap{max-width:980px;margin:0 auto}
+.sa-top{margin:0 0 14px}.sa-home img{height:40px;width:auto;display:block}
+h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.6}
+.empty{border:1.5px dashed #9c9179;border-radius:14px;padding:22px;background:#fbf6ea;line-height:1.8;font-size:15px}
+.empty a{color:var(--acc);font-weight:700}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.tbl th.rh{width:70px;text-align:left;color:var(--muted);font-size:12px;font-weight:700;vertical-align:top;padding:9px 6px 9px 0;border-top:1px solid var(--line)}
+.tbl td{vertical-align:top;padding:9px 6px;border-top:1px solid var(--line);font-size:14px;line-height:1.55;text-align:center;word-break:break-word}
+.tbl td.pic{padding:0 4px 10px;border-top:0}
+.pic button{display:block;width:100%;border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0;background:#f6f3ee;cursor:zoom-in}
+.pic img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f6f3ee}
+.nm{font-weight:800;font-size:15px}.hj{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.rm{margin-top:6px;border:1.5px solid #111;border-radius:999px;background:#fff;font-size:12px;font-weight:700;padding:3px 10px;cursor:pointer;font-family:inherit}
+td.d{background:#fdf1ee;font-weight:800;color:var(--acc)}td .df{display:block;font-size:11px;font-weight:700}
+td.mu{color:#a39d92}
+.fig{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:6px 0 2px;min-height:60px}
+.fig>div{border:2px solid #111;border-radius:4px;background:#f6f3ee;font-size:11px;color:var(--muted);display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.note{font-size:12px;color:var(--muted);line-height:1.7;margin:12px 0 0}
+a.lk{color:var(--acc);font-weight:700;font-size:12px}
+dialog{border:0;padding:0;background:#000;width:100vw;height:100vh;max-width:100vw;max-height:100vh}
+dialog::backdrop{background:#000}
+dialog .box{position:absolute;inset:0;display:grid;place-items:center;touch-action:pinch-zoom}
+dialog img{max-width:100%;max-height:100%;object-fit:contain;user-select:none}
+dialog .cap{position:absolute;left:0;right:0;bottom:56px;color:#fff;text-align:center;font-size:14px;text-shadow:0 1px 3px #000}
+dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #111;border-radius:999px;padding:8px 18px;font-weight:800;font-size:14px;font-family:inherit;cursor:pointer}
+#lb-p{left:10px}#lb-n{right:10px}#lb-x{left:50%;transform:translateX(-50%)}
+</style>
+<script src="common.js?v=5" defer></script>
+</head><body>
+<div class="wrap">
+  <div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+  <h1>나란히 보기</h1>
+  <p class="sub" id="sub"></p>
+  <div id="app"></div>
+</div>
+<dialog id="lb" aria-label="큰 사진"><div class="box"><img id="lb-img" alt=""></div><div class="cap" id="lb-cap"></div><button type="button" id="lb-p">← 이전</button><button type="button" id="lb-x">닫기</button><button type="button" id="lb-n">다음 →</button></dialog>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var PH = 'https://jungmono.github.io/mokgagu-photos/photos/';
+  function list() { try { var a = JSON.parse(localStorage.getItem('mokgagu_cmp') || '[]'); return Array.isArray(a) ? a.slice(0, 3) : []; } catch (e) { return []; } }
+
+  /* 크기 글자에서 가로·깊이·높이(cm)를 읽는다. 못 읽으면 null */
+  function dims(sz) {
+    if (!sz) return null; sz = String(sz).replace(/cm|㎝/g, '');
+    var m = sz.match(/^\s*([\d.]+)\s*[×xX]\s*([\d.]+)\s*[×xX]\s*([\d.]+)/);
+    if (m) return { w: +m[1], d: +m[2], h: +m[3] };
+    var h = sz.match(/높이\s*([\d.]+)/), w = sz.match(/(?:가로|(?<!옆)너비)\s*([\d.]+)/), d = sz.match(/(?:옆너비|깊이|세로|폭)\s*([\d.]+)/);
+    if (h && w) return { w: +w[1], d: d ? +d[1] : null, h: +h[1] };
+    return null;
+  }
+  function price(o) { var m = String(o || '').match(/낙찰\s*([\d,]+)원/); if (m) return (+m[1].replace(/,/g, '')).toLocaleString() + '원'; return /유찰/.test(o || '') ? '유찰' : ''; }
+  function fmt(n) { return (Math.round(n * 10) / 10).toString(); }
+
+  function render(recs) {
+    var n = recs.length;
+    if (n < 2) {
+      $('sub').textContent = '';
+      $('app').innerHTML = '<div class="empty"><b>비교할 기물이 ' + (n ? '한 점뿐' : '아직 없어요') + '.</b><br>도록에서 기물 사진 창을 열고 위쪽의 <b>「비교에 담기」</b>를 누르면 최대 3점까지 담겨요. 두 점 이상 담으면 이 화면에서 나란히 볼 수 있어요.<br><a href="index.html">처음 화면으로</a></div>';
+      return;
+    }
+    $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 크게 볼 수 있어요.';
+    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
+    function row(label, vals, num) {
+      var present = vals.filter(function (v) { return v !== '' && v != null; });
+      var diff = present.length >= 2 && new Set(present.map(String)).size > 1, mn = num ? Math.min.apply(null, present) : null;
+      return '<tr><th class="rh" scope="row">' + label + '</th>' + vals.map(function (v) {
+        if (v === '' || v == null) return '<td class="mu">—</td>';
+        var cls = '', extra = '';
+        if (diff) { if (num) { if (v > mn) { cls = ' class="d"'; extra = '<span class="df">+' + fmt(v - mn) + '</span>'; } } else cls = ' class="d"'; }
+        return '<td' + cls + '>' + esc(num ? fmt(v) + 'cm' : v) + extra + '</td>';
+      }).join('') + '</tr>';
+    }
+    var h = '<table class="tbl"><tr><th class="rh"></th>' + cols.map(function (c, i) {
+      return '<td class="pic"><button type="button" data-i="' + i + '" aria-label="' + esc(c.name) + ' 크게 보기"><img src="' + esc(c.u) + '" alt="' + esc(c.name) + '"></button><div class="nm">' + esc(c.name) + (c.r.hanja ? '<span class="hj">' + esc(c.r.hanja) + '</span>' : '') + '</div><button type="button" class="rm" data-rm="' + esc(c.k) + '">빼기</button></td>';
+    }).join('') + '</tr>';
+    h += row('도록', cols.map(function (c) { return c.r.cat || ''; }));
+    h += row('종류', cols.map(function (c) { return (c.r.kind || '').split(' · ')[0]; }));
+    h += row('시대', cols.map(function (c) { return c.r.era || ''; }));
+    var anyDm = cols.some(function (c) { return c.dm; });
+    if (anyDm) {
+      h += row('가로', cols.map(function (c) { return c.dm ? c.dm.w : ''; }), true);
+      h += row('깊이', cols.map(function (c) { return c.dm && c.dm.d != null ? c.dm.d : ''; }), true);
+      h += row('높이', cols.map(function (c) { return c.dm ? c.dm.h : ''; }), true);
+      h += '<tr><th class="rh" scope="row">높이÷가로</th>' + cols.map(function (c) { return '<td>' + (c.dm ? (c.dm.h / c.dm.w).toFixed(2) : '—') + '</td>'; }).join('') + '</tr>';
+    }
+    h += row('크기(표기)', cols.map(function (c) { return c.r.size || ''; }));
+    h += row('수종', cols.map(function (c) { return c.r.wood || ''; }));
+    if (cols.some(function (c) { return price(c.r.owner); })) h += row('낙찰가', cols.map(function (c) { return price(c.r.owner); }));
+    h += row('출처', cols.map(function (c) { return (c.r.owner || '').replace(/\s*·\s*(낙찰|유찰).*$/, ''); }));
+    h += '<tr><th class="rh"></th>' + cols.map(function (c) { return '<td><a class="lk" href="index.html#see=' + encodeURIComponent(c.r.b || c.k.split('/')[0]) + '/' + encodeURIComponent(c.r.pid || c.k.split('/').slice(1).join('/')) + '">도록에서 보기 →</a></td>'; }).join('') + '</tr>';
+    h += '</table>';
+    /* 앞모습 비율을 같은 눈금으로 */
+    var fc = cols.filter(function (c) { return c.dm; });
+    if (fc.length >= 2) {
+      var big = Math.max.apply(null, fc.map(function (c) { return Math.max(c.dm.w, c.dm.h); })), S = Math.min(1.4, 220 / big);
+      h += '<div class="fig" aria-label="앞모습 크기 비교">' + cols.map(function (c) { return c.dm ? '<div style="width:' + Math.round(c.dm.w * S) + 'px;height:' + Math.round(c.dm.h * S) + 'px">' + esc((c.name || '').slice(0, 8)) + '</div>' : ''; }).join('') + '</div>';
+    }
+    h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, <b>「가로×깊이×높이」 순서로 적힌 도록</b>이라고 보고 읽었습니다. 도록마다 표기가 달라 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
+    $('app').innerHTML = h;
+  }
+
+  var photos = [], cur = 0, lb = $('lb');
+  function openLb(i) { photos = list().map(function (x) { return x; }); cur = i; showLb(); if (!lb.open) lb.showModal(); }
+  function showLb() { var ph = window.__cols[cur]; $('lb-img').src = ph.u; $('lb-cap').textContent = (cur + 1) + '/' + window.__cols.length + ' · ' + ph.name; }
+  function step(d) { cur = (cur + d + window.__cols.length) % window.__cols.length; showLb(); }
+  $('lb-p').onclick = function () { step(-1); }; $('lb-n').onclick = function () { step(1); }; $('lb-x').onclick = function () { lb.close(); };
+  var sx = null; lb.addEventListener('pointerdown', function (e) { sx = e.clientX; });
+  lb.addEventListener('pointerup', function (e) { if (sx != null && Math.abs(e.clientX - sx) > 60 && e.target.id !== 'lb-x') step(e.clientX < sx ? 1 : -1); sx = null; });
+  lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-i]'); if (b) { openLb(+b.getAttribute('data-i')); return; }
+    var r = e.target.closest && e.target.closest('[data-rm]'); if (r) { (function(){var k=r.getAttribute('data-rm');try{var a=list().filter(function(x){return x.k!==k;});localStorage.setItem('mokgagu_cmp',JSON.stringify(a));}catch(er){}start();})(); }
+  });
+
+  var idx = null;
+  function start() {
+    var a = list();
+    function go() {
+      var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
+      var recs = a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: by[x.k] }; });
+      window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
+      render(recs);
+    }
+    if (a.length < 2) { render(a.map(function (x) { return { k: x.k, n: x.n, u: x.u }; })); return; }
+    if (window.SEARCH) { go(); return; }
+    $('app').innerHTML = '<div class="empty">불러오는 중…</div>';
+    if (!idx) idx = new Promise(function (ok) { var s = document.createElement('script'); s.src = 'search.js'; s.onload = ok; s.onerror = ok; document.head.appendChild(s); });
+    idx.then(go);
+  }
+  start();
+})();
+</script>
+</body></html>

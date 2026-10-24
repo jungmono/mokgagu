@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>경매 시세 — 조선의 목가구</title>
+<meta name="robots" content="noindex"><meta name="color-scheme" content="light">
+<style>
+:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--sans:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;--serif:"Noto Serif KR","AppleMyungjo","Nanum Myeongjo","Batang",serif}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:24px 16px 48px;word-break:keep-all}
+.wrap,.sa-top{max-width:1100px;margin:0 auto}.sa-top{margin-bottom:18px}
+.sa-home{display:inline-flex;border:2px solid #111;border-radius:999px;padding:8px 18px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.12)}.sa-home img{height:34px;width:auto;display:block}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);margin:4px 0 8px}
+.lead{color:#3b3833;line-height:1.7;font-size:14.5px;margin:0 0 16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 18px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px}.tile .k{font-size:12.5px;color:var(--muted)}.tile .v{font-family:var(--serif);font-size:26px;margin-top:2px}.tile .v small{font-size:13px;color:var(--muted)}
+.tabs{display:flex;gap:8px;margin:0 0 12px}.tab,.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;font-family:inherit;color:var(--fg)}
+.tab{font-weight:700;border:2px solid #111}.tab.on,.chip.on{background:#111;color:#fff;border-color:#111}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px}.row .lab{font-size:13px;color:var(--muted);min-width:44px}
+.box{border:1px solid var(--line);border-radius:12px;padding:10px;overflow-x:auto}
+svg{display:block;width:100%;height:auto;min-width:520px;font-family:var(--sans)}
+.note{font-size:12.5px;color:var(--muted);line-height:1.6;margin:8px 0 0}
+.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;margin:8px 0 0}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+#list{margin-top:16px}#list h2{font-size:16px;margin:0 0 8px}
+.it{display:flex;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px;text-decoration:none;color:inherit;align-items:baseline}
+.it:hover{background:#f6f4ef}.it .p{margin-left:auto;font-weight:700;white-space:nowrap}.it .m{color:var(--muted);font-size:12.5px}
+</style>
+<script src="common.js?v=5" defer></script></head><body>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="wrap">
+<h1>경매 시세</h1>
+<p class="lead">아이옥션·마이아트옥션 낙찰가를 <b>종류별로</b> 봅니다. 평균은 비싼 한두 점에 휘둘려서 <b>중앙값</b>(한가운데 값)을 썼습니다. 점이 크면 건수가 많다는 뜻입니다.</p>
+<div class="tiles" id="tiles"></div>
+<div class="tabs"><button class="tab on" data-v="year">연도별</button><button class="tab" data-v="site">경매사별</button></div>
+<div class="row" id="f1"></div><div class="row" id="f2"></div>
+<div class="box"><svg id="ch" viewBox="0 0 900 380" role="img" aria-label="경매 시세 그래프"></svg></div>
+<div class="leg" id="leg"></div>
+<p class="note" id="note"></p>
+<div id="list"></div>
+</div>
+<script>
+(function(){
+var COL={'장·농':'#8a2f22','반닫이·궤':'#1f5f3a','함·소품':'#9a6a10','문방·기타':'#6b665e','소반·상':'#2b5d8a','서안·경상·연상':'#7a4a8a','책장·사방탁자·찬탁':'#b0602a'};
+var ALL=[],view='year',site='전체',yr='전체',sel=null;
+function parse(it,src){var o=it.owner||'',m=o.match(/^(\S+)\s.*?\((\d{4})\)\s*Lot\s*(\S+)/),pr=o.match(/낙찰\s*([\d,]+)원/);
+ return {id:it.id,name:it.name,kind:it.kind,site:m?m[1]:'',year:m?+m[2]:0,lot:m?m[3]:'',price:pr?+pr[1].replace(/,/g,''):null,fail:/유찰/.test(o),src:src,type:it.type};}
+function grab(f,src){return fetch(f).then(function(r){return r.text()}).then(function(t){var m=t.match(/id="ds-items">([\s\S]*?)<\/script>/);return m?JSON.parse(m[1]).map(function(i){return parse(i,src)}):[]});}
+Promise.all([grab('auction.html','auction'),grab('myart.html','myart')]).then(function(r){ALL=r[0].concat(r[1]).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
+function med(a){a=a.slice().sort(function(x,y){return x-y});var n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;}
+function man(v){var m=v/10000;return (m>=10000?(m/10000).toFixed(m%10000?1:0)+'억':(m>=1000?Math.round(m).toLocaleString():(Math.round(m*10)/10))+'만');}
+function won(v){return v.toLocaleString()+'원';}
+function chips(el,lab,arr,cur,fn){el.innerHTML='<span class="lab">'+lab+'</span>';arr.forEach(function(v){var b=document.createElement('button');b.className='chip'+(v===cur?' on':'');b.textContent=v;b.onclick=function(){fn(v)};el.appendChild(b);});}
+function init(){
+ var sold=ALL.filter(function(x){return x.price}),fail=ALL.filter(function(x){return x.fail});
+ var yrs=ALL.map(function(x){return x.year});
+ document.getElementById('tiles').innerHTML=[['낙찰',sold.length+'<small>건</small>'],['유찰',fail.length+'<small>건</small>'],['기간',Math.min.apply(0,yrs)+'–'+Math.max.apply(0,yrs)],['최고가',man(Math.max.apply(0,sold.map(function(x){return x.price})))+'<small>원</small>']].map(function(t){return '<div class="tile"><div class="k">'+t[0]+'</div><div class="v">'+t[1]+'</div></div>'}).join('');
+ document.querySelectorAll('.tab').forEach(function(b){b.onclick=function(){view=b.dataset.v;sel=null;document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x===b)});draw();}});
+ draw();}
+function draw(){
+ var years=[].concat.apply([],[]),ys={};ALL.forEach(function(x){ys[x.year]=1});years=Object.keys(ys).map(Number).sort();
+ var f1=document.getElementById('f1'),f2=document.getElementById('f2');
+ if(view==='year'){chips(f1,'경매사',['전체','아이옥션','마이아트옥션'],site,function(v){site=v;sel=null;draw()});f2.style.display='none';}
+ else{chips(f1,'연도',['전체'].concat(years.map(String)),yr,function(v){yr=v;sel=null;draw()});f2.style.display='none';}
+ var data=ALL.filter(function(x){return x.price&&(view==='year'?(site==='전체'||x.site===site):(yr==='전체'||String(x.year)===yr))});
+ var kinds=Object.keys(COL).filter(function(k){return data.some(function(x){return x.kind===k})});
+ var W=900,H=380,L=64,R=20,T=16,B=48,svg=document.getElementById('ch'),h='';
+ var maxv=0,groups={};
+ data.forEach(function(x){var g=(view==='year'?x.year:x.site)+'|'+x.kind;(groups[g]=groups[g]||[]).push(x)});
+ Object.keys(groups).forEach(function(g){var m=med(groups[g].map(function(x){return x.price}));groups[g].m=m;if(m>maxv)maxv=m;});
+ var step=Math.pow(10,Math.floor(Math.log10(maxv||1))),top=Math.ceil(maxv/step)*step;if(top/step<2)top=2*step;
+ var X=view==='year'?years:['아이옥션','마이아트옥션'];
+ function y(v){return T+(H-T-B)*(1-v/top)}
+ for(var i=0;i<=4;i++){var v=top*i/4;h+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#e5e1da"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="12" fill="#6b665e">'+man(v)+'</text>';}
+ var bw=(W-L-R)/X.length;
+ X.forEach(function(xv,xi){h+='<text x="'+(L+bw*(xi+.5))+'" y="'+(H-B+22)+'" text-anchor="middle" font-size="13" fill="#1d1b18">'+xv+(view==='year'&&xv===Math.max.apply(0,years)?'(진행중)':'')+'</text>';});
+ var pts=[];
+ if(view==='year'){
+  kinds.forEach(function(k){var d='',last=null;
+   X.forEach(function(xv,xi){var g=groups[xv+'|'+k];if(!g)return;var cx=L+bw*(xi+.5),cy=y(g.m);d+=(d?'L':'M')+cx+' '+cy;pts.push([cx,cy,k,xv,g]);});
+   if(d)h+='<path d="'+d+'" fill="none" stroke="'+COL[k]+'" stroke-width="2" opacity=".8"/>';});
+  pts.forEach(function(p){var n=p[4].length,r=4+Math.min(9,Math.sqrt(n)*1.6),on=sel&&sel.k===p[2]&&sel.x===p[3];h+='<circle data-k="'+p[2]+'" data-x="'+p[3]+'" cx="'+p[0]+'" cy="'+p[1]+'" r="'+r+'" fill="'+COL[p[2]]+'" fill-opacity="'+(n<10?.35:.85)+'" stroke="'+(on?'#111':COL[p[2]])+'" stroke-width="'+(on?3:1.5)+'" style="cursor:pointer"><title>'+p[2]+' '+p[3]+' · 중앙값 '+man(p[4].m)+'원 · '+n+'건</title></circle>';});
+ }else{
+  X.forEach(function(xv,xi){var kk=kinds.filter(function(k){return groups[xv+'|'+k]}),gw=bw*.8/Math.max(kinds.length,1),x0=L+bw*xi+bw*.1;
+   kinds.forEach(function(k,ki){var g=groups[xv+'|'+k];if(!g)return;var bx=x0+gw*ki,by=y(g.m),on=sel&&sel.k===k&&sel.x===xv;
+    h+='<rect data-k="'+k+'" data-x="'+xv+'" x="'+(bx+1)+'" y="'+by+'" width="'+(gw-2)+'" height="'+(H-B-by)+'" fill="'+COL[k]+'" fill-opacity="'+(g.length<10?.35:.85)+'" stroke="'+(on?'#111':'none')+'" stroke-width="3" style="cursor:pointer"><title>'+k+' '+xv+' · 중앙값 '+man(g.m)+'원 · '+g.length+'건</title></rect><text x="'+(bx+gw/2)+'" y="'+(by-4)+'" text-anchor="middle" font-size="10.5" fill="#1d1b18">'+g.length+'</text>';});});
+ }
+ svg.innerHTML=h;
+ svg.querySelectorAll('[data-k]').forEach(function(e){e.onclick=function(){sel={k:e.dataset.k,x:e.dataset.x};draw();};});
+ document.getElementById('leg').innerHTML=kinds.map(function(k){return '<span><i style="background:'+COL[k]+'"></i>'+k+'</span>'}).join('');
+ var small=Object.keys(groups).filter(function(g){return groups[g].length<10}).length;
+ document.getElementById('note').innerHTML='세로축은 낙찰가 중앙값(원), '+(view==='year'?'점 크기·':'막대 위 숫자는 ')+'건수. 흐린 색은 <b>10건 미만</b>이라 참고만 하세요('+small+'곳). '+(view==='year'?'올해는 아직 진행 중이라 이후 회차가 더해지면 달라집니다. ':'')+'낙찰만 계산했고 유찰은 제외했습니다. 점이나 막대를 누르면 아래에 해당 기물이 나옵니다.';
+ var L2=document.getElementById('list');
+ if(!sel){L2.innerHTML='';return;}
+ var g=groups[sel.x+'|'+sel.k]||[];g=g.slice().sort(function(a,b){return b.price-a.price});
+ L2.innerHTML='<h2>'+sel.k+' · '+sel.x+' · '+g.length+'건 (중앙값 '+man(med(g.map(function(x){return x.price})))+'원)</h2>'+g.map(function(x){return '<a class="it" href="'+x.src+'.html#'+encodeURIComponent(x.id)+'"><span>'+x.name+'<br><span class="m">'+x.site+' '+x.type+' · '+x.year+' · Lot '+x.lot+'</span></span><span class="p">'+won(x.price)+'</span></a>'}).join('');
+ L2.scrollIntoView&&0;}
+})();
+</script></body></html>

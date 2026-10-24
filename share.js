@@ -21,11 +21,13 @@ function attach(dlg){
   var b=document.createElement('button');b.className='shr';b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.8 5.3 4.6 6.7l-1 3.6c-.1.4.3.6.6.4l4.3-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg> 공유';
   b.onclick=function(ev){ev.stopPropagation();
     var n=nameOf(dlg),pg=location.pathname.split('/').pop()||'index.html';
-    /* 지금 보는 기물의 사진 주소(…/photos/<도록>/<번호>.jpg)에서 도록·번호를 읽어 그 기물로 바로 열리는 링크를 만든다 */
-    var url=BASE+pg,ims=dlg.querySelectorAll('img');
-    for(var k=0;k<ims.length;k++){var m=(ims[k].currentSrc||ims[k].src||'').match(/\/photos\/([^\/]+)\/([^\/?#]+)\.jpg/);if(m){url=BASE+'index.html#see='+m[1]+'/'+m[2];break;}}
     var t='조선의 목가구'+(n?' — '+n:'');
-    share('조선의 목가구',t,url);};
+    /* 지금 보는 기물의 도록·번호를 알아내 그 기물이 바로 열리는 링크를 만든다(못 알아내면 이 도록 주소) */
+    var who=window.MOKGAGU_WHO?window.MOKGAGU_WHO(dlg):Promise.resolve(null);
+    who.then(function(c){
+      var url=(c&&c.pid)?BASE+'index.html#see='+c.b+'/'+encodeURIComponent(c.pid):BASE+pg;
+      share('조선의 목가구',t,url);
+    },function(){share('조선의 목가구',t,BASE+pg);});};
   dlg.appendChild(b);
 }
 function scan(){document.querySelectorAll('dialog[open]').forEach(attach);}

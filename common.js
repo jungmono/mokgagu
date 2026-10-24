@@ -80,3 +80,11 @@
   lazy(d.documentElement);
   new MutationObserver(function (ms) { ms.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) lazy(n); }); }); }).observe(d.documentElement, { childList: true, subtree: true });
 })();
+
+/* 기물 나란히 비교(compare.js) — 모든 페이지에서 불러온다 */
+(function () {
+  var d = document;
+  if (d.querySelector('script[src^="compare.js"]')) return;
+  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=1'; s.defer = true; d.head.appendChild(s); }
+  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', go); else go();
+})();
