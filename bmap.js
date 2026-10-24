@@ -42,7 +42,7 @@
     '충청도': '<path d="M6.5 26V15.5a9.5 9.5 0 0 1 19 0V26z"/><circle cx="11" cy="22" r="1.4" fill="currentColor"/><circle cx="21" cy="22" r="1.4" fill="currentColor"/><circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>',
     '경상도': '<path d="M16 2.5Q20.39 11.61 29.5 16Q20.39 20.39 16 29.5Q11.61 20.39 2.5 16Q11.61 11.61 16 2.5Z"/>',
     '전라도': '<rect x="10.5" y="3.5" width="11" height="25" rx="1.8"/><circle cx="16" cy="9.5" r="1.7" fill="currentColor"/><circle cx="16" cy="16" r="1.7" fill="currentColor"/><circle cx="16" cy="22.5" r="1.7" fill="currentColor"/>',
-    '제주도': '<path d="M11 29V20.5C11 18.5 7.5 18 5.5 16.5C3 14.5 3 10 6.5 9C9 8.5 11.5 10 12 12.5V6C12 3.5 13.5 2.5 14.5 2.5C15.8 2.5 16 4 16 6C16 4 16.2 2.5 17.5 2.5C18.5 2.5 20 3.5 20 6V12.5C20.5 10 23 8.5 25.5 9C29 10 29 14.5 26.5 16.5C24.5 18 21 18.5 21 20.5V29Z"/><circle cx="16" cy="22.2" r="3.4"/><path d="M16 20v4.4M13.8 22.2h4.4"/>',   // 제주 장석(네 갈래 꽃잎 판, 가운데 둥근 문양)
+    '제주도': '<circle cx="16" cy="9" r="6.6"/><path d="M16 5.4v7.2M12.4 9h7.2M16 5.4h2.4M19.6 9v2.4M16 12.6h-2.4M12.4 9V6.6"/><path d="M16 29.5l-7.2-7.4C5.6 18.9 8 15.4 11.2 16c2 .4 3.8 1.8 4.8 4 1-2.2 2.8-3.6 4.8-4 3.2-.6 5.6 2.9 2.4 6.1z"/>'
   };
   const PROV = [['평안도', ['평안']], ['함경도', ['함경']], ['황해도', ['황해']], ['경기도', ['경기']], ['강원도', ['강원']], ['충청도', ['충청']], ['경상도', ['경상']], ['전라도', ['전라']], ['제주도', ['제주도']]];
   /* 도 → 선생님 지도에 있는 고을. 색·글자 자리는 지도 위에 도를 크게 적어 두기 위한 것 */
@@ -131,7 +131,7 @@
 .bm .bm-pb button:hover,.bm .bm-t button:hover{transform:translateY(-2px);border-color:#6b7183}
 .bm .bm-pb button[aria-pressed=true],.bm .bm-t button[aria-pressed=true]{border-color:#1f2433;box-shadow:inset 0 0 0 1px #1f2433}
 .bm .bm-t button{width:96px}.bm .bm-t button[aria-pressed=false]{opacity:.45}
-.bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bi img{width:46px;height:46px;border-radius:12px;object-fit:cover;display:block}.bm .bm-t .bi svg{width:34px;height:34px}
+.bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bm-t .bi svg{width:34px;height:34px}
 .bm .bm-pb button small{display:block;font-size:12px;color:#6b7183;font-weight:700;min-height:1em;margin-top:-3px}
 .bm .bm-t button i{position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%}
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
@@ -149,7 +149,7 @@
 .bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 </style>
-<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi">${p === '제주도' ? '<img src="jeju_icon.jpg" alt="" width="46" height="46">' : `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg>`}</span>${p}<small></small></button>`).join('')}</div>
+<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
 <div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><i style="background:${c}"></i></button>`).join('')}</div>
 <svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
