@@ -9,8 +9,8 @@
 *{box-sizing:border-box}html{background:#fff}
 body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:20px 14px 70px;word-break:keep-all}
 .wrap{max-width:980px;margin:0 auto}
-.sa-top{margin:0 0 14px}.sa-home img{height:40px;width:auto;display:block}
-h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px}
+.sa-top{margin:0 0 10px}.sa-close{display:inline-flex;align-items:center;gap:6px;border:2px solid #111;background:#fff;color:#111;border-radius:999px;padding:7px 16px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.sa-close:hover{background:#f2f0ec}
+h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px;text-align:center}#sub{text-align:center}
 .sub{color:var(--muted);font-size:14px;margin:0 0 14px;line-height:1.6}
 .empty{border:1.5px dashed #9c9179;border-radius:14px;padding:22px;background:#fbf6ea;line-height:1.8;font-size:15px}
 .empty a{color:var(--acc);font-weight:700}
@@ -39,7 +39,7 @@ dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #11
 <script src="common.js?v=6" defer></script>
 </head><body>
 <div class="wrap">
-  <div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+  <div class="sa-top"><button type="button" class="sa-close" id="cls" aria-label="닫기" title="닫기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>닫기</button></div>
   <h1>나란히 보기</h1>
   <p class="sub" id="sub"></p>
   <div id="app"></div>
@@ -71,7 +71,7 @@ dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #11
       $('app').innerHTML = '<div class="empty"><b>비교할 기물이 ' + (n ? '한 점뿐' : '아직 없어요') + '.</b><br>도록에서 기물 사진 창을 열고 위쪽의 <b>「비교에 담기」</b>를 누르면 최대 3점까지 담겨요. 두 점 이상 담으면 이 화면에서 나란히 볼 수 있어요.<br><a href="index.html">처음 화면으로</a></div>';
       return;
     }
-    $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 크게 볼 수 있어요.';
+    $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 새 창에서 그 기물을 볼 수 있어요.';
     var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
@@ -126,7 +126,12 @@ dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #11
   lb.addEventListener('pointerup', function (e) { if (sx != null && Math.abs(e.clientX - sx) > 60 && e.target.id !== 'lb-x') step(e.clientX < sx ? 1 : -1); sx = null; });
   lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
   document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('[data-i]'); if (b) { openLb(+b.getAttribute('data-i')); return; }
+    if (e.target.closest && e.target.closest('#cls')) { window.close(); setTimeout(function () { location.href = 'index.html'; }, 250); return; }
+    var b = e.target.closest && e.target.closest('[data-i]');
+    if (b) { var it = list()[+b.getAttribute('data-i')], k = it && it.k || '';
+      /* 도록 기물은 다른 도록처럼 기물 창이 새 창에서 열리게(이 비교 화면은 그대로 둔다). 소장품은 사진이 암호 뒤라 여기서 크게 본다 */
+      if (k && k.indexOf('col/') !== 0) { window.open('index.html#see=' + k.split('/').map(encodeURIComponent).join('/'), '_blank', 'noopener'); return; }
+      openLb(+b.getAttribute('data-i')); return; }
     var r = e.target.closest && e.target.closest('[data-rm]'); if (r) { (function(){var k=r.getAttribute('data-rm');try{var a=list().filter(function(x){return x.k!==k;});localStorage.setItem('mokgagu_cmp',JSON.stringify(a));}catch(er){}start();})(); }
   });
 
