@@ -111,7 +111,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     /* 크기 기준: 서안·소반·안궤류 → 소장 안궤, 반닫이·책장·궤류 → 소장 언양반닫이. 기준은 항상 빨간색 */
     var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '소장 언양반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
     var kinds = cols.map(function (c) { return (c.r.kind || '') + ' ' + (c.name || ''); }).join(' ');
-    var rk = /서안|소반|안궤|사방탁자/.test(kinds) ? 'a' : /반닫이|책장|책궤|궤|장\b/.test(kinds) ? 'b' : '';
+    var rk = /서안|경상|소반|안궤|사방탁자/.test(kinds) ? 'a' : /반닫이|책장|책궤|궤|장|농/.test(kinds) ? 'b' : '';
     var RED = '#c8102e', CL = ['#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c', '#2a8a8a'], figH = '', fi = 0;
     var items = [];
     cols.forEach(function (c) {
