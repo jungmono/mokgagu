@@ -342,7 +342,8 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     var qs = {}; D.logs.forEach(function (x) { if (x.who === w && x.kind === 'search' && x.q) qs[x.q] = (qs[x.q] || 0) + 1; });
     var cms = D.comments.filter(function (c) { return c.author === w; }).sort(function (a, b) { return String(b.t).localeCompare(a.t); });
     var ask = D.questions.filter(function (q) { return q.who === w; });
-    var cmps = []; D.logs.forEach(function (x) { if (x.who !== w || x.kind !== 'compare' || !x.cid) return; if (x.q === '__del__') { cmps = cmps.filter(function (y) { return y.cid !== x.cid; }); } else cmps.push(x); }); cmps.reverse();   /* 지운 비교는 q='__del__' 기록으로 표시 */
+    var cmps = [], gone = {}; D.logs.forEach(function (x) { if (x.who === w && x.kind === 'compare' && String(x.q).indexOf('__del__|') === 0) gone[String(x.q).slice(8)] = 1; });
+    D.logs.forEach(function (x) { if (x.who !== w || x.kind !== 'compare' || !x.cid || String(x.q).indexOf('__del__') === 0 || gone[x.t]) return; cmps.push(x); }); cmps.reverse();   /* 지운 비교는 q='__del__|<그 기록의 시각>' 기록으로 한 건씩 표시 */   /* 지운 비교는 q='__del__' 기록으로 표시 */
     return { cmps: cmps, likes: likes, order: order, seen: seen, books: books, qs: qs, cms: cms, ask: ask };
   }
   var SEQ = {};   /* 사진 창에서 좌우로 넘길 목록들 */
@@ -377,9 +378,9 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   document.addEventListener('click', function (e) {
     var dx = e.target.closest && e.target.closest('[data-delcmp]');
     if (dx) {
-      var cid = dx.getAttribute('data-delcmp'), who = dx.getAttribute('data-w');
-      D.logs.push({ t: new Date().toISOString(), who: who, kind: 'compare', cid: cid, q: '__del__' }); draw();
-      post({ action: 'log', who: who, kind: 'compare', cid: cid, q: '__del__', page: 'stats.html' }).then(function (ok) { if (!ok) toast('지우지 못했어요. 다시 눌러 주세요'); });
+      var tt = dx.getAttribute('data-delcmp'), cid = dx.getAttribute('data-cid'), who = dx.getAttribute('data-w');
+      D.logs.push({ t: new Date().toISOString(), who: who, kind: 'compare', cid: cid, q: '__del__|' + tt }); draw();
+      post({ action: 'log', who: who, kind: 'compare', cid: cid, q: '__del__|' + tt, page: 'stats.html' }).then(function (ok) { if (!ok) toast('지우지 못했어요. 다시 눌러 주세요'); });
       return;
     }
     var b = e.target.closest && e.target.closest('[data-recmp]'); if (!b) return;
