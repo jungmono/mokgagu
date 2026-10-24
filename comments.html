@@ -100,7 +100,7 @@ select{font:inherit;font-size:13.5px;border:1px solid #d9d4cc;border-radius:8px;
     var w = $('who');
     if (C.isFam()) w.innerHTML = '<span>🔑 <b>가족 암호 확인됨</b> — 거믄·힌의 비공개 이야기까지 모두 보여요.</span><button type="button" class="btn ghost" id="out" style="margin-left:auto">이 기기에서 암호 지우기</button>';
     else w.innerHTML = '<span>지금은 <b>공개된 이야기</b>만 보여요. 거믄·힌은 가족 암호를 넣으면 비공개 이야기도 볼 수 있어요.</span>' +
-      '<span style="display:inline-flex;gap:6px;margin-left:auto"><input type="password" id="code" placeholder="가족 암호" inputmode="numeric" autocomplete="off"><button type="button" class="btn" id="go">확인</button></span>' +
+      '<span style="display:inline-flex;gap:6px;margin-left:auto"><input type="password" id="code" placeholder="가족 암호" inputmode="text" autocapitalize="off" autocomplete="off"><button type="button" class="btn" id="go">확인</button></span>' +
       (C.state.codeErr ? '<span class="err">' + C.esc(C.state.codeErr) + '</span>' : '');
   }
   function books(items) {

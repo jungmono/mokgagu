@@ -272,7 +272,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   /* ── 잠금 ── */
   function lock(msg) {
     app.innerHTML = '<div class="lock"><div class="ic">🔒</div><h2>가족 암호를 넣어 주세요</h2><p>공부방과 같은 암호예요.<br>이 기기에 기억해 둡니다.</p>' +
-      '<input id="lk-code" type="password" inputmode="numeric" autocomplete="off"><button id="lk-go">열기</button><div class="err">' + esc(msg || '') + '</div></div>';
+      '<input id="lk-code" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"><button id="lk-go">열기</button><div class="err">' + esc(msg || '') + '</div></div>';
     var go = function () {
       var v = document.getElementById('lk-code').value.trim(); if (!v) return;
       document.getElementById('lk-go').disabled = true;

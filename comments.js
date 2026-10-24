@@ -200,7 +200,7 @@
     if (FAMW[w] && !fam) {
       h += '</div><p class="cm-note">거믄·힌은 <b>가족 암호</b>를 넣어야 쓸 수 있어요. 이 기기에 기억해 둡니다.</p>' +
         (state.codeErr ? '<p class="cm-err">' + esc(state.codeErr) + '</p>' : '') +
-        '<div class="cm-row"><input type="password" class="cm-code" placeholder="가족 암호" autocomplete="off" inputmode="numeric" style="max-width:200px"><button type="button" class="cm-go cm-codego">확인</button></div></div>';
+        '<div class="cm-row"><input type="password" class="cm-code" placeholder="가족 암호" autocomplete="off" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" style="max-width:200px"><button type="button" class="cm-go cm-codego">확인</button></div></div>';
       return h;
     }
     if (w === '벗') h += '<input type="text" class="cm-name" placeholder="이름" maxlength="30" value="' + esc(ls.get(K_NAME, '')) + '">';

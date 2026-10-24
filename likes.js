@@ -347,7 +347,7 @@
         '<div class="lk-pick"><button type="button" data-w="거믄">' + star('거믄') + '<b>거믄</b></button>' +
         '<button type="button" data-w="힌">' + star('힌') + '<b>힌</b></button>' +
         '<button type="button" class="bt" data-w="벗">' + star('벗') + '<b>벗</b><small>함께 보는 분</small></button></div>' +
-        '<div class="lk-step" hidden><div class="lk-st-t"></div><div class="lk-row"><input class="lk-code" type="password" inputmode="numeric" placeholder="가족 암호" autocomplete="off"><button type="button" class="lk-go">들어가기</button></div><div class="lk-err"></div></div>' +
+        '<div class="lk-step" hidden><div class="lk-st-t"></div><div class="lk-row"><input class="lk-code" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="가족 암호" autocomplete="off"><button type="button" class="lk-go">들어가기</button></div><div class="lk-err"></div></div>' +
         '<label><input type="checkbox" class="lk-shared"> 이 기기는 같이 써요 (새로 열 때마다 물어보기)</label>';
       document.body.appendChild(whoDlg);
       var want = '';
