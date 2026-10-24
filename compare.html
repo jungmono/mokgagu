@@ -146,7 +146,12 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   document.addEventListener('click', function (e) {
     if (e.target.closest && e.target.closest('#cls')) { window.close(); setTimeout(function () { location.href = 'index.html'; }, 250); return; }
     var b = e.target.closest && e.target.closest('[data-i]');
-    if (b) { openLb(+b.getAttribute('data-i')); return; }
+    if (b) { var ii = +b.getAttribute('data-i'), c = window.__cols[ii];
+      if (c && c.k && c.k.indexOf('col/') !== 0) {
+        var ks = window.__cols.filter(function (x) { return x.k && x.k.indexOf('col/') !== 0; }).map(function (x) { return x.k; });
+        try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비교' })); } catch (er) {}
+        window.open('index.html#see=' + c.k.split('/')[0] + '/' + encodeURIComponent(c.k.split('/').slice(1).join('/')), '_blank'); return; }
+      openLb(ii); return; }
     var r = e.target.closest && e.target.closest('[data-rm]'); if (r) { (function(){var k=r.getAttribute('data-rm');try{var a=list().filter(function(x){return x.k!==k;});localStorage.setItem('mokgagu_cmp',JSON.stringify(a));}catch(er){}start();})(); }
   });
 
