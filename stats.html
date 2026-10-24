@@ -196,8 +196,8 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   body.pr .qi{break-inside:avoid;border-color:#999}
   #rv,#lk-box{display:none!important}
 }
-.cmp1{border:1px solid #e5e1da;border-radius:12px;padding:8px 10px;margin:0 0 8px;background:#fff}.cmp-h{font-size:12px;color:#6b665e;margin-bottom:4px}.cmp-n{font-size:12.5px;margin-top:4px;color:#3b3833}.cmp1 button{margin-top:6px;border:1.5px solid #111;background:#fff;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}.cmpc{display:inline-block;font-size:12px;border:1px dashed #a39c92;border-radius:8px;padding:6px 8px;margin-right:4px}
-</style>
+.cmp1{position:relative;border:1px solid #e5e1da;border-radius:12px;padding:8px 10px;margin:0 0 8px;background:#fff}.cmp-h{font-size:12px;color:#6b665e;margin-bottom:4px}.cmp-n{font-size:12.5px;margin-top:4px;color:#3b3833}.cmp1 button{margin-top:6px;border:1.5px solid #111;background:#fff;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}.cmpc{display:inline-block;font-size:12px;border:1px dashed #a39c92;border-radius:8px;padding:6px 8px;margin-right:4px}
+.cmp1 .cmp-x{position:absolute;top:6px;right:8px;margin:0;border:1px solid #d9d4cb;background:#fff;border-radius:999px;font-size:12px;padding:3px 10px;color:#6b665e;cursor:pointer}</style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#111111">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -342,7 +342,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     var qs = {}; D.logs.forEach(function (x) { if (x.who === w && x.kind === 'search' && x.q) qs[x.q] = (qs[x.q] || 0) + 1; });
     var cms = D.comments.filter(function (c) { return c.author === w; }).sort(function (a, b) { return String(b.t).localeCompare(a.t); });
     var ask = D.questions.filter(function (q) { return q.who === w; });
-    var cmps = D.logs.filter(function (x) { return x.who === w && x.kind === 'compare' && x.cid; }).slice().reverse();
+    var cmps = []; D.logs.forEach(function (x) { if (x.who !== w || x.kind !== 'compare' || !x.cid) return; if (x.q === '__del__') { cmps = cmps.filter(function (y) { return y.cid !== x.cid; }); } else cmps.push(x); }); cmps.reverse();   /* 지운 비교는 q='__del__' 기록으로 표시 */
     return { cmps: cmps, likes: likes, order: order, seen: seen, books: books, qs: qs, cms: cms, ask: ask };
   }
   var SEQ = {};   /* 사진 창에서 좌우로 넘길 목록들 */
@@ -363,7 +363,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<div class="blk"><h3>⚖️ 나란히 비교해 본 기물 <small>' + P.cmps.length + '번</small></h3>' +
         (P.cmps.length ? '<div class="cmps">' + P.cmps.slice(0, 8).map(function (x) {
           var ks = x.cid.split(' '), nm = (x.q || '').split(' | ');
-          return '<div class="cmp1"><div class="cmp-h">' + ago(x.t) + '</div><div class="th">' + ks.map(function (k, i) { return k.indexOf('col/') === 0 ? '<span class="cmpc" title="소장품">' + esc(nm[i] || '소장품') + '</span>' : thA(k, '', 'cmp-' + w); }).join('') + '</div><div class="cmp-n">' + esc(nm.join(' · ')) + '</div>' + (ks.some(function (k) { return k.indexOf('col/') === 0; }) ? '' : '<button type="button" data-recmp="' + esc(x.cid) + '">다시 비교하기</button>') + '</div>';
+          return '<div class="cmp1"><button type="button" class="cmp-x" data-delcmp="' + esc(x.cid) + '" data-w="' + w + '" aria-label="이 비교 기록 지우기">✕ 지우기</button><div class="cmp-h">' + ago(x.t) + '</div><div class="th">' + ks.map(function (k, i) { return k.indexOf('col/') === 0 ? '<span class="cmpc" title="소장품">' + esc(nm[i] || '소장품') + '</span>' : thA(k, '', 'cmp-' + w); }).join('') + '</div><div class="cmp-n">' + esc(nm.join(' · ')) + '</div>' + (ks.some(function (k) { return k.indexOf('col/') === 0; }) ? '' : '<button type="button" data-recmp="' + esc(x.cid) + '">다시 비교하기</button>') + '</div>';
         }).join('') + '</div>' : '<p class="empty">아직 나란히 비교해 본 기물이 없어요. 기물 사진 창의 「비교에 담기」로 시작해요.</p>') + '</div>' +
       '<div class="blk"><h3>📚 많이 본 도록</h3>' +
         (bk.length ? '<ul class="rank">' + bk.map(function (b) { return '<li><span>' + esc(BOOK[b] || b) + '</span><i style="width:' + Math.max(6, P.books[b] / mx * 100) + '%"></i><b>' + P.books[b] + '번</b></li>'; }).join('') + '</ul>' : '<p class="empty">아직 기록이 없어요.</p>') + '</div>' +
@@ -375,6 +375,13 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   }
 
   document.addEventListener('click', function (e) {
+    var dx = e.target.closest && e.target.closest('[data-delcmp]');
+    if (dx) {
+      var cid = dx.getAttribute('data-delcmp'), who = dx.getAttribute('data-w');
+      D.logs.push({ t: new Date().toISOString(), who: who, kind: 'compare', cid: cid, q: '__del__' }); draw();
+      post({ action: 'log', who: who, kind: 'compare', cid: cid, q: '__del__', page: 'stats.html' }).then(function (ok) { if (!ok) toast('지우지 못했어요. 다시 눌러 주세요'); });
+      return;
+    }
     var b = e.target.closest && e.target.closest('[data-recmp]'); if (!b) return;
     var ks = b.dataset.recmp.split(' '); try { localStorage.setItem('mokgagu_cmp', JSON.stringify(ks.map(function (k) { return { k: k, n: name(k) || '', u: '' }; }))); } catch (x) {}
     window.open('compare.html', '_blank', 'noopener');
