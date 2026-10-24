@@ -468,7 +468,7 @@
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') load(); });
     // 처음 들어온 기기: 첫 화면에서 한 번 물어본다 (한 번 고르면 다시 묻지 않음)
     var home = /(^|\/)(index\.html)?$/.test(location.pathname);
-    if (home && !me() && ls.get(K_SKIP, '') !== '1' && !/#see=/.test(location.hash)) setTimeout(ask, 600);
+    /* 처음 들어온 사람에게 「누구세요?」를 먼저 묻지 않는다 — 별을 달거나 글을 쓰려 할 때, 또는 오른쪽 아래 별 단추를 누를 때 묻는다 */
   }
   window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load, post: post, nextClass: nextClass, importAsks: syncAsk, isAsk: isAsk, syncAsk: syncAsk, classDays: classDays, today: kstToday, star: star, fam: fam };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
