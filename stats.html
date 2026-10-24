@@ -303,7 +303,18 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     ls.set(K_CACHE, JSON.stringify({ ok: true, logs: D.logs.slice(-1500), likes: D.likes, visits: D.visits, questions: D.questions.concat(D.memos) }));
   }
   function load() {
-    if (!fam()) { lock(); return; }
+    if (!fam()) {
+      /* 공부방에서 넣어 둔 암호가 있으면 잠금 화면 없이 확인한 뒤 연다 */
+      var sp = ls.get(K_STUDY);
+      if (sp && !load._tried) {
+        load._tried = 1; app.innerHTML = '<p class="loading">확인 중…</p>';
+        fetch(API + '?action=list&code=' + encodeURIComponent(sp)).then(function (r) { return r.json(); }).then(function (j) {
+          if (j && j.fam) { ls.set(K_CODE, sp); ls.set(K_FAM, '1'); load(); } else lock();
+        }).catch(function () { lock('인터넷 연결을 확인해 주세요.'); });
+        return;
+      }
+      lock(); return;
+    }
     if (!D) { var c = ls.json(K_CACHE); if (c && c.ok) { setD(c); draw(); } else app.innerHTML = '<p class="loading">불러오는 중…</p>'; }
     fetch(API + '?action=stats&code=' + encodeURIComponent(ls.get(K_CODE)), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
       if (!j || !j.ok) {

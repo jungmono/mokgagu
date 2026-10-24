@@ -245,7 +245,7 @@ document.getElementById('n-books').textContent = MAIN.length;
 document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-10-24';
+const SITE_UPDATED = '2026-10-25';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -303,7 +303,10 @@ function loadIdx() {
 }
 function search(raw) {
   if (!window.SEARCH && raw && raw.trim()) { loadIdx().then(() => { if (window.SEARCH) search(raw); }); return; }
-  const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
+  let terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
+  /* 같은 말 — 흔히 쓰는 다른 이름도 함께 찾는다(용어 사전의 「같은 말」과 같은 내용) */
+  const SYN = [['반닫이', '반다지', '드닫이'], ['궤', '궤짝'], ['사방탁자', '책탁자'], ['뒤주', '쌀뒤주'], ['소반', '밥상', '개다리소반']];
+  { const extra = []; terms.forEach((t) => { SYN.forEach((g) => { if (g.includes(t)) g.forEach((n) => extra.push(n)); }); }); terms = [...new Set(terms.concat(extra))]; }
   if (!terms.length) { $('results').hidden = true; grid.hidden = false; return; }
   const all = window.SEARCH || [];
   /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주·약장은 각자 자리에서) */
