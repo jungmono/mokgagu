@@ -43,7 +43,7 @@ var ALL=[],view='year',site='전체',yr='전체',sel=null;
 function parse(it,src){var o=it.owner||'',m=o.match(/^(\S+)\s.*?\((\d{4})\)\s*Lot\s*(\S+)/),pr=o.match(/낙찰\s*([\d,]+)원/);
  return {id:it.id,name:it.name,kind:it.kind,site:m?m[1]:'',year:m?+m[2]:0,lot:m?m[3]:'',price:pr?+pr[1].replace(/,/g,''):null,fail:/유찰/.test(o),src:src,type:it.type};}
 function grab(f,src){return fetch(f).then(function(r){return r.text()}).then(function(t){var m=t.match(/id="ds-items">([\s\S]*?)<\/script>/);return m?JSON.parse(m[1]).map(function(i){return parse(i,src)}):[]});}
-Promise.all([grab('auction.html','auction'),grab('myart.html','myart')]).then(function(r){ALL=r[0].concat(r[1]).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
+Promise.all([grab('auction.html','auction'),grab('myart.html','myart'),grab('seoulauction.html','seoulauction')]).then(function(r){ALL=r[0].concat(r[1]).concat(r[2]).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
 function med(a){a=a.slice().sort(function(x,y){return x-y});var n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;}
 function man(v){var m=v/10000;return (m>=10000?(m/10000).toFixed(m%10000?1:0)+'억':(m>=1000?Math.round(m).toLocaleString():(Math.round(m*10)/10))+'만');}
 function won(v){return v.toLocaleString()+'원';}
