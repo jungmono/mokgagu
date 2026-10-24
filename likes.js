@@ -167,7 +167,7 @@
     '@media (max-width:720px){#lk-col{padding:0;align-items:flex-end}#lk-col .lc-panel{max-height:88vh;border-radius:16px 16px 0 0}#lk-col .lc-grid{grid-template-columns:repeat(2,1fr)!important;gap:10px}#lk-col h2{font-size:17px}}',
     '#lk-col .lc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}',
     '#lk-col .lc-it{position:relative;display:flex;flex-direction:column;text-align:left;font:inherit;color:inherit;background:#fff;border:1px solid #e5e1da;border-radius:12px;padding:0;overflow:hidden;cursor:pointer}',
-    '#lk-col .lc-it:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}#lk-col .lc-it{content-visibility:auto;contain-intrinsic-size:auto 230px}#lk-col .lc-ph{background:#fff}#lk-col .lc-body{will-change:scroll-position;scroll-behavior:auto}',
+    '#lk-col .lc-it:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}#lk-col .lc-it{contain:layout paint style}#lk-col .lc-ph{background:#fff}#lk-col .lc-panel{transform:translateZ(0);backface-visibility:hidden}#lk-col .lc-body{contain:layout paint;scroll-behavior:auto}#lk-col .lc-ph img{content-visibility:visible;image-rendering:auto}',
     '#lk-col .lc-ph{position:relative;height:0;padding-top:100%;background:#f6f6f4}#lk-col .lc-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}',
     '#lk-col .lc-tx{padding:8px 10px 10px}#lk-col .lc-nm{font-weight:700;font-size:14px;line-height:1.3}#lk-col .lc-ct{font-size:11.5px;color:#8a837a;margin-top:2px}',
     '#lk-col .lc-stars{position:absolute;top:5px;left:5px;display:flex;gap:1px;}#lk-col .lc-stars svg{width:18px;height:18px}',
@@ -435,7 +435,7 @@
     else html += '<div class="lc-grid">' + keys.map(function (k) {
       var r = IX[k], s = m[k];
       var st = (s['거믄'] ? star('거믄') : '') + (s['힌'] ? star('힌') : '');
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
         '<span class="lc-stars">' + st + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>';
     }).join('') + '</div>';
     if (pend.length) html += '<p class="lc-note">' + (serverOk ? '별 ' + pend.length + '개를 시트에 올리는 중이에요.' : '별 ' + pend.length + '개가 아직 이 기기에만 있어요. 시트 연결이 열리면 저절로 올라가요.') + '</p>';
@@ -448,7 +448,7 @@
     var keys = Object.keys(beot).sort(function (a, b) { return String(beot[b]).localeCompare(String(beot[a])); });
     var html = '<div class="lc-hd"><h2>' + star('벗') + '벗의 좋아요</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body">';
     html += keys.length ? '<div class="lc-grid">' + keys.map(function (k) { var r = IX[k];
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
         '<span class="lc-stars">' + star('벗') + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>'; }).join('') + '</div>'
       : '<p class="lc-empty">아직 좋아요 한 기물이 없어요. 사진 왼쪽 위 말풍선을 눌러 보세요.</p>';
     html += '<p class="lc-note">벗의 좋아요는 이 기기에만 담겨요.</p>';
