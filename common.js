@@ -6,6 +6,7 @@
   /* 1) 스타일 */
   var st = d.createElement('style');
   st.textContent =
+    '#grid .card{content-visibility:auto;contain-intrinsic-size:auto 340px}' +
     ':focus-visible{outline:3px solid #8a5a12;outline-offset:2px;border-radius:4px}' +
     'html.dlg-open{overflow:hidden}' +
     '@media (pointer:coarse){#d-prev,#d-next,#d-close,#lb-prev,#lb-next,#lb-x,.tabs button,.kg-seg button{min-height:44px}#d-close,#lb-x{min-width:56px}}' +
@@ -53,7 +54,7 @@
     d.getElementById('pwa-x').addEventListener('click', function () { lsSet(K_NO, String(Date.now())); bar.remove(); });
   }
   window.addEventListener('appinstalled', function () { var b = d.getElementById('pwa-bar'); if (b) b.remove(); });
-  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', function () { setTimeout(addInstall, 1200); }); else setTimeout(addInstall, 1200);
+  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', function () { setTimeout(addInstall, 6000); }); else setTimeout(addInstall, 6000);   // 처음 화면의 이름 고르기와 겹치지 않게 늦게
 
   /* 3) 창(dialog): 바깥 눌러 닫기 + 열려 있는 동안 뒤 화면 고정 */
   var KEEP = { 'lk-who': 1, cr: 1, fm: 1 };   // 꼭 선택·입력해야 하는 창은 바깥을 눌러도 닫지 않음

@@ -290,7 +290,15 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let mapKeys = null, hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seqBack = '', seqNotes = null;
 
+/* 검색 색인(search.js, 1.5MB)은 처음 화면에서는 받지 않고, 검색창을 누르거나 검색·기물 열기가 필요할 때 불러온다 */
+let idxLoading = null;
+function loadIdx() {
+  if (window.SEARCH) return Promise.resolve();
+  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
+  return idxLoading;
+}
 function search(raw) {
+  if (!window.SEARCH && raw && raw.trim()) { loadIdx().then(() => { if (window.SEARCH) search(raw); }); return; }
   const terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
   if (!terms.length) { $('results').hidden = true; grid.hidden = false; return; }
   const all = window.SEARCH || [];
@@ -358,7 +366,7 @@ window.RV_OPEN = true;
 function openSeen() {
   const m = location.hash.match(/^#see=([^/]+)\/(.+)$/); if (!m) return;
   const b = decodeURIComponent(m[1]), pid = decodeURIComponent(m[2]);
-  if (!window.SEARCH) return;   // 검색 색인(search.js)이 아직 안 왔으면 load 때 다시
+  if (!window.SEARCH) { loadIdx().then(() => { if (window.SEARCH) openSeen(); }); return; }   // 색인이 아직 없으면 불러온 뒤 다시
   const r = window.SEARCH.find((x) => x.b === b && String(x.pid) === pid);
   history.replaceState(null, '', location.pathname + location.search);
   if (!r) return;
@@ -398,8 +406,7 @@ $('home-link').addEventListener('click', (e) => {
 });
 let tmr; $('q').addEventListener('input', (e) => { clearTimeout(tmr); tmr = setTimeout(() => { search(e.target.value); syncQuick(); }, 150); });
 </script>
-<script src="search.js"></script>
-<script>(function(){var p=new URLSearchParams(location.search).get('q');if(p){$("q").value=p;}if($("q").value){search($("q").value);syncQuick();}})();</script>
+<script>(function(){var q=document.getElementById('q');if(q){q.addEventListener('focus',function(){loadIdx();},{once:true});}var p=new URLSearchParams(location.search).get('q');if(p){$("q").value=p;}if($("q").value){search($("q").value);syncQuick();}})();</script>
 <button type="button" id="to-top" aria-label="맨 위로" title="맨 위로"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
 <style>#to-top{position:fixed;right:22px;bottom:22px;z-index:900;width:52px;height:52px;border-radius:50%;border:2px solid #111;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s,background .15s}#to-top.show{opacity:1;visibility:visible;transform:none}#to-top:hover{background:#fff;color:#111}#to-top:focus-visible{outline:3px solid #8a2f22;outline-offset:3px}@media (max-width:640px){#to-top{right:14px;bottom:14px;width:46px;height:46px}}@media print{#to-top{display:none}}</style>
 <script>(function(){var b=document.getElementById('to-top');function u(){b.classList.toggle('show',window.scrollY>500);}window.addEventListener('scroll',u,{passive:true});u();b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();</script>
