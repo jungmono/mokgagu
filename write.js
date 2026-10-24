@@ -198,6 +198,63 @@
       else ED.cls = v;
       ED.title = el.querySelector('#wr-title').value; ED.body = el.querySelector('#wr-body').value; saveDraft(); draw();
     });
+
+    /* ── 수업 녹음: 소리는 이 기기에 파일로, 받아쓰기 글은 새 글 본문에 들어간다 ── */
+    var RC = { on: false, mr: null, sr: null, chunks: [], text: '', interim: '', t0: 0, tm: null, wl: null, stream: null, url: '', ext: 'webm' };
+    var bar = document.createElement('div'); bar.id = 'wr-rec'; el.parentNode.insertBefore(bar, el);
+    var rcss = document.createElement('style');
+    rcss.textContent = '#wr-rec{margin:0 0 12px;border:1.5px solid #111;border-radius:14px;padding:10px 12px;background:#fff;font-size:14px}#wr-rec .rb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}#wr-rec button,#wr-rec a.dl{border:1.5px solid #111;background:#fff;border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-decoration:none}#wr-rec .go{background:#b3261e;color:#fff;border-color:#b3261e}#wr-rec .dot{width:10px;height:10px;border-radius:50%;background:#b3261e;display:inline-block;animation:rcb 1s infinite}@keyframes rcb{50%{opacity:.25}}#wr-rec .tx{margin-top:8px;max-height:110px;overflow:auto;color:#3b3833;font-size:13.5px;line-height:1.6;background:#faf9f6;border-radius:8px;padding:6px 8px}#wr-rec .hint{color:#6b665e;font-size:12.5px;margin-top:6px;line-height:1.5}';
+    document.head.appendChild(rcss);
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    function mm(n) { n = Math.floor(n / 1000); return Math.floor(n / 60) + ':' + ('0' + (n % 60)).slice(-2); }
+    function rpaint() {
+      var h = '<div class="rb">';
+      if (RC.on) h += '<span class="dot"></span><b>녹음 중 ' + mm(Date.now() - RC.t0) + '</b><button type="button" id="rc-stop">■ 끝내기</button>';
+      else h += '<button type="button" class="go" id="rc-go">🎙 수업 녹음</button><span class="hint" style="margin:0">누르면 녹음하고, 끝내면 받아쓴 글이 새 글에 들어가요</span>';
+      h += '</div>';
+      if (RC.on && SR) h += '<div class="tx">' + esc(RC.text + RC.interim || '말씀을 받아쓰는 중…') + '</div>';
+      if (RC.on && !SR) h += '<div class="hint">이 브라우저는 받아쓰기를 지원하지 않아 소리만 녹음해요. (안드로이드·PC 크롬은 받아써 줍니다)</div>';
+      if (!RC.on && RC.url) h += '<div class="rb" style="margin-top:8px"><a class="dl" id="rc-dl" href="' + RC.url + '" download="수업녹음-' + new Date().toISOString().slice(0, 10) + '.' + RC.ext + '">⬇ 녹음 파일 저장</a><span class="hint" style="margin:0">파일은 이 기기에만 있어요. 꼭 저장해 두세요.</span></div>';
+      if (!RC.on) h += '<div class="hint">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 제가 앞뒤를 맞춰 정리해요.</div>';
+      bar.innerHTML = h;
+    }
+    function startSR() {
+      if (!SR || !RC.on) return;
+      var r = new SR(); r.lang = 'ko-KR'; r.continuous = true; r.interimResults = true; RC.sr = r;
+      r.onresult = function (e) { var it = ''; for (var i = e.resultIndex; i < e.results.length; i++) { var t = e.results[i][0].transcript; if (e.results[i].isFinal) RC.text += t.trim() + ' '; else it += t; } RC.interim = it; rpaint(); };
+      r.onend = function () { RC.interim = ''; if (RC.on) setTimeout(startSR, 200); };
+      r.onerror = function () {};
+      try { r.start(); } catch (e) {}
+    }
+    function rstart() {
+      if (!navigator.mediaDevices || !window.MediaRecorder) { toast('이 브라우저는 녹음을 지원하지 않아요'); return; }
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
+        RC.stream = st; RC.chunks = []; RC.text = ''; RC.interim = ''; if (RC.url) { URL.revokeObjectURL(RC.url); RC.url = ''; }
+        var mt = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm'].filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0] || '';
+        RC.ext = /mp4/.test(mt) ? 'm4a' : 'webm';
+        var mr = RC.mr = mt ? new MediaRecorder(st, { mimeType: mt }) : new MediaRecorder(st);
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) RC.chunks.push(e.data); };
+        mr.onstop = function () { if (RC.chunks.length) RC.url = URL.createObjectURL(new Blob(RC.chunks, { type: mr.mimeType || 'audio/webm' })); rfinish(); };
+        mr.start(5000); RC.on = true; RC.t0 = Date.now();
+        RC.tm = setInterval(rpaint, 1000); startSR();
+        try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { RC.wl = w; }, function () {}); } catch (e) {}
+        rpaint();
+      }, function () { toast('마이크 사용을 허용해 주세요'); });
+    }
+    function rstop() {
+      RC.on = false; clearInterval(RC.tm); try { RC.sr && RC.sr.stop(); } catch (e) {}
+      try { RC.mr.stop(); } catch (e) {} try { RC.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} try { RC.wl && RC.wl.release(); } catch (e) {}
+    }
+    function rfinish() {
+      var txt = (RC.text + RC.interim).trim(), mins = Math.max(1, Math.round((Date.now() - RC.t0) / 60000));
+      var block = '## 🎙 수업 녹음 받아쓰기 (' + mins + '분 · 기계가 받아쓴 글이라 틀린 낱말이 있어요)\n' + (txt || '(받아쓴 글이 없어요. 녹음 파일만 저장했어요)');
+      if (!ED) { open(null); }
+      ED.body = (ED.body ? ED.body + '\n\n' : '') + block; if (!ED.title) ED.title = '수업 녹음 ' + new Date().toISOString().slice(0, 10); saveDraft(); draw(); rpaint();
+      toast('받아쓴 글을 새 글에 넣었어요. 확인하고 저장하세요');
+    }
+    bar.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; if (b.id === 'rc-go') rstart(); else if (b.id === 'rc-stop') rstop(); });
+    window.addEventListener('beforeunload', function (e) { if (RC.on) { e.preventDefault(); e.returnValue = ''; } });
+    rpaint();
     draw(); load();
     return { reload: load };
   }

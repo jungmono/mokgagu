@@ -100,7 +100,7 @@ dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #11
     h += row('수종', cols.map(function (c) { return c.r.wood || ''; }));
     if (cols.some(function (c) { return price(c.r.owner); })) h += row('낙찰가', cols.map(function (c) { return price(c.r.owner); }));
     h += row('출처', cols.map(function (c) { return (c.r.owner || '').replace(/\s*·\s*(낙찰|유찰).*$/, ''); }));
-    h += '<tr><th class="rh"></th>' + cols.map(function (c) { return '<td><a class="lk" href="index.html#see=' + encodeURIComponent(c.r.b || c.k.split('/')[0]) + '/' + encodeURIComponent(c.r.pid || c.k.split('/').slice(1).join('/')) + '">도록에서 보기 →</a></td>'; }).join('') + '</tr>';
+    h += '<tr><th class="rh"></th>' + cols.map(function (c) { if (c.k.indexOf('col/') === 0) return '<td><a class="lk" href="collection.html#open=' + encodeURIComponent(c.k.slice(4)) + '">소장품에서 보기 →</a></td>'; return '<td><a class="lk" href="index.html#see=' + encodeURIComponent(c.r.b || c.k.split('/')[0]) + '/' + encodeURIComponent(c.r.pid || c.k.split('/').slice(1).join('/')) + '">도록에서 보기 →</a></td>'; }).join('') + '</tr>';
     h += '</table>';
     /* 앞모습 비율을 같은 눈금으로 */
     var fc = cols.filter(function (c) { return c.dm; });
@@ -130,11 +130,11 @@ dialog button{position:absolute;bottom:10px;background:#fff;border:2px solid #11
     var a = list();
     function go() {
       var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
-      var recs = a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: by[x.k] }; });
+      var recs = a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec || by[x.k] }; });
       window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
       render(recs);
     }
-    if (a.length < 2) { render(a.map(function (x) { return { k: x.k, n: x.n, u: x.u }; })); return; }
+    if (a.length < 2) { render(a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec }; })); return; }
     if (window.SEARCH) { go(); return; }
     $('app').innerHTML = '<div class="empty">불러오는 중…</div>';
     if (!idx) idx = new Promise(function (ok) { var s = document.createElement('script'); s.src = 'search.js'; s.onload = ok; s.onerror = ok; document.head.appendChild(s); });

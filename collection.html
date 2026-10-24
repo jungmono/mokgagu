@@ -401,6 +401,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
 
   /* ── 보기 창 ── */
   var vi = -1, vp = 0;
+  window.MOKGAGU_COLCUR = function () { return shown[vi] || null; };
   function openView(i) {
     var x = shown[i]; if (!x) return; vi = i; vp = 0; drawView();
     if (!$('vw').open) $('vw').showModal();

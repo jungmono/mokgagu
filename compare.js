@@ -35,6 +35,7 @@
   }
   /* 지금 사진 창이 보여 주는 기물: 큰 사진(…/photos/<도록>/<번호>.jpg)이거나 작은 사진(thumbs/<도록>/<순번>.jpg) 주소에서 읽는다 */
   function parse(dlg) {
+    if (dlg.id === 'vw' && window.MOKGAGU_COLCUR) { var x = window.MOKGAGU_COLCUR(); return x ? { col: x, pid: String(x.id), b: 'col', u: '' } : null; }
     var ims = dlg.querySelectorAll('img'), th = null;
     for (var i = 0; i < ims.length; i++) {
       var src = ims[i].currentSrc || ims[i].src || '', m = src.match(/\/photos\/([^\/]+)\/([^\/?#]+)\.jpg/);
@@ -76,7 +77,11 @@
           if (has(k)) { a = a.filter(function (x) { return x.k !== k; }); save(a); say('비교에서 뺐어요'); }
           else {
             if (a.length >= MAX) { say('비교는 ' + MAX + '점까지예요. 띠에서 하나를 빼 주세요'); return; }
-            a.push({ k: k, n: nameOf(dlg), u: c.u }); save(a); say(a.length + '점 담았어요' + (a.length > 1 ? ' — 아래 「나란히 보기」' : ''));
+            var ent = { k: k, n: nameOf(dlg), u: c.u };
+            if (c.b === 'col') { var x = window.MOKGAGU_COLCUR(), im = dlg.querySelector('#v-main img');
+              ent.rec = { name: x.name, kind: x.kind || '', era: x.era || '', size: x.size || '', wood: x.wood || '', owner: '우리 소장품', cat: '우리 소장품' };
+              try { var cv = document.createElement('canvas'), w = im.naturalWidth, h = im.naturalHeight, r = Math.min(1, 220 / Math.max(w, h)); cv.width = Math.round(w * r); cv.height = Math.round(h * r); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); ent.u = cv.toDataURL('image/jpeg', .7); } catch (e) { ent.u = ''; } }
+            a.push(ent); save(a); say(a.length + '점 담았어요' + (a.length > 1 ? ' — 아래 「나란히 보기」' : ''));
           }
           paint(); sync(dlg);
         });
