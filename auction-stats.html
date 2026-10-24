@@ -17,7 +17,7 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);mar
 .box{border:1px solid var(--line);border-radius:12px;padding:10px;overflow-x:auto}
 svg{display:block;width:100%;height:auto;min-width:520px;font-family:var(--sans)}
 .note{font-size:12.5px;color:var(--muted);line-height:1.6;margin:8px 0 0}
-.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;margin:8px 0 0}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.sm h2{font-size:16px;margin:0 0 4px}.sm p{margin:2px 0 10px;font-size:13px;color:var(--muted);line-height:1.6}.rg{display:grid;grid-template-columns:104px 1fr;gap:4px 10px;align-items:center;font-size:13.5px;margin:7px 0}.rg .bar{position:relative;height:22px;background:#f1eee8;border-radius:11px}.rg .bar i{position:absolute;top:3px;height:16px;border-radius:8px;opacity:.75}.rg .bar u{position:absolute;top:0;width:3px;height:22px;background:#111;text-decoration:none}.rg .tx{grid-column:2;font-size:12.5px;color:var(--muted);margin-top:-2px}.ins{margin:10px 0 0;padding:10px 12px;background:#fbf6ea;border-radius:10px;font-size:13.5px;line-height:1.7}.ins b{color:#8a2f22}.leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;margin:8px 0 0}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
 #list{margin-top:16px}#list h2{font-size:16px;margin:0 0 8px}
 .it{display:flex;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px;text-decoration:none;color:inherit;align-items:baseline}
 .it:hover{background:#f6f4ef}.it .p{margin-left:auto;font-weight:700;white-space:nowrap}.it .m{color:var(--muted);font-size:12.5px}
@@ -28,6 +28,7 @@ svg{display:block;width:100%;height:auto;min-width:520px;font-family:var(--sans)
 <h1>경매 시세</h1>
 <p class="lead">아이옥션·마이아트옥션 낙찰가를 <b>종류별로</b> 봅니다. 평균은 비싼 한두 점에 휘둘려서 <b>중앙값</b>(한가운데 값)을 썼습니다. 점이 크면 건수가 많다는 뜻입니다.</p>
 <div class="tiles" id="tiles"></div>
+<div class="box" id="sum" style="margin-bottom:18px"></div>
 <div class="tabs"><button class="tab on" data-v="year">연도별</button><button class="tab" data-v="site">경매사별</button></div>
 <div class="row" id="f1"></div><div class="row" id="f2"></div>
 <div class="box"><svg id="ch" viewBox="0 0 900 380" role="img" aria-label="경매 시세 그래프"></svg></div>
@@ -52,6 +53,20 @@ function init(){
  var yrs=ALL.map(function(x){return x.year});
  document.getElementById('tiles').innerHTML=[['낙찰',sold.length+'<small>건</small>'],['유찰',fail.length+'<small>건</small>'],['기간',Math.min.apply(0,yrs)+'–'+Math.max.apply(0,yrs)],['최고가',man(Math.max.apply(0,sold.map(function(x){return x.price})))+'<small>원</small>']].map(function(t){return '<div class="tile"><div class="k">'+t[0]+'</div><div class="v">'+t[1]+'</div></div>'}).join('');
  document.querySelectorAll('.tab').forEach(function(b){b.onclick=function(){view=b.dataset.v;sel=null;document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x===b)});draw();}});
+
+ /* 한눈에: 종류별 보통 낙찰 범위(중간 절반)와 값 오름·내림 */
+ (function(){
+  var q=function(a,p){a=a.slice().sort(function(x,y){return x-y});var i=(a.length-1)*p,l=Math.floor(i);return a[l]+(a[Math.min(l+1,a.length-1)]-a[l])*(i-l);};
+  var lo=Math.log(100000),hi=Math.log(300000000),pos=function(v){return Math.max(0,Math.min(100,(Math.log(v)-lo)/(hi-lo)*100));};
+  var rows=Object.keys(COL).map(function(k){var a=sold.filter(function(x){return x.kind===k}).map(function(x){return x.price});return a.length>=10?{k:k,n:a.length,q1:q(a,.25),m:q(a,.5),q3:q(a,.75)}:null}).filter(Boolean).sort(function(a,b){return b.m-a.m});
+  var ins=[];
+  if(rows.length){ins.push('값이 가장 높은 종류는 <b>'+rows[0].k+'</b>(중앙값 '+man(rows[0].m)+'원), 가장 낮은 종류는 <b>'+rows[rows.length-1].k+'</b>('+man(rows[rows.length-1].m)+'원)입니다.');}
+  var tr=[];rows.forEach(function(r){var e=sold.filter(function(x){return x.kind===r.k&&x.year<=2023}).map(function(x){return x.price}),l=sold.filter(function(x){return x.kind===r.k&&x.year>=2025}).map(function(x){return x.price});if(e.length>=10&&l.length>=10){var c=(med(l)/med(e)-1)*100;if(Math.abs(c)>=15)tr.push('<b>'+r.k+'</b> '+(c>0?'▲ ':'▼ ')+Math.abs(Math.round(c))+'%');}});
+  if(tr.length)ins.push('2022~23년 대비 2025~26년 중앙값: '+tr.join(', ')+'.');
+  ins.push('사려는 기물이 있다면 <b>같은 종류의 보통 범위</b>와 비교해 보세요. 범위보다 훨씬 위면 이유(시대·상태·희소성)가 있어야 하고, 아래면 이유를 의심해 볼 만합니다.');
+  document.getElementById('sum').className='box sm';
+  document.getElementById('sum').innerHTML='<h2>종류별 보통 낙찰가</h2><p>색 막대 = 낙찰 건 중 <b>가운데 절반</b>이 들어 있는 가격대, 검은 줄 = 중앙값. 10건 이상인 종류만 보여 줍니다.</p>'+rows.map(function(r){return '<div class="rg"><span><b>'+r.k+'</b></span><div class="bar"><i style="left:'+pos(r.q1)+'%;width:'+Math.max(1,pos(r.q3)-pos(r.q1))+'%;background:'+COL[r.k]+'"></i><u style="left:'+pos(r.m)+'%"></u></div><div class="tx">중앙 '+man(r.m)+' · 보통 '+man(r.q1)+' ~ '+man(r.q3)+'원 · '+r.n+'건</div></div>'}).join('')+'<div class="ins">'+ins.join('<br>')+'</div>';
+ })();
  draw();}
 function draw(){
  var years=[].concat.apply([],[]),ys={};ALL.forEach(function(x){ys[x.year]=1});years=Object.keys(ys).map(Number).sort();
