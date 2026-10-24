@@ -73,7 +73,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     var n = recs.length;
     if (n < 2) {
       $('sub').textContent = '';
-      $('app').innerHTML = '<div class="empty"><b>비교할 기물이 ' + (n ? '한 점뿐' : '아직 없어요') + '.</b><br>도록에서 기물 사진 창을 열고 위쪽의 <b>「비교에 담기」</b>를 누르면 최대 3점까지 담겨요. 두 점 이상 담으면 이 화면에서 나란히 볼 수 있어요.<br><a href="index.html">처음 화면으로</a></div>';
+      $('app').innerHTML = '<div class="empty"><b>비교할 기물이 ' + (n ? '한 점뿐' : '아직 없어요') + '.</b><br>도록에서 기물 사진 창을 열고 위쪽의 <b>「비교에 담기」</b>를 누르면 최대 5점까지 담겨요. 두 점 이상 담으면 이 화면에서 나란히 볼 수 있어요.<br><a href="index.html">처음 화면으로</a></div>';
       return;
     }
     $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
@@ -108,14 +108,26 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     h += '<tr><th class="rh"></th>' + cols.map(function (c) { if (c.k.indexOf('col/') === 0) return '<td><a class="lk" href="collection.html#open=' + encodeURIComponent(c.k.slice(4)) + '">소장품에서 보기 →</a></td>'; return '<td><a class="lk" href="index.html#see=' + encodeURIComponent(c.r.b || c.k.split('/')[0]) + '/' + encodeURIComponent(c.r.pid || c.k.split('/').slice(1).join('/')) + '">도록에서 보기 →</a></td>'; }).join('') + '</tr>';
     h += '</table>';
     /* 앞모습 비율을 같은 눈금으로 — 표 위에 크게 */
-    var fc = cols.filter(function (c) { return c.dm; }), figH = '';
+    /* 크기 기준: 서안·소반·안궤류 → 소장 안궤, 반닫이·책장·궤류 → 소장 언양반닫이. 기준은 항상 빨간색 */
+    var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '소장 언양반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
+    var kinds = cols.map(function (c) { return (c.r.kind || '') + ' ' + (c.name || ''); }).join(' ');
+    var rk = /서안|소반|안궤|사방탁자/.test(kinds) ? 'a' : /반닫이|책장|책궤|궤|장\b/.test(kinds) ? 'b' : '';
+    var RED = '#c8102e', CL = ['#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c', '#2a8a8a'], figH = '', fi = 0;
+    var items = [];
+    cols.forEach(function (c) {
+      if (!c.dm) return;
+      var isRef = rk && c.k.indexOf('col/') === 0 && (rk === 'a' ? /안궤/ : /언양/).test(c.name || '');
+      items.push({ name: c.name, dm: c.dm, color: isRef ? RED : CL[fi++ % CL.length], ref: isRef });
+    });
+    if (rk && !items.some(function (x) { return x.ref; })) items.unshift({ name: REFS[rk].name, dm: REFS[rk].dm, color: RED, ref: true });
+    var fc = items;
     if (fc.length >= 2) {
-      var CL = ['#8a2f22', '#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c'], two = window.innerWidth > 560, colW = Math.min(window.innerWidth, 760) - 56;
+      var two = window.innerWidth > 560, colW = Math.min(window.innerWidth, 760) - 56;
       var maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumW = fc.reduce(function (s, c) { return s + c.dm.w; }, 0);
       var S1 = Math.min(1.5, ((two ? colW / 2 : colW) - 12 * fc.length) / sumW), S2 = Math.min(1.7, (two ? colW / 2 - 10 : colW) / maxW);
-      var left = '<div class="fp"><div class="fs">나란히</div><div class="fig">' + cols.map(function (c) { return c.dm ? '<div class="fi"><div class="fr" style="width:' + Math.round(c.dm.w * S1) + 'px;height:' + Math.round(c.dm.h * S1) + 'px"></div><div class="fl"><b>' + esc((c.name || '').slice(0, 8)) + '</b><br>' + fmt(c.dm.w) + '×' + fmt(c.dm.h) + '</div></div>' : ''; }).join('') + '</div></div>';
-      var right = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto;width:' + Math.round(maxW * S2) + 'px;height:' + Math.round(maxH * S2) + 'px">' + cols.map(function (c, i) { return c.dm ? '<div style="position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * S2) + 'px;height:' + Math.round(c.dm.h * S2) + 'px;border:2px solid ' + CL[i % 3] + ';background:' + CL[i % 3] + '18"></div>' : ''; }).join('') + '</div><div class="fig" style="margin-top:4px;font-size:11px">' + cols.map(function (c, i) { return c.dm ? '<span style="color:' + CL[i % 3] + '">■ ' + esc((c.name || '').slice(0, 8)) + '</span>' : ''; }).join('') + '</div></div>';
-      figH = '<div class="figbox"><div class="figt">크기를 같은 눈금으로 놓으면</div><div class="fg">' + left + right + '</div></div>';
+      var left = '<div class="fp"><div class="fs">나란히</div><div class="fig">' + fc.map(function (c) { return '<div class="fi"><div class="fr" style="width:' + Math.round(c.dm.w * S1) + 'px;height:' + Math.round(c.dm.h * S1) + 'px' + (c.ref ? ';border-color:' + RED + ';background:' + RED + '22' : '') + '"></div><div class="fl"' + (c.ref ? ' style="color:' + RED + '"' : '') + '><b>' + esc((c.name || '').slice(0, 8)) + '</b><br>' + fmt(c.dm.w) + '×' + fmt(c.dm.h) + '</div></div>'; }).join('') + '</div></div>';
+      var right = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto;width:' + Math.round(maxW * S2) + 'px;height:' + Math.round(maxH * S2) + 'px">' + fc.map(function (c) { return '<div style="position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * S2) + 'px;height:' + Math.round(c.dm.h * S2) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div>'; }).join('') + '</div><div class="fig" style="margin-top:4px;font-size:11px">' + fc.map(function (c) { return '<span style="color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 8)) + '</span>'; }).join('') + '</div></div>';
+      figH = '<div class="figbox"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg">' + left + right + '</div></div>';
     }
     h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, <b>「가로×깊이×높이」 순서로 적힌 도록</b>이라고 보고 읽었습니다. 도록마다 표기가 달라 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 「길이」는 가로, 「너비」는 깊이로 읽었습니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
     h = h.replace('<table class="tbl">', figH + '<table class="tbl">');
