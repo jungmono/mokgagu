@@ -137,7 +137,7 @@ const sum = sold.reduce((s, i) => s + i.hammer, 0);
 const atLow = sold.filter((i) => i.hammer <= i.est_lo).length;
 document.getElementById('tiles').innerHTML = [
   ['출품', ITEMS.length + '<small>점</small>', `반닫이·궤 ${ITEMS.filter((i) => i.kind === '반닫이·궤').length}점 · 장·농 ${ITEMS.filter((i) => i.kind === '장·농').length}점`],
-  ['낙찰', sold.length + '<small>점</small>', `낙찰률 ${Math.round(sold.length / done.length * 100)}% (제66회 제외)`],
+  ['낙찰', sold.length + '<small>점</small>', `낙찰률 ${Math.round(sold.length / done.length * 100)}%`],
   ['낙찰가 합계', man(sum), `한 점 평균 ${man(Math.round(sum / sold.length / 10000) * 10000)}`],
   ['최고 낙찰', man(best.hammer), `${best.name} (${short(best.sale)} ${best.lot})`],
   ['낮은 추정가에 낙찰', atLow + '<small>점</small>', `낙찰 ${sold.length}점 가운데 ${Math.round(atLow / sold.length * 100)}% — 시작가 근처에서 끝난 경우`],
