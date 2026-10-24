@@ -65,7 +65,8 @@
       var n = run.L.length, msg = run.ok === n ? '모두 맞혔어요' : run.ok >= n * .6 ? '잘했어요' : '다시 보면 더 좋아져요';
       el.innerHTML = head() + '<div class="card"><div class="score"><b>' + run.ok + ' / ' + n + '</b><span>' + msg + '</span></div>' +
         (run.miss.length ? '<p class="lab">틀린 문제</p>' + run.miss.map(function (q) { return '<div class="miss"><b>' + esc(q.q) + '</b><span>정답: ' + esc(q.o[0]) + '</span>' + esc(q.e) + '</div>'; }).join('') : '') +
-        '<button class="big" id="qz-again">한 번 더</button><button class="big sub" id="qz-hm">처음으로</button></div>';
+        (run.miss.length ? '<button class="big" id="qz-miss">방금 틀린 ' + run.miss.length + '문제만 다시</button>' : '') + '<button class="big' + (run.miss.length ? ' sub' : '') + '" id="qz-again">새 문제로 한 번 더</button><button class="big sub" id="qz-hm">처음으로</button></div>';
+      var mb = el.querySelector('#qz-miss'); if (mb) mb.onclick = function () { start(shuffle(run.miss)); };
       el.querySelector('#qz-again').onclick = function () { start(pick(ROUND)); };
       el.querySelector('#qz-hm').onclick = home;
     }
