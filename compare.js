@@ -103,12 +103,21 @@
   document.addEventListener('DOMContentLoaded', function () { scan(); setTimeout(scan, 600); });
   document.addEventListener('load', function (e) { var t = e.target; if (t && t.tagName === 'IMG') { var d = t.closest && t.closest('dialog[open]'); if (d) sync(d); } }, true);
 
-  var tray;
+  var tray, fillTried = false;
   function paint() {
     if (path === 'compare.html') return;
     var a = load();
     if (!tray) { tray = document.createElement('div'); tray.id = 'cmp-tray'; tray.setAttribute('role', 'region'); tray.setAttribute('aria-label', '비교에 담은 기물'); document.body.appendChild(tray); }
     if (!a.length) { tray.style.display = 'none'; return; }
+    /* 통계의 「다시 비교하기」로 담긴 것은 사진 주소·이름이 비어 있으니 색인에서 채운다 */
+    if (a.some(function (x) { return !x.u && x.k.indexOf('col/') !== 0; }) && !fillTried) {
+      fillTried = true;
+      loadIdx().then(function () {
+        var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
+        var b = load().map(function (x) { var r = by[x.k]; if (r && !x.u) { x.u = 'thumbs/' + r.b + '/' + r.n + '.jpg'; if (!x.n) x.n = r.name || ''; } return x; });
+        save(b); fillTried = false; if (!b.some(function (x) { return !x.u && x.k.indexOf('col/') !== 0; })) paint();
+      });
+    }
     tray.style.display = 'flex';
     tray.innerHTML = a.map(function (x) { return '<span class="th" title="' + esc(x.n) + '"><img src="' + esc(x.u) + '" alt="' + esc(x.n) + '"><button type="button" data-rm="' + esc(x.k) + '" aria-label="' + esc(x.n) + ' 빼기">×</button></span>'; }).join('') +
       '<span class="tx"><b>' + a.length + '/' + MAX + '점</b>비교에 담음</span>' +
