@@ -377,7 +377,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-recmp]'); if (!b) return;
     var ks = b.dataset.recmp.split(' '); try { localStorage.setItem('mokgagu_cmp', JSON.stringify(ks.map(function (k) { return { k: k, n: name(k) || '', u: '' }; }))); } catch (x) {}
-    location.href = 'compare.html';
+    window.open('compare.html', '_blank', 'noopener');
   });
   /* ── 선생님께 여쭤볼 것 ── */
   function qiHTML(q, grp) {

@@ -112,7 +112,7 @@
     tray.style.display = 'flex';
     tray.innerHTML = a.map(function (x) { return '<span class="th" title="' + esc(x.n) + '"><img src="' + esc(x.u) + '" alt="' + esc(x.n) + '"><button type="button" data-rm="' + esc(x.k) + '" aria-label="' + esc(x.n) + ' 빼기">×</button></span>'; }).join('') +
       '<span class="tx"><b>' + a.length + '/' + MAX + '점</b>비교에 담음</span>' +
-      '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html">' + (a.length < 2 ? '2점부터' : '나란히 보기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
+      '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html" target="_blank" rel="noopener">' + (a.length < 2 ? '2점부터' : '나란히 보기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
   }
   /* 「나란히 보기」를 누르면 거믄·힌으로 들어온 기기에서는 무엇을 비교했는지 통계에 남긴다 */
   function logCmp() {
