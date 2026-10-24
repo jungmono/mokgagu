@@ -135,11 +135,11 @@ function paint() {
   else if (st.sort === 'p') view.sort((a, b) => (b.price ? b.price * ({ USD: 1, EUR: 1.08, HKD: .128 }[b.cur]) : -1) - (a.price ? a.price * ({ USD: 1, EUR: 1.08, HKD: .128 }[a.cur]) : -1));
   else view.sort((a, b) => ratio(b) - ratio(a));
   document.getElementById('count').textContent = `${view.length}점` + (st.sort === 'p' ? ' · 달러·유로·홍콩달러를 대략 환산해 정렬' : '');
-  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}"><div class="ph"><img loading="lazy" referrerpolicy="no-referrer" src="${th(i)}" alt="${i.name}"></div><div class="bd"><span class="badge"><b style="color:${({크리스티:'#8a2f22',소더비:'#1f4f7a',본햄스:'#4a6b2a'})[i.house]}">${i.house}</b> · ${i.city} · ${i.date.replaceAll('-', '.')}</span><span class="nm">${i.name}</span><span class="mk">${i.era}</span><span class="sz">${i.size}</span><div class="price">${price(i)}</div></div></button>`).join('');
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}" data-cid="overseas/${i.id}"><div class="ph"><img loading="lazy" referrerpolicy="no-referrer" src="${th(i)}" alt="${i.name}"></div><div class="bd"><span class="badge"><b style="color:${({크리스티:'#8a2f22',소더비:'#1f4f7a',본햄스:'#4a6b2a'})[i.house]}">${i.house}</b> · ${i.city} · ${i.date.replaceAll('-', '.')}</span><span class="nm">${i.name}</span><span class="mk">${i.era}</span><span class="sz">${i.size}</span><div class="price">${price(i)}</div></div></button>`).join('');
 }
 document.getElementById('grid').onclick = (e) => { const c = e.target.closest('.card'); if (c) open(+c.dataset.n); };
 function open(n) {
-  cur = n; const i = view[n], d = document.getElementById('dlg');
+  cur = n; const i = view[n], d = document.getElementById('dlg'); d.dataset.cid = 'overseas/' + i.id;
   const im = document.getElementById('d-img'); im.referrerPolicy = 'no-referrer'; im.src = th(i); im.alt = i.name;
   const hi = new Image(); hi.referrerPolicy = 'no-referrer'; hi.onload = () => { if (view[cur] === i) im.src = hi.src; }; hi.src = big(i);
   const r = i.price && i.lo ? ` <span style="font-size:13px;color:var(--muted);font-weight:400">(낮은 추정가의 ${Math.round(i.price / i.lo * 100)}%)</span>` : '';
