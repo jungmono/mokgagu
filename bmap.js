@@ -131,7 +131,7 @@
 .bm .bm-pb button:hover,.bm .bm-t button:hover{transform:translateY(-2px);border-color:#6b7183}
 .bm .bm-pb button[aria-pressed=true],.bm .bm-t button[aria-pressed=true]{border-color:#1f2433;box-shadow:inset 0 0 0 1px #1f2433}
 .bm .bm-t button{width:96px}.bm .bm-t button[aria-pressed=false]{opacity:.45}
-.bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bm-t .bi svg{width:34px;height:34px}
+.bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bi img{width:46px;height:46px;border-radius:12px;object-fit:cover;display:block}.bm .bm-t .bi svg{width:34px;height:34px}
 .bm .bm-pb button small{display:block;font-size:12px;color:#6b7183;font-weight:700;min-height:1em;margin-top:-3px}
 .bm .bm-t button i{position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%}
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
@@ -149,7 +149,7 @@
 .bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 </style>
-<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
+<div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi">${p === '제주도' ? '<img src="jeju_icon.jpg" alt="" width="46" height="46">' : `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg>`}</span>${p}<small></small></button>`).join('')}</div>
 <div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><i style="background:${c}"></i></button>`).join('')}</div>
 <svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
