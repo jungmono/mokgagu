@@ -236,9 +236,9 @@ function likesGet_(fam) {
   return out_({ ok: true, fam: true, list: rows.filter(r => r[0]).map(r => ({ cid: String(r[0]), who: String(r[1]), t: r[2] instanceof Date ? r[2].toISOString() : String(r[2]) })) });
 }
 function likePost_(d, fam) {
-  if (!fam) return out_({ ok: false, err: 'code' });
   const who = String(d.who || ''), cid = String(d.cid || '').slice(0, 200);
-  if ((who !== '거믄' && who !== '힌') || !cid) return out_({ ok: false, err: 'bad' });
+  if (!fam && who !== '벗') return out_({ ok: false, err: 'code' });   // v16: 벗은 암호 없이 좋아요·찾아본 기물만 남긴다
+  if ((who !== '거믄' && who !== '힌' && who !== '벗') || !cid) return out_({ ok: false, err: 'bad' });
   const sh = likeSheet_(), rows = sh.getDataRange().getValues();
   let at = -1;
   for (let i = 1; i < rows.length; i++) if (String(rows[i][0]) === cid && String(rows[i][1]) === who) { at = i + 1; break; }
@@ -307,8 +307,9 @@ function statsGet_(fam) {
 }
 function famWho_(w) { w = String(w || ''); return (w === '거믄' || w === '힌') ? w : ''; }
 function logPost_(d, fam) {
-  if (!fam) return out_({ ok: false, err: 'code' });
-  const who = famWho_(d.who); if (!who) return out_({ ok: false, err: 'bad' });
+  const guest = String(d.who || '') === '벗' && (d.kind === 'view' || d.kind === 'search');   // v16: 벗의 찾아본 기물·검색어
+  if (!fam && !guest) return out_({ ok: false, err: 'code' });
+  const who = guest ? '벗' : famWho_(d.who); if (!who) return out_({ ok: false, err: 'bad' });
   const kind = d.kind === 'search' ? 'search' : d.kind === 'compare' ? 'compare' : 'view';   // v13: compare = 나란히 본 기물들(cid 에 '도록/번호'를 공백으로 이어 적음, q 에 이름)
   tab_(LOG_SHEET, ['time', 'who', 'kind', 'cid', 'q', 'page']).appendRow([new Date().toISOString(), who, kind, String(d.cid || '').slice(0, 200), String(d.q || '').slice(0, kind === 'compare' ? 200 : 60), String(d.page || '').slice(0, 60)]);
   return out_({ ok: true });

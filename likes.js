@@ -85,6 +85,7 @@
         b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
         b.innerHTML = b.classList.contains('lk-big') ? icon(w, on) + (on ? '좋아요 했어요' : '좋아요') : icon(w, on);
       });
+      post({ action: 'like', cid: cid, who: '벗', on: on });
       paintAll(cid); toast(on ? '벗의 좋아요 — 이 기기에 담아 둘게요' : '좋아요를 거뒀어요'); return;
     }
     pend = pend.filter(function (p) { return !(p.cid === cid && p.who === w); });
@@ -217,7 +218,7 @@
       if (!cid || !canStar()) { if (bar) bar.remove(); return; }
       var w = me(), s = state()[cid] || {};
       var whoTxt = fam() ? ['거믄', '힌'].filter(function (k) { return s[k]; }) : [];
-      if (w && w !== '벗') logView(cid);
+      if (w) logView(cid);
       var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + icon(w, !!s[w]) + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>' +
                       (w !== '벗' ? '<button type="button" class="lk-askq" data-lkq="' + esc(cid) + '">✎ 선생님께 여쭤보기</button>' : '')
                     : '<button type="button" class="lk-big" data-lkask="1">' + star('') + '누구세요? 고르고 별 달기</button>') +

@@ -359,15 +359,6 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
   }
   var SEQ = {};   /* 사진 창에서 좌우로 넘길 목록들 */
   var BEOT_OPEN = false;
-  function beotHTML() {
-    var cms = D.comments.filter(function (c) { return c.author === '벗'; }).sort(function (a, b) { return String(b.t).localeCompare(a.t); });
-    var uniq = cms.map(function (c) { return c.cid; }).filter(function (c, i, a) { return a.indexOf(c) === i; });
-    SEQ['cms-벗'] = { from: 'cms', label: '벗의 기물 이야기', list: uniq };
-    return '<div class="pc h"><div class="ph"><b>벗</b></div><div class="nums"><div><b>' + cms.length + '</b><span>기물 이야기</span></div><div><b>' + uniq.length + '</b><span>이야기 단 기물</span></div></div>' +
-      '<div class="blk"><h3>💬 최근 기물 이야기 <small>' + cms.length + '개</small></h3>' +
-      (cms.length ? '<div class="cms">' + cms.slice(0, 6).map(function (c) { return '<a class="cm1" href="' + link(c.cid) + '" data-seq="cms-벗" data-k="' + esc(c.cid) + '">' + (thumb(c.cid) ? '<img src="' + thumb(c.cid) + '" alt="">' : '<span></span>') + '<div><small>' + esc(name(c.cid)) + ' · ' + ago(c.t) + '</small>' + esc(c.text) + '</div></a>'; }).join('') + '</div>' : '<p class="empty">아직 남긴 이야기가 없어요.</p>') + '</div>' +
-      '<p class="empty">벗은 좋아요·찾아본 기물을 따로 기록하지 않아 이야기만 보여요.</p></div>';
-  }
   document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#beot-btn')) { BEOT_OPEN = !BEOT_OPEN; draw(); } });
   function pcHTML(w) {
     var P = person(w), me = window.MOKGAGU_LIKES && window.MOKGAGU_LIKES.me && window.MOKGAGU_LIKES.me();
@@ -631,7 +622,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<section id="all"><h2 class="sec">한눈에</h2>' + topHTML() + focusHTML() + '</section>' +
       '<section id="les-sec"><h2 class="sec" id="les">지금까지 수업 정리 <small>공부방 노트와 수업 뒤 적은 선생님 말씀 — 누르면 공부방으로</small></h2>' + lessonsHTML() + '</section>' +
       '<section id="ask-sec"><h2 class="sec" id="ask">선생님께 여쭤볼 것 <small>수업 — 보통 둘째·넷째 토요일' + changedNote() + '</small></h2>' + askHTML() + '</section>' +
-      '<section id="duo"><h2 class="sec">거믄 · 힌 <small>각자 남긴 기록 — 좋아요, 찾아본 기물, 검색어, 기물 이야기</small></h2><div class="duo">' + pcHTML('거믄') + pcHTML('힌') + '</div><p style="text-align:center;margin:14px 0 0"><button type="button" id="beot-btn" style="font:inherit;font-weight:700;padding:8px 18px;border:1.5px solid #111;background:#fff;border-radius:999px;cursor:pointer">' + (BEOT_OPEN ? '벗 통계 닫기 ▲' : '벗 통계 보기 ▼') + '</button></p>' + (BEOT_OPEN ? '<div class="duo" style="margin-top:14px">' + beotHTML() + '</div>' : '') + '</section>' +
+      '<section id="duo"><h2 class="sec">거믄 · 힌 <small>각자 남긴 기록 — 좋아요, 찾아본 기물, 검색어, 기물 이야기</small></h2><div class="duo">' + pcHTML('거믄') + pcHTML('힌') + '</div><p style="text-align:center;margin:14px 0 0"><button type="button" id="beot-btn" style="font:inherit;font-weight:700;padding:8px 18px;border:1.5px solid #111;background:#fff;border-radius:999px;cursor:pointer">' + (BEOT_OPEN ? '벗 통계 닫기 ▲' : '벗 통계 보기 ▼') + '</button></p>' + (BEOT_OPEN ? '<div class="duo" style="margin-top:14px">' + pcHTML('벗') + '</div>' : '') + '</section>' +
       '<p class="note">「찾아본 기물」과 「찾아본 말」은 거믄·힌으로 들어온 기기에서 2026년 10월 19일부터 쌓입니다.<br>기물 사진 창은 손가락으로 좌우로 밀면 같은 목록의 이전·다음 기물로 넘어가요.<br>모든 기록은 가족 암호를 넣은 기기에서만 보입니다.</p>';
     if (window.MOKGAGU_PHOTO) window.MOKGAGU_PHOTO.fill(app);
     if (draw._done) window.scrollTo(0, sy);
