@@ -129,40 +129,65 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     var fc = items;
     if (fc.length >= 2) {
       var wide = window.innerWidth > 760, pw = wide ? 330 : Math.min(window.innerWidth - 60, 420), pwL = wide ? 150 : Math.min(window.innerWidth - 60, 300);
-      var base = fc[0], maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumH = fc.reduce(function (s, c) { return s + c.dm.h; }, 0);
-      var sL = Math.min(0.85, (pwL - 20) / maxW, 230 / sumH);
+      var maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumH = fc.reduce(function (s, c) { return s + c.dm.h; }, 0);
+      var sL = Math.min(0.85, (pwL - 20) / maxW, 230 / sumH), base = fc.filter(function (c) { return c.ref; })[0] || fc[0];
+      var CU = 'cursor:pointer;';
       var L = '<div class="fp"><div class="fs">크기 비교</div><div style="position:relative;width:' + Math.round(maxW * sL + 4) + 'px;margin:0 auto">';
-      var gx = Math.round(base.dm.w * sL);
-      var stk = fc.map(function (c, i) {
-        var dw = i ? c.dm.w - base.dm.w : 0, dh = i ? c.dm.h - base.dm.h : 0;
-        var sg = function (v) { return (v > 0 ? '+' : v < 0 ? '−' : '±') + fmt(Math.abs(v)); };
-        var txt = i ? '가로 ' + sg(dw) + ' · 높이 ' + sg(dh) : '기준';
-        return '<div style="margin:0 0 8px"><div style="width:' + Math.round(c.dm.w * sL) + 'px;height:' + Math.round(c.dm.h * sL) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div><div style="font-size:11px;color:' + c.color + ';font-weight:700">' + esc((c.name || '').slice(0, 9)) + (i ? '' : ' <span style="font-weight:400;color:#555">· 기준</span>') + '</div></div>';
-      }).join('');
-      L += stk + '<div style="position:absolute;top:0;bottom:0;left:' + gx + 'px;border-left:1.5px dashed ' + RED + ';pointer-events:none"></div></div></div>';
+      L += fc.map(function (c, i) {
+        return '<div data-fi="' + i + '" style="' + CU + 'margin:0 0 8px"><div data-c="' + c.color + '" data-k="d" style="width:' + Math.round(c.dm.w * sL) + 'px;height:' + Math.round(c.dm.h * sL) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div><div style="font-size:11px;color:' + c.color + ';font-weight:700">' + esc((c.name || '').slice(0, 9)) + (c.ref ? ' <span style="font-weight:400;color:#555">· 기준</span>' : '') + '</div></div>';
+      }).join('') + '<div style="position:absolute;top:0;bottom:0;left:' + Math.round(base.dm.w * sL) + 'px;border-left:1.5px dashed ' + RED + ';pointer-events:none"></div></div></div>';
       var sM = Math.min(2.4, (pw - 10) / maxW, 400 / maxH);
-      var M = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto;width:' + Math.round(maxW * sM) + 'px;height:' + Math.round(maxH * sM) + 'px">' + fc.map(function (c) { return '<div style="position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * sM) + 'px;height:' + Math.round(c.dm.h * sM) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '14"></div>'; }).join('') + '</div></div>';
+      var M = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto 18px;width:' + Math.round(maxW * sM) + 'px;height:' + Math.round(maxH * sM) + 'px">' + fc.map(function (c, i) { return '<div data-fi="' + i + '" data-c="' + c.color + '" data-k="d" style="' + CU + 'position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * sM) + 'px;height:' + Math.round(c.dm.h * sM) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '14"></div>'; }).join('') + '<div style="position:absolute;left:-4px;bottom:-4px;width:8px;height:8px;border-radius:50%;background:#111;pointer-events:none"></div><div style="position:absolute;left:0;top:100%;margin-top:3px;font-size:11px;font-weight:700;color:#111;pointer-events:none">기준점(0,0)</div></div></div>';
       var f3 = fc.filter(function (c) { return c.dm.d != null; }), R;
       if (f3.length >= 2) {
-        var K = 0.866, pts = function (c, s) { var w = c.dm.w, d = c.dm.d, h = c.dm.h; var P = function (x, y, z) { return [(x - y) * K * s, (x + y) * 0.5 * s - z * s]; }; return { a: P(0, 0, 0), b: P(w, 0, 0), c: P(w, d, 0), e: P(0, d, 0), a2: P(0, 0, h), b2: P(w, 0, h), c2: P(w, d, h), e2: P(0, d, h) }; };
-        var u = f3.map(function (c) { return pts(c, 1); }), mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9;
-        u.forEach(function (o) { for (var k in o) { mnx = Math.min(mnx, o[k][0]); mxx = Math.max(mxx, o[k][0]); mny = Math.min(mny, o[k][1]); mxy = Math.max(mxy, o[k][1]); } });
-        var sI = Math.min(2.2, (pw - 10) / (mxx - mnx), 400 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 8), H = Math.round((mxy - mny) * sI + 8);
-        var T = function (p) { return Math.round((p[0] - mnx * 1) * sI + 4) + ',' + Math.round((p[1] - mny) * sI + 4); };
+        var K = 0.866, P = function (x, y, z, s) { return [(x - y) * K * s, (x + y) * 0.5 * s - z * s]; };
+        var mw = Math.max.apply(null, f3.map(function (c) { return c.dm.w; })), md = Math.max.apply(null, f3.map(function (c) { return c.dm.d; })), mh = Math.max.apply(null, f3.map(function (c) { return c.dm.h; }));
+        var cr = [[0, 0, 0], [mw, 0, 0], [mw, md, 0], [0, md, 0], [0, 0, mh], [mw, 0, mh], [mw, md, mh], [0, md, mh]].map(function (p) { return P(p[0], p[1], p[2], 1); });
+        var mnx = Math.min.apply(null, cr.map(function (p) { return p[0]; })), mxx = Math.max.apply(null, cr.map(function (p) { return p[0]; })), mny = Math.min.apply(null, cr.map(function (p) { return p[1]; })), mxy = Math.max.apply(null, cr.map(function (p) { return p[1]; }));
+        var sI = Math.min(2.2, (pw - 50) / (mxx - mnx), 380 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 50), H = Math.round((mxy - mny) * sI + 40);
+        var T = function (x, y, z) { var p = P(x, y, z, sI); return [Math.round(p[0] - mnx * sI + 25), Math.round(p[1] - mny * sI + 16)]; };
+        var TS = function (x, y, z) { return T(x, y, z).join(','); };
         var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block;margin:0 auto">';
-        f3.slice().sort(function (x, y) { return y.dm.w * y.dm.d - x.dm.w * x.dm.d; }).forEach(function (c) {
-          var o = pts(c, 1), poly = function (ks, f) { return '<polygon points="' + ks.map(function (k) { return T(o[k]); }).join(' ') + '" fill="' + f + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.5) + '" stroke-linejoin="round"/>'; };
-          var ed = function (p, q, dash) { return '<line x1="' + T(o[p]).split(',')[0] + '" y1="' + T(o[p]).split(',')[1] + '" x2="' + T(o[q]).split(',')[0] + '" y2="' + T(o[q]).split(',')[1] + '" stroke="' + c.color + '" stroke-width="' + (dash ? 1 : (c.ref ? 2.4 : 1.8)) + '"' + (dash ? ' stroke-dasharray="3 3" opacity=".6"' : '') + ' stroke-linecap="round"/>'; };
-          svg += poly(['e', 'c', 'c2', 'e2'], c.color + '1c') + poly(['b', 'c', 'c2', 'b2'], c.color + '38') + poly(['a2', 'b2', 'c2', 'e2'], c.color + '10');
+        svg += '<polygon points="' + [[0, 0, 0], [mw, 0, 0], [mw, md, 0], [0, md, 0]].map(function (p) { return TS(p[0], p[1], p[2]); }).join(' ') + '" fill="#00000008" stroke="#bbb" stroke-width="1"/>';
+        var ax = function (x, y, z, lb, dx, dy) { var p = T(x, y, z), o = T(0, 0, 0); return '<line x1="' + o[0] + '" y1="' + o[1] + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="#555" stroke-width="1.3"/><text x="' + (p[0] + dx) + '" y="' + (p[1] + dy) + '" font-size="11" font-weight="700" fill="#111" text-anchor="middle">' + lb + '</text>'; };
+        svg += ax(mw, 0, 0, '가로', 14, 12) + ax(0, md, 0, '깊이', -14, 12) + ax(0, 0, mh, '높이', 0, -6);
+        f3.map(function (c) { return { c: c, i: fc.indexOf(c) }; }).sort(function (x, y) { return y.c.dm.w * y.c.dm.d - x.c.dm.w * x.c.dm.d; }).forEach(function (o) {
+          var c = o.c, m = { a: [0, 0, 0], b: [c.dm.w, 0, 0], c: [c.dm.w, c.dm.d, 0], e: [0, c.dm.d, 0], a2: [0, 0, c.dm.h], b2: [c.dm.w, 0, c.dm.h], c2: [c.dm.w, c.dm.d, c.dm.h], e2: [0, c.dm.d, c.dm.h] };
+          var poly = function (ks, k) { return '<polygon data-c="' + c.color + '" data-k="' + k + '" points="' + ks.map(function (q) { return TS(m[q][0], m[q][1], m[q][2]); }).join(' ') + '" fill="' + c.color + ['1c', '38', '10'][k] + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.6) + '" stroke-linejoin="round"/>'; };
+          svg += '<g data-fi="' + o.i + '" style="' + CU + '">' + poly(['e', 'c', 'c2', 'e2'], 0) + poly(['b', 'c', 'c2', 'b2'], 1) + poly(['a2', 'b2', 'c2', 'e2'], 2) + '</g>';
         });
-        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div>' + svg + '</svg>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
+        var o0 = T(0, 0, 0);
+        svg += '<circle cx="' + o0[0] + '" cy="' + o0[1] + '" r="4" fill="#111"/></svg>';
+        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div>' + svg + '<div style="font-size:11px;font-weight:700;text-align:center;color:#111">기준점(0,0,0) · 바닥 회색판</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
-      var leg = '<div class="fig" style="margin-top:8px;font-size:11px;flex-wrap:wrap">' + fc.map(function (c) { return '<span style="color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
-      figH = '<div class="figbox"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '</div>';
+      var leg = '<div class="fig" style="margin-top:8px;font-size:11px;flex-wrap:wrap">' + fc.map(function (c, i) { return '<span data-fi="' + i + '" style="cursor:pointer;color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
+      figH = '<div class="figbox" id="fb"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="text-align:center;font-size:11px;color:#777;margin-top:4px">기물을 누르면 돋보입니다. 빨간 기준 기물을 누르면 색 채움이 켜지고 꺼집니다.</div></div>';
+      window.__fc = fc;
     }
     h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, <b>「가로×깊이×높이」 순서로 적힌 도록</b>이라고 보고 읽었습니다. 도록마다 표기가 달라 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 「길이」는 가로, 「너비」는 깊이로 읽었습니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
     h = h.replace('<table class="tbl">', figH + '<table class="tbl">');
     $('app').innerHTML = h;
+    var fb = $('fb'), fcs = window.__fc;
+    if (fb && fcs) {
+      var sel = -1, refOn = true, SA = ['48', '78', '30'];
+      var apply = function () {
+        fb.querySelectorAll('[data-fi]').forEach(function (e) {
+          var i = +e.getAttribute('data-fi'), c = fcs[i], on = sel === i, strong = c.ref ? refOn : on;
+          e.style.opacity = (sel >= 0 && !on) ? (c.ref ? .6 : .16) : 1; e.style.transition = 'opacity .2s';
+          var paint = function (n) { var k = n.getAttribute('data-k'), col = n.getAttribute('data-c'); if (k === 'd') n.style.background = col + (strong ? '55' : (n.parentNode.style.position === 'relative' ? '14' : '18')); else n.style.fill = col + (strong ? SA[+k] : ['1c', '38', '10'][+k]); };
+          if (e.hasAttribute('data-c')) paint(e); e.querySelectorAll('[data-c]').forEach(paint);
+          if (e.tagName === 'SPAN') e.style.fontWeight = on ? 900 : 400;
+        });
+      };
+      fb.addEventListener('click', function (ev) {
+        var e = ev.target.closest && ev.target.closest('[data-fi]');
+        if (!e) { sel = -1; apply(); return; }
+        var i = +e.getAttribute('data-fi');
+        if (fcs[i].ref) refOn = !refOn; else sel = (sel === i) ? -1 : i;
+        apply();
+      });
+      apply();
+    }
   }
 
   var photos = [], cur = 0, lb = $('lb');
