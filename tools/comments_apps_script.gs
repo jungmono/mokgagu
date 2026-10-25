@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v15: 저장한 비교 — doGet action=cmplist(가족만), doPost cmpsave·cmpdel. 시트 '비교저장' 탭. 재배포 때 비교저장준비() 한 번 실행 권장.
  * v14: 수업 녹음을 드라이브 '조선의 목가구 수업 녹음' 폴더(비공개)에 저장 — doPost aup(3MB씩 나눠 올림), doGet aget(나눠 받아 재생). 「쓰기」 탭에 audio 열.
  *      처음 한 번 녹음준비() 를 실행해 권한(외부 요청)을 허락한다.
  * v13: 비교 기록 — doPost log kind=compare.
@@ -81,6 +82,7 @@ function doGet(e) {
   if (p.action === 'stats') return statsGet_(fam);
   if (p.action === 'wlist') return wGet_(fam);
   if (p.action === 'rlist') return rGet_(fam);
+  if (p.action === 'cmplist') return cmpGet_(fam);
   if (p.action === 'aget') return auGet_(p, fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
@@ -118,6 +120,7 @@ function doPost(e) {
     if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
     if (d.action === 'wsave' || d.action === 'wdel') return wPost_(d, fam);
     if (d.action === 'rsave') return rPost_(d, fam);
+    if (d.action === 'cmpsave' || d.action === 'cmpdel') return cmpPost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
     if (d.action === 'edit' && d.id) {
       const f = find_(sh, d.id); if (!f || f.r[7]) return out_({ ok: false, err: 'none' });
@@ -408,6 +411,31 @@ function rPost_(d, fam) {
   return out_({ ok: true, item: { text: text, editor: editor, updated: now } });
 }
 function 지역설명준비() { tab_(R_SHEET, R_HEAD); tab_(RH_SHEET, RH_HEAD); }
+
+/* ───────── 저장한 비교 (v15) ─────────
+   나란히 보기에서 「이 비교 저장」을 누르면 시트 '비교저장' 탭에 쌓는다(가족만). 휴대폰·노트북 어디서든 같은 목록. */
+const C_SHEET = '비교저장', C_HEAD = ['id', 'who', 'name', 'items', 'time'];
+function cmpGet_(fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const rows = tab_(C_SHEET, C_HEAD).getDataRange().getValues(); rows.shift();
+  const list = rows.filter(r => r[0]).map(r => { let it = []; try { it = JSON.parse(r[3]); } catch (x) {} return { id: String(r[0]), who: String(r[1]), name: String(r[2]), items: it, time: iso_(r[4]) }; })
+    .sort((a, b) => a.time < b.time ? 1 : -1).slice(0, 100);
+  return out_({ ok: true, list: list });
+}
+function cmpPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const id = String(d.id || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40), sh = tab_(C_SHEET, C_HEAD), v = sh.getDataRange().getValues();
+  let at = 0; for (let i = 1; i < v.length; i++) if (String(v[i][0]) === id) { at = i + 1; break; }
+  if (d.action === 'cmpdel') { if (at) sh.deleteRow(at); return out_({ ok: true }); }
+  const who = famWho_(d.who), name = String(d.name || '').slice(0, 120), items = JSON.stringify((d.items || []).slice(0, 5).map(x => ({ k: String(x.k || '').slice(0, 120), n: String(x.n || '').slice(0, 60), u: String(x.u || '').slice(0, 300) })));
+  if (!id || !who || !name) return out_({ ok: false, err: 'bad' });
+  const row = [id, who, name, items, new Date().toISOString()];
+  if (at) sh.getRange(at, 1, 1, 5).setValues([row]); else sh.appendRow(row);
+  // 100개를 넘으면 오래된 것부터 지운다
+  const n = sh.getLastRow() - 1; if (n > 100) sh.deleteRows(2, n - 100);
+  return out_({ ok: true });
+}
+function 비교저장준비() { tab_(C_SHEET, C_HEAD); }
 
 
 /* ───────── 수업 녹음 (v14) ─────────
