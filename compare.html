@@ -83,7 +83,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       return;
     }
     $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
-    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
+    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: String(rec.name || r.n || r.k).replace(/^소장\s*/, '') }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
       var diff = present.length >= 2 && new Set(present.map(String)).size > 1, mn = num ? Math.min.apply(null, present) : null;
@@ -115,7 +115,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     h += '</table>';
     /* 앞모습 비율을 같은 눈금으로 — 표 위에 크게 */
     /* 크기 기준: 서안·소반·안궤류 → 소장 안궤, 반닫이·책장·궤류 → 소장 언양반닫이. 기준은 항상 빨간색 */
-    var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '소장 언양반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
+    var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '언양반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
     var kinds = cols.map(function (c) { return (c.r.kind || '') + ' ' + (c.name || ''); }).join(' ');
     var rk = /서안|경상(?!도)|소반|안궤|사방탁자/.test(kinds) ? 'a' : /반닫이|책장|책궤|궤|장|농/.test(kinds) ? 'b' : '';
     var RED = '#c8102e', CL = ['#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c', '#2a8a8a'], figH = '', fi = 0;
@@ -136,7 +136,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       L += fc.map(function (c, i) {
         return '<div data-fi="' + i + '" style="' + CU + 'margin:0 0 8px"><div data-c="' + c.color + '" data-k="d" style="width:' + Math.round(c.dm.w * sL) + 'px;height:' + Math.round(c.dm.h * sL) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div><div style="font-size:11px;color:' + c.color + ';font-weight:700">' + esc((c.name || '').slice(0, 9)) + (c.ref ? ' <span style="font-weight:400;color:#555">· 기준</span>' : '') + '</div></div>';
       }).join('') + '<div style="position:absolute;top:0;bottom:0;left:' + Math.round(base.dm.w * sL) + 'px;border-left:1.5px dashed ' + RED + ';pointer-events:none"></div></div></div>';
-      var sM = Math.min(2.4, (pw - 10) / maxW, 400 / maxH);
+      var sM = Math.min(2.0, (pw - 70) / maxW, 330 / maxH);
       var M = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto 18px;width:' + Math.round(maxW * sM) + 'px;height:' + Math.round(maxH * sM) + 'px">' + fc.map(function (c, i) { return '<div data-fi="' + i + '" data-c="' + c.color + '" data-k="d" style="' + CU + 'position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * sM) + 'px;height:' + Math.round(c.dm.h * sM) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '14"></div>'; }).join('') + '<div style="position:absolute;left:-4px;bottom:-4px;width:8px;height:8px;border-radius:50%;background:#111;pointer-events:none"></div></div></div>';
       var f3 = fc.filter(function (c) { return c.dm.d != null; }), R;
       if (f3.length >= 2) {
