@@ -153,8 +153,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
         f3.slice().sort(function (x, y) { return y.dm.w * y.dm.d - x.dm.w * x.dm.d; }).forEach(function (c) {
           var o = pts(c, 1), poly = function (ks, f) { return '<polygon points="' + ks.map(function (k) { return T(o[k]); }).join(' ') + '" fill="' + f + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.5) + '" stroke-linejoin="round"/>'; };
           var ed = function (p, q, dash) { return '<line x1="' + T(o[p]).split(',')[0] + '" y1="' + T(o[p]).split(',')[1] + '" x2="' + T(o[q]).split(',')[0] + '" y2="' + T(o[q]).split(',')[1] + '" stroke="' + c.color + '" stroke-width="' + (dash ? 1 : (c.ref ? 2.4 : 1.8)) + '"' + (dash ? ' stroke-dasharray="3 3" opacity=".6"' : '') + ' stroke-linecap="round"/>'; };
-          svg += poly(['a', 'b', 'b2', 'a2'], c.color + '14') + poly(['b', 'c', 'c2', 'b2'], c.color + '30') + poly(['a2', 'b2', 'c2', 'e2'], c.color + '22');
-          svg += ed('a', 'a2') + ed('b', 'b2') + ed('c', 'c2') + ed('a', 'b') + ed('b', 'c');
+          svg += poly(['e', 'c', 'c2', 'e2'], c.color + '1c') + poly(['b', 'c', 'c2', 'b2'], c.color + '38') + poly(['a2', 'b2', 'c2', 'e2'], c.color + '10');
         });
         R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div>' + svg + '</svg>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
