@@ -170,7 +170,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
         R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:' + (wide ? 'nowrap' : 'wrap') + ';align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
       var leg = '';
-      figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="text-align:center;font-size:11px;color:#777;margin-top:4px">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div></div>';
+      figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button type="button" id="fbreset" style="flex:none;border:1.5px solid #111;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">초기화</button><div style="flex:1;text-align:center;font-size:11px;color:#777">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div><span style="flex:none;width:58px"></span></div></div>';
       window.__fc = fc;
     }
     h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, <b>「가로×깊이×높이」 순서로 적힌 도록</b>이라고 보고 읽었습니다. 도록마다 표기가 달라 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 「길이」는 가로, 「너비」는 깊이로 읽었습니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
@@ -190,6 +190,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       };
       fb.addEventListener('click', function (ev) {
         var e = ev.target.closest && ev.target.closest('[data-fi]');
+        if (ev.target.closest && ev.target.closest('#fbreset')) { sel = {}; nsel = 0; refOn = true; apply(); return; }
         if (!e) { sel = {}; nsel = 0; apply(); return; }
         var i = +e.getAttribute('data-fi');
         if (fcs[i].ref) refOn = !refOn; else { if (sel[i]) { delete sel[i]; nsel--; } else { sel[i] = 1; nsel++; } }
