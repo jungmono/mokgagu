@@ -1,9 +1,9 @@
 /* 최근 본 기물 — 화면 오른쪽 아래 떠 있는 창.
    어느 도록에서든 사진 창(dialog#dlg)을 열면 그 기물을 기억해 두고(이 브라우저에만, 최대 20개),
-   썸네일을 5개씩 보여 준다. ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
+   썸네일을 3개씩 보여 준다. ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
    썸네일을 누르면 첫 화면(index.html)에서 그 기물 사진 창이 열린다. */
 (function () {
-  var KEY = 'mokgagu_recent_v1', MAX = 20, SHOW = 5;
+  var KEY = 'mokgagu_recent_v1', MAX = 20, SHOW = 3;
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
   var list = load(), start = 0;
