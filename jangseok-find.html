@@ -1,0 +1,128 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>장석으로 지역 찾기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
+main{max-width:860px;margin:0 auto;padding:16px 16px 60px}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacing:-.04em;text-align:center}
+.sub{text-align:center;color:#6d6551;margin:0 0 18px;font-size:15px}
+.top{display:flex;justify-content:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:14px;font-weight:700}
+.wrap{display:grid;grid-template-columns:260px 1fr;gap:18px}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px}
+.photo{text-align:center}
+.photo .ph{display:grid;place-items:center;aspect-ratio:4/3;background:#f4ecd8;border:2px dashed #d8c9a3;border-radius:12px;cursor:pointer;overflow:hidden;color:#8a7f66;font-size:14px}
+.photo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.photo small{display:block;margin-top:8px;color:#8a7f66;font-size:12px;line-height:1.5}
+.g{margin:0 0 14px}.g h3{margin:0 0 7px;font-size:15px;font-weight:900}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:13.5px;padding:6px 11px;border-radius:999px;border:1px solid #d8c9a3;background:#fff;color:#2b2418;cursor:pointer}
+.chips button.on{background:#2b2418;color:#fff;border-color:#2b2418}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0 0}
+.bar button{font:inherit;font-size:13px;background:none;border:none;color:#0F6E56;cursor:pointer;text-decoration:underline}
+#res{margin-top:18px}
+.say{padding:12px 14px;border-radius:12px;margin-bottom:12px;font-weight:700;line-height:1.6}
+.say.no{background:#fbe9e4;color:#8a2d18}.say.ok{background:#e6f2ec;color:#0F5A45}.say.wait{background:#f4ecd8;color:#6d6551;font-weight:500}
+.cand{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px;margin-bottom:12px}
+.cand h4{margin:0 0 6px;font-size:20px;font-weight:900;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cand h4 small{font-size:13px;color:#6d6551;font-weight:500}
+.meter{height:8px;background:#f0e7d2;border-radius:99px;overflow:hidden;margin:6px 0 10px}.meter i{display:block;height:100%;background:#0F6E56}
+.ln{font-size:14px;line-height:1.7;margin:2px 0}.ln b{display:inline-block;min-width:60px;color:#6d6551;font-weight:500}
+.hit{color:#0F5A45;font-weight:700}.miss{color:#a3998a}
+.thumbs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
+.thumbs a{flex:none;width:84px;text-decoration:none;color:#6d6551;font-size:11px;text-align:center}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid #e3d6b8;background:#f4ecd8;display:block;margin-bottom:3px}
+.src{font-size:12px;color:#8a7f66;margin-top:6px}
+.foot{margin-top:24px;font-size:12.5px;color:#8a7f66;line-height:1.7}
+</style><script src="common.js?v=6" defer></script></head>
+<body><main>
+<h1>장석으로 지역 찾기</h1>
+<p class="sub">반닫이에서 보이는 특징을 고르면 기준표와 맞대어 지역 후보를 보여 줍니다</p>
+<div class="top"><a href="bandaji-map.html">← 반닫이(궤)여지도</a><a href="index.html">처음 화면</a></div>
+<div class="wrap">
+  <div>
+    <div class="card photo">
+      <label class="ph" id="ph"><span>반닫이 사진 올리기<br>(눌러서 고르기)</span><input type="file" id="file" accept="image/*" hidden></label>
+      <small>사진은 이 기기에서 보기만 하고 어디에도 올리지 않습니다. 사진을 보면서 오른쪽 특징을 고르세요.</small>
+    </div>
+  </div>
+  <div class="card">
+    <div id="q"></div>
+    <div class="bar"><span id="cnt" style="font-size:13px;color:#6d6551"></span><button id="reset" type="button">모두 지우기</button></div>
+  </div>
+</div>
+<div id="res"></div>
+<p class="foot">기준표 출처: 지역N문화 「각 지역별 반닫이 특징」「목공예품을 견고하고 아름답게 하는 금속장석」「한국 목공예의 특성」(한국문화원연합회), 반닫이여지도에 정리해 둔 논문 요약. 정대영 「조선의 궤」 자료는 더할 예정입니다.<br>이 화면은 기준표와 맞대어 본 결과일 뿐 감정이 아닙니다. 장석은 바뀌어 달리는 일이 많아 몸체·나무·비례와 함께 보아야 합니다.</p>
+</main>
+<script src="search.js"></script><script src="jangseok-criteria.js?v=2"></script>
+<script>
+(function () {
+  const J = window.MOKGAGU_JANGSEOK, $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const sel = new Set();
+  /* 질문 단추 */
+  $('q').innerHTML = J.ask.map(([h, opts], gi) => `<div class="g"><h3>${esc(h)}</h3><div class="chips">${opts.map((o) => `<button type="button" data-t="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>`).join('');
+  $('q').addEventListener('click', (e) => { const b = e.target.closest('button[data-t]'); if (!b) return; const t = b.dataset.t; sel.has(t) ? sel.delete(t) : sel.add(t); b.classList.toggle('on', sel.has(t)); run(); });
+  $('reset').onclick = () => { sel.clear(); document.querySelectorAll('#q .on').forEach((b) => b.classList.remove('on')); run(); };
+  /* 사진 미리 보기(이 기기 안에서만) */
+  $('file').onchange = (e) => { const f = e.target.files[0]; if (!f) return; const u = URL.createObjectURL(f); $('ph').innerHTML = `<img src="${u}" alt="올린 반닫이">`; $('ph').appendChild($('file')); };
+
+  /* 후보 = 고을 + 도. 고을은 자기 낱말 + 속한 도의 낱말을 함께 가짐 */
+  const prov = {}; J.prov.forEach((p) => { prov[p.id] = p; });
+  const cands = J.city.map((c) => ({ id: c.id, kind: '고을', p: c.prov, own: new Set(c.tags || []), up: new Set((prov[c.prov] || {}).tags || []), d: c }))
+    .concat(J.prov.filter((p) => !J.city.some((c) => c.id === p.id.slice(0, 2))).map((p) => ({ id: p.id, kind: '도', p: p.id, own: new Set(p.tags || []), up: new Set(), d: p })));
+  const FIELDS = ['재질', '경첩', '앞바탕', '들쇠', '감잡이', '광두정', '투각무늬', '덮는비율', '나무', '비례', '구조', '별칭', '느낌'];
+
+  /* 참고 사진: 도록 이름에 지역이 적힌 반닫이 */
+  const KIND = /반닫이|櫃|궤/;
+  const keysOf = (c) => (J.find && J.find[c.id]) || (c.kind === '도' ? [c.id.slice(0, 2)] : c.id.replace(/\(.*\)/, '').split('·'));
+  const photos = {};
+  const pics = (c) => {
+    if (photos[c.id]) return photos[c.id];
+    const ks = keysOf(c), out = [];
+    (window.SEARCH || []).forEach((r) => {
+      const nm = (r.name + ' ' + (r.hanja || '')).replace(/나전/g, '');
+      if (!KIND.test(nm) || /돈궤|뒤주|소반/.test(nm) || !(r.t || r.h)) return;
+      if (ks.some((k) => nm.includes(k))) out.push(r);
+    });
+    return (photos[c.id] = out);
+  };
+
+  function run() {
+    $('cnt').textContent = sel.size ? `고른 특징 ${sel.size}개` : '';
+    const R = $('res');
+    if (sel.size < 3) { R.innerHTML = `<div class="say wait">특징을 세 가지 이상 골라 주세요. 재질·경첩 모양·장식 양처럼 사진에서 분명히 보이는 것부터 고르면 좋습니다.</div>`; return; }
+    const S = [...sel];
+    const scored = cands.map((c) => {
+      let s = 0; const hit = [];
+      S.forEach((t) => { if (c.own.has(t)) { s += 2; hit.push(t); } else if (c.up.has(t)) { s += 1; hit.push(t); } });
+      return { c, s, hit, miss: S.filter((t) => !hit.includes(t)) };
+    }).filter((x) => x.s > 0).sort((a, b) => b.s - a.s || b.c.own.size - a.c.own.size);
+    const best = scored[0], max = S.length * 2;
+    let say;
+    if (!best || best.hit.length / S.length < 0.5) say = `<div class="say no">판단할 수 없습니다. 고른 특징 가운데 절반 이상이 맞는 지역이 기준표에 없습니다. 아래는 일부만 맞는 참고 후보입니다.</div>`;
+    else if (scored[1] && scored[1].s === best.s) say = `<div class="say no">판단할 수 없습니다. ${esc(best.c.id)}와 ${esc(scored[1].c.id)}가 같은 점수입니다. 특징을 더 골라 보세요.</div>`;
+    else say = `<div class="say ok">기준표로 보면 ${esc(best.c.id)} 쪽에 가장 가깝습니다. 고른 특징 ${S.length}개 가운데 ${best.hit.length}개가 맞습니다.</div>`;
+    R.innerHTML = say + scored.slice(0, 3).map((x, i) => card(x, i, max)).join('');
+  }
+  function card(x, i, max) {
+    const d = x.c.d, ps = pics(x.c);
+    const lines = FIELDS.filter((f) => d[f]).map((f) => `<div class="ln"><b>${f === '덮는비율' ? '장석 양' : f}</b>${esc(d[f])}</div>`).join('');
+    const th = ps.slice(0, 10).map((r) => {
+      const big = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
+      return `<a href="${big}" target="_blank" rel="noopener"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="" onerror="this.style.visibility='hidden'">${esc((r.owner || r.cat || '').slice(0, 10))}</a>`;
+    }).join('');
+    return `<div class="cand"><h4>${i + 1}. ${esc(x.c.id)} <small>${x.c.kind === '고을' ? esc(x.c.p) : '도 단위'}</small></h4>
+      <div class="meter"><i style="width:${Math.round(x.s / max * 100)}%"></i></div>
+      <div class="ln"><b>맞음</b><span class="hit">${x.hit.map(esc).join(' · ')}</span></div>
+      ${x.miss.length ? `<div class="ln"><b>안 맞음</b><span class="miss">${x.miss.map(esc).join(' · ')}</span></div>` : ''}
+      <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13.5px;color:#0F6E56">이 지역 기준표 보기</summary>${lines || '<div class="ln">자세한 특징 자료가 아직 없습니다.</div>'}<div class="src">출처: ${esc(d.src || '')}</div></details>
+      ${ps.length ? `<div class="thumbs">${th}</div><div class="src">도록에서 이름에 이 지역이 적힌 반닫이 ${ps.length}점${ps.length > 10 ? ' 가운데 10점' : ''}</div>` : '<div class="src">이 지역 이름이 붙은 참고 사진이 아직 없습니다.</div>'}
+    </div>`;
+  }
+  run();
+})();
+</script>
+<script src="recent.js" defer></script><script src="share.js" defer></script></body></html>
