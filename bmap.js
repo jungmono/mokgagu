@@ -70,7 +70,7 @@
     j: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M24 12C19 8 11 7 5 8v29c6-1 14 0 19 4 5-4 13-5 19-4V8c-6-1-14 0-19 4z"/><path d="M24 12v29"/><rect x="10" y="15" width="9" height="7" rx="1"/><path d="M14.5 15v7M10 18.5h9" stroke-width="1.3"/><path d="M29 16h9M29 21h9M29 26h9M10 27h9M10 31h9" stroke-width="1.5"/></svg>',
     o: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="25" height="16.5" rx=".8"/><path d="M3.5 15.5h25"/><path d="M5 24.5v3M27 24.5v3"/><path d="M8.5 8v5.5h3V8M20.5 8v5.5h3V8"/><path d="M13.5 15.5h5v4.2l-2.5 1.8-2.5-1.8z"/></svg>',
   };
-  const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111'], ['j', '조선의 궤', '#8a2d18']];
+  let TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111'], ['j', '조선의 궤', '#8a2d18']];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const load = () => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { return {}; } };
   const save = (o) => { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
@@ -112,6 +112,7 @@
   }
 
   function mount(el) {
+    if (!window.JOSEONGWE) TYPES = TYPES.filter((t) => t[0] !== 'j');   // 『조선의 궤』 메뉴는 가족(거믄·힌)에게만 — joseongwe.js 는 가족일 때만 불러온다
     const P = pins(), local = load(), edits = Object.assign({}, local), meta = {};
     let on = { m: true, a: true, e: true, o: true, j: true }, sel = '', selP = '', list = [];
     const W = 130, H = 86, PN = Object.keys(PV);
