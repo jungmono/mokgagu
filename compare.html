@@ -25,7 +25,7 @@ h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px;text-align:center}#sub{text
 td.d{background:#fdf1ee;font-weight:800;color:var(--acc)}td .df{display:block;font-size:11px;font-weight:700}
 td.mu{color:#a39d92}
 .fig{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:6px 0 2px;min-height:0}
-.figbox{border:2px solid #111;border-radius:14px;padding:10px 12px 10px;margin:8px auto 12px;max-width:1000px;background:#fff}.fg3{display:grid;grid-template-columns:.65fr 1.2fr 1.2fr;gap:10px;align-items:start}.fg3 .fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}@media(max-width:760px){.fg3{grid-template-columns:1fr}.fg3 .fp+.fp{border-left:0;padding-left:0;border-top:1px solid #e5e1da;padding-top:10px}}.figt{font-weight:800;font-size:14px;text-align:center;margin-bottom:4px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.fp{min-width:0}.fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}.fs{font-size:15px;font-weight:800;color:#111;text-align:center;margin-bottom:6px}@media(max-width:560px){.fg{grid-template-columns:1fr}.fp+.fp{border:0;padding:0;margin-top:8px}}.fig{gap:16px;align-items:flex-end}.fi{text-align:center}.fr{border:2px solid #111;border-radius:4px;background:#e9e2d4;margin:0 auto}.fl{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.fl b{color:#111}
+.figbox{border:2px solid #111;border-radius:14px;padding:10px 12px 10px;margin:8px auto 12px;max-width:1000px;background:#fff}.fg3{display:grid;grid-template-columns:.6fr 1.1fr 1.5fr;gap:10px;align-items:start}.fg3 .fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}@media(max-width:760px){.fg3{grid-template-columns:1fr}.fg3 .fp+.fp{border-left:0;padding-left:0;border-top:1px solid #e5e1da;padding-top:10px}}.figt{font-weight:800;font-size:14px;text-align:center;margin-bottom:4px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.fp{min-width:0}.fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}.fs{font-size:15px;font-weight:800;color:#111;text-align:center;margin-bottom:6px}@media(max-width:560px){.fg{grid-template-columns:1fr}.fp+.fp{border:0;padding:0;margin-top:8px}}.fig{gap:16px;align-items:flex-end}.fi{text-align:center}.fr{border:2px solid #111;border-radius:4px;background:#e9e2d4;margin:0 auto}.fl{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.fl b{color:#111}
 .note{font-size:12px;color:var(--muted);line-height:1.7;margin:12px 0 0}
 a.lk{color:var(--acc);font-weight:700;font-size:12px}
 dialog{border:0;padding:0;background:#fff;color:#1d1b18;width:min(640px,96vw);max-height:92vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
@@ -142,15 +142,15 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       if (f3.length >= 2) {
         var K = 0.866, P = function (x, y, z, s) { return [(x - y) * K * s, (x + y) * 0.5 * s - z * s]; };
         var mw = Math.max.apply(null, f3.map(function (c) { return c.dm.w; })), md = Math.max.apply(null, f3.map(function (c) { return c.dm.d; })), mh = Math.max.apply(null, f3.map(function (c) { return c.dm.h; }));
-        var cr = [[0, 0, 0], [mw, 0, 0], [mw, md, 0], [0, md, 0], [0, 0, mh], [mw, 0, mh], [mw, md, mh], [0, md, mh]].map(function (p) { return P(p[0], p[1], p[2], 1); });
+        var cr = [[0, 0, 0], [mw * 1.1, 0, 0], [mw, md, 0], [0, md * 1.1, 0], [0, 0, mh * 1.1], [mw, 0, mh], [mw, md, mh], [0, md, mh]].map(function (p) { return P(p[0], p[1], p[2], 1); });
         var mnx = Math.min.apply(null, cr.map(function (p) { return p[0]; })), mxx = Math.max.apply(null, cr.map(function (p) { return p[0]; })), mny = Math.min.apply(null, cr.map(function (p) { return p[1]; })), mxy = Math.max.apply(null, cr.map(function (p) { return p[1]; }));
-        var sI = Math.min(2.2, (pw - 50) / (mxx - mnx), 380 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 50), H = Math.round((mxy - mny) * sI + 40);
+        var sI = Math.min(2.2, (wide ? 290 : pw - 50) / (mxx - mnx), 380 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 50), H = Math.round((mxy - mny) * sI + 40);
         var T = function (x, y, z) { var p = P(x, y, z, sI); return [Math.round(p[0] - mnx * sI + 25), Math.round(p[1] - mny * sI + 16)]; };
         var TS = function (x, y, z) { return T(x, y, z).join(','); };
         var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block;margin:0 auto">';
         svg += '<polygon points="' + [[0, 0, 0], [mw, 0, 0], [mw, md, 0], [0, md, 0]].map(function (p) { return TS(p[0], p[1], p[2]); }).join(' ') + '" fill="#00000008" stroke="#bbb" stroke-width="1"/>';
         var ax = function (x, y, z, lb, dx, dy) { var p = T(x, y, z), o = T(0, 0, 0); return '<line x1="' + o[0] + '" y1="' + o[1] + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="#555" stroke-width="1.3"/><text x="' + (p[0] + dx) + '" y="' + (p[1] + dy) + '" font-size="11" font-weight="700" fill="#111" text-anchor="middle">' + lb + '</text>'; };
-        svg += ax(mw, 0, 0, '가로', 14, 12) + ax(0, md, 0, '깊이', -14, 12) + ax(0, 0, mh, '높이', 0, -6);
+        svg += ax(mw * 1.1, 0, 0, '가로', 14, 12) + ax(0, md * 1.1, 0, '깊이', -14, 12) + ax(0, 0, mh * 1.1, '높이', 0, -6);
         f3.map(function (c) { return { c: c, i: fc.indexOf(c) }; }).sort(function (x, y) { return y.c.dm.w * y.c.dm.d - x.c.dm.w * x.c.dm.d; }).forEach(function (o) {
           var c = o.c, m = { a: [0, 0, 0], b: [c.dm.w, 0, 0], c: [c.dm.w, c.dm.d, 0], e: [0, c.dm.d, 0], a2: [0, 0, c.dm.h], b2: [c.dm.w, 0, c.dm.h], c2: [c.dm.w, c.dm.d, c.dm.h], e2: [0, c.dm.d, c.dm.h] };
           var poly = function (ks, k) { return '<polygon data-c="' + c.color + '" data-k="' + k + '" points="' + ks.map(function (q) { return TS(m[q][0], m[q][1], m[q][2]); }).join(' ') + '" fill="' + c.color + ['1c', '38', '10'][k] + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.6) + '" stroke-linejoin="round"/>'; };
@@ -158,9 +158,10 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
         });
         var o0 = T(0, 0, 0);
         svg += '<circle cx="' + o0[0] + '" cy="' + o0[1] + '" r="4" fill="#111"/></svg>';
-        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div>' + svg + '' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
+        var lg = '<div style="display:flex;flex-direction:column;gap:6px;justify-content:center;font-size:13px;min-width:110px">' + fc.map(function (c, i) { return '<span data-fi="' + i + '" style="cursor:pointer;display:flex;align-items:center;gap:6px;color:#222"><i style="width:14px;height:14px;border-radius:3px;background:' + c.color + ';flex:none"></i>' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
+        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:' + (wide ? 'nowrap' : 'wrap') + ';align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
-      var leg = '<div class="fig" style="margin-top:8px;font-size:11px;flex-wrap:wrap">' + fc.map(function (c, i) { return '<span data-fi="' + i + '" style="cursor:pointer;color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
+      var leg = '';
       figH = '<div class="figbox" id="fb"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="text-align:center;font-size:11px;color:#777;margin-top:4px">기물을 누르면 돋보입니다. 빨간 기준 기물을 누르면 색 채움이 켜지고 꺼집니다.</div></div>';
       window.__fc = fc;
     }
