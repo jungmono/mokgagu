@@ -91,7 +91,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       }).join('') + '</tr>';
     }
     var h = '<table class="tbl"><tr><th class="rh"></th>' + cols.map(function (c, i) {
-      return '<td class="pic"><button type="button" data-i="' + i + '" aria-label="' + esc(c.name) + ' 크게 보기"><img src="' + esc(c.u) + '" alt="' + esc(c.name) + '"></button><div class="nm">' + esc(c.name) + (c.r.hanja ? '<span class="hj">' + esc(c.r.hanja) + '</span>' : '') + '</div><button type="button" class="rm" data-rm="' + esc(c.k) + '">빼기</button></td>';
+      return '<td class="pic"><button type="button" data-i="' + i + '" aria-label="' + esc(c.name) + ' 크게 보기"><img src="' + esc(c.u) + '" alt="' + esc(c.name) + '"></button><div class="nm">' + esc(c.name) + '</div><button type="button" class="rm" data-rm="' + esc(c.k) + '">빼기</button></td>';
     }).join('') + '</tr>';
     h += row('도록', cols.map(function (c) { return c.r.cat || ''; }));
     h += row('종류', cols.map(function (c) { return (c.r.kind || '').split(' · ')[0]; }));
