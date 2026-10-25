@@ -25,7 +25,7 @@ h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px;text-align:center}#sub{text
 td.d{background:#fdf1ee;font-weight:800;color:var(--acc)}td .df{display:block;font-size:11px;font-weight:700}
 td.mu{color:#a39d92}
 .fig{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:6px 0 2px;min-height:0}
-.figbox{border:2px solid #111;border-radius:14px;padding:8px 10px 8px;margin:8px auto 12px;max-width:760px;background:#fbf9f5}.figt{font-weight:800;font-size:14px;text-align:center;margin-bottom:4px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.fp{min-width:0}.fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}.fs{font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:3px}@media(max-width:560px){.fg{grid-template-columns:1fr}.fp+.fp{border:0;padding:0;margin-top:8px}}.fig{gap:16px;align-items:flex-end}.fi{text-align:center}.fr{border:2px solid #111;border-radius:4px;background:#e9e2d4;margin:0 auto}.fl{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.fl b{color:#111}
+.figbox{border:2px solid #111;border-radius:14px;padding:10px 12px 10px;margin:8px auto 12px;max-width:900px;background:#fff}.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start}.fg3 .fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}@media(max-width:760px){.fg3{grid-template-columns:1fr}.fg3 .fp+.fp{border-left:0;padding-left:0;border-top:1px solid #e5e1da;padding-top:10px}}.figt{font-weight:800;font-size:14px;text-align:center;margin-bottom:4px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.fp{min-width:0}.fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}.fs{font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:3px}@media(max-width:560px){.fg{grid-template-columns:1fr}.fp+.fp{border:0;padding:0;margin-top:8px}}.fig{gap:16px;align-items:flex-end}.fi{text-align:center}.fr{border:2px solid #111;border-radius:4px;background:#e9e2d4;margin:0 auto}.fl{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.fl b{color:#111}
 .note{font-size:12px;color:var(--muted);line-height:1.7;margin:12px 0 0}
 a.lk{color:var(--acc);font-weight:700;font-size:12px}
 dialog{border:0;padding:0;background:#fff;color:#1d1b18;width:min(640px,96vw);max-height:92vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
@@ -58,7 +58,11 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   function list() { try { var a = JSON.parse(localStorage.getItem('mokgagu_cmp') || '[]'); return Array.isArray(a) ? a.slice(0, 5) : []; } catch (e) { return []; } }
 
   /* 크기 글자에서 가로·깊이·높이(cm)를 읽는다. 못 읽으면 null */
-  function dims(sz) {
+  function dims(sz, o) {
+    var r = dims0(sz); if (r && r.d != null && /Lot 065/.test(o || '') && /제69회/.test(o || '') && String(sz).replace(/\s/g, '').indexOf('42.5×30×75') === 0) return { w: r.h, d: r.d, h: r.w };
+    return r;
+  }
+  function dims0(sz) {
     if (!sz) return null; sz = String(sz).replace(/cm|㎝/g, '');
     var m = sz.match(/^\s*([\d.]+)\s*[×xX]\s*([\d.]+)\s*[×xX]\s*([\d.]+)/);
     if (m) return { w: +m[1], d: +m[2], h: +m[3] };
@@ -79,7 +83,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       return;
     }
     $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
-    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
+    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
       var diff = present.length >= 2 && new Set(present.map(String)).size > 1, mn = num ? Math.min.apply(null, present) : null;
@@ -124,12 +128,36 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     if (rk && !items.some(function (x) { return x.ref; })) items.unshift({ name: REFS[rk].name, dm: REFS[rk].dm, color: RED, ref: true });
     var fc = items;
     if (fc.length >= 2) {
-      var two = window.innerWidth > 560, colW = Math.min(window.innerWidth, 760) - 56;
-      var maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumW = fc.reduce(function (s, c) { return s + c.dm.w; }, 0);
-      var S1 = Math.min(1.5, ((two ? colW / 2 : colW) - 12 * fc.length) / sumW), S2 = Math.min(1.7, (two ? colW / 2 - 10 : colW) / maxW);
-      var left = '<div class="fp"><div class="fs">나란히</div><div class="fig">' + fc.map(function (c) { return '<div class="fi"><div class="fr" style="width:' + Math.round(c.dm.w * S1) + 'px;height:' + Math.round(c.dm.h * S1) + 'px' + (c.ref ? ';border-color:' + RED + ';background:' + RED + '22' : '') + '"></div><div class="fl"' + (c.ref ? ' style="color:' + RED + '"' : '') + '><b>' + esc((c.name || '').slice(0, 8)) + '</b><br>' + fmt(c.dm.w) + '×' + fmt(c.dm.h) + '</div></div>'; }).join('') + '</div></div>';
-      var right = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto;width:' + Math.round(maxW * S2) + 'px;height:' + Math.round(maxH * S2) + 'px">' + fc.map(function (c) { return '<div style="position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * S2) + 'px;height:' + Math.round(c.dm.h * S2) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div>'; }).join('') + '</div><div class="fig" style="margin-top:4px;font-size:11px">' + fc.map(function (c) { return '<span style="color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 8)) + '</span>'; }).join('') + '</div></div>';
-      figH = '<div class="figbox"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg">' + left + right + '</div></div>';
+      var wide = window.innerWidth > 760, pw = wide ? 236 : Math.min(window.innerWidth - 60, 420);
+      var base = fc[0], maxW = Math.max.apply(null, fc.map(function (c) { return c.dm.w; })), maxH = Math.max.apply(null, fc.map(function (c) { return c.dm.h; })), sumH = fc.reduce(function (s, c) { return s + c.dm.h; }, 0);
+      var sL = Math.min(1.2, (pw - 20) / maxW, 300 / sumH);
+      var L = '<div class="fp"><div class="fs">크기 비교</div><div style="position:relative;width:' + Math.round(maxW * sL + 4) + 'px;margin:0 auto">';
+      var gx = Math.round(base.dm.w * sL);
+      var stk = fc.map(function (c, i) {
+        var dw = i ? c.dm.w - base.dm.w : 0, dh = i ? c.dm.h - base.dm.h : 0;
+        var sg = function (v) { return (v > 0 ? '+' : v < 0 ? '−' : '±') + fmt(Math.abs(v)); };
+        var txt = i ? '가로 ' + sg(dw) + ' · 높이 ' + sg(dh) : '기준';
+        return '<div style="margin:0 0 8px"><div style="width:' + Math.round(c.dm.w * sL) + 'px;height:' + Math.round(c.dm.h * sL) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '18"></div><div style="font-size:11px;color:' + c.color + ';font-weight:700">' + esc((c.name || '').slice(0, 9)) + ' <span style="font-weight:400;color:#555">' + fmt(c.dm.w) + '×' + fmt(c.dm.h) + '</span><br><span style="color:#555;font-weight:400">' + txt + '</span></div></div>';
+      }).join('');
+      L += stk + '<div style="position:absolute;top:0;bottom:0;left:' + gx + 'px;border-left:1.5px dashed ' + RED + ';pointer-events:none"></div></div></div>';
+      var sM = Math.min(1.7, (pw - 10) / maxW, 300 / maxH);
+      var M = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto;width:' + Math.round(maxW * sM) + 'px;height:' + Math.round(maxH * sM) + 'px">' + fc.map(function (c) { return '<div style="position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * sM) + 'px;height:' + Math.round(c.dm.h * sM) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '14"></div>'; }).join('') + '</div></div>';
+      var f3 = fc.filter(function (c) { return c.dm.d != null; }), R;
+      if (f3.length >= 2) {
+        var K = 0.866, pts = function (c, s) { var w = c.dm.w, d = c.dm.d, h = c.dm.h; var P = function (x, y, z) { return [(x - y) * K * s, (x + y) * 0.5 * s - z * s]; }; return { a: P(0, 0, 0), b: P(w, 0, 0), c: P(w, d, 0), e: P(0, d, 0), a2: P(0, 0, h), b2: P(w, 0, h), c2: P(w, d, h), e2: P(0, d, h) }; };
+        var u = f3.map(function (c) { return pts(c, 1); }), mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9;
+        u.forEach(function (o) { for (var k in o) { mnx = Math.min(mnx, o[k][0]); mxx = Math.max(mxx, o[k][0]); mny = Math.min(mny, o[k][1]); mxy = Math.max(mxy, o[k][1]); } });
+        var sI = Math.min(1.4, (pw - 10) / (mxx - mnx), 300 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 8), H = Math.round((mxy - mny) * sI + 8);
+        var T = function (p) { return Math.round((p[0] - mnx * 1) * sI + 4) + ',' + Math.round((p[1] - mny) * sI + 4); };
+        var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block;margin:0 auto">';
+        f3.slice().sort(function (x, y) { return y.dm.w * y.dm.d - x.dm.w * x.dm.d; }).forEach(function (c) {
+          var o = pts(c, 1), poly = function (ks, f) { return '<polygon points="' + ks.map(function (k) { return T(o[k]); }).join(' ') + '" fill="' + f + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.5) + '" stroke-linejoin="round"/>'; };
+          svg += poly(['a', 'b', 'b2', 'a2'], c.color + '18') + poly(['b', 'c', 'c2', 'b2'], c.color + '10') + poly(['a2', 'b2', 'c2', 'e2'], c.color + '24');
+        });
+        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div>' + svg + '</svg>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
+      } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
+      var leg = '<div class="fig" style="margin-top:8px;font-size:11px;flex-wrap:wrap">' + fc.map(function (c) { return '<span style="color:' + c.color + '">■ ' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
+      figH = '<div class="figbox"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '</div>';
     }
     h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, <b>「가로×깊이×높이」 순서로 적힌 도록</b>이라고 보고 읽었습니다. 도록마다 표기가 달라 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 「길이」는 가로, 「너비」는 깊이로 읽었습니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
     h = h.replace('<table class="tbl">', figH + '<table class="tbl">');
