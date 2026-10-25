@@ -100,7 +100,9 @@
       if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) prov[p[0]][t].push(r); });
     });
     (window.JOSEONGWE || []).forEach((d) => { if (d.r && by[d.r]) by[d.r].j.push(d); else if (d.p && prov[d.p]) prov[d.p].j.push(d); });   // 정대영 『조선의 궤』 도판
-    (window.GIJUN || []).forEach((d) => {   // 장석 감정실에서 올린 기준 도판(가족만): 지역 이름으로 고을·도를 찾는다
+    const GJ = [], gat = {};   // 같은 기물의 여러 장(g가 같거나 지역·메모가 같은 것)은 한 점으로 묶고 사진을 pics에 모은다
+    (window.GIJUN || []).forEach((d) => { const k = d.g || (d.note ? d.region + '|' + d.note : d.n); if (gat[k]) { gat[k].pics.push(d); return; } gat[k] = Object.assign({}, d, { pics: [d] }); GJ.push(gat[k]); });
+    GJ.forEach((d) => {   // 장석 감정실에서 올린 기준 도판(가족만): 지역 이름으로 고을·도를 찾는다
       const nm = String(d.region || ''); let hit = false;
       R.forEach((g) => { if (!hit && (g[1] === nm || g[5].some((k) => nm.includes(k)))) { by[g[0]].g.push(d); hit = true; } });
       if (!hit) PROV.forEach((p) => { if (!hit && (p[0] === nm || p[1].some((k) => nm.includes(k)))) { prov[p[0]].g.push(d); hit = true; } });
@@ -221,11 +223,13 @@ ${base()}
           (P.length > 1 ? `<div class="bm-st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : '') + '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 →</a>';
         fillOwn($d('d-info'));
       } else {
-        dlg.dataset.cid = r.b + '/' + r.pid;
+        dlg.dataset.cid = r.b + '/' + (r.pid || r.n);
+        const pc = r.pics && r.pics[vp] ? r.pics[vp] : r;
+        if (r.pics) { img.src = pc.full; img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = pc.thumb; }; } else
         img.src = r.full || (r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : ''));
         img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
         img.alt = r.name;
-        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}</dl>${r.b === 'gijun' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">장석 감정실에 올린 기준 도판</p>' : r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
+        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}${r.pics && r.pics.length > 1 ? dRow('사진', (vp + 1) + ' / ' + r.pics.length + '장') : ''}</dl>${r.pics && r.pics.length > 1 ? `<div class="bm-st">${r.pics.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" src="${p.thumb}"></button>`).join('')}</div>` : ''}${r.b === 'gijun' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">장석 감정실에 올린 기준 도판</p>' : r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
       }
       $d('d-pos').textContent = `${i + 1} / ${list.length}`; $d('d-prev').disabled = i === 0; $d('d-next').disabled = i === list.length - 1;
       if (!dlg.open) dlg.showModal();
