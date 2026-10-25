@@ -67,9 +67,10 @@
     m: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M1.5 15.5h45v3h-45z" fill="currentColor"/><path d="M3 18.5v13h14v-13M31 18.5v13h14v-13"/><path d="M3 23h14M3 27h14M31 23h14M31 27h14" stroke-width="1.2"/><path d="M17 31.5h14M15.5 34h17M14 36.5h20" stroke-width="1.6"/><path d="M1.5 31.5h12.5M34 31.5h12.5"/><path d="M6 40.5h36" stroke-width="1.5"/><path d="M11 43.5h26" stroke-width="1.2"/></svg>',
     a: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><g transform="rotate(-40 22 18)"><rect x="12" y="10" width="20" height="9" rx="2"/><path d="M15 10v9M29 10v9"/><path d="M22 19v19"/></g><path d="M26 41h17"/><rect x="28.5" y="36.5" width="12" height="4.5" rx="1"/><path d="M8 8l2.5 2.5M5 14h3.5M13 4.5v3.5" stroke-width="1.8"/></svg>',
     e: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 15 24 5l20 10z"/><path d="M6 15v27h36V15"/><path d="M6 28.5h36M4 42h40"/><path d="M10 27.5v-9M13.5 27.5v-7M17 27.5v-9M20.5 27.5v-8M25 27.5l3-8.5M31 27.5v-9M34.5 27.5v-7M38 27.5v-9"/><path d="M10 41v-9M13.5 41v-7.5M17 41v-9M21 41v-6.5M24.5 41v-9M28 41v-8M33 41l2.5-8M38 41v-9"/><circle cx="24" cy="11.5" r="1.6"/></svg>',
+    j: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M24 12C19 8 11 7 5 8v29c6-1 14 0 19 4 5-4 13-5 19-4V8c-6-1-14 0-19 4z"/><path d="M24 12v29"/><rect x="10" y="15" width="9" height="7" rx="1"/><path d="M14.5 15v7M10 18.5h9" stroke-width="1.3"/><path d="M29 16h9M29 21h9M29 26h9M10 27h9M10 31h9" stroke-width="1.5"/></svg>',
     o: '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="25" height="16.5" rx=".8"/><path d="M3.5 15.5h25"/><path d="M5 24.5v3M27 24.5v3"/><path d="M8.5 8v5.5h3V8M20.5 8v5.5h3V8"/><path d="M13.5 15.5h5v4.2l-2.5 1.8-2.5-1.8z"/></svg>',
   };
-  const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111']];
+  const TYPES = [['m', '박물관 소장', '#0F6E56'], ['a', '경매 출품', '#BA7517'], ['e', '기타', '#5b6fa8'], ['o', '소장품', '#111111'], ['j', '조선의 궤', '#8a2d18']];
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const load = () => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) { return {}; } };
   const save = (o) => { try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
@@ -89,14 +90,15 @@
   
   function pins() {
     const all = (window.SEARCH || []).filter(isKind);
-    const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], e: [], o: [] }; });
-    const prov = {}; PROV.forEach((p) => { prov[p[0]] = { m: [], a: [], e: [], o: [] }; });
+    const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], e: [], o: [], j: [] }; });
+    const prov = {}; PROV.forEach((p) => { prov[p[0]] = { m: [], a: [], e: [], o: [], j: [] }; });
     all.forEach((r) => {
       const t = AUC[r.b] ? 'a' : MUS[r.b] ? 'm' : 'e', hay = hayOf(r);
       let hit = false;
       R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { by[g[0]][t].push(r); hit = true; } });
       if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) prov[p[0]][t].push(r); });
     });
+    (window.JOSEONGWE || []).forEach((d) => { if (d.r && by[d.r]) by[d.r].j.push(d); else if (d.p && prov[d.p]) prov[d.p].j.push(d); });   // 정대영 『조선의 궤』 도판
     return { by, prov };
   }
   /* 우리 소장품(가족 시트): 이름·종류에 반닫이가 들어 있고 지금 소장 중인 것만 */
@@ -111,11 +113,11 @@
 
   function mount(el) {
     const P = pins(), local = load(), edits = Object.assign({}, local), meta = {};
-    let on = { m: true, a: true, e: true, o: true }, sel = '', selP = '', list = [];
+    let on = { m: true, a: true, e: true, o: true, j: true }, sel = '', selP = '', list = [];
     const W = 130, H = 86, PN = Object.keys(PV);
     const provOf = {}; PN.forEach((p) => PV[p][1].forEach((id) => { provOf[id] = p; }));
-    const cntT = (o) => (on.m ? o.m.length : 0) + (on.a ? o.a.length : 0) + (on.e ? o.e.length : 0) + (on.o ? o.o.length : 0);
-    const merge = (ids, pn) => { const o = { m: [], a: [], e: [], o: [] }; ids.forEach((id) => { ['m', 'a', 'e', 'o'].forEach((k) => o[k].push(...P.by[id][k])); }); if (pn) ['m', 'a', 'e', 'o'].forEach((k) => o[k].push(...P.prov[pn][k])); return o; };
+    const cntT = (o) => (on.m ? o.m.length : 0) + (on.a ? o.a.length : 0) + (on.e ? o.e.length : 0) + (on.o ? o.o.length : 0) + (on.j && o.j ? o.j.length : 0);
+    const merge = (ids, pn) => { const o = { m: [], a: [], e: [], o: [], j: [] }; ids.forEach((id) => { ['m', 'a', 'e', 'o', 'j'].forEach((k) => o[k].push(...P.by[id][k])); }); if (pn) ['m', 'a', 'e', 'o', 'j'].forEach((k) => o[k].push(...P.prov[pn][k])); return o; };
     const ink = el.dataset.ink !== undefined ? el.dataset.ink : (window.MOKGAGU_INK !== undefined ? window.MOKGAGU_INK : 'b'), uid = 'k' + Math.random().toString(36).slice(2, 7);
     const LAND = 'M170 480 L95 420 L225 300 L1010 180 L1190 160 L1240 380 L1085 500 L1085 1800 L170 1780 Z';
     /* 지도 바깥 바탕: 없으면 예전 그대로, a·b·c 는 수묵 시안 */
@@ -170,12 +172,12 @@ ${base()}
       g.innerHTML = R.map((r) => {
         const p = P.by[r[0]], n = cntT(p), x = r[3] - W / 2, y = r[4] - H / 2, pn = provOf[r[0]] || '', c = pn ? PV[pn][0] : '#6f6450';
         const inP = selP && provOf[r[0]] === selP;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 22 + i * 36}" cy="${y + H + 4}" r="16" fill="${col}"/><text x="${x + 22 + i * 36}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 18 + i * 29}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * 29}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
         return `<g class="bx ${n ? 'has' : ''} ${sel === r[0] ? 'sel' : ''} ${inP ? 'pin' : ''} ${selP && !inP ? 'dim' : ''}" data-id="${r[0]}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hj" x="${r[3]}" y="${y + 34}">${r[2]}</text><text class="hg" x="${r[3]}" y="${y + 72}">${esc(r[1]).replace(/\(.*\)/, '')}</text>${dots}</g>`;
       }).join('') + PN.map((pn) => {
         const p = P.prov[pn], n = cntT(p); if (!p || !(p.m.length + p.a.length + p.o.length)) return '';
         const [c, , , , cx, cy] = PV[pn], x = cx - W / 2, y = cy - H / 2;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 22 + i * 36}" cy="${y + H + 4}" r="16" fill="${col}"/><text x="${x + 22 + i * 36}" y="${y + H + 10}" style="font-size:20px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 18 + i * 29}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * 29}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
         return `<g class="bx pb ${n ? 'has' : ''} ${selP === pn ? 'sel' : ''} ${selP && selP !== pn ? 'dim' : ''}" data-p="${pn}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hg" x="${cx}" y="${y + 56}">${pn}</text>${dots}</g>`;
       }).join('');
       el.querySelectorAll('#bm-pb button').forEach((b) => { const p = b.dataset.p, n = cntT(merge(PV[p][1], p)); b.setAttribute('aria-pressed', selP === p); b.querySelector('small').textContent = n ? n : ''; });
@@ -207,7 +209,7 @@ ${base()}
         img.src = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
         img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
         img.alt = r.name;
-        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}</dl><a href="${r.b}.html">도록으로 돌아가기 →</a>`;
+        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}</dl>${r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
       }
       $d('d-pos').textContent = `${i + 1} / ${list.length}`; $d('d-prev').disabled = i === 0; $d('d-next').disabled = i === list.length - 1;
       if (!dlg.open) dlg.showModal();
