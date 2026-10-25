@@ -143,6 +143,7 @@
 .bm .bm-pb button,.bm .bm-t button{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;padding:10px 2px 8px;font:inherit;font-size:13px;font-weight:700;color:#1f2433;background:#fff;border:1px solid #e6e8f0;border-radius:14px;cursor:pointer;transition:transform .15s,border-color .15s;line-height:1.2}
 .bm .bm-pb button:hover,.bm .bm-t button:hover{transform:translateY(-2px);border-color:#6b7183}
 .bm .bm-pb button[aria-pressed=true],.bm .bm-t button[aria-pressed=true]{border-color:#1f2433;box-shadow:inset 0 0 0 1px #1f2433}
+.bm .bm-tot{text-align:center;font-size:19px;font-weight:800;color:#1f2433;margin:4px 0 10px}.bm .bm-tot b{color:#8a2d18;font-size:22px}.bm .bm-t button small{font-size:14px;font-weight:700;color:#6b7183;min-height:1em}
 .bm .bm-t button{width:96px}.bm .bm-t button[aria-pressed=false]{opacity:.45}
 .bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bm-t .bi svg{width:34px;height:34px}
 .bm .bm-pb button small{display:block;font-size:12px;color:#6b7183;font-weight:700;min-height:1em;margin-top:-3px}
@@ -163,7 +164,8 @@
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 </style>
 <div class="bm-pb" id="bm-pb">${PN.map((p) => `<button type="button" data-p="${p}" aria-pressed="false"><span class="bi"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PI[p]}</svg></span>${p}<small></small></button>`).join('')}</div>
-<div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><i style="background:${c}"></i></button>`).join('')}</div>
+<div class="bm-tot" id="bm-tot"></div>
+<div class="bm-t" id="bm-t">${TYPES.map(([k, n, c]) => `<button type="button" data-k="${k}" aria-pressed="true"><span class="bi">${TICON[k]}</span><span class="tn">${n}</span><small></small><i style="background:${c}"></i></button>`).join('')}</div>
 <svg class="bm-sv" viewBox="0 0 1319 1960" role="img" aria-label="선생님 손지도"${ink ? ' style="background:transparent;border:0"' : ''}>
 ${base()}
 <g stroke="#9c9179" stroke-width="3" stroke-dasharray="14 10" fill="none" opacity=".9">
@@ -187,6 +189,13 @@ ${base()}
         const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 18 + i * 29}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * 29}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
         return `<g class="bx pb ${n ? 'has' : ''} ${selP === pn ? 'sel' : ''} ${selP && selP !== pn ? 'dim' : ''}" data-p="${pn}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hg" x="${cx}" y="${y + 56}">${pn}</text>${dots}</g>`;
       }).join('');
+      {   // 기물별 개수와 전체 총계(한 기물이 여러 고을에 걸려도 한 번만 센다)
+        const S = {}; TYPES.forEach(([k]) => { S[k] = new Set(); });
+        [P.by, P.prov].forEach((grp) => Object.values(grp).forEach((o) => TYPES.forEach(([k]) => (o[k] || []).forEach((r) => S[k].add(r.own ? 'own:' + r.id : (r.b + '/' + r.n))))));
+        const all = new Set(); TYPES.forEach(([k]) => { if (on[k]) S[k].forEach((x) => all.add(x)); });
+        el.querySelectorAll('#bm-t button').forEach((b) => { const sm = b.querySelector('small'); if (sm) sm.textContent = S[b.dataset.k] ? S[b.dataset.k].size : ''; });
+        const tt = el.querySelector('#bm-tot'); if (tt) tt.innerHTML = `반닫이·궤 전체 <b>${all.size}</b>점`;
+      }
       el.querySelectorAll('#bm-pb button').forEach((b) => { const p = b.dataset.p, n = cntT(merge(PV[p][1], p)); b.setAttribute('aria-pressed', selP === p); b.querySelector('small').textContent = n ? n : ''; });
     }
     function items(o) {
