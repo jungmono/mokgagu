@@ -252,7 +252,10 @@ const MAIN = DASHBOARDS.filter((d) => !d.group), REFS = DASHBOARDS.filter((d) =>
 const FOLDERS = [['museum', '박물관자료', '박물관·지정된 문화유산 목공예 유물', MUSE], ['auction', '경매자료', '경매에 나온 목가구·목기<br>추정가와 낙찰가', AUCS], ['ref', '도움자료', '목가구 공부에 참고할 다른 분야 자료', REFS]];
 document.getElementById('n-books').textContent = MAIN.length;
 document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자료 <b>${MUSE.length}</b>` : '') + (AUCS.length ? ` · 경매자료 <b>${AUCS.length}</b>` : '') + (REFS.length ? ` · 도움자료 <b>${REFS.length}</b>권` : '');
-document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
+/* 『조선의 궤』 도판 161점은 가족(가족 암호 + 거믄·힌)에게만 기물 수에 더한다 — 반닫이여지도의 '조선의 궤' 메뉴와 같은 기준 */
+const JOSEONGWE_N = 161;
+const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
+document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
 const SITE_UPDATED = '2026-10-25';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
