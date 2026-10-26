@@ -83,7 +83,7 @@ dialog::backdrop{background:rgba(20,18,15,.55)}
   <ul class="lead">
    <li>크리스티(Christie's)·소더비(Sotheby's)·본햄스(Bonhams)가 2020년 이후 연 경매 중 조선 목가구·칠기를 골랐습니다. 나전칠기가 가장 많습니다.</li>
    <li>해외 낙찰가는 <b>구매수수료가 포함된 값</b>이고 통화도 달라(달러·유로·홍콩달러) 원화는 <span id="fxn"></span> 환율로 어림한 값이며 낙찰 당시 환율과 다릅니다.  국내 경매와 곧바로 비교할 수 없습니다. 그래서 경매시세 통계에는 넣지 않았습니다.</li>
-   <li>크리스티·본햄스 사진은 각 서버에서 바로 불러오며, 소더비 사진은 이 도록에 저장한 것입니다. 사진을 누르면 크게 보고, 원문 페이지로 갈 수 있습니다.</li>
+   <li>목록의 작은 사진은 이 도록에 저장한 것이고, 사진을 눌러 크게 볼 때는 경매사 서버의 사진을 불러옵니다. 사진을 누르면 크게 보고, 원문 페이지로 갈 수 있습니다.</li>
   </ul>
   <div class="tiles" id="tiles"></div>
   <div class="filters">
@@ -110,7 +110,7 @@ const SYM = { USD: '$', EUR: '€', HKD: 'HK$' };
 const FX = { USD: 1325, EUR: 1488, HKD: 170 }, FX_DATE = '2026.10.24';
 const krw = (c, v) => { const w = Math.round(v * FX[c] / 10000) * 10000; return w >= 100000000 ? (w / 100000000).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) + '억원' : (w / 10000).toLocaleString('ko-KR') + '만원'; };
 const money = (c, v) => v == null ? '' : (SYM[c] || '') + v.toLocaleString('en-US');
-const th = (i) => i.ext === 2 ? i.img : i.ext ? i.img + '?w=400' : 'thumbs/overseas/' + i.id + '.jpg';
+const th = (i) => 'thumbs/overseas/' + i.id + '.jpg';
 const big = (i) => i.ext === 2 ? i.img : i.ext ? i.img + '?w=1000' : 'https://jungmono.github.io/mokgagu-photos/photos/overseas/' + i.id + '.jpg';
 const KINDS = ['함·상자', '소반·쟁반', '궤·장', '병풍·기타'];
 const st = { house: '', year: '', kind: '', nj: '', sort: 'd' };
