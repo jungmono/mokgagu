@@ -29,8 +29,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 <script src="tools-head.js" data-k="ruler"></script>
 <div class="card"><div class="in">
 <label>가로 (cm)<input id="w" type="number" inputmode="decimal" min="30" max="160"></label>
-<label>높이 (cm)<input id="h" type="number" inputmode="decimal" min="20" max="160"></label></div>
-<p class="hint">뚜껑까지 잰 전체 크기예요. 비워 두면 우리 언양반닫이(가로 102.5 · 높이 58.4)로 보여 줘요.</p></div>
+<label>세로 (cm)<input id="h" type="number" inputmode="decimal" min="20" max="160"></label></div>
+<p class="hint">뚜껑까지 잰 전체 크기예요. 비워 두면 우리 언양반닫이(가로 102.5 · 세로 58.4)로 보여 줘요.</p></div>
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
@@ -60,29 +60,35 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
   const regs = Object.keys(COL).filter((g) => P.filter((p) => p.g === g).length >= 5);
   const med = (a) => { a = a.slice().sort((x, y) => x - y); const n = a.length; return n ? (n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2) : 0; };
   const qs = (a, q) => { a = a.slice().sort((x, y) => x - y); return a[Math.floor((a.length - 1) * q)]; };
-  const X0 = 50, X1 = 130, Y0 = 30, Y1 = 130, W = 700, H = 420, L = 44, B = 34, T = 10, R = 10;
-  const sx = (v) => L + (v - X0) / (X1 - X0) * (W - L - R), sy = (v) => H - B - (v - Y0) / (Y1 - Y0) * (H - B - T);
+  const X0 = 50, X1 = 130, Y0 = 30, Y1 = 130, W = 700, L = 44, B = 34, T = 10, R = 10, PPC = (W - L - R) / (X1 - X0), H = Math.round(T + B + (Y1 - Y0) * PPC);   /* 가로·세로 1cm 가 같은 길이가 되게 */
+  const sx = (v) => L + (v - X0) / (X1 - X0) * (W - L - R), sy = (v) => H - B - (v - Y0) * PPC;
   const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양반닫이 (compare.js 의 기준과 같은 값) */
   function draw() {
     const iw = parseFloat($('w').value), ih = parseFloat($('h').value), own = iw > 0 && ih > 0;
     const w = own ? iw : REFM.w, h = own ? ih : REFM.h, ok = true;
-    let s = `<svg id="svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="지역별 가로·높이 분포">`;
-    for (let v = 60; v <= 120; v += 20) s += `<line x1="${sx(v)}" y1="${T}" x2="${sx(v)}" y2="${H - B}" stroke="#efe6cf"/><text x="${sx(v)}" y="${H - 12}" text-anchor="middle" font-size="13" fill="#6d6551">${v}</text>`;
-    for (let v = 40; v <= 120; v += 20) s += `<line x1="${L}" y1="${sy(v)}" x2="${W - R}" y2="${sy(v)}" stroke="#efe6cf"/><text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="13" fill="#6d6551">${v}</text>`;
-    s += `<text x="${W - R}" y="${H - 1}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T + 8}" font-size="12" fill="#8a7f66">높이 cm</text>`;
+    let s = `<svg id="svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="지역별 가로·세로 분포">`;
+    for (let v = 60; v <= 120; v += 10) s += `<line x1="${sx(v)}" y1="${T}" x2="${sx(v)}" y2="${H - B}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${sx(v)}" y="${H - 12}" text-anchor="middle" font-size="13" fill="#6d6551">${v}</text>`);
+    for (let v = 40; v <= 130; v += 10) s += `<line x1="${L}" y1="${sy(v)}" x2="${W - R}" y2="${sy(v)}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="13" fill="#6d6551">${v}</text>`);
+    s += `<text x="${W - R}" y="${H - 1}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T + 8}" font-size="12" fill="#8a7f66">세로 cm</text>`;
     P.filter((p) => regs.includes(p.g)).forEach((p) => { s += `<circle cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".55"/>`; });
     s += `<circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/><text x="${sx(REFM.w) + 12}" y="${sy(REFM.h) - 8}" font-size="13" font-weight="700" fill="#d12b2b">우리 언양반닫이</text>`;
     if (own) s += `<g><line x1="${sx(w)}" y1="${T}" x2="${sx(w)}" y2="${H - B}" stroke="#111" stroke-dasharray="4 4"/><line x1="${L}" y1="${sy(h)}" x2="${W - R}" y2="${sy(h)}" stroke="#111" stroke-dasharray="4 4"/><circle cx="${sx(w)}" cy="${sy(h)}" r="9" fill="#fff" stroke="#111" stroke-width="3"/></g>`;
     s += '</svg><div class="leg">' + regs.map((g) => `<span><i style="background:${COL[g]}"></i>${g} ${P.filter((p) => p.g === g).length}</span>`).join('') + '</div>';
     let v = '';
     if (ok) {
-      const ratio = h / w, K = 15;
-      const near = P.map((p) => ({ p, d: Math.hypot((p.w - w) / 100, (p.h - h) / 100) })).sort((a, b) => a.d - b.d);
-      const top = near.slice(0, K), cnt = {}; top.forEach((x) => (cnt[x.p.g] = (cnt[x.p.g] || 0) + 1));
-      const ord = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
-      v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양반닫이'}</b> 가로 ${w} · 높이 ${h}<br>높이:가로 = <b>${ratio.toFixed(2)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${ord.map(([g, n]) => g + ' ' + n).join(' · ')}</b></div>`;
-      v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>높이 중앙값</th><th>높이:가로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.h / p.w); return `<tr${cnt[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
-      v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">` + near.slice(0, 6).map(({ p }) => { const r = p.r; return `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt=""><small><b>${p.g}</b> · ${p.w}×${p.h}<br>${esc(r.name)}</small></a>`; }).join('') + `</div></div>`;
+      const ratio = w / h, K = 15;   /* 가로:세로 = ratio : 1 */
+      const fmt = (x) => x.toFixed(2) + ' : 1';
+      const tally = (arr) => { const c = {}; arr.forEach((x) => (c[x.p.g] = (c[x.p.g] || 0) + 1)); return c; };
+      const line = (c) => Object.entries(c).sort((a, b) => b[1] - a[1]).map(([g, n]) => g + ' ' + n).join(' · ');
+      const nearS = P.map((p) => ({ p, d: Math.hypot((p.w - w) / 100, (p.h - h) / 100) })).sort((a, b) => a.d - b.d);
+      const nearR = P.map((p) => ({ p, d: Math.abs(Math.log(p.w / p.h) - Math.log(ratio)) })).sort((a, b) => a.d - b.d);
+      const cS = tally(nearS.slice(0, K)), cR = tally(nearR.slice(0, K));
+      const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
+      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; return `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
+      v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
+      v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
+      v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">${cards(nearS, (p) => p.w + '×' + p.h)}</div></div>`;
+      v += `<div class="card"><b>비율이 가장 닮은 반닫이</b> <small style="color:#8a7f66">크기는 달라도 가로:세로가 같은 것</small><div class="near">${cards(nearR, (p) => fmt(p.w / p.h) + ' (' + p.w + '×' + p.h + ')')}</div></div>`;
     }
     $('out').innerHTML = `<div class="card">${s}</div>` + v;
   }
