@@ -73,7 +73,7 @@
   /* 4) 사진 지연 로딩 — loading 이 지정되지 않은 사진에 자동으로 */
   function lazy(root0) {
     (root0.tagName === 'IMG' ? [root0] : [].slice.call(root0.querySelectorAll ? root0.querySelectorAll('img:not([loading])') : [])).forEach(function (im) {
-      if (im.hasAttribute('loading') || im.closest('header,.hd,.ttl-row') ) return;
+      if (im.hasAttribute('loading') || im.id === 'dlg-img' || im.id === 'd-img' || im.id === 'lb-img' || im.closest('header,.hd,.ttl-row') ) return;   /* 사진 창의 큰 사진은 바로 */
       im.setAttribute('loading', 'lazy'); im.setAttribute('decoding', 'async');
     });
   }

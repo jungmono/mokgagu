@@ -2,8 +2,9 @@
    · 화면(HTML·JS·CSS·암호화 자료): 인터넷이 되면 항상 최신을 가져오고, 안 되면 마지막에 본 것을 보여 준다
      (포털이 자주 고쳐져도 옛 화면이 남지 않고, 답십리·박물관처럼 신호가 약한 곳에서도 열린다).
    · 작은 썸네일·아이콘: 한 번 본 것은 저장해 두고 바로 보여 준다.
+   · 검색 색인(search.js)·d3는 저장본을 먼저 쓰고 뒤에서 갱신한다(1.7MB를 매번 받지 않도록).
    · 큰 원본 사진(photos/)과 다른 사이트(구글 시트·글꼴)는 건드리지 않는다. */
-var VER = 'v2';
+var VER = 'v3';
 var PAGES = 'mk-pages-' + VER, IMGS = 'mk-imgs-' + VER, MAX_IMGS = 2500;
 
 self.addEventListener('install', function () { self.skipWaiting(); });
@@ -13,6 +14,8 @@ self.addEventListener('activate', function (e) {
   }).then(function () { return self.clients.claim(); }));
 });
 
+var puts = 0;
+function maybeTrim(name, max) { if (++puts % 50 === 0) trim(name, max); }   /* 저장할 때마다가 아니라 50번에 한 번만 정리 */
 function trim(name, max) {
   return caches.open(name).then(function (c) {
     return c.keys().then(function (ks) { if (ks.length > max) return Promise.all(ks.slice(0, ks.length - max).map(function (k) { return c.delete(k); })); });
@@ -31,7 +34,18 @@ self.addEventListener('fetch', function (e) {
     e.respondWith(caches.open(IMGS).then(function (c) {
       return c.match(req).then(function (hit) {
         if (hit) return hit;
-        return fetch(req).then(function (r) { if (r.ok) { c.put(req, r.clone()); trim(IMGS, MAX_IMGS); } return r; });
+        return fetch(req).then(function (r) { if (r.ok) { c.put(req, r.clone()); maybeTrim(IMGS, MAX_IMGS); } return r; });
+      });
+    }));
+    return;
+  }
+  /* 큰 정적 스크립트(검색 색인·d3): 저장본을 바로 쓰고, 뒤에서 새로 받아 둔다(다음에 열 때 최신) */
+  if (/\/(search|d3\.min)\.js$/.test(p)) {
+    e.respondWith(caches.open(PAGES).then(function (c) {
+      return c.match(req, { ignoreSearch: true }).then(function (hit) {
+        var net = fetch(req).then(function (r) { if (r.ok) c.put(req, r.clone()); return r; });
+        if (hit) { net.catch(function () {}); return hit; }
+        return net;
       });
     }));
     return;
