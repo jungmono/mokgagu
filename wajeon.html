@@ -30,11 +30,6 @@ button{font:inherit}
   function raw(id){
     var el = document.getElementById('ds-' + id);
     if (el) return JSON.parse(el.textContent);
-    if (/^photos_hi_\d+$/.test(id)) {
-      if (!pending[id]) { pending[id] = 1; var s = document.createElement('script'); s.src = 'wajeon_' + id + '.js';
-        s.onerror = function(){ pending[id] = 'error'; fire(); }; document.head.appendChild(s); }
-      return undefined;
-    }
     return undefined;
   }
   function get(id){
@@ -383,7 +378,6 @@ dash.calc('compare', {
 
   let photoRows = null, photoMap = new Map();
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
-  const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / CHUNK);
   const EXTRA = {"W001": 2, "W004": 1, "W011": 1, "W014": 1, "W015": 1, "W016": 1, "W017": 1, "W020": 1, "W023": 1, "W024": 1, "W025": 1, "W026": 1, "W033": 1, "W034": 1, "W036": 1, "W040": 1, "W041": 1, "W043": 1, "W048": 1, "W051": 1, "W052": 1, "W053": 1, "W054": 1, "W055": 1, "W056": 1, "W057": 1, "W059": 1, "W063": 1, "W068": 1, "W069": 1, "W073": 2, "W076": 1, "W077": 1, "W078": 1, "W079": 1, "W080": 2, "W083": 1, "W084": 1, "W086": 1, "W089": 1, "W092": 1, "W093": 1, "W094": 1, "W095": 1, "W096": 1, "W097": 1, "W098": 1, "W099": 1, "W100": 1, "W101": 1, "W102": 1, "W103": 1, "W105": 1, "W106": 1, "W107": 2, "W110": 1, "W111": 1, "W113": 1, "W118": 1, "W120": 1, "W123": 1, "W127": 1, "W131": 1, "W134": 2, "W137": 1, "W140": 1, "W146": 1, "W147": 1, "W149": 1, "W150": 1, "W151": 1, "W152": 1, "W154": 1, "W157": 1, "W161": 1, "W162": 1, "W165": 2, "W166": 1, "W169": 1, "W172": 1, "W174": 1, "W176": 1, "W179": 1, "W183": 1, "W186": 1, "W187": 1, "W188": 1, "W189": 1, "W194": 1, "W195": 1, "W196": 1, "W197": 1, "W200": 1, "W201": 1, "W202": 1, "W203": 2, "W204": 1, "W205": 1, "W210": 1};
   const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/wajeon/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
@@ -399,7 +393,6 @@ dash.calc('compare', {
   };
   function showDetail() {
     const r = itemMap().get(dlgList[dlgIdx]); if (!r) return; document.getElementById('dlg').dataset.cid = 'wajeon/' + r.id;
-    document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.no);
     const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id); im.dataset.fb = photo(r.id) || '';
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
     { const fig = document.getElementById('dlg-big'), i2 = document.getElementById('dlg-img2');

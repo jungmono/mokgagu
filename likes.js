@@ -182,6 +182,8 @@
   ].join('');
   document.head.appendChild(css);
 
+  /* 조사 이/가 — 마지막 글자에 받침이 있으면 「이」, 없으면 「가」. 한글이 아니면 「이(가)」 */
+  function iga(s) { var c = String(s).slice(-1).charCodeAt(0) - 0xAC00; return c >= 0 && c <= 11171 ? (c % 28 ? '이' : '가') : '이(가)'; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   var toastEl;
   function toast(t) { if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'lk-toast'; document.body.appendChild(toastEl); } toastEl.textContent = t; toastEl.classList.add('on'); clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.classList.remove('on'); }, 1600); }
@@ -197,7 +199,7 @@
       var others = ['거믄', '힌'].filter(function (k) { return s[k] && (k !== w || inRv); });
       if (!on || (!w && !others.length) || (inRv && !others.length)) { if (b) b.remove(); return; }
       var mine = w && !inRv ? '<button type="button" class="lk-btn' + (s[w] ? ' on' : '') + (pop === cid ? ' lk-pop' : '') + '" data-lk="' + esc(cid) + '" aria-pressed="' + !!s[w] + '" aria-label="' + w + '의 좋아요" title="' + (s[w] ? '좋아요 거두기' : w + '의 좋아요') + '">' + icon(w, !!s[w]) + '</button>' : '';
-      var oth = others.length ? '<span class="lk-other" title="' + others.join(' · ') + '이(가) 좋아해요">' + others.map(star).join('') + '</span>' : '';
+      var oth = others.length ? '<span class="lk-other" title="' + others.join(' · ') + iga(others[others.length - 1]) + ' 좋아해요">' + others.map(star).join('') + '</span>' : '';
       var html = mine + oth;
       if (!b) { b = document.createElement('span'); b.className = 'lk-st'; el.appendChild(b); }
       if (b.innerHTML !== html) b.innerHTML = html;
@@ -209,7 +211,6 @@
   }, true);
 
   /* ── 사진 창 안 별 단추 ── */
-  var curDlg = null;
   function infoBox(d) { return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d; }
   function paintDlg() {
     document.querySelectorAll('dialog[open]').forEach(function (d) {
@@ -437,7 +438,7 @@
     else html += '<div class="lc-grid">' + keys.map(function (k) {
       var r = IX[k], s = m[k];
       var st = (s['거믄'] ? star('거믄') : '') + (s['힌'] ? star('힌') : '');
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="" onerror="this.remove()">' : '') +
         '<span class="lc-stars">' + st + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>';
     }).join('') + '</div>';
     if (pend.length) html += '<p class="lc-note">' + (serverOk ? '별 ' + pend.length + '개를 시트에 올리는 중이에요.' : '별 ' + pend.length + '개가 아직 이 기기에만 있어요. 시트 연결이 열리면 저절로 올라가요.') + '</p>';
@@ -450,7 +451,7 @@
     var keys = Object.keys(beot).sort(function (a, b) { return String(beot[b]).localeCompare(String(beot[a])); });
     var html = '<div class="lc-hd"><h2>' + star('벗') + '벗의 좋아요</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body">';
     html += keys.length ? '<div class="lc-grid">' + keys.map(function (k) { var r = IX[k];
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="" onerror="this.remove()">' : '') +
         '<span class="lc-stars">' + star('벗') + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>'; }).join('') + '</div>'
       : '<p class="lc-empty">아직 좋아요 한 기물이 없어요. 사진 왼쪽 위 말풍선을 눌러 보세요.</p>';
     html += '<p class="lc-note">벗의 좋아요는 이 기기에만 담겨요.</p>';
@@ -469,8 +470,6 @@
     load();
     window.addEventListener('storage', function (e) { if (e.key === K_LIKES || e.key === K_PEND || e.key === K_WHO || e.key === K_FAM) { likes = ls.json(K_LIKES, []); pend = ls.json(K_PEND, []); paintAll(); } });
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') load(); });
-    // 처음 들어온 기기: 첫 화면에서 한 번 물어본다 (한 번 고르면 다시 묻지 않음)
-    var home = /(^|\/)(index\.html)?$/.test(location.pathname);
     /* 처음 들어온 사람에게 「누구세요?」를 먼저 묻지 않는다 — 별을 달거나 글을 쓰려 할 때, 또는 오른쪽 아래 별 단추를 누를 때 묻는다 */
   }
   window.MOKGAGU_LIKES = { ask: ask, me: me, state: state, open: openCol, reload: load, post: post, nextClass: nextClass, importAsks: syncAsk, isAsk: isAsk, syncAsk: syncAsk, classDays: classDays, today: kstToday, star: star, fam: fam };

@@ -30,11 +30,6 @@ button{font:inherit}
   function raw(id){
     var el = document.getElementById('ds-' + id);
     if (el) return JSON.parse(el.textContent);
-    if (/^photos_hi_\d+$/.test(id)) {
-      if (!pending[id]) { pending[id] = 1; var s = document.createElement('script'); s.src = 'seokjo_' + id + '.js';
-        s.onerror = function(){ pending[id] = 'error'; fire(); }; document.head.appendChild(s); }
-      return undefined;
-    }
     return undefined;
   }
   function get(id){
@@ -383,7 +378,6 @@ dash.calc('compare', {
 
   let photoRows = null, photoMap = new Map();
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
-  const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / CHUNK);
   const EXTRA = {"S002": 2, "S003": 1, "S008": 1, "S009": 1, "S010": 1, "S011": 1, "S012": 1, "S013": 1, "S014": 1, "S015": 1, "S016": 1, "S017": 1, "S018": 2, "S019": 1, "S020": 1, "S022": 1, "S023": 1, "S024": 1, "S027": 1, "S028": 1, "S029": 1, "S030": 1, "S031": 1, "S032": 1, "S033": 1, "S035": 1, "S036": 1, "S038": 1, "S040": 2, "S041": 1, "S044": 1, "S045": 1, "S046": 1, "S049": 1, "S052": 1, "S054": 2, "S056": 1, "S057": 1, "S058": 1, "S059": 1, "S061": 2, "S063": 1, "S067": 1, "S068": 1, "S070": 1, "S071": 1, "S073": 1, "S074": 1, "S075": 1, "S076": 1, "S077": 1, "S084": 2, "S085": 1, "S086": 1, "S088": 1, "S089": 1, "S090": 1, "S091": 1, "S092": 1, "S093": 1, "S095": 1, "S096": 1, "S097": 2, "S098": 2, "S099": 1, "S100": 1, "S103": 1, "S104": 1, "S105": 1, "S107": 1, "S108": 2, "S109": 1, "S110": 1, "S114": 1, "S116": 1, "S117": 2, "S118": 1, "S121": 1, "S124": 2, "S126": 1, "S127": 1, "S128": 2, "S129": 2, "S130": 1, "S131": 1, "S132": 1, "S133": 1, "S135": 1, "S136": 1, "S142": 1, "S143": 1, "S145": 1, "S146": 1};
   const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/seokjo/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
@@ -399,7 +393,6 @@ dash.calc('compare', {
   };
   function showDetail() {
     const r = itemMap().get(dlgList[dlgIdx]); if (!r) return; document.getElementById('dlg').dataset.cid = 'seokjo/' + r.id;
-    document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.no);
     const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id); im.dataset.fb = photo(r.id) || '';
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
     { const fig = document.getElementById('dlg-big'), i2 = document.getElementById('dlg-img2');

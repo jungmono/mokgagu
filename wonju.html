@@ -30,11 +30,6 @@ button{font:inherit}
   function raw(id){
     var el = document.getElementById('ds-' + id);
     if (el) return JSON.parse(el.textContent);
-    if (/^photos_hi_\d+$/.test(id)) {
-      if (!pending[id]) { pending[id] = 1; var s = document.createElement('script'); s.src = 'wonju_' + id + '.js';
-        s.onerror = function(){ pending[id] = 'error'; fire(); }; document.head.appendChild(s); }
-      return undefined;
-    }
     return undefined;
   }
   function get(id){
@@ -382,7 +377,6 @@ dash.calc('compare', {
 
   let photoRows = null, photoMap = new Map();
   const photo = (id) => { const p = dash.data('photos'); if (p.status !== 'ok') return null; if (photoRows !== p.data) { photoRows = p.data; photoMap = new Map(p.data.map((r) => [r.id, r.img])); } return photoMap.get(id) || null; };
-  const chunkOf = (no) => 'photos_hi_' + Math.floor((Number(no) - 1) / CHUNK);
   const hiPhoto = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/wonju/' + encodeURIComponent(String(r.id).replace(/[^0-9A-Za-z가-힣_-]/g, '_')) + '.jpg';
   const itemMap = () => { const s = dash.data('items'); return s.status === 'ok' ? new Map(s.data.map((r) => [r.id, r])) : new Map(); };
   const dlg = document.getElementById('dlg');
@@ -397,7 +391,6 @@ dash.calc('compare', {
   };
   function showDetail() {
     const r = itemMap().get(dlgList[dlgIdx]); if (!r) return; document.getElementById('dlg').dataset.cid = 'wonju/' + r.id;
-    document.querySelector('#dlg .lk-dimg').dataset.source = 'photos ' + chunkOf(r.no);
     const im = document.getElementById('dlg-img'), src = hiPhoto(r) || photo(r.id); im.dataset.fb = photo(r.id) || '';
     if (src) { im.src = src; im.alt = r.name; im.hidden = false; } else { im.removeAttribute('src'); im.hidden = true; }
     document.getElementById('dlg-kind').textContent = `${r.kind} · ${r.part}`;
