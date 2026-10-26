@@ -388,6 +388,11 @@ function openSeen() {
   }
   seqFrom = ''; seqLabel = ''; seqBack = (seq && seq.back) || ''; seqNotes = (seq && seq.notes) || null; shown = [r]; openItem(0);
 }
+/* 다른 화면(비례 자 등)에서 열었으면 창을 닫을 때 그 화면으로 돌아간다 */
+$('dlg').addEventListener('close', () => {
+  if (!seqBack) return; const to = seqBack; seqBack = '';
+  if (document.referrer && document.referrer.indexOf(to) >= 0 && history.length > 1) history.back(); else location.href = to;
+});
 window.addEventListener('hashchange', openSeen);
 /* 통계 페이지의 「찾아본 말」에서 넘어오면 그 말로 찾기 */
 (function () { const m = location.hash.match(/^#q=(.+)$/); if (!m) return; const q = document.getElementById('q'); if (!q) return; q.value = decodeURIComponent(m[1]); q.dispatchEvent(new Event('input', { bubbles: true })); history.replaceState(null, '', location.pathname); setTimeout(() => q.scrollIntoView({ block: 'center' }), 100); })();
