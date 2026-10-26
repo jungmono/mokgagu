@@ -44,7 +44,7 @@
     while (netN < 4 && netQ.length) {
       var j = netQ.shift(); netN++;
       (function (j) {
-        fetch(API + '?action=cimg&id=' + encodeURIComponent(j.id) + '&code=' + encodeURIComponent(code()), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(j.ok, j.no).then(function () { netN--; pump(); });
+        fetch(API, { method: 'POST', body: JSON.stringify({ action: 'cimg', id: j.id, code: code() }) }).then(function (r) { return r.json(); }).then(j.ok, j.no).then(function () { netN--; pump(); });
       })(j);
     }
   }

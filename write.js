@@ -158,7 +158,7 @@
       if (AUD[id]) return; if (btn.disabled) return; btn.disabled = true; btn.textContent = '드라이브에서 받는 중…';
       var parts = [];
       function get(i) {
-        return fetch(API + '?action=aget&code=' + encodeURIComponent(code()) + '&id=' + encodeURIComponent(id) + '&i=' + i, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+        return fetch(API, { method: 'POST', body: JSON.stringify({ action: 'aget', code: code(), id: id, i: i }) }).then(function (r) { return r.json(); }).then(function (j) {
           if (!j || !j.ok) throw j || {};
           parts.push(b64bytes(j.data)); if (j.type) mime = j.type;
           if (j.n > 1) btn.textContent = '받는 중 ' + Math.round((i + 1) / j.n * 100) + '%';
@@ -185,7 +185,7 @@
       if (had === 'wr-body') { var nb = el.querySelector('#wr-body'); if (nb) { nb.focus(); nb.setSelectionRange(pos, pos); } }
     }
     function load() {
-      fetch(API + '?action=wlist&code=' + encodeURIComponent(code()), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      fetch(API, { method: 'POST', body: JSON.stringify({ action: 'wlist', code: code() }) }).then(function (r) { return r.json(); }).then(function (j) {
         if (!j || !j.ok) { loaded = true; draw(); if (j && j.err === 'code') toast('가족 암호가 맞지 않아요'); return; }
         LIST = j.list; loaded = true; ls.set(K_CACHE, JSON.stringify(LIST));
         if (!(ED && document.activeElement && /^wr-(title|body)$/.test(document.activeElement.id))) draw();

@@ -80,7 +80,7 @@
   const ls = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const code = () => ls('mokgagu_cm_code') || ls('mokgagu_study_pw');
   const who = () => ls('mokgagu_write_who') || (ls('mokgagu_cm_who') === '힌' ? '힌' : '거믄');
-  const get = (a) => fetch(API + '?action=' + a + '&code=' + encodeURIComponent(code()), { cache: 'no-store' }).then((r) => r.json());
+  const get = (a) => fetch(API, { method: 'POST', body: JSON.stringify({ action: a, code: code() }) }).then((r) => r.json());
   const post = (o) => fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ code: code() }, o)) }).then((r) => r.json());
 
   /* 반닫이(궤)여지도에 넣는 것: 반닫이, 그리고 이름이 궤·장·함으로 끝나는 것(김해궤→김해, 전주장→전주) */

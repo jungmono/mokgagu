@@ -52,7 +52,7 @@
 
   function load() {
     if (!fam()) return Promise.resolve();
-    return fetch(API + '?action=likes&code=' + encodeURIComponent(ls.get(K_CODE, '')), { cache: 'no-store' })
+    return fetch(API, { method: 'POST', body: JSON.stringify({ action: 'likes', code: ls.get(K_CODE, '') }) })
       .then(function (r) { return r.json(); })
       .then(function (j) { var good = j && j.ok && Array.isArray(j.list) && j.list.every(function (x) { return x && x.who && !('text' in x); });
         if (good) { serverOk = true; likes = j.list; save(); flush(); } else serverOk = false; paintAll(); })
@@ -363,7 +363,7 @@
         var v = (code.value || '').trim(); if (!v) { err.textContent = '가족 암호를 넣어 주세요.'; code.focus(); return; }
         go.disabled = true; err.textContent = '확인하는 중…';
         var C = window.MOKGAGU_COMMENTS;
-        var c = C && C.login ? C.login(v) : fetch(API + '?action=list&code=' + encodeURIComponent(v)).then(function (r) { return r.json(); }).then(function (j) { if (j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); } return !!j.fam; });
+        var c = C && C.login ? C.login(v) : fetch(API, { method: 'POST', body: JSON.stringify({ action: 'list', code: v }) }).then(function (r) { return r.json(); }).then(function (j) { if (j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); } return !!j.fam; });
         c.then(function (ok) { go.disabled = false; if (ok && fam()) { err.textContent = ''; pick(want); } else { err.textContent = '가족 암호가 맞지 않아요. 가족이 아니면 「벗」을 골라 주세요.'; code.select(); } })
           .catch(function () { go.disabled = false; err.textContent = '인터넷 연결을 확인해 주세요.'; });
       };

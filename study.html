@@ -139,7 +139,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   var TALK = (function () { try { return JSON.parse(localStorage.getItem(K_TALK) || 'null'); } catch (e) { return null; } })();
   function loadTalk() {
     var code = ls.get(K_CODE) || ls.get(K_STUDY); if (!code) return;
-    fetch(API + '?action=stats&code=' + encodeURIComponent(code), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    fetch(API, { method: 'POST', body: JSON.stringify({ action: 'stats', code: code }) }).then(function (r) { return r.json(); }).then(function (j) {
       if (!j || !j.ok) return;
       var t = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
       var L = (j.questions || []).filter(function (q) { return q.cls && q.cls <= t && (q.ans || q.done || String(q.id).indexOf('memo_') === 0); })

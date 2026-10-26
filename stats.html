@@ -277,7 +277,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     var go = function () {
       var v = document.getElementById('lk-code').value.trim(); if (!v) return;
       document.getElementById('lk-go').disabled = true;
-      fetch(API + '?action=list&code=' + encodeURIComponent(v)).then(function (r) { return r.json(); }).then(function (j) {
+      fetch(API, { method: 'POST', body: JSON.stringify({ action: 'list', code: v }) }).then(function (r) { return r.json(); }).then(function (j) {
         if (j && j.fam) { ls.set(K_CODE, v); ls.set(K_FAM, '1'); if (window.MOKGAGU_COMMENTS) window.MOKGAGU_COMMENTS.reload(); load(); }
         else lock('가족 암호가 맞지 않아요.');
       }).catch(function () { lock('인터넷 연결을 확인해 주세요.'); });
@@ -308,7 +308,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       var sp = ls.get(K_STUDY);
       if (sp && !load._tried) {
         load._tried = 1; app.innerHTML = '<p class="loading">확인 중…</p>';
-        fetch(API + '?action=list&code=' + encodeURIComponent(sp)).then(function (r) { return r.json(); }).then(function (j) {
+        fetch(API, { method: 'POST', body: JSON.stringify({ action: 'list', code: sp }) }).then(function (r) { return r.json(); }).then(function (j) {
           if (j && j.fam) { ls.set(K_CODE, sp); ls.set(K_FAM, '1'); load(); } else lock();
         }).catch(function () { lock('인터넷 연결을 확인해 주세요.'); });
         return;
@@ -316,7 +316,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       lock(); return;
     }
     if (!D) { var c = ls.json(K_CACHE); if (c && c.ok) { setD(c); draw(); } else app.innerHTML = '<p class="loading">불러오는 중…</p>'; }
-    fetch(API + '?action=stats&code=' + encodeURIComponent(ls.get(K_CODE)), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    fetch(API, { method: 'POST', body: JSON.stringify({ action: 'stats', code: ls.get(K_CODE) }) }).then(function (r) { return r.json(); }).then(function (j) {
       if (!j || !j.ok) {
         if (j && j.err === 'code') { ls.set(K_FAM, ''); lock('가족 암호를 다시 넣어 주세요.'); return; }
         if (!D) app.innerHTML = '<p class="loading">통계를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.</p>'; return;

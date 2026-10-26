@@ -31,7 +31,7 @@
   }
   function load() {
     if (fam()) {
-      fetch(API + '?action=cmplist&code=' + encodeURIComponent(code()), { cache: 'no-store' }).then(function (r) { return r.json(); })
+      fetch(API, { method: 'POST', body: JSON.stringify({ action: 'cmplist', code: code() }) }).then(function (r) { return r.json(); })
         .then(function (j) { items = (j && j.ok) ? j.list : lh(); paintList(); }).catch(function () { items = lh(); paintList(); });
     } else { items = lh().sort(function (a, b) { return a.time < b.time ? 1 : -1; }); paintList(); }
   }

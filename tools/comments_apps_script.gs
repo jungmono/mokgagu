@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v16: 가족 암호가 필요한 읽기(list·likes·stats·wlist·rlist·cmplist·clist·cimg·aget)를 doPost 본문({action, code, …})으로도 받는다. 사이트는 POST만 쓰고, 옛 GET 경로는 전환이 끝난 뒤 닫는다. 재배포 필요.
  * v15: 저장한 비교 — doGet action=cmplist(가족만), doPost cmpsave·cmpdel. 시트 '비교저장' 탭. 재배포 때 비교저장준비() 한 번 실행 권장.
  * v14: 수업 녹음을 드라이브 '조선의 목가구 수업 녹음' 폴더(비공개)에 저장 — doPost aup(3MB씩 나눠 올림), doGet aget(나눠 받아 재생). 「쓰기」 탭에 audio 열.
  *      처음 한 번 녹음준비() 를 실행해 권한(외부 요청)을 허락한다.
@@ -74,7 +75,11 @@ function find_(sh, id) {
 }
 
 function doGet(e) {
-  const p = (e && e.parameter) || {};
+  return read_((e && e.parameter) || {});
+}
+// 읽기 동작 본체. 가족 암호가 필요한 읽기는 POST 본문으로도 받는다(주소에 암호가 남지 않게) — doPost 참고.
+const READ_POST_ = ['list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
+function read_(p) {
   const fam = isFam_(p.code);
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
   if (p.action === 'likes') return likesGet_(fam);
@@ -92,6 +97,7 @@ function doGet(e) {
 function doPost(e) {
   let d = {};
   try { d = JSON.parse(e.postData.contents); } catch (x) { return out_({ ok: false, err: 'json' }); }
+  if (READ_POST_.indexOf(d.action) >= 0) return read_(d);   // 읽기는 잠그지 않는다
   const fam = isFam_(d.code);
   if (d.action === 'aup') return auPost_(d, fam);   // 녹음 올리기는 시간이 걸려 다른 일을 막지 않게 잠그지 않는다
   const lock = LockService.getScriptLock(); lock.waitLock(10000);

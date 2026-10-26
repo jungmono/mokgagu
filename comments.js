@@ -39,7 +39,7 @@
   function apiGet() {
     var code = ls.get(K_CODE, '');
     state.loading = true; paint();
-    return fetch(API + '?action=list' + (code ? '&code=' + encodeURIComponent(code) : ''), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    return (code ? fetch(API, { method: 'POST', body: JSON.stringify({ action: 'list', code: code }) }) : fetch(API + '?action=list', { cache: 'no-store' })).then(function (r) { return r.json(); }).then(function (j) {
       state.loading = false;
       if (!j.ok) { state.err = '코멘트를 불러오지 못했어요.'; return; }
       fam = !!j.fam; ls.set(K_FAM, fam ? '1' : '');

@@ -252,8 +252,8 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
 
   /* ── 시트와 주고받기 ── */
   function apiGet(params) {
-    var u = API + '?' + Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&') + '&code=' + encodeURIComponent(PW);
-    return fetch(u, { cache: 'no-store' }).then(function (r) { return r.json(); });
+    var b = {}; Object.keys(params).forEach(function (k) { b[k] = params[k]; }); b.code = PW;   // 암호는 주소가 아니라 본문으로
+    return fetch(API, { method: 'POST', body: JSON.stringify(b) }).then(function (r) { return r.json(); });
   }
   function apiPost(body) { body.code = PW; return fetch(API, { method: 'POST', body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
 
