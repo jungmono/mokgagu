@@ -219,7 +219,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   }
   function lockView(msg) {
     app.innerHTML = '<div class="lock"><div class="ic"><img src="mark_angwe.png" alt="안궤"></div><h2>가족 암호를 넣어 주세요</h2><p>거믄과 힌의 소장품 도록이에요.<br>암호로 잠가 두어 가족만 볼 수 있어요.</p>' +
-      '<form id="f"><input id="pw" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" maxlength="20" aria-label="가족 암호" autofocus>' +
+      '<form id="f"><input id="pw" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" maxlength="64" aria-label="가족 암호" autofocus>' +
       '<label><input type="checkbox" id="rem" checked> 이 기기에서 기억하기</label><button class="go" id="go">열기</button><div class="err" id="err">' + esc(msg || '') + '</div></form></div>';
     $('f').addEventListener('submit', function (e) {
       e.preventDefault(); var pw = $('pw').value.trim(); if (!pw) return;

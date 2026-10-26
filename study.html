@@ -189,7 +189,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   }
   function lockView(msg) {
     app.innerHTML = '<div class="lock"><div class="ic">🔒</div><h2>가족 암호를 넣어 주세요</h2><p>거믄과 힌의 수업 노트가 들어 있는 공부방이에요.<br>내용은 암호로 잠가 두어 암호 없이는 열리지 않아요.</p>' +
-      '<form id="f"><input id="pw" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" maxlength="20" aria-label="가족 암호" autofocus>' +
+      '<form id="f"><input id="pw" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" maxlength="64" aria-label="가족 암호" autofocus>' +
       '<label><input type="checkbox" id="rem" checked> 이 기기에서 기억하기</label><button id="go">열기</button><div class="err" id="err">' + esc(msg || '') + '</div></form></div>';
     document.getElementById('f').addEventListener('submit', function (e) {
       e.preventDefault(); var pw = document.getElementById('pw').value.trim(); if (!pw) return;
