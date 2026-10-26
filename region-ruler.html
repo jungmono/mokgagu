@@ -61,20 +61,42 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
   const regs = Object.keys(COL).filter((g) => P.filter((p) => p.g === g).length >= 5);
   const med = (a) => { a = a.slice().sort((x, y) => x - y); const n = a.length; return n ? (n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2) : 0; };
   const qs = (a, q) => { a = a.slice().sort((x, y) => x - y); return a[Math.floor((a.length - 1) * q)]; };
-  const X0 = 50, X1 = 130, Y0 = 30, Y1 = 100, W = 700, L = 44, B = 34, T = 10, R = 10, PPC = (W - L - R) / (X1 - X0), H = Math.round(T + B + (Y1 - Y0) * PPC);   /* 가로·세로 1cm 가 같은 길이가 되게 */
-  const sx = (v) => L + (v - X0) / (X1 - X0) * (W - L - R), sy = (v) => H - B - (v - Y0) * PPC;
+  /* 부채꼴 그래프: 가로·세로 모두 0에서 시작, 1cm 같은 길이
+     - 0에서 뻗는 직선 = 같은 비율(가로:세로)  - 0을 중심으로 한 호 = 같은 크기(0에서 앞면 모서리까지 거리) */
+  const XM = 140, YM = 100, W = 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
+  const sx = (v) => L + v * S, sy = (v) => H - B - v * S;
   const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양반닫이 (compare.js 의 기준과 같은 값) */
+  const RAYS = [1, 1.25, 1.5, 1.75, 2];   /* 가로:세로 */
+  const PS = P.filter((p) => regs.includes(p.g));
+  const DG = PS.map((p) => Math.hypot(p.w, p.h)).sort((x, y) => x - y), R1 = Math.round(qs(DG, 1 / 3)), R2 = Math.round(qs(DG, 2 / 3));   /* 크기 경계: 자료를 셋으로 나눈 값 */
+  const sizeOf = (w, h) => { const d = Math.hypot(w, h); return d < R1 ? '소' : d < R2 ? '중' : '대'; };
+  const bandOf = (w, h) => { const k = w / h; let i = 0; while (i < RAYS.length && k >= RAYS[i]) i++; return [i ? RAYS[i - 1] : 0, i < RAYS.length ? RAYS[i] : Infinity]; };
+  const bandTxt = ([k1, k2]) => !k1 ? `${RAYS[0]} : 1 보다 높음` : k2 === Infinity ? `${k1} : 1 보다 납작함` : `${k1} : 1 ~ ${k2} : 1`;
+  const pt = (r, a) => `${sx(r * Math.cos(a)).toFixed(1)} ${sy(r * Math.sin(a)).toFixed(1)}`;
+  function cell(w, h) {   /* (w,h)가 들어 있는 부채꼴 칸 */
+    const d = Math.hypot(w, h), [k1, k2] = bandOf(w, h);
+    const r1 = d < R1 ? 0 : d < R2 ? R1 : R2, r2 = d < R1 ? R1 : d < R2 ? R2 : Math.hypot(XM, YM);
+    const a1 = k1 ? Math.atan(1 / k1) : Math.PI / 2, a2 = k2 === Infinity ? 0 : Math.atan(1 / k2);
+    return `<path d="M ${pt(r1, a1)} L ${pt(r2, a1)} A ${r2 * S} ${r2 * S} 0 0 1 ${pt(r2, a2)} L ${pt(r1, a2)}${r1 ? ` A ${r1 * S} ${r1 * S} 0 0 0 ${pt(r1, a1)}` : ''} Z" fill="#f2c94c" fill-opacity=".4" stroke="#b8892a"/>`;
+  }
   function draw() {
     const iw = parseFloat($('w').value), ih = parseFloat($('h').value), own = iw > 0 && ih > 0;
     const w = own ? iw : REFM.w, h = own ? ih : REFM.h, ok = true;
-    let s = `<svg id="svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="지역별 가로·세로 분포">`;
-    for (let v = 60; v <= 120; v += 10) s += `<line x1="${sx(v)}" y1="${T}" x2="${sx(v)}" y2="${H - B}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${sx(v)}" y="${H - 12}" text-anchor="middle" font-size="13" fill="#6d6551">${v}</text>`);
-    for (let v = 40; v <= 100; v += 10) s += `<line x1="${L}" y1="${sy(v)}" x2="${W - R}" y2="${sy(v)}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="13" fill="#6d6551">${v}</text>`);
-    s += `<text x="${W - R}" y="${H - 1}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T + 8}" font-size="12" fill="#8a7f66">세로 cm</text>`;
-    P.filter((p) => regs.includes(p.g)).forEach((p) => { s += `<circle cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".55"/>`; });
-    s += `<circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/><text x="${sx(REFM.w) + 12}" y="${sy(REFM.h) - 8}" font-size="13" font-weight="700" fill="#d12b2b">우리 언양반닫이</text>`;
-    if (own) s += `<g><line x1="${sx(w)}" y1="${T}" x2="${sx(w)}" y2="${H - B}" stroke="#111" stroke-dasharray="4 4"/><line x1="${L}" y1="${sy(h)}" x2="${W - R}" y2="${sy(h)}" stroke="#111" stroke-dasharray="4 4"/><circle cx="${sx(w)}" cy="${sy(h)}" r="9" fill="#fff" stroke="#111" stroke-width="3"/></g>`;
+    let s = `<svg id="svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="지역별 반닫이 크기와 비율 부채꼴 그래프"><defs><clipPath id="pl"><rect x="${L}" y="${T}" width="${XM * S}" height="${YM * S}"/></clipPath></defs>`;
+    for (let v = 0; v <= XM; v += 10) s += `<line x1="${sx(v)}" y1="${sy(0)}" x2="${sx(v)}" y2="${sy(YM)}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${sx(v)}" y="${H - 16}" text-anchor="middle" font-size="12" fill="#6d6551">${v}</text>`);
+    for (let v = 0; v <= YM; v += 10) s += `<line x1="${sx(0)}" y1="${sy(v)}" x2="${sx(XM)}" y2="${sy(v)}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="12" fill="#6d6551">${v}</text>`);
+    s += `<text x="${W - R}" y="${H - 2}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T - 14}" font-size="12" fill="#8a7f66">세로 cm</text>`;
+    s += `<g clip-path="url(#pl)">${cell(w, h)}`;
+    [[R1, '소 | 중'], [R2, '중 | 대']].forEach(([r, t]) => { const x0 = r > YM ? Math.sqrt(r * r - YM * YM) : 0; s += `<path d="M ${sx(x0)} ${sy(Math.min(r, YM))} A ${r * S} ${r * S} 0 0 1 ${sx(r)} ${sy(0)}" fill="none" stroke="#8a5a2b" stroke-width="2" stroke-dasharray="7 5"/><text x="${sx(r) + 5}" y="${sy(4)}" font-size="13" font-weight="700" fill="#8a5a2b">${t}</text>`; });
+    s += `<rect x="${sx(0)}" y="${sy(REFM.h)}" width="${REFM.w * S}" height="${REFM.h * S}" fill="#d12b2b" fill-opacity=".06" stroke="#d12b2b" stroke-width="1.5"/>`;
+    if (own) s += `<rect x="${sx(0)}" y="${sy(h)}" width="${w * S}" height="${h * S}" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+    s += '</g>';
+    RAYS.forEach((k) => { const x = Math.min(XM, YM * k), y = x / k, top = x < XM; s += `<line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(x)}" y2="${sy(y)}" stroke="#555" stroke-width="1.2"/><text x="${sx(x)}" y="${sy(y) - (top ? 8 : 6)}" text-anchor="${top ? 'middle' : 'end'}" font-size="13" font-weight="700" fill="#333">${k} : 1</text>`; });
+    PS.forEach((p) => { s += `<circle cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".6"><title>${p.g} · ${esc(p.r.name)} ${p.w}×${p.h}</title></circle>`; });
+    s += `<text x="${sx(REFM.w / 2)}" y="${sy(REFM.h / 2)}" text-anchor="middle" font-size="13" fill="#d12b2b">우리 언양반닫이 앞면 (${REFM.w} × ${REFM.h})</text><circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/>`;
+    if (own) s += `<circle cx="${sx(Math.min(w, XM))}" cy="${sy(Math.min(h, YM))}" r="9" fill="#fff" stroke="#111" stroke-width="3"/>`;
     s += '</svg><div class="leg">' + regs.map((g) => `<span><i style="background:${COL[g]}"></i>${g} ${P.filter((p) => p.g === g).length}</span>`).join('') + '</div>';
+    s += `<p class="sub" style="margin:6px 0 0;font-size:13px;line-height:1.6;text-align:left">점 하나는 반닫이 앞면의 오른쪽 위 모서리입니다. 0에서 뻗은 <b>직선</b> 위의 반닫이는 크기가 달라도 생김새(가로 : 세로)가 같고 아래쪽 직선일수록 납작합니다. <b>점선 호</b>는 0에서 모서리까지 거리가 같은 선으로 바깥일수록 큽니다(경계 ${R1}cm · ${R2}cm, 자료를 셋으로 나눈 값). <b>노란 칸</b>은 ${own ? '넣은 치수' : '우리 언양반닫이'}가 들어 있는 칸 — <b>${sizeOf(w, h)} 크기 · ${bandTxt(bandOf(w, h))}</b></p>`;
     let v = '';
     if (ok) {
       const ratio = w / h, K = 15;   /* 가로:세로 = ratio : 1 */
