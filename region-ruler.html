@@ -1,0 +1,93 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>비례 자 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
+main{max-width:760px;margin:0 auto;padding:16px 16px 60px}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacing:-.04em;text-align:center}
+.sub{text-align:center;color:#6d6551;margin:0 0 16px;font-size:15px}
+.top{display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:14px;font-weight:700}
+.card{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px;margin-bottom:14px}
+.in{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.in label{font-size:14px;font-weight:700;display:block}
+.in input{width:100%;font:inherit;font-size:18px;padding:10px 12px;border:1.5px solid #d8c9a3;border-radius:10px;margin-top:4px;background:#fff}
+.hint{font-size:12.5px;color:#8a7f66;margin:8px 0 0}
+#svg{width:100%;height:auto;display:block}
+.leg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;margin:8px 0 0}.leg span{display:inline-flex;align-items:center;gap:5px}.leg i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.verdict{font-size:16px;line-height:1.7}.verdict b{font-weight:900}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;border-bottom:1px solid #efe6cf;text-align:center}th{font-size:12.5px;color:#6d6551}td:first-child,th:first-child{text-align:left}
+.near{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.near a{display:block;text-decoration:none;color:inherit;border:1px solid #e3d6b8;border-radius:10px;overflow:hidden;background:#fff}
+.near img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;display:block}
+.near small{display:block;padding:5px 7px;font-size:12px;line-height:1.4;color:#4a4130}
+.note{font-size:12.5px;color:#8a7f66;line-height:1.6;text-align:center}
+@media(max-width:520px){.near{grid-template-columns:repeat(2,1fr)}}
+</style>
+<script src="common.js?v=8" defer></script></head><body><main>
+<h1>비례 자</h1>
+<p class="sub">반닫이의 가로·높이를 재어 넣으면, 도록에 실린 지역별 반닫이 가운데 어느 쪽과 닮았는지 보여줘요.</p>
+<div class="top"><a href="index.html">처음으로</a><a href="bandaji-map.html">반닫이여지도</a><a href="region-quiz.html">지역 퀴즈</a></div>
+<div class="card"><div class="in">
+<label>가로 (cm)<input id="w" type="number" inputmode="decimal" placeholder="예: 94" min="30" max="160"></label>
+<label>높이 (cm)<input id="h" type="number" inputmode="decimal" placeholder="예: 73" min="20" max="160"></label></div>
+<p class="hint">뚜껑까지 잰 전체 크기예요. 입력하면 바로 아래에 나타나요.</p></div>
+<div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
+<p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
+</main>
+<script src="search.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
+  const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기' };
+  const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
+  /* 치수 글자 → 가로·높이. 이름표(가로·높이)가 있으면 그대로, 없으면 ×로 이은 세 수 중 앞 둘의 큰 쪽이 가로, 마지막이 높이 */
+  function dims(s) {
+    s = String(s || ''); let w, h;
+    const g = (k) => { const m = s.match(new RegExp(k + '\\s*([0-9]+(?:\\.[0-9]+)?)')); return m ? +m[1] : null; };
+    if (/가로/.test(s) && /높이/.test(s)) { w = g('가로'); h = g('높이'); }
+    else if (/높이/.test(s) && /×/.test(s)) { h = g('높이'); const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
+    else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { w = Math.max(+m[1], +m[2]); h = +m[3]; } }
+    return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 140 ? { w, h } : null;
+  }
+  const P = [];
+  (window.SEARCH || []).forEach((r) => {
+    if (!/반닫이/.test((r.name || '') + (r.hanja || ''))) return;
+    const g = regOf(r), d = dims(r.size); if (g && d) P.push(Object.assign({ g, r }, d));
+  });
+  const COL = { 경상: '#c0532b', 전라: '#2f7d5b', 충청: '#7a5aa6', 강원: '#2b6cb0', 경기: '#b8892a', 평안: '#3b3b3b', 제주: '#d0508a', 황해: '#6b8e23', 함경: '#008b8b' };
+  const regs = Object.keys(COL).filter((g) => P.filter((p) => p.g === g).length >= 5);
+  const med = (a) => { a = a.slice().sort((x, y) => x - y); const n = a.length; return n ? (n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2) : 0; };
+  const qs = (a, q) => { a = a.slice().sort((x, y) => x - y); return a[Math.floor((a.length - 1) * q)]; };
+  const X0 = 50, X1 = 130, Y0 = 30, Y1 = 130, W = 700, H = 420, L = 44, B = 34, T = 10, R = 10;
+  const sx = (v) => L + (v - X0) / (X1 - X0) * (W - L - R), sy = (v) => H - B - (v - Y0) / (Y1 - Y0) * (H - B - T);
+  function draw() {
+    const w = parseFloat($('w').value), h = parseFloat($('h').value), ok = w > 0 && h > 0;
+    let s = `<svg id="svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="지역별 가로·높이 분포">`;
+    for (let v = 60; v <= 120; v += 20) s += `<line x1="${sx(v)}" y1="${T}" x2="${sx(v)}" y2="${H - B}" stroke="#efe6cf"/><text x="${sx(v)}" y="${H - 12}" text-anchor="middle" font-size="13" fill="#6d6551">${v}</text>`;
+    for (let v = 40; v <= 120; v += 20) s += `<line x1="${L}" y1="${sy(v)}" x2="${W - R}" y2="${sy(v)}" stroke="#efe6cf"/><text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="13" fill="#6d6551">${v}</text>`;
+    s += `<text x="${W - R}" y="${H - 1}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T + 8}" font-size="12" fill="#8a7f66">높이 cm</text>`;
+    P.filter((p) => regs.includes(p.g)).forEach((p) => { s += `<circle cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".55"/>`; });
+    if (ok) s += `<g><line x1="${sx(w)}" y1="${T}" x2="${sx(w)}" y2="${H - B}" stroke="#111" stroke-dasharray="4 4"/><line x1="${L}" y1="${sy(h)}" x2="${W - R}" y2="${sy(h)}" stroke="#111" stroke-dasharray="4 4"/><circle cx="${sx(w)}" cy="${sy(h)}" r="9" fill="#fff" stroke="#111" stroke-width="3"/></g>`;
+    s += '</svg><div class="leg">' + regs.map((g) => `<span><i style="background:${COL[g]}"></i>${g} ${P.filter((p) => p.g === g).length}</span>`).join('') + '</div>';
+    let v = '';
+    if (ok) {
+      const ratio = h / w, K = 15;
+      const near = P.map((p) => ({ p, d: Math.hypot((p.w - w) / 100, (p.h - h) / 100) })).sort((a, b) => a.d - b.d);
+      const top = near.slice(0, K), cnt = {}; top.forEach((x) => (cnt[x.p.g] = (cnt[x.p.g] || 0) + 1));
+      const ord = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+      v = `<div class="card verdict">높이:가로 = <b>${ratio.toFixed(2)}</b> (가로를 1로 보면 높이 ${ratio.toFixed(2)})<br>크기가 가장 비슷한 ${K}점 가운데 <b>${ord.map(([g, n]) => g + ' ' + n).join(' · ')}</b></div>`;
+      v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>높이 중앙값</th><th>높이:가로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.h / p.w); return `<tr${cnt[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
+      v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">` + near.slice(0, 6).map(({ p }) => { const r = p.r; return `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt=""><small><b>${p.g}</b> · ${p.w}×${p.h}<br>${esc(r.name)}</small></a>`; }).join('') + `</div></div>`;
+    }
+    $('out').innerHTML = `<div class="card">${s}</div>` + v;
+  }
+  if (!P.length) { $('out').innerHTML = '<div class="card">치수가 적힌 반닫이를 찾지 못했어요.</div>'; return; }
+  ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
+  const q = new URLSearchParams(location.search); if (q.get('w')) $('w').value = q.get('w'); if (q.get('h')) $('h').value = q.get('h');
+  draw(); window.__P = P.length;
+})();
+</script></body></html>
