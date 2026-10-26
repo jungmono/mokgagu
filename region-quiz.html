@@ -29,7 +29,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
 <p class="sub">사진만 보고 지역을 맞혀 보세요. 정답은 도록에 적힌 이름 기준이에요.</p>
 <div class="top"><a href="index.html">처음으로</a><a href="bandaji-map.html">반닫이여지도</a><a href="jangseok-find.html">장석으로 지역 찾기</a></div>
 <div class="card" id="box"><p style="text-align:center;color:#6d6551">문제를 준비하는 중…</p></div>
-<p class="note">사진은 우리 도록에 저장된 작은 사진이에요. 이름에 지역이 적힌 반닫이만 문제로 나와요.</p>
+<p class="note">사진은 도록 원본 사진을 불러오며, 안 되면 작은 사진으로 바꿔요. 이름에 지역이 적힌 반닫이만 문제로 나와요.</p>
 </main>
 <script src="search.js"></script>
 <script>
@@ -45,6 +45,9 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
   const usable = pool.filter((r) => regs.includes(regOf(r)));
+  const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';   /* 큰 원본(저장소 mokgagu-photos), 안 되면 작은 사진 */
+  /* 다음 문제 사진을 미리 받아 둔다 */
+  const warm = (r) => { if (r) { const m = new Image(); m.src = hi(r); } };
   let Q = [], i = 0, score = 0, wrong = [];
   function start() {
     if (usable.length < ROUND || regs.length < 4) { box.innerHTML = '<p style="text-align:center">문제를 만들 사진이 아직 부족해요.</p>'; return; }
@@ -54,10 +57,10 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
     Q = shuffle(Q); i = 0; score = 0; wrong = []; show();
   }
   function show() {
-    const r = Q[i], ans = regOf(r);
+    const r = Q[i], ans = regOf(r); warm(Q[i + 1]);
     const others = shuffle(regs.filter((g) => g !== ans)).slice(0, 3), opts = shuffle([ans].concat(others));
     box.innerHTML = `<div class="prog"><span>${i + 1} / ${ROUND}</span><span>맞힌 것 ${score}</span></div>
-      <div class="ph"><img src="thumbs/${r.b}/${r.n}.jpg" alt="어느 지역 반닫이일까요?"></div>
+      <div class="ph"><img src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt="어느 지역 반닫이일까요?"></div>
       <div class="opts">${opts.map((o) => `<button type="button" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div><div id="fb"></div>`;
     box.querySelector('.opts').onclick = (e) => {
       const b = e.target.closest('button'); if (!b || b.disabled) return;
