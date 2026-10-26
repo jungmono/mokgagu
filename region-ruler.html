@@ -24,6 +24,30 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .near small{display:block;padding:5px 7px;font-size:12px;line-height:1.4;color:#4a4130}
 .note{font-size:12.5px;color:#8a7f66;line-height:1.6;text-align:center}
 @media(max-width:520px){.near{grid-template-columns:repeat(2,1fr)}}
+/* 구간 색인 */
+.bx-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.bx-h small{color:#8a7f66;font-size:12.5px}
+.bx-wrap{overflow-x:auto;margin-top:8px}
+.bx{border-collapse:separate;border-spacing:4px;margin:0 auto;font-size:13px}
+.bx th,.bx td{padding:0}
+.bx button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid #e3d6b8;background:#fff;color:#2b2418;min-width:58px;min-height:40px;padding:4px 6px;width:100%}
+.bx button:hover{border-color:#8a7f66}
+.bx button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}
+.bx .rh button{background:#f4ecd8;font-weight:700;writing-mode:vertical-rl;min-width:40px;min-height:64px;letter-spacing:.02em}
+.bx .ch button{background:#f4ecd8;font-weight:700}
+.bx td button b{display:block;font-size:15px}.bx td button{min-height:48px}
+.bx td button.z{color:#c9bc9c;cursor:default;background:#fbf8f1}
+.bx td button.me{box-shadow:inset 0 0 0 2px #d12b2b}
+.bx .ax{font-size:12px;color:#8a7f66;text-align:center}
+.bx .all button{font-weight:700;background:#fbf6ea}
+.bl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.bl a{display:block;text-decoration:none;color:inherit;border:1px solid #e3d6b8;border-radius:10px;overflow:hidden;background:#fff}
+.bl img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;display:block}
+.bl div{padding:5px 7px;font-size:12.5px;line-height:1.45;color:#4a4130}
+.bl .rg{color:#fff;padding:0 5px;border-radius:4px;font-weight:700}.bl .hv{color:#fff;background:#2b2418;padding:0 5px;border-radius:4px;font-weight:700}
+.bl .sr{color:#8a7f66;font-size:11.5px}
+@media(max-width:520px){.bx{border-spacing:3px;font-size:12px}.bx button{min-width:0;padding:4px 2px}.bx .rh button{min-width:30px}.bx td button b{font-size:14px}.bx .ax{font-size:11px}}
+@media(max-width:720px){.bl{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.bl{grid-template-columns:repeat(2,1fr)}}
+#svg.dim circle.pt{fill-opacity:.12}#svg.dim circle.pt.on{fill-opacity:.95;stroke:#111;stroke-width:1.2}
 </style>
 <script src="common.js?v=8" defer></script></head><body><main>
 <script src="tools-head.js" data-k="ruler"></script>
@@ -79,6 +103,36 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
     const a1 = k1 ? Math.atan(1 / k1) : Math.PI / 2, a2 = k2 === Infinity ? 0 : Math.atan(1 / k2);
     return `<path d="M ${pt(r1, a1)} L ${pt(r2, a1)} A ${r2 * S} ${r2 * S} 0 0 1 ${pt(r2, a2)} L ${pt(r1, a2)}${r1 ? ` A ${r1 * S} ${r1 * S} 0 0 0 ${pt(r1, a1)}` : ''} Z" fill="#f2c94c" fill-opacity=".4" stroke="#b8892a"/>`;
   }
+  /* 구간 색인: 세로 20cm(세로 방향 줄) × 가로 20cm(가로 방향 칸). 구간은 '아래값 초과 ~ 위값 이하' */
+  const HB = [[80, 100], [60, 80], [40, 60], [20, 40]], WB = [[40, 60], [60, 80], [80, 100], [100, 120], [120, 140]];
+  const inB = (v, [a, b]) => v > a && v <= b;
+  let sel = { h: 0, w: -1 };   /* 처음에는 세로 80~100 줄 */
+  function bands(cw, ch) {
+    const box = $('bands'); if (!box) return;
+    const list = PS.filter((p) => (sel.h < 0 || inB(p.h, HB[sel.h])) && (sel.w < 0 || inB(p.w, WB[sel.w])));
+    const cnt = (hi, wi) => PS.filter((p) => (hi < 0 || inB(p.h, HB[hi])) && (wi < 0 || inB(p.w, WB[wi]))).length;
+    const on = (hi, wi) => sel.h === hi && sel.w === wi;
+    const bt = (hi, wi, txt, cls) => { const n = cnt(hi, wi); return `<button type="button" data-h="${hi}" data-w="${wi}" aria-pressed="${on(hi, wi)}"${cls ? ` class="${cls}"` : ''}${n || hi < 0 || wi < 0 ? '' : ' disabled'}>${txt}</button>`; };
+    let t = '<table class="bx"><tr><td class="ax">세로↓<br>가로→</td>' + WB.map(([a, b], wi) => `<th class="ch">${bt(-1, wi, `${a}~${b}`)}</th>`).join('') + `<th class="ch all">${bt(-1, -1, '모두')}</th></tr>`;
+    HB.forEach(([a, b], hi) => {
+      t += `<tr><th class="rh">${bt(hi, -1, `${a}~${b}`)}</th>` + WB.map((wb, wi) => { const n = cnt(hi, wi), me = inB(ch, HB[hi]) && inB(cw, wb); return `<td>${bt(hi, wi, n ? `<b>${n}</b>` : '·', (n ? '' : 'z') + (me ? ' me' : ''))}</td>`; }).join('') + '<td></td></tr>';
+    });
+    t += '</table>';
+    const lab = sel.h < 0 && sel.w < 0 ? '모든 반닫이' : [sel.h >= 0 ? `세로 ${HB[sel.h][0]}~${HB[sel.h][1]}cm` : '', sel.w >= 0 ? `가로 ${WB[sel.w][0]}~${WB[sel.w][1]}cm` : ''].filter(Boolean).join(' · ');
+    const L = list.slice().sort((x, y) => y.h - x.h || x.g.localeCompare(y.g));
+    const keys = L.map((p) => p.r.b + '/' + p.r.pid);
+    const cards = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-band="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div><span class="rg" style="background:${COL[p.g] || '#888'}">${p.g}</span> ${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }).join('');
+    box.innerHTML = `<div class="bx-h"><b>크기 구간으로 보기</b><small>세로 줄·가로 칸을 누르면 그 구간의 반닫이가 나옵니다. 빨간 테두리 칸 = ${$('w').value && $('h').value ? '넣은 치수' : '우리 언양반닫이'}</small></div><div class="bx-wrap">${t}</div><p style="margin:12px 0 0;font-weight:700">${lab} <span style="color:#8a7f66;font-weight:400">${L.length}점</span></p>` + (L.length ? `<div class="bl">${cards}</div>` : '<p class="sub">이 구간에는 반닫이가 없습니다.</p>');
+    box.onclick = (e) => {
+      const b = e.target.closest('button[data-h]'); if (b && !b.disabled) { sel = { h: +b.dataset.h, w: +b.dataset.w }; bands(cw, ch); return; }
+      if (e.target.closest('a[data-band]')) window.__bandKeys = keys.slice();
+    };
+    const svg = $('svg'); if (svg) {
+      const all = sel.h < 0 && sel.w < 0, set = new Set(list.map((p) => PS.indexOf(p)));
+      svg.classList.toggle('dim', !all);
+      svg.querySelectorAll('circle.pt').forEach((c) => c.classList.toggle('on', !all && set.has(+c.dataset.i)));
+    }
+  }
   function draw() {
     const iw = parseFloat($('w').value), ih = parseFloat($('h').value), own = iw > 0 && ih > 0;
     const w = own ? iw : REFM.w, h = own ? ih : REFM.h, ok = true;
@@ -92,7 +146,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
     if (own) s += `<rect x="${sx(0)}" y="${sy(h)}" width="${w * S}" height="${h * S}" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="5 4"/>`;
     s += '</g>';
     RAYS.forEach((k) => { const x = Math.min(XM, YM * k), y = x / k, top = x < XM; s += `<line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(x)}" y2="${sy(y)}" stroke="#555" stroke-width="1.2"/><text x="${sx(x)}" y="${sy(y) - (top ? 8 : 6)}" text-anchor="${top ? 'middle' : 'end'}" font-size="13" font-weight="700" fill="#333">${k} : 1</text>`; });
-    PS.forEach((p) => { s += `<circle cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".6"><title>${p.g} · ${esc(p.r.name)} ${p.w}×${p.h}</title></circle>`; });
+    PS.forEach((p, i) => { s += `<circle class="pt" data-i="${i}" cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".6"><title>${p.g} · ${esc(p.r.name)} ${p.w}×${p.h}</title></circle>`; });
     s += `<text x="${sx(REFM.w / 2)}" y="${sy(REFM.h / 2)}" text-anchor="middle" font-size="13" fill="#d12b2b">우리 언양반닫이 앞면 (${REFM.w} × ${REFM.h})</text><circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/>`;
     if (own) s += `<circle cx="${sx(Math.min(w, XM))}" cy="${sy(Math.min(h, YM))}" r="9" fill="#fff" stroke="#111" stroke-width="3"/>`;
     s += '</svg><div class="leg">' + regs.map((g) => `<span><i style="background:${COL[g]}"></i>${g} ${P.filter((p) => p.g === g).length}</span>`).join('') + '</div>';
@@ -114,7 +168,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
       v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">${cards(nearS, (p) => p.w + '×' + p.h)}</div></div>`;
       v += `<div class="card"><b>비율이 가장 닮은 반닫이</b> <small style="color:#8a7f66">크기는 달라도 가로:세로가 같은 것</small><div class="near">${cards(nearR, (p) => fmt(p.w / p.h) + ' (' + p.w + '×' + p.h + ')')}</div></div>`;
     }
-    $('out').innerHTML = `<div class="card">${s}</div>` + v;
+    window.__nearKeys = (window.__seeKeys || []).slice();
+    $('out').innerHTML = `<div class="card">${s}</div><div class="card" id="bands"></div>` + v;
+    bands(w, h);
   }
   if (!P.length) { $('out').innerHTML = '<div class="card">치수가 적힌 반닫이를 찾지 못했어요.</div>'; return; }
   ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
@@ -124,7 +180,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 
 document.addEventListener('click', (e) => {
   const a = e.target.closest && e.target.closest('a[data-see]'); if (!a) return;
-  const ks = (window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
+  const ks = ((a.dataset.band ? window.__bandKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
   try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비례 자', back: 'region-ruler.html' })); } catch (x) {}
 });
 </script></body></html>
