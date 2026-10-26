@@ -58,7 +58,7 @@
   var css = document.createElement('style');
   css.textContent = [
     '.st-find{max-width:1200px;margin:-8px auto 22px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;box-sizing:border-box}',
-    '.st-find input{flex:1 1 320px;max-width:460px;font:inherit!important;font-size:14px!important;color:#1f2433!important;background:#fff!important;border:1px solid #e6e8f0!important;border-radius:999px!important;padding:9px 18px!important;outline:none;box-sizing:border-box;margin:0!important;height:auto!important}',
+    '.st-find input{flex:1 1 320px;max-width:460px;font:inherit!important;font-size:16px!important;color:#1f2433!important;background:#fff!important;border:1px solid #e6e8f0!important;border-radius:999px!important;padding:9px 18px!important;outline:none;box-sizing:border-box;margin:0!important;height:auto!important}',
     '.st-find input:focus{border-color:#4b55d6!important}',
     '.st-find .st-scope{font-size:12.5px;font-weight:700;color:#6b7183;background:#f4f2ee;border-radius:999px;padding:5px 11px}',
     '.st-res{max-width:1200px;margin:0 auto 28px;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;box-sizing:border-box}',

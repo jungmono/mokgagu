@@ -141,7 +141,7 @@
     '.cm-pick button+button{border-left:1px solid #d9d4cc}',
     '.cm-pick button.on[data-w="거믄"]{background:#111;color:#fff;font-weight:800}.cm-pick button.on[data-w="힌"]{background:#fff;color:#111;font-weight:800;box-shadow:inset 0 0 0 2px #111}.cm-pick button.on[data-w="벗"]{background:#6b665e;color:#fff;font-weight:700}',
     '.cm-pick.vis button.on{background:#1d1b18;color:#fff;font-weight:800}.cm-pick.vis button.on[data-v="pub"]{background:#2f6b45}',
-    '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
+    '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:16px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
     '.cm textarea{min-height:76px;resize:vertical;line-height:1.6}',
     '.cm .cm-edit{margin-top:4px}.cm-go.ghost{background:#fff;color:#6b665e;border:1px solid #d9d4cc;margin-right:6px}',
     '.cm-name{max-width:160px}',
