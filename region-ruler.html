@@ -49,7 +49,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
     if (/가로/.test(s) && /높이/.test(s)) { w = g('가로'); h = g('높이'); }
     else if (/높이/.test(s) && /×/.test(s)) { h = g('높이'); const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
     else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { w = Math.max(+m[1], +m[2]); h = +m[3]; } }
-    return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 90 ? { w, h } : null;
+    return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 100 ? { w, h } : null;
   }
   const P = [];
   (window.SEARCH || []).forEach((r) => {
