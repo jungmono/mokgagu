@@ -43,19 +43,19 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
   const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기' };
   const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
   /* 치수 글자 → 가로·높이. 이름표(가로·높이)가 있으면 그대로, 없으면 ×로 이은 세 수 중 앞 둘의 큰 쪽이 가로, 마지막이 높이 */
-  function dims(s) {
+  function dims(s, b) {
     s = String(s || ''); let w, h;
     const g = (k) => { const m = s.match(new RegExp(k + '\\s*([0-9]+(?:\\.[0-9]+)?)')); return m ? +m[1] : null; };
     if (/가로/.test(s) && /높이/.test(s)) { w = g('가로'); h = g('높이'); }
     else if (/높이/.test(s) && /×/.test(s)) { h = g('높이'); const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
-    else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { w = Math.max(+m[1], +m[2]); h = +m[3]; } }
+    else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { if (b === 'auction') { h = +m[1]; w = +m[3]; } else { w = Math.max(+m[1], +m[2]); h = +m[3]; } } }   /* 경매 도록은 높이×깊이×가로 순서 (사진으로 확인) */
     return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 100 ? { w, h } : null;
   }
   const P = [];
   (window.SEARCH || []).forEach((r) => {
     if (!/반닫이/.test((r.name || '') + (r.hanja || ''))) return;
     if (/반닫이\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
-    const g = regOf(r), d = dims(r.size); if (g && d) P.push(Object.assign({ g, r }, d));
+    const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));
   });
   const COL = { 경상: '#c0532b', 전라: '#2f7d5b', 충청: '#7a5aa6', 강원: '#2b6cb0', 경기: '#b8892a', 평안: '#3b3b3b', 제주: '#d0508a', 황해: '#6b8e23', 함경: '#008b8b' };
   const regs = Object.keys(COL).filter((g) => P.filter((p) => p.g === g).length >= 5);
