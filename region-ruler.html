@@ -30,7 +30,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 <div class="card"><div class="in">
 <label>가로 (cm)<input id="w" type="number" inputmode="decimal" min="30" max="160"></label>
 <label>세로 (cm)<input id="h" type="number" inputmode="decimal" min="20" max="160"></label></div>
-<p class="hint">뚜껑까지 잰 전체 크기예요. 비워 두면 우리 언양반닫이(가로 102.5 · 세로 58.4)로 보여 줘요.</p></div>
+<p class="hint">우리 언양반닫이 가로 102.5 · 세로 58.4</p></div>
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
@@ -84,7 +84,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
       const nearR = P.map((p) => ({ p, d: Math.abs(Math.log(p.w / p.h) - Math.log(ratio)) })).sort((a, b) => a.d - b.d);
       const cS = tally(nearS.slice(0, K)), cR = tally(nearR.slice(0, K));
       const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
-      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; return `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
+      window.__seeKeys = [];
+      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
       v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
       v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
       v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">${cards(nearS, (p) => p.w + '×' + p.h)}</div></div>`;
@@ -97,4 +98,10 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
   const q = new URLSearchParams(location.search); if (q.get('w')) $('w').value = q.get('w'); if (q.get('h')) $('h').value = q.get('h');
   draw(); window.__P = P.length;
 })();
+
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('a[data-see]'); if (!a) return;
+  const ks = (window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
+  try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비례 자', back: 'region-ruler.html' })); } catch (x) {}
+});
 </script></body></html>
