@@ -188,40 +188,14 @@ body{position:relative}
   </footer>
 </div>
 
+<script src="books.js?v=1"></script>
 <script>
 /* ───────── 새 대시보드를 추가할 때는 이 목록 맨 위에 한 덩어리만 더 붙이면 됩니다 ─────────
    path  : 대시보드 파일 이름 (예: lee → lee.html)
    icon  : bandaji(반닫이) · seoan(서안) · soban(소반) · takja(사방탁자) · duiju(뒤주) · yakjang(약장) · jang(이층장) · ham(함) 중 하나
    tone  : ju(주칠) · meok(먹) · hwang(황동) · jjok(쪽빛) · nok(녹색) · jaju(자주) 중 하나
    added : 추가한 날짜 (가장 최근 날짜의 도록이 위 큰 배너에 나옵니다)            */
-const DASHBOARDS = [
-  { path: 'nmk', title: '국립중앙박물관 소장품', desc: '국립중앙박물관 소장품 검색으로 모은 우리 목가구', items: 432, icon: 'bandaji', tone: 'meok', added: '2026-10-18', group: 'museum' },
-  { path: 'heritage', title: '국가유산 목공예', desc: '국가유산포털 유물·생활공예·목공예 — 국보·보물·민속문화유산 등 지정 문화유산', items: 19, icon: 'ham', tone: 'ju', added: '2026-10-18', group: 'museum' },
-  { path: 'ewha', title: '이화여대박물관 목기·목가구', desc: '이화여자대학교 박물관 소장 나무 유물 31점 — 소반·탁자·장·농·함·서안, 박물관 해설과 원본 사진', items: 31, icon: 'bandaji', tone: 'meok', added: '2026-10-23', group: 'museum' },
-  { path: 'horim', title: '호림박물관 목기·목가구', desc: '호림박물관 소장품 나무 분류 13점 — 나전·화각·대모 함과 서안·경상', items: 13, icon: 'ham', tone: 'meok', added: '2026-10-23', group: 'museum' },
-  { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
-  { path: 'seoulauction', title: '서울옥션 경매 목가구·목기', desc: '2026년 서울옥션 경매 19회 — 추정가·낙찰가 (사진은 서울옥션 연결)', items: 97, icon: 'ham', tone: 'cheong', added: '2026-10-24', group: 'auction' },
-  { path: 'overseas', title: '해외경매 한국 목가구·칠기', desc: '크리스티·소더비·본햄스 2020~2026 — 나전칠기 중심, 추정가·낙찰가(수수료 포함)', items: 29, icon: 'ham', tone: 'cheong', added: '2026-10-24', group: 'auction' },
-  { path: 'myart', title: '마이아트옥션 경매 목가구·목기', desc: '제52~61회 마이아트옥션 경매(2024.5~2026.9) — 추정가·낙찰가', items: 165, icon: 'ham', tone: 'meok', added: '2026-10-18', group: 'auction' },
-  { path: 'auction', title: '아이옥션 경매 목가구·목기', desc: '2022년 3월~2026년 10월 경매 38회 — 추정가·낙찰가', items: 596, icon: 'bandaji', tone: 'ju', added: '2026-10-17', group: 'auction' },
-  { path: 'jikmul', title: '우리나라 전통 무늬 1 직물', desc: '국립문화재연구소 문양 조사보고서(2006)', items: 184, icon: 'ham', tone: 'jaju', added: '2026-10-17', group: 'ref' },
-  { path: 'dojagi', title: '우리나라 전통 무늬 2 도자기', desc: '국립문화재연구소 문양 조사보고서(2008)', items: 219, icon: 'ham', tone: 'jjok', added: '2026-10-17', group: 'ref' },
-  { path: 'najeon', title: '우리나라 전통 무늬 3 나전·화각', desc: '국립문화재연구소 문양 조사보고서(2014)', items: 110, icon: 'ham', tone: 'ju', added: '2026-10-18', group: 'ref' },
-  { path: 'geumsok', title: '우리나라 전통 무늬 4 금속공예', desc: '국립문화재연구소 문양 조사보고서(2011)', items: 213, icon: 'ham', tone: 'meok', added: '2026-10-17', group: 'ref' },
-  { path: 'wajeon', title: '우리나라 전통 무늬 6 와전', desc: '국립문화재연구소 문양 조사보고서(2013)', items: 211, icon: 'ham', tone: 'jjok', added: '2026-10-25', group: 'ref' },
-  { path: 'seokjo', title: '우리나라 전통 무늬 7 궁능석조물', desc: '국립문화재연구소 문양 조사보고서(2014)', items: 146, icon: 'ham', tone: 'meok', added: '2026-10-25', group: 'ref' },
-  { path: 'munui', title: '우리나라 전통 무늬 5 목공예', desc: '국립문화재연구소 문양 조사보고서(2012)', items: 164, icon: 'ham', tone: 'nok', added: '2026-10-17' },
-  { path: 'yakjang', title: '약장, 건강을 염원하다', desc: '허준박물관·국립민속박물관 공동기획전 도록(2014)', items: 53, icon: 'yakjang', tone: 'jaju', added: '2026-10-17' },
-  { path: 'wonju',  title: '우리 나전, 새로 맞는 날',   desc: '원주시역사박물관 소장품 특별전 도록(2024)', items: 31,  icon: 'ham',     tone: 'ju',    added: '2026-10-17' },
-  { path: 'soban',  title: '소반장(小盤匠)',          desc: '국립문화재연구소 중요무형문화재 조사보고서(1997)', items: 25, icon: 'soban',  tone: 'hwang', added: '2026-10-17' },
-  { path: 'busan',  title: '부산박물관 소장품 「민속」', desc: '부산박물관 소장품 도록 「민속」편 발췌', items: 9,  icon: 'yakjang', tone: 'meok',  added: '2026-10-17' },
-  { path: 'yangsan', title: '양산 반닫이',           desc: '양산시립박물관 특별기획전 도록(2022)', items: 30,  icon: 'bandaji', tone: 'hwang', added: '2026-10-17' },
-  { path: 'minsok', title: '민속유물이해Ⅰ 목가구', desc: '국립민속박물관 민속유물이해Ⅰ(2003)', items: 223, icon: 'yakjang', tone: 'jaju', added: '2026-10-15' },
-  { path: 'namu',   title: '목가구, 나무의 이치를 담다', desc: '국립민속박물관·영인산산림박물관 공동기획전 도록(2016)', items: 56,  icon: 'duiju',   tone: 'nok',  added: '2026-10-15' },
-  { path: 'salm',   title: '목가구, 삶을 담다',        desc: '미리벌민속박물관·국립민속박물관 공동기획전 도록(2015)', items: 53,  icon: 'soban',   tone: 'hwang',  added: '2026-10-15' },
-  { path: 'migam',  title: '목가구의 미감',            desc: '국립민속박물관·은평역사한옥박물관 공동기획전 도록(2016)',      items: 55,  icon: 'takja',   tone: 'ju',   added: '2026-10-15' },
-  { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '북촌민예관 개관전 도록(2012)',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
-];
+const DASHBOARDS = window.MOKGAGU_BOOKS;
 
 const ICONS = {
   /* 반닫이: 앞판 위쪽이 아래로 젖혀 열리는 궤. 무쇠 경첩·앞바탕·들쇠 */
