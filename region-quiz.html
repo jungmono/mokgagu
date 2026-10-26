@@ -1,0 +1,79 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>이 반닫이는 어느 지역? — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
+main{max-width:640px;margin:0 auto;padding:16px 16px 60px}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacing:-.04em;text-align:center}
+.sub{text-align:center;color:#6d6551;margin:0 0 16px;font-size:15px}
+.top{display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:14px;font-weight:700}
+.card{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px}
+.prog{display:flex;justify-content:space-between;font-size:14px;color:#6d6551;margin:0 0 8px;font-weight:700}
+.ph{aspect-ratio:4/3;background:#f4ecd8;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+.ph img{width:100%;height:100%;object-fit:contain;background:#fff}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 0}
+.opts button{font:inherit;font-size:17px;font-weight:700;padding:13px 8px;border-radius:12px;border:1.5px solid #d8c9a3;background:#fff;color:#2b2418;cursor:pointer;min-height:48px}
+.opts button:hover:not(:disabled){background:#f4ecd8}
+.opts button.ok{background:#1f7a4f;border-color:#1f7a4f;color:#fff}.opts button.no{background:#b3402f;border-color:#b3402f;color:#fff}
+.opts button:disabled{cursor:default}
+.fb{margin:12px 0 0;font-size:15px;line-height:1.6}.fb b{font-weight:900}.fb a{color:#0F6E56}
+.next,.again{display:block;width:100%;margin-top:12px;font:inherit;font-size:16px;font-weight:900;padding:13px;border-radius:12px;border:0;background:#2b2418;color:#fff;cursor:pointer}
+.big{font-size:44px;font-weight:900;text-align:center;margin:10px 0 2px}.res{text-align:center;color:#6d6551}
+.wrong li{margin:4px 0}
+.note{font-size:12.5px;color:#8a7f66;margin-top:14px;line-height:1.6;text-align:center}
+</style>
+<script src="common.js?v=8" defer></script></head><body><main>
+<h1>이 반닫이는 어느 지역?</h1>
+<p class="sub">사진만 보고 지역을 맞혀 보세요. 정답은 도록에 적힌 이름 기준이에요.</p>
+<div class="top"><a href="index.html">처음으로</a><a href="bandaji-map.html">반닫이여지도</a><a href="jangseok-find.html">장석으로 지역 찾기</a></div>
+<div class="card" id="box"><p style="text-align:center;color:#6d6551">문제를 준비하는 중…</p></div>
+<p class="note">사진은 우리 도록에 저장된 작은 사진이에요. 이름에 지역이 적힌 반닫이만 문제로 나와요.</p>
+</main>
+<script src="search.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id), box = $('box');
+  const ROUND = 10;
+  const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
+  const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기' };
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
+  const pool = (window.SEARCH || []).filter((r) => r.t && /반닫이/.test((r.name || '') + (r.hanja || '')) && regOf(r));
+  const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
+  const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
+  const usable = pool.filter((r) => regs.includes(regOf(r)));
+  let Q = [], i = 0, score = 0, wrong = [];
+  function start() {
+    if (usable.length < ROUND || regs.length < 4) { box.innerHTML = '<p style="text-align:center">문제를 만들 사진이 아직 부족해요.</p>'; return; }
+    /* 지역이 골고루 나오도록 지역별로 돌아가며 뽑는다 */
+    const bag = {}; regs.forEach((g) => (bag[g] = shuffle(byReg[g]))); const order = shuffle(regs); Q = []; let k = 0;
+    while (Q.length < ROUND) { const g = order[k++ % order.length]; if (bag[g].length) Q.push(bag[g].pop()); }
+    Q = shuffle(Q); i = 0; score = 0; wrong = []; show();
+  }
+  function show() {
+    const r = Q[i], ans = regOf(r);
+    const others = shuffle(regs.filter((g) => g !== ans)).slice(0, 3), opts = shuffle([ans].concat(others));
+    box.innerHTML = `<div class="prog"><span>${i + 1} / ${ROUND}</span><span>맞힌 것 ${score}</span></div>
+      <div class="ph"><img src="thumbs/${r.b}/${r.n}.jpg" alt="어느 지역 반닫이일까요?"></div>
+      <div class="opts">${opts.map((o) => `<button type="button" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div><div id="fb"></div>`;
+    box.querySelector('.opts').onclick = (e) => {
+      const b = e.target.closest('button'); if (!b || b.disabled) return;
+      const ok = b.dataset.o === ans; if (ok) score++; else wrong.push(r);
+      box.querySelectorAll('.opts button').forEach((x) => { x.disabled = true; if (x.dataset.o === ans) x.classList.add('ok'); else if (x === b) x.classList.add('no'); });
+      $('fb').innerHTML = `<div class="fb"><b>${ok ? '맞았어요!' : '아쉬워요.'}</b> 정답은 <b>${esc(ans)}</b> · ${esc(r.name)}${r.era ? ' · ' + esc(r.era) : ''}<br>${esc(r.cat)} — <a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">사진 크게 보기</a></div>
+        <button type="button" class="next">${i + 1 < ROUND ? '다음 문제' : '결과 보기'}</button>`;
+      box.querySelector('.next').onclick = () => { i++; i < ROUND ? show() : end(); };
+    };
+  }
+  function end() {
+    box.innerHTML = `<div class="big">${score} / ${ROUND}</div><p class="res">${score >= 8 ? '눈썰미가 대단해요!' : score >= 5 ? '꽤 잘 보셨어요.' : '자꾸 보면 눈에 익어요.'}</p>
+      ${wrong.length ? `<h3 style="margin:14px 0 6px">틀린 것 다시 보기</h3><ul class="wrong">${wrong.map((r) => `<li>${esc(regOf(r))} — <a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">${esc(r.name)}</a> (${esc(r.cat)})</li>`).join('')}</ul>` : ''}
+      <button type="button" class="again">한 번 더</button>`;
+    box.querySelector('.again').onclick = start;
+  }
+  start();
+})();
+</script></body></html>
