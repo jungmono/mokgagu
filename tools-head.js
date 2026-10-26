@@ -15,6 +15,10 @@
   try { if (/\/stats\.html/.test(document.referrer) || /[?&]from=stats/.test(location.search)) back = { href: 'stats.html', t: '← 통계로' }; } catch (e) {}
   var css = document.createElement('style');
   css.textContent = [
+    /* 바탕 글꼴: 강원교육모두체 Bold (글자가 작게 그려지는 글꼴이라 120%로 키움). 제목(.th)은 Noto Sans KR 그대로 */
+    "@font-face{font-family:'GangwonEduBold';src:url('fonts/gangwon-edu-bold.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap;size-adjust:120%}",
+    ':root{--sans:"GangwonEduBold",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--serif:"GangwonEduBold","Noto Serif KR","AppleMyungjo",serif}',
+    'body{font-family:"GangwonEduBold",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}',
     '.th{max-width:1100px;margin:0 auto 14px;padding:6px 0 0;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#111;text-align:left}',
     '.th *{box-sizing:border-box}',
     '.th-row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2.6vw,30px);margin:0 0 10px}',
