@@ -21,13 +21,13 @@ h1{font-size:clamp(22px,3.4vw,30px);margin:4px 0 6px;text-align:center}#sub{text
 .pic button{display:block;width:100%;border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0;background:#f6f3ee;cursor:zoom-in}
 .pic img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;background:#f6f3ee}
 .nm{font-weight:800;font-size:15px}.hj{display:block;color:var(--muted);font-size:12px;font-weight:400}
-.rm{margin-top:6px;border:1.5px solid #111;border-radius:999px;background:#fff;font-size:12px;font-weight:700;padding:3px 10px;cursor:pointer;font-family:inherit}
-td.d{background:#fdf1ee;font-weight:800;color:var(--acc)}td .df{display:block;font-size:11px;font-weight:700}
+.rm{margin-top:6px;border:1.5px solid #111;border-radius:999px;background:#fff;font-size:13px;font-weight:700;padding:9px 14px;min-height:36px;cursor:pointer;font-family:inherit}
+td.d{background:#fdf1ee;font-weight:800;color:var(--acc)}td .df{display:block;font-size:12px;font-weight:700}
 td.mu{color:#a39d92}
 .fig{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:6px 0 2px;min-height:0}
 .figbox{border:2px solid #111;border-radius:14px;padding:10px 12px 10px;margin:8px auto 12px;max-width:1000px;background:#fff}.fg3{display:grid;grid-template-columns:.6fr 1.1fr 1.5fr;gap:10px;align-items:stretch}.fg3 .fp{display:flex;flex-direction:column}.fg3 .fp>.fs+*{margin-top:auto!important;margin-bottom:auto!important}.fg3 .fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}@media(max-width:760px){.fg3{grid-template-columns:1fr}.fg3 .fp+.fp{border-left:0;padding-left:0;border-top:1px solid #e5e1da;padding-top:10px}}.figt{font-weight:800;font-size:14px;text-align:center;margin-bottom:4px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}.fp{min-width:0}.fp+.fp{border-left:1px solid #e5e1da;padding-left:10px}.fs{font-size:15px;font-weight:800;color:#111;text-align:center;margin-bottom:6px}@media(max-width:560px){.fg{grid-template-columns:1fr}.fp+.fp{border:0;padding:0;margin-top:8px}}.fig{gap:16px;align-items:flex-end}.fi{text-align:center}.fr{border:2px solid #111;border-radius:4px;background:#e9e2d4;margin:0 auto}.fl{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}.fl b{color:#111}
 .note{font-size:12px;color:var(--muted);line-height:1.7;margin:12px 0 0}
-a.lk{color:var(--acc);font-weight:700;font-size:12px}
+a.lk{color:var(--acc);font-weight:700;font-size:13px;display:inline-block;padding:10px 4px}
 dialog{border:0;padding:0;background:#fff;color:#1d1b18;width:min(640px,96vw);max-height:92vh;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
 dialog::backdrop{background:rgba(20,20,24,.6)}
 #lb .box{background:#f4f1ea;display:grid;place-items:center;height:min(46vh,420px)}
@@ -40,7 +40,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
 .pic{touch-action:pan-y}.pic.sw{opacity:.4;transition:opacity .15s}
 #cmp-toast2{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;border-radius:999px;padding:9px 16px;font-size:13px;z-index:9;display:flex;gap:12px;align-items:center}#cmp-toast2 button{background:none;border:0;color:#ffd75e;font-weight:800;cursor:pointer;font:inherit;font-weight:800}
 </style>
-<script src="common.js?v=10" defer></script><script src="cmpsave.js?v=20261025" defer></script>
+<script src="common.js?v=11" defer></script><script src="cmpsave.js?v=20261025" defer></script>
 </head><body>
 <div class="wrap">
   <div class="sa-top"><button type="button" class="sa-close" id="cls" aria-label="닫기" title="닫기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>닫기</button><button type="button" class="sa-close" id="cmp-share" aria-label="이 비교 공유" title="이 비교를 링크로 보내기" style="margin-left:8px">🔗 공유</button></div>
@@ -90,7 +90,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       return;
     }
     $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
-    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: String(rec.name || r.n || r.k).replace(/^소장\s*/, '') }; });
+    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: String(rec.name || r.n || r.k).replace(/^소장\s*/, ''), f: rec.t && rec.b && rec.n ? 'thumbs/' + rec.b + '/' + rec.n + '.jpg' : '' }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
       var diff = present.length >= 2 && new Set(present.map(String)).size > 1, mn = num ? Math.min.apply(null, present) : null;
@@ -102,7 +102,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       }).join('') + '</tr>';
     }
     var h = '<table class="tbl"><tr><th class="rh"></th>' + cols.map(function (c, i) {
-      return '<td class="pic"><button type="button" data-i="' + i + '" aria-label="' + esc(c.name) + ' 크게 보기"><img src="' + esc(c.u) + '" alt="' + esc(c.name) + '"></button><div class="nm">' + esc(c.name) + '</div><button type="button" class="rm" data-rm="' + esc(c.k) + '">빼기</button></td>';
+      return '<td class="pic"><button type="button" data-i="' + i + '" aria-label="' + esc(c.name) + ' 크게 보기"><img src="' + esc(c.u) + '"' + (c.f ? ' data-f="' + esc(c.f) + '" onerror="if(this.dataset.f&&this.src.indexOf(\'thumbs/\')<0){this.src=this.dataset.f}"' : '') + ' alt="' + esc(c.name) + '"></button><div class="nm">' + esc(c.name) + '</div><button type="button" class="rm" data-rm="' + esc(c.k) + '">빼기</button></td>';
     }).join('') + '</tr>';
     h += row('도록', cols.map(function (c) { return c.r.cat || ''; }));
     h += row('종류', cols.map(function (c) { return (c.r.kind || '').split(' · ')[0]; }));
@@ -254,6 +254,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   function openLb(i) { photos = list().map(function (x) { return x; }); cur = i; showLb(); if (!lb.open) lb.showModal(); }
   function showLb() {
     var ph = window.__cols[cur], r = ph.r || {};
+    $('lb-img').onerror = function () { if (ph.f && this.src.indexOf('thumbs/') < 0) this.src = ph.f; };
     $('lb-img').src = ph.u;
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
     var pr = price(r.owner);
@@ -289,7 +290,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     function go() {
       var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
       var recs = a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec || by[x.k] }; });
-      window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k, r: rec, k: r.k }; });
+      window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k, r: rec, k: r.k, f: rec.t && rec.b && rec.n ? 'thumbs/' + rec.b + '/' + rec.n + '.jpg' : '' }; });
       render(recs);
     }
     if (a.length < 2) { render(a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec }; })); return; }

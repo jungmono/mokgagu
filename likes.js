@@ -136,7 +136,7 @@
     '#lk-box .lk-me span.b{background:#fff;color:#6b665e;border-style:dashed;border-color:#a39c92}#lk-box .lk-me span.g{background:#111;color:#fff}#lk-box .lk-me span.h{background:#fff;color:#111}#lk-box .lk-me span.cur{opacity:1}',
     '#lk-box .lk-open{border:0;background:#fdf1f0;border-radius:9px;width:100%;padding:6px 2px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;color:' + RED + ';font:inherit;font-size:11px;font-weight:800}',
     '#lk-box .lk-open svg{width:22px;height:22px}#lk-box .lk-open b{font-size:12px}',
-    '#lk-box .lk-hint{font-size:10.5px;color:#8a837a;text-align:center;line-height:1.3;border:0;background:none;cursor:pointer;padding:0;font:inherit;font-size:10.5px}',
+    '#lk-box .lk-hint{font-size:12px;color:#8a837a;text-align:center;line-height:1.3;border:0;background:none;cursor:pointer;padding:0;font:inherit;font-size:12px}',
     '@media (max-width:720px){#lk-box{width:56px;padding:5px 3px}#lk-box .lk-me span{font-size:9.5px;padding:1px 3px}#lk-box .lk-open{font-size:9.5px}}',
     /* 누구세요? · 모아보기 창 */
     '#lk-who{border:0;border-radius:16px;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#1d1b18}',

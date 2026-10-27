@@ -13,11 +13,12 @@
   css.textContent =
     '#cmp-tray{position:fixed;left:12px;bottom:12px;z-index:2147482000;display:none;align-items:center;gap:8px;background:#fff;border:2px solid #111;border-radius:16px;padding:8px 10px;box-shadow:0 6px 18px rgba(0,0,0,.18);max-width:calc(100vw - 24px);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}' +
     '#cmp-tray .th{position:relative;width:40px;height:40px;flex:none}#cmp-tray .th img{width:40px;height:40px;object-fit:cover;border-radius:8px;border:1px solid #e5e1da;display:block}' +
-    '#cmp-tray .th button{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;border:1.5px solid #111;background:#fff;font-size:11px;line-height:1;padding:0;cursor:pointer}' +
-    '#cmp-tray .tx{font-size:12px;color:#6b665e;white-space:nowrap}#cmp-tray .tx b{color:#111;font-size:13px;display:block}' +
+    '#cmp-tray .th button{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;border:1.5px solid #111;background:#fff;font-size:12px;line-height:1;padding:0;cursor:pointer}#cmp-tray .th button::after{content:"";position:absolute;inset:-8px}' +
+    '#cmp-tray .tx{font-size:12.5px;color:#6b665e;white-space:nowrap}#cmp-tray .tx b{color:#111;font-size:13px;display:block}' +
     '#cmp-tray a.go{background:#111;color:#fff;border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;text-decoration:none;white-space:nowrap}' +
     '#cmp-tray a.go.off{background:#bdb8ae;pointer-events:none}' +
-    '#cmp-tray .x{border:0;background:none;color:#6b665e;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px;font-family:inherit}' +
+    '#cmp-tray .x{border:0;background:none;color:#6b665e;font-size:13px;text-decoration:underline;cursor:pointer;padding:12px 6px;font-family:inherit}' +
+    '@media (max-width:720px){#cmp-tray{max-width:calc(100vw - 88px);gap:6px;padding:6px 8px}#cmp-tray .tx{font-size:0}#cmp-tray .tx b{font-size:13px}#cmp-tray a.go{padding:10px 12px}#cmp-tray .x{padding:12px 4px}}' +
     '#cmp-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;z-index:2147483600;font-family:inherit}';
   document.head.appendChild(css);
 
