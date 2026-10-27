@@ -210,7 +210,7 @@
       '<div class="cm-row" style="justify-content:space-between">' +
       '<p class="cm-note">' + (w === '벗' ? '벗의 이야기는 누구나 볼 수 있어요.' : (state.pub ? '공개 — 누구나 볼 수 있어요.' : '비공개 — 가족 암호를 넣은 기기에서만 보여요.')) + '</p>' +
       '<button type="button" class="cm-go cm-send">남기기</button></div>' +
-      (fam ? '<button type="button" class="cm-out">이 기기에서 가족 암호 지우기</button>' : '') + '</div>';
+      '</div>';
     return h;
   }
   function paint() {
