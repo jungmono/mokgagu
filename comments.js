@@ -143,6 +143,7 @@
     '.cm-pick.vis button.on{background:#1d1b18;color:#fff;font-weight:800}.cm-pick.vis button.on[data-v="pub"]{background:#2f6b45}',
     '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:16px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
     '.cm textarea{min-height:76px;resize:vertical;line-height:1.6}',
+    '@media (min-width:761px){.cm textarea.cm-text{font-size:14px}}',
     '.cm .cm-edit{margin-top:4px}.cm-go.ghost{background:#fff;color:#6b665e;border:1px solid #d9d4cc;margin-right:6px}',
     '.cm-name{max-width:160px}',
     '.cm-go{align-self:flex-end;font:inherit;font-size:14px;font-weight:700;border:0;border-radius:8px;background:#1d1b18;color:#fff;padding:8px 16px;cursor:pointer}',
@@ -205,7 +206,7 @@
     }
     if (w === '벗') h += '<input type="text" class="cm-name" placeholder="이름" maxlength="30" value="' + esc(ls.get(K_NAME, '')) + '">';
     else h += '<span class="cm-pick vis" role="radiogroup" aria-label="누가 볼 수 있나요"><button type="button" data-v="priv" class="' + (state.pub ? '' : 'on') + '">🔒 비공개</button><button type="button" data-v="pub" class="' + (state.pub ? 'on' : '') + '">공개</button></span>';
-    h += '</div><textarea class="cm-text" placeholder="이 기물에 대한 이야기를 남겨 주세요 (수종, 짜임, 장석, 감정 메모, 선생님 말씀…)"></textarea>' +
+    h += '</div><textarea class="cm-text" placeholder="이 기물에 대한 이야기를 남겨 주세요"></textarea>' +
       '<div class="cm-row" style="justify-content:space-between">' +
       '<p class="cm-note">' + (w === '벗' ? '벗의 이야기는 누구나 볼 수 있어요.' : (state.pub ? '공개 — 누구나 볼 수 있어요.' : '비공개 — 가족 암호를 넣은 기기에서만 보여요.')) + '</p>' +
       '<button type="button" class="cm-go cm-send">남기기</button></div>' +
