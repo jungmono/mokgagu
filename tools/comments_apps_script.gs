@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v20: 공부방 노트 고치기·사진 추가 — doPost nlist(읽기)·nsave·ndel. 시트 '노트수정' 탭(고친 곳만 덮어씀) · '노트수정이력' 탭(고치기 전 글). 재배포 때 노트수정준비() 한 번 실행 권장.
  * v17: doGet 은 주소로 온 code 를 무시한다(가족 암호는 POST 로만). 가족 전용 읽기는 GET 으로는 'code' 오류가 난다.
  * v16: 가족 암호가 필요한 읽기(list·likes·stats·wlist·rlist·cmplist·clist·cimg·aget)를 doPost 본문({action, code, …})으로도 받는다. 사이트는 POST만 쓰고, 옛 GET 경로는 전환이 끝난 뒤 닫는다. 재배포 필요.
  * v15: 저장한 비교 — doGet action=cmplist(가족만), doPost cmpsave·cmpdel. 시트 '비교저장' 탭. 재배포 때 비교저장준비() 한 번 실행 권장.
@@ -81,7 +82,7 @@ function doGet(e) {
   return read_(p);
 }
 // 읽기 동작 본체. 가족 암호가 필요한 읽기는 POST 본문으로도 받는다(주소에 암호가 남지 않게) — doPost 참고.
-const READ_POST_ = ['list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
+const READ_POST_ = ['nlist', 'list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
 function read_(p) {
   const fam = isFam_(p.code);
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
@@ -92,6 +93,7 @@ function read_(p) {
   if (p.action === 'rlist') return rGet_(fam);
   if (p.action === 'cmplist') return cmpGet_(fam);
   if (p.action === 'aget') return auGet_(p, fam);
+  if (p.action === 'nlist') return nGet_(fam);
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -128,6 +130,7 @@ function doPost(e) {
     if (d.action === 'log') return logPost_(d, fam);
     if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
     if (d.action === 'wsave' || d.action === 'wdel') return wPost_(d, fam);
+    if (d.action === 'nsave' || d.action === 'ndel') return nPost_(d, fam);
     if (d.action === 'rsave') return rPost_(d, fam);
     if (d.action === 'cmpsave' || d.action === 'cmpdel') return cmpPost_(d, fam);
     if (String(d.action || '').charAt(0) === 'c' && d.action !== 'code') return colPost_(d, fam);
@@ -515,3 +518,47 @@ function auGet_(p, fam) {
 }
 /* 처음 한 번 편집기에서 실행: 폴더를 만들고, 드라이브 이어 올리기에 필요한 '외부 요청' 권한을 허락받는다 */
 function 녹음준비() { auFolder_(); wSheet_(); tab_(WH_SHEET, WH_HEAD); UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } }); }
+
+/* ───────── 공부방 노트 고치기·사진 추가 (v20) ─────────
+   '노트수정' 탭: key(거믄|2026-08-17 처럼 주인|수업일) | fields(고친 칸: title,lead,tags,body 쉼표로) | title | lead | tags(쉼표) | body(## 제목 · - 목록 · **굵게**) | photos(JSON) | created | updated | editor | deleted
+   고치지 않은 칸은 원래 노트(암호 파일)를 그대로 쓴다. '노트수정이력' 탭: 고치기 전 줄을 남겨 둔다. 거믄·힌은 서로의 노트를 고칠 수 있다. */
+const N_SHEET = '노트수정', N_HEAD = ['key', 'fields', 'title', 'lead', 'tags', 'body', 'photos', 'created', 'updated', 'editor', 'deleted'];
+const NH_SHEET = '노트수정이력', NH_HEAD = ['time', 'key', 'editor', 'fields', 'title', 'lead', 'tags', 'body', 'photos'];
+function nRow_(r) {
+  return { key: String(r[0]), fields: String(r[1] || ''), title: String(r[2] || ''), lead: String(r[3] || ''), tags: String(r[4] || ''), body: String(r[5] || ''),
+    photos: photos_(r[6], 12), created: iso_(r[7]), updated: iso_(r[8]), editor: String(r[9] || '') };
+}
+function nGet_(fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const rows = tab_(N_SHEET, N_HEAD).getDataRange().getValues(); rows.shift();
+  return out_({ ok: true, list: rows.filter(r => r[0] && !r[10]).map(nRow_) });
+}
+function nPost_(d, fam) {
+  if (!fam) return out_({ ok: false, err: 'code' });
+  const sh = tab_(N_SHEET, N_HEAD), now = new Date().toISOString();
+  const key = String(d.key || (d.item && d.item.key) || '');
+  if (!/^(거믄|힌)\|\d{4}-\d{2}-\d{2}$/.test(key)) return out_({ ok: false, err: 'bad' });
+  const v = sh.getDataRange().getValues(); let f = null;
+  for (let i = 1; i < v.length; i++) if (String(v[i][0]) === key) { f = { at: i + 1, r: v[i] }; break; }
+  const hist = tab_(NH_SHEET, NH_HEAD);
+  const keep = (r, editor) => hist.appendRow([now, key, String(editor || ''), String(r[1] || ''), String(r[2] || ''), String(r[3] || ''), String(r[4] || ''), String(r[5] || ''), String(r[6] || '')]);
+  if (d.action === 'ndel') {
+    if (!f || f.r[10]) return out_({ ok: true });
+    keep(f.r, famWho_(d.editor)); sh.getRange(f.at, 11).setValue('삭제 ' + now);
+    return out_({ ok: true });
+  }
+  const it = d.item || {}, editor = famWho_(it.editor); if (!editor) return out_({ ok: false, err: 'bad' });
+  const fields = String(it.fields || '').split(',').filter(x => ['title', 'lead', 'tags', 'body'].indexOf(x) >= 0).join(',');
+  const ph = photos_(it.photos, 12);
+  if (!fields && !ph.length) return out_({ ok: false, err: 'text' });
+  const pick = (k, n) => fields.split(',').indexOf(k) >= 0 ? String(it[k] || '').trim().slice(0, n) : '';
+  const row = [key, fields, pick('title', 100), pick('lead', 600), pick('tags', 200), pick('body', 20000), JSON.stringify(ph), f && !f.r[10] ? f.r[7] : now, now, editor, ''];
+  if (f && !f.r[10]) {
+    // 다른 기기에서 그 사이에 고쳤다면 덮어쓰지 않고 알린다
+    if (it.base && iso_(f.r[8]) !== String(it.base)) return out_({ ok: false, err: 'conflict', item: nRow_(f.r) });
+    keep(f.r, editor);
+  }
+  if (f) sh.getRange(f.at, 1, 1, N_HEAD.length).setValues([row]); else sh.appendRow(row);
+  return out_({ ok: true, item: nRow_(row) });
+}
+function 노트수정준비() { tab_(N_SHEET, N_HEAD); tab_(NH_SHEET, NH_HEAD); }

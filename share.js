@@ -17,7 +17,7 @@ function nameOf(dlg){
   return (e&&e.textContent.trim().split('\n')[0])||'';
 }
 function attach(dlg){
-  if(dlg.querySelector('.shr'))return;
+  if(dlg.querySelector('.shr')||dlg.hasAttribute('data-noshare'))return;
   var b=document.createElement('button');b.className='shr';b.type='button';b.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.8 5.3 4.6 6.7l-1 3.6c-.1.4.3.6.6.4l4.3-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg> 공유';
   b.onclick=function(ev){ev.stopPropagation();
     var n=nameOf(dlg),pg=location.pathname.split('/').pop()||'index.html';

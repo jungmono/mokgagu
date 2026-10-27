@@ -123,6 +123,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 <script src="classes.js?v=20261019"></script>
 <script src="photozoom.js?v=1"></script>
 <script src="mkphoto.js?v=1"></script>
+<script src="noteedit.js?v=1"></script>
 <script src="write.js?v=5"></script>
 <script src="quiz.js?v=20261024"></script>
 <script src="d3.min.js"></script>
@@ -184,6 +185,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     var plain = await dec('study/data.bin');   // 암호가 틀리면 여기서 실패
     DATA = JSON.parse(new TextDecoder().decode(plain));
     loadTalk();
+    window.MOKGAGU_NOTEEDIT.load(function () { if (DATA && !(document.activeElement && document.activeElement.id === 'q') && !document.querySelector('#ne-dlg[open]')) render(); });
     if (remember) { ls.set(K_STUDY, pw); if (!ls.get(K_CODE)) ls.set(K_CODE, pw); }
     render();
   }
@@ -238,19 +240,20 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
       if (location.hash) { var t0 = document.getElementById(location.hash.slice(1)); if (t0) setTimeout(function () { t0.scrollIntoView(); }, 50); }
       return;
     }
+    var NE = window.MOKGAGU_NOTEEDIT;
     var sid = function (s) { return 'd' + (s.owner === '힌' ? 'h' : 'g') + s.date; };
-    html += '<nav class="toc">' + S.map(function (s) { return '<a href="#' + sid(s) + '">' + (tab === '함께' ? '<i class="ow ' + (s.owner === '힌' ? 'h' : 'g') + '">' + esc(s.owner || '거믄') + '</i>' : '') + fmtDate(s.date).replace(/^2026\. /, '') + '<small>' + esc(s.title.split(' — ')[0].split(' · ')[0]) + '</small></a>'; }).join('') + '</nav><div id="list">';
+    html += '<nav class="toc">' + S.map(function (s) { return '<a href="#' + sid(s) + '">' + (tab === '함께' ? '<i class="ow ' + (s.owner === '힌' ? 'h' : 'g') + '">' + esc(s.owner || '거믄') + '</i>' : '') + fmtDate(s.date).replace(/^2026\. /, '') + '<small>' + esc(NE.view(s).title.split(' — ')[0].split(' · ')[0]) + '</small></a>'; }).join('') + '</nav><div id="list">';
     S.forEach(function (s) {
       var o = s.owner || '거믄', mine = own(o).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-      var no = mine.indexOf(s) + 1;
+      var no = mine.indexOf(s) + 1, v = NE.view(s);
       var gi = s.imgs.map(function (im) { allImgs.push({ f: im.f, cap: o + ' · ' + fmtDate(s.date) + ' · ' + im.cap }); return '<button type="button" data-i="' + (allImgs.length - 1) + '"><img loading="lazy" src="' + im.th + '" alt=""><span>' + esc(im.cap) + '</span></button>'; }).join('');
-      html += '<article class="ses o-' + (o === '힌' ? 'h' : 'g') + '" id="' + sid(s) + '" data-date="' + s.date + '"><div class="dt"><span class="ow ' + (o === '힌' ? 'h' : 'g') + '">' + esc(o) + '</span><span class="no">' + no + '번째 노트</span><b>' + fmtDate(s.date) + '</b>' + (s.who && s.who !== o ? '<span>' + esc(s.who) + '</span>' : '') + '</div>' +
-        '<h2>' + esc(s.title) + '</h2><p class="lead">' + esc(s.lead) + '</p><div class="tags">' + s.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
-        '<div class="body">' + s.body + '</div>' +
+      html += '<article class="ses o-' + (o === '힌' ? 'h' : 'g') + '" id="' + sid(s) + '" data-date="' + s.date + '"><div class="dt"><span class="ow ' + (o === '힌' ? 'h' : 'g') + '">' + esc(o) + '</span><span class="no">' + no + '번째 노트</span><b>' + fmtDate(s.date) + '</b>' + (s.who && s.who !== o ? '<span>' + esc(s.who) + '</span>' : '') + NE.bar(s) + '</div>' +
+        '<h2>' + esc(v.title) + '</h2><p class="lead">' + esc(v.lead) + '</p><div class="tags">' + v.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' +
+        '<div class="body">' + v.body + '</div>' + NE.photos(s) +
         (gi ? '<details class="more"><summary>📝 ' + (o === '힌' ? '힌의 필기' : '손글씨 노트·선생님 자료') + ' ' + s.imgs.length + '장</summary><div class="gal">' + gi + '</div></details>' : '') + '</article>';
     });
     html += '</div><div class="foot">거믄의 노트 ' + cnt['거믄'] + '편 · 힌의 노트 ' + cnt['힌'] + '편 · (?)는 손글씨 판독이 불확실한 곳<br>새 수업 노트를 주시면 거믄·힌 따로 날짜별로 이어서 정리해 둘게요.<br><button id="out">이 기기에서 잠그기</button></div>';
-    app.innerHTML = html;
+    app.innerHTML = html; NE.after(app);
     if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) setTimeout(function () { t.scrollIntoView(); }, 50); }
   }
   /* 검색: 맞는 수업만 보이고 낱말에 형광펜 */
