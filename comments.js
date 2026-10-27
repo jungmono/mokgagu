@@ -121,8 +121,8 @@
   /* ── 모양 ── */
   var css = document.createElement('style');
   css.textContent = [
-    '.cm{margin-top:18px;border-top:1px solid #e5e1da;padding-top:14px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;text-align:left}',
-    '.cm h4{margin:0 0 10px;font-size:15px;font-weight:800;color:#1d1b18;display:flex;align-items:center;gap:6px}',
+    '.cm{margin-top:8px;border-top:1px solid #e5e1da;padding-top:10px;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;text-align:left}',
+    '.cm h4{margin:0 0 6px;font-size:15px;font-weight:800;color:#1d1b18;display:flex;align-items:center;gap:6px}',
     '.cm h4 small{font-weight:400;color:#8a837a;font-size:12px}.cm h4 a{margin-left:auto;font-size:12px;font-weight:700;color:#6b665e;text-decoration:none;border:1px solid #d9d4cc;border-radius:999px;padding:2px 9px}.cm h4 a:hover{background:#f4f2ee}',
     '.cm-list{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}',
     '.cm-it{border:1px solid #ece8e1;border-radius:10px;padding:9px 11px;background:#fbfaf8}.cm-it.priv{background:#f6f5f2;border-style:dashed}',
@@ -134,7 +134,7 @@
     '.cm-act{margin-left:auto;display:inline-flex;gap:8px}.cm-act button{border:0;background:none;color:#a0988e;font-size:12px;cursor:pointer;padding:0}.cm-act button:hover{color:#1d1b18}.cm-act button.cm-del:hover{color:#8a2f22}',
     '.cm-sure{margin-left:auto;font-size:12px;color:#8a2f22}.cm-sure button{border:1px solid #e0c7c1;background:#fff;border-radius:6px;font-size:12px;margin-left:4px;cursor:pointer;padding:1px 7px}',
     '.cm-empty{font-size:13px;color:#8a837a;margin:0 0 10px}',
-    '.cm-form{display:flex;flex-direction:column;gap:8px}',
+    '.cm-form{display:flex;flex-direction:column;gap:6px}',
     '.cm-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}',
     '.cm-pick{display:inline-flex;border:1px solid #d9d4cc;border-radius:999px;overflow:hidden}',
     '.cm-pick button{border:0;background:#fff;font:inherit;font-size:13px;padding:6px 13px;cursor:pointer;color:#3b3833}',
@@ -142,7 +142,7 @@
     '.cm-pick button.on[data-w="거믄"]{background:#111;color:#fff;font-weight:800}.cm-pick button.on[data-w="힌"]{background:#fff;color:#111;font-weight:800;box-shadow:inset 0 0 0 2px #111}.cm-pick button.on[data-w="벗"]{background:#6b665e;color:#fff;font-weight:700}',
     '.cm-pick.vis button.on{background:#1d1b18;color:#fff;font-weight:800}.cm-pick.vis button.on[data-v="pub"]{background:#2f6b45}',
     '.cm input[type=text],.cm input[type=password],.cm textarea{font:inherit;font-size:16px;border:1px solid #d9d4cc;border-radius:8px;padding:8px 10px;background:#fff;color:#1d1b18;width:100%;box-sizing:border-box}',
-    '.cm textarea{min-height:76px;resize:vertical;line-height:1.6}',
+    '.cm textarea{min-height:52px;resize:vertical;line-height:1.6}',
     '@media (min-width:761px){.cm textarea.cm-text{font-size:14px}}',
     '.cm .cm-edit{margin-top:4px}.cm-go.ghost{background:#fff;color:#6b665e;border:1px solid #d9d4cc;margin-right:6px}',
     '.cm-name{max-width:160px}',
@@ -304,7 +304,7 @@
 })();
 
 /* 좋아요(빨간 별)와 「누구세요?」는 likes.js — 기물 이야기가 붙는 모든 페이지에 함께 불러온다 */
-(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js?v=20261024d'; s.defer = true; document.head.appendChild(s); })();
+(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js?v=20261027d'; s.defer = true; document.head.appendChild(s); })();
 
 /* 방문자 수(오늘/누적)는 visit.js */
 (function () { if (document.querySelector('script[src^="visit.js"]')) return; var s = document.createElement('script'); s.src = 'visit.js?v=20261019'; s.defer = true; document.head.appendChild(s); })();

@@ -122,7 +122,7 @@
     '.shr.wb .wb-t,.cmpbtn.wb .wb-t{background:rgba(255,255,255,.72);padding:2px 6px;border-radius:6px;color:#2b2418}',
     /* 검은 띠 위(사진 넘겨 보기)에서는 밝은 동그라미 */
     '.mp-bar .wb .wb-c{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff}.mp-bar .wb .wb-t{color:#ddd}.mp-bar .wb.m .wb-c{background:rgba(255,255,255,.88);color:#111}',
-    '.d-foot .wb,.sd-foot .wb,#lb .ft .wb{margin:0 2px}dialog .d-body{max-height:calc(92vh - 82px)!important}#st-dlg .sd-body{max-height:calc(92vh - 82px)!important}.sa-top .wb+.wb{margin-left:10px}.sa-top .wb{vertical-align:top}'
+    '.d-foot .wb,.sd-foot .wb,#lb .ft .wb{margin:0 2px}dialog .d-body{max-height:calc(92vh - 70px)!important}#st-dlg .sd-body{max-height:calc(92vh - 70px)!important}.d-foot,.sd-foot{padding-top:6px!important;padding-bottom:6px!important}.sa-top .wb+.wb{margin-left:10px}.sa-top .wb{vertical-align:top}'
   ].join('');
   document.head.appendChild(css);
   var MAP = [
