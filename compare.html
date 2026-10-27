@@ -144,31 +144,39 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       var M = '<div class="fp"><div class="fs">겹쳐 보기</div><div style="position:relative;margin:0 auto 18px;width:' + Math.round(maxW * sM) + 'px;height:' + Math.round(maxH * sM) + 'px">' + tk + fc.map(function (c, i) { return '<div data-fi="' + i + '" data-c="' + c.color + '" data-k="d" style="' + CU + 'position:absolute;left:0;bottom:0;width:' + Math.round(c.dm.w * sM) + 'px;height:' + Math.round(c.dm.h * sM) + 'px;border:' + (c.ref ? 3 : 2) + 'px solid ' + c.color + ';background:' + c.color + '14"></div>'; }).join('') + '<div style="position:absolute;left:-4px;bottom:-4px;width:8px;height:8px;border-radius:50%;background:#111;pointer-events:none"></div></div></div>';
       var f3 = fc.filter(function (c) { return c.dm.d != null; }), R;
       if (f3.length >= 2) {
-        var K = 0.866, P = function (x, y, z, s) { return [(x - y) * K * s, (x + y) * 0.5 * s - z * s]; };
         var mw = Math.max.apply(null, f3.map(function (c) { return c.dm.w; })), md = Math.max.apply(null, f3.map(function (c) { return c.dm.d; })), mh = Math.max.apply(null, f3.map(function (c) { return c.dm.h; }));
-        var cr = [[0, 0, 0], [mw * 1.1, 0, 0], [mw, md, 0], [0, md * 1.1, 0], [0, 0, mh * 1.1], [mw, 0, mh], [mw, md, mh], [0, md, mh]].map(function (p) { return P(p[0], p[1], p[2], 1); });
-        var mnx = Math.min.apply(null, cr.map(function (p) { return p[0]; })), mxx = Math.max.apply(null, cr.map(function (p) { return p[0]; })), mny = Math.min.apply(null, cr.map(function (p) { return p[1]; })), mxy = Math.max.apply(null, cr.map(function (p) { return p[1]; }));
-        var sI = Math.min(2.2, (wide ? 230 : pw - 80) / (mxx - mnx), 380 / (mxy - mny)), W = Math.round((mxx - mnx) * sI + 80), H = Math.round((mxy - mny) * sI + 40);
-        var T = function (x, y, z) { var p = P(x, y, z, sI); return [Math.round(p[0] - mnx * sI + 40), Math.round(p[1] - mny * sI + 16)]; };
-        var TS = function (x, y, z) { return T(x, y, z).join(','); };
-        var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="display:block;margin:0 auto">';
-        svg += '<polygon points="' + [[0, 0, 0], [mw, 0, 0], [mw, md, 0], [0, md, 0]].map(function (p) { return TS(p[0], p[1], p[2]); }).join(' ') + '" fill="#00000008" stroke="#bbb" stroke-width="1"/>';
-        var ax = function (x, y, z, lb, dx, dy) { var p = T(x, y, z), o = T(0, 0, 0); return '<line x1="' + o[0] + '" y1="' + o[1] + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="#555" stroke-width="1.3"/><text x="' + (p[0] + dx) + '" y="' + (p[1] + dy) + '" font-size="11" font-weight="700" fill="#111" text-anchor="middle">' + lb + '</text>'; };
-        var tks = '';
-        for (var a = 50; a <= mw * 1.1; a += 50) { var p = T(a, 0, 0); tks += '<line x1="' + p[0] + '" y1="' + p[1] + '" x2="' + (p[0] + 4) + '" y2="' + (p[1] + 3) + '" stroke="#555" stroke-width="1.2"/><text x="' + (p[0] + 6) + '" y="' + (p[1] + 12) + '" font-size="10" fill="#444">' + a + '</text>'; }
-        for (var d3 = 50; d3 <= md * 1.1; d3 += 50) { var s3 = T(0, d3, 0); tks += '<line x1="' + s3[0] + '" y1="' + s3[1] + '" x2="' + (s3[0] - 4) + '" y2="' + (s3[1] + 3) + '" stroke="#555" stroke-width="1.2"/><text x="' + (s3[0] - 6) + '" y="' + (s3[1] + 12) + '" font-size="10" fill="#444" text-anchor="end">' + d3 + '</text>'; }
-        for (var b = 50; b <= mh * 1.1; b += 50) { var q = T(0, 0, b); tks += '<line x1="' + q[0] + '" y1="' + q[1] + '" x2="' + (q[0] - 5) + '" y2="' + q[1] + '" stroke="#555" stroke-width="1.2"/><text x="' + (q[0] - 7) + '" y="' + (q[1] + 3) + '" font-size="10" fill="#444" text-anchor="end">' + b + '</text>'; }
-        svg += ax(mw * 1.1, 0, 0, '가로', 26, 8) + ax(0, md * 1.1, 0, '깊이', -26, 8) + ax(0, 0, mh * 1.1, '높이', 0, -6);
-        svg += tks;
-        f3.map(function (c) { return { c: c, i: fc.indexOf(c) }; }).sort(function (x, y) { return y.c.dm.w * y.c.dm.d - x.c.dm.w * x.c.dm.d; }).forEach(function (o) {
-          var c = o.c, m = { a: [0, 0, 0], b: [c.dm.w, 0, 0], c: [c.dm.w, c.dm.d, 0], e: [0, c.dm.d, 0], a2: [0, 0, c.dm.h], b2: [c.dm.w, 0, c.dm.h], c2: [c.dm.w, c.dm.d, c.dm.h], e2: [0, c.dm.d, c.dm.h] };
-          var poly = function (ks, k) { return '<polygon data-c="' + c.color + '" data-k="' + k + '" points="' + ks.map(function (q) { return TS(m[q][0], m[q][1], m[q][2]); }).join(' ') + '" fill="' + c.color + ['1c', '38', '10'][k] + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.6) + '" stroke-linejoin="round"/>'; };
-          svg += '<g data-fi="' + o.i + '" style="' + CU + '">' + poly(['e', 'c', 'c2', 'e2'], 0) + poly(['b', 'c', 'c2', 'b2'], 1) + poly(['a2', 'b2', 'c2', 'e2'], 2) + '</g>';
-        });
-        var o0 = T(0, 0, 0);
-        svg += '<circle cx="' + o0[0] + '" cy="' + o0[1] + '" r="4" fill="#111"/></svg>';
+        var Sz = wide ? 270 : Math.min(pw - 80, 340), ex = mw * 1.1, ey = md * 1.1, ez = mh * 1.1, RR = Math.sqrt(ex * ex + ey * ey + ez * ez) / 2, sI = (Sz / 2 - 28) / RR;
+        var V3 = { yaw: Math.PI / 4, pitch: Math.PI / 6 };
+        var order3 = f3.map(function (c) { return { c: c, i: fc.indexOf(c) }; }).sort(function (x, y) { return y.c.dm.w * y.c.dm.d - x.c.dm.w * x.c.dm.d; });
+        var draw3 = function () {
+          var cy = Math.cos(V3.yaw), sy = Math.sin(V3.yaw), cp = Math.cos(V3.pitch), sp = Math.sin(V3.pitch);
+          var pr = function (x, y, z) { var dx = x - ex / 2, dy = y - ey / 2, dz = z - ez / 2, u = dx * cy - dy * sy, v = dx * sy + dy * cy; return { x: Sz / 2 + u * sI, y: Sz / 2 + (v * sp - dz * cp) * sI, w: v * cp + dz * sp }; };
+          var PT = function (x, y, z) { var q = pr(x, y, z); return q.x.toFixed(1) + ',' + q.y.toFixed(1); };
+          var o = pr(0, 0, 0), g = '<polygon points="' + [[0, 0], [ex, 0], [ex, ey], [0, ey]].map(function (q) { return PT(q[0], q[1], 0); }).join(' ') + '" fill="#00000008" stroke="#bbb" stroke-width="1"/>';
+          var ax = function (x, y, z, lb) { var q = pr(x, y, z), dx = q.x - o.x, dy = q.y - o.y, n = Math.sqrt(dx * dx + dy * dy) || 1; return '<line x1="' + o.x.toFixed(1) + '" y1="' + o.y.toFixed(1) + '" x2="' + q.x.toFixed(1) + '" y2="' + q.y.toFixed(1) + '" stroke="#555" stroke-width="1.3"/><text x="' + (q.x + dx / n * 14).toFixed(1) + '" y="' + (q.y + dy / n * 12 + 4).toFixed(1) + '" font-size="11" font-weight="700" fill="#111" text-anchor="middle">' + lb + '</text>'; };
+          var tks = '';
+          for (var a = 50; a <= ex; a += 50) { var t1 = pr(a, 0, 0); tks += '<circle cx="' + t1.x.toFixed(1) + '" cy="' + t1.y.toFixed(1) + '" r="1.8" fill="#555"/><text x="' + (t1.x + 4).toFixed(1) + '" y="' + (t1.y + 11).toFixed(1) + '" font-size="10" fill="#444">' + a + '</text>'; }
+          for (var d3 = 50; d3 <= ey; d3 += 50) { var t2 = pr(0, d3, 0); tks += '<circle cx="' + t2.x.toFixed(1) + '" cy="' + t2.y.toFixed(1) + '" r="1.8" fill="#555"/><text x="' + (t2.x - 4).toFixed(1) + '" y="' + (t2.y + 11).toFixed(1) + '" font-size="10" fill="#444" text-anchor="end">' + d3 + '</text>'; }
+          for (var bb = 50; bb <= ez; bb += 50) { var t3 = pr(0, 0, bb); tks += '<circle cx="' + t3.x.toFixed(1) + '" cy="' + t3.y.toFixed(1) + '" r="1.8" fill="#555"/><text x="' + (t3.x - 5).toFixed(1) + '" y="' + (t3.y + 3).toFixed(1) + '" font-size="10" fill="#444" text-anchor="end">' + bb + '</text>'; }
+          g += ax(ex, 0, 0, '가로') + ax(0, ey, 0, '깊이') + ax(0, 0, ez, '높이') + tks;
+          var FACES = [[[0, 1, 3, 2], 2, 0], [[4, 5, 7, 6], 2, 1], [[0, 2, 6, 4], 1, 0], [[1, 3, 7, 5], 1, 1], [[0, 1, 5, 4], 0, 0], [[2, 3, 7, 6], 0, 1]];
+          order3.forEach(function (od) {
+            var c = od.c, W3 = c.dm.w, D3 = c.dm.d, H3 = c.dm.h;
+            var cn = []; for (var n = 0; n < 8; n++) cn.push([n & 1 ? W3 : 0, n & 2 ? D3 : 0, n & 4 ? H3 : 0]);
+            var cw = pr(W3 / 2, D3 / 2, H3 / 2).w, fs = '';
+            FACES.forEach(function (F) {
+              var vs = F[0].map(function (ii) { return cn[ii]; }), mx = 0, my = 0, mz = 0; vs.forEach(function (q) { mx += q[0] / 4; my += q[1] / 4; mz += q[2] / 4; });
+              if (pr(mx, my, mz).w <= cw) return;
+              fs += '<polygon data-c="' + c.color + '" data-k="' + F[1] + '" points="' + vs.map(function (q) { return PT(q[0], q[1], q[2]); }).join(' ') + '" fill="' + c.color + ['1c', '38', '10'][F[1]] + '" stroke="' + c.color + '" stroke-width="' + (c.ref ? 2.2 : 1.6) + '" stroke-linejoin="round"/>';
+            });
+            g += '<g data-fi="' + od.i + '" style="' + CU + '">' + fs + '</g>';
+          });
+          return g + '<circle cx="' + o.x.toFixed(1) + '" cy="' + o.y.toFixed(1) + '" r="4" fill="#111"/>';
+        };
+        window.__v3 = { V: V3, draw: draw3, def: { yaw: Math.PI / 4, pitch: Math.PI / 6 } };
+        var svg = '<svg id="v3" width="' + Sz + '" height="' + Sz + '" viewBox="0 0 ' + Sz + ' ' + Sz + '" style="display:block;margin:0 auto;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none">' + draw3() + '</svg>';
         var lg = '<div style="display:flex;flex-direction:column;gap:6px;justify-content:center;font-size:13px;min-width:110px">' + fc.map(function (c, i) { return '<span data-fi="' + i + '" style="cursor:pointer;display:flex;align-items:center;gap:6px;color:#222;padding:6px 8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent"><i style="width:14px;height:14px;border-radius:3px;background:' + c.color + ';flex:none"></i>' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
-        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:' + (wide ? 'nowrap' : 'wrap') + ';align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
+        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:' + (wide ? 'nowrap' : 'wrap') + ';align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div><div style="font-size:11.5px;color:#777;text-align:center;margin-top:2px">그림을 끌면 돌려 볼 수 있어요 · 두 번 누르면 처음 각도</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
       var leg = '';
       figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button type="button" id="fbreset" style="flex:none;border:1.5px solid #111;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">초기화</button><div style="flex:1;text-align:center;font-size:11px;color:#777">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div><span style="flex:none;width:58px"></span></div></div>';
@@ -189,7 +197,9 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
           if (e.tagName === 'SPAN') e.style.fontWeight = on ? 900 : 400;
         });
       };
+      window.__fbApply = apply;
       fb.addEventListener('click', function (ev) {
+        if (window.__v3drag) { window.__v3drag = 0; return; }
         var e = ev.target.closest && ev.target.closest('[data-fi]');
         if (ev.target.closest && ev.target.closest('#fbreset')) { sel = {}; nsel = 0; refOn = true; apply(); return; }
         if (!e) { sel = {}; nsel = 0; apply(); return; }
@@ -200,6 +210,17 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       apply();
     }
   }
+
+  /* 입체 겹쳐 보기: 끌어서 돌리기 */
+  (function () {
+    var st = null;
+    var redraw = function () { var v = window.__v3, el = document.getElementById('v3'); if (!v || !el) return; el.innerHTML = v.draw(); if (window.__fbApply) window.__fbApply(); };
+    document.addEventListener('pointerdown', function (e) { var el = document.getElementById('v3'); if (!el || !el.contains(e.target) || e.button) return; st = { x: e.clientX, y: e.clientY, moved: 0, id: e.pointerId }; try { el.setPointerCapture(e.pointerId); } catch (x) {} el.style.cursor = 'grabbing'; });
+    document.addEventListener('pointermove', function (e) { if (!st || e.pointerId !== st.id) return; var v = window.__v3; if (!v) return; var dx = e.clientX - st.x, dy = e.clientY - st.y; if (Math.abs(dx) + Math.abs(dy) > 3) st.moved = 1; st.x = e.clientX; st.y = e.clientY; v.V.yaw += dx * 0.01; v.V.pitch = Math.max(0.05, Math.min(1.5, v.V.pitch + dy * 0.01)); redraw(); });
+    var end = function () { var el = document.getElementById('v3'); if (st && st.moved) { window.__v3drag = 1; setTimeout(function () { window.__v3drag = 0; }, 60); } st = null; if (el) el.style.cursor = 'grab'; };
+    document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+    document.addEventListener('dblclick', function (e) { var el = document.getElementById('v3'), v = window.__v3; if (!el || !v || !el.contains(e.target)) return; v.V.yaw = v.def.yaw; v.V.pitch = v.def.pitch; redraw(); });
+  })();
 
   var photos = [], cur = 0, lb = $('lb');
   function openLb(i) { photos = list().map(function (x) { return x; }); cur = i; showLb(); if (!lb.open) lb.showModal(); }
