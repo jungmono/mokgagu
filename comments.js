@@ -207,7 +207,7 @@
     if (w === '벗') h += '<input type="text" class="cm-name" placeholder="이름" maxlength="30" value="' + esc(ls.get(K_NAME, '')) + '">';
     else h += '<span class="cm-pick vis" role="radiogroup" aria-label="누가 볼 수 있나요"><button type="button" data-v="priv" class="' + (state.pub ? '' : 'on') + '">🔒 비공개</button><button type="button" data-v="pub" class="' + (state.pub ? 'on' : '') + '">공개</button></span>';
     h += '</div><textarea class="cm-text" placeholder="이 기물에 대한 이야기를 남겨 주세요"></textarea>' +
-      '<div class="cm-row" style="justify-content:space-between">' +
+      '<div class="cm-row" style="justify-content:flex-end">' +
       '<button type="button" class="cm-go cm-send">남기기</button></div>' +
       '</div>';
     return h;
