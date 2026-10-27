@@ -172,6 +172,14 @@ body{position:relative}
 .hm-fold b{font-size:15.5px;font-weight:900}.hm-fold small{font-size:13px;color:var(--muted)}.hm-fold em{font-style:normal;color:var(--brand);font-weight:900;font-size:13px;text-align:right;white-space:nowrap}
 .hm-fold.on em .ar{display:inline-block;transform:rotate(180deg)}
 .fd-head{grid-column:1/-1;display:flex;align-items:baseline;gap:10px;margin:0 0 -6px}.fd-head h2{margin:0;font-size:19px;font-weight:900}.fd-head small{color:var(--muted);font-size:13px}.fd-head a{margin-left:auto;font-size:13px;font-weight:700;color:var(--fg);text-decoration:none;border-bottom:1.5px solid var(--ink)}
+.hm-fg{display:flex;flex-direction:column;gap:10px}
+.hm-folds.has-open{grid-auto-rows:auto}.hm-two.fopen .hm-tiles{flex:0 0 auto}.hm-two.fopen{align-items:start}
+.hm-mini{display:flex;gap:14px;overflow-x:auto;padding:4px 6px 2px;scrollbar-width:none}.hm-mini::-webkit-scrollbar{display:none}.hm-mini[hidden]{display:none}
+.hm-mini a{flex:none;width:76px;text-decoration:none;color:inherit}
+.hm-mini .cv{display:grid;place-items:center;width:76px;height:100px;border-radius:2px 5px 5px 2px;overflow:hidden;background:#f1efeb;box-shadow:inset 2px 0 0 rgba(0,0,0,.15),0 4px 8px -3px rgba(0,0,0,.35);transition:transform .15s}.hm-mini a:hover .cv{transform:translateY(-3px)}
+.hm-mini .cv img{width:100%;height:100%;object-fit:cover;display:block}.hm-mini .cv svg{width:28px;height:28px}
+.hm-mini .bd{height:8px;margin-right:-14px;background:linear-gradient(var(--board),#24190f)}.hm-mini a:first-child .bd{margin-left:-6px}
+.hm-mini .lb{padding-top:6px;font-size:11px;font-weight:700;line-height:1.3;letter-spacing:-.03em;word-break:keep-all;overflow-wrap:anywhere}.hm-mini .lb small{display:block;color:var(--brand);font-weight:900}
 #grid:empty{display:none}#grid{margin-bottom:30px}
 /* 거믄·힌의 방 */
 .hm-home{border:2px solid var(--ink);border-radius:18px;overflow:hidden;margin-top:10px}
@@ -345,19 +353,20 @@ function buildTools() {
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
-document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a>`).join('');
+document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span><div class="bd"></div><div class="lb">${d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('')}</div></div>`).join('');
 /* 거믄·힌의 방 — 들어가면 각 화면에서 가족 확인을 한다 */
 document.getElementById('hm-home').innerHTML = `<div class="hd"><span class="mark">${MOON}</span><div class="t">거믄·힌의 방<small>거믄·힌만 들어갈 수 있습니다</small></div><span class="lk">${LOCK_JS}</span></div><div class="rows">${[['study.html', svg('seoan'), '공부방', '거믄의 노트 · 힌의 노트'], ['collection.html', svg('bandaji'), '소장품', '우리 집에 들인 목가구·기물'], ['stats.html', SANGAJI, '통계', '좋아요 · 찾아본 기물 · 이야기']].map(([h, ic, t, d]) => `<a class="row" href="${h}"><span class="i">${ic}</span><span><b>${t}</b><small>${d}</small></span><span class="go">›</span></a>`).join('')}</div>`;
 grid.classList.add('hm-sec');
 const closeFold = () => { history.replaceState(null, '', location.pathname); render(); };
 function render() {
   const fd = FOLDERS.find(([k]) => location.hash === '#' + k);
-  document.querySelectorAll('.hm-fold').forEach((a) => a.classList.toggle('on', !!fd && a.dataset.k === fd[0]));
-  grid.innerHTML = fd ? `<div class="fd-head"><h2>${fd[1]}</h2><small>${fd[3].length}${fd[0] === 'ref' ? '권' : '개'}</small><a href="#" id="fd-close">접기 ✕</a></div>` + fd[3].map(card).join('') : '';
+  document.querySelectorAll('.hm-fold').forEach((a) => { const on = !!fd && a.dataset.k === fd[0]; a.classList.toggle('on', on); a.nextElementSibling.hidden = !on; });
+  document.getElementById('hm-folds').classList.toggle('has-open', !!fd); document.querySelector('.hm-two').classList.toggle('fopen', !!fd);
+  grid.innerHTML = '';
 }
 document.getElementById('hm-folds').addEventListener('click', (e) => { const a = e.target.closest('.hm-fold'); if (a && a.classList.contains('on')) { e.preventDefault(); closeFold(); } });
 grid.addEventListener('click', (e) => { if (e.target.closest('#fd-close')) { e.preventDefault(); closeFold(); document.getElementById('sec-folds').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
-window.addEventListener('hashchange', () => { if (location.hash.startsWith('#see=')) return; render(); if (grid.innerHTML) grid.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#see=')) return; render(); });
 /* 고정 메뉴 줄 */
 document.querySelector('.topbar').addEventListener('click', (e) => {
   const b = e.target.closest('[data-go]'); if (!b) return;
