@@ -4,9 +4,9 @@
 (function () {
   var TOOLS = [
     { k: 'map', href: 'bandaji-map.html', t: '지도로 보기', title: '반닫이(궤)여지도', sub: '선생님 손지도로 지역별 반닫이를 봅니다' },
-    { k: 'auction', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' },
     { k: 'quiz', href: 'region-quiz.html', t: '지역 퀴즈', title: '이 반닫이는 어느 지역?', sub: '사진만 보고 지역을 맞혀 보세요' },
-    { k: 'ruler', href: 'region-ruler.html', t: '비례 자', title: '비례 자', sub: '우리 언양반닫이를 기준으로 지역별 비례를 견줘 봅니다' }
+    { k: 'ruler', href: 'region-ruler.html', t: '비례 자', title: '비례 자', sub: '우리 언양반닫이를 기준으로 지역별 비례를 견줘 봅니다' },
+    { k: 'auction', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }
   ];
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
   if (!cur) return;
