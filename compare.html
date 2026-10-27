@@ -43,7 +43,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
 <script src="common.js?v=8" defer></script><script src="cmpsave.js?v=20261025" defer></script>
 </head><body>
 <div class="wrap">
-  <div class="sa-top"><button type="button" class="sa-close" id="cls" aria-label="닫기" title="닫기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>닫기</button></div>
+  <div class="sa-top"><button type="button" class="sa-close" id="cls" aria-label="닫기" title="닫기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>닫기</button><button type="button" class="sa-close" id="cmp-share" aria-label="이 비교 공유" title="이 비교를 링크로 보내기" style="margin-left:8px">🔗 공유</button></div>
   <h1>나란히 보기</h1>
   <p class="sub" id="sub"></p>
   <div id="app"></div>
@@ -55,6 +55,13 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var PH = 'https://jungmono.github.io/mokgagu-photos/photos/';
+  /* 공유 링크(#c=도록/번호,도록/번호…)로 들어오면 그 비교를 이 기기의 비교 목록으로 가져온다 */
+  (function () {
+    var m = location.hash.match(/^#c=(.+)$/); if (!m) return;
+    var ks = m[1].split(',').map(function (x) { try { return decodeURIComponent(x); } catch (e) { return ''; } }).filter(Boolean).slice(0, 5);
+    if (ks.length) { try { localStorage.setItem('mokgagu_cmp', JSON.stringify(ks.map(function (k) { return { k: k }; }))); } catch (e) {} }
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  })();
   function list() { try { var a = JSON.parse(localStorage.getItem('mokgagu_cmp') || '[]'); return Array.isArray(a) ? a.slice(0, 5) : []; } catch (e) { return []; } }
 
   /* 크기 글자에서 가로·깊이·높이(cm)를 읽는다. 못 읽으면 null */
@@ -221,6 +228,18 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
     document.addEventListener('dblclick', function (e) { var el = document.getElementById('v3'), v = window.__v3; if (!el || !v || !el.contains(e.target)) return; v.V.yaw = v.def.yaw; v.V.pitch = v.def.pitch; redraw(); });
   })();
+
+  /* 나란히 보기 공유: 지금 비교 중인 기물이 그대로 열리는 링크 */
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest || !e.target.closest('#cmp-share')) return;
+    var a = list();
+    var say = function (t) { var d = document.createElement('div'); d.textContent = t; d.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;z-index:99999'; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2200); };
+    if (!a.length) { say('공유할 기물이 아직 없어요'); return; }
+    var url = 'https://jungmono.github.io/mokgagu/compare.html#c=' + a.map(function (x) { return encodeURIComponent(x.k); }).join(','), text = '조선의 목가구 — 나란히 보기 (' + a.length + '점)';
+    if (navigator.share) { navigator.share({ title: '조선의 목가구', text: text, url: url }).catch(function () {}); return; }
+    var t = text + '\n' + url;
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { say('링크를 복사했어요'); }, function () { prompt('복사해서 보내 주세요', t); }); else prompt('복사해서 보내 주세요', t);
+  });
 
   var photos = [], cur = 0, lb = $('lb');
   function openLb(i) { photos = list().map(function (x) { return x; }); cur = i; showLb(); if (!lb.open) lb.showModal(); }
