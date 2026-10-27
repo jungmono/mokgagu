@@ -287,6 +287,15 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   lb.addEventListener('pointerup', function (e) { if (sx == null) return; var dx = e.clientX - sx, dy = e.clientY - sy; sx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1); });
   lb.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
 
+  /* 기물 창만 띄운다 — 포털 화면 없이, 비교한 기물끼리 이전·다음으로 넘긴다 */
+  function openSee(u) {
+    var old = document.getElementById('seeFr'); if (old) old.remove();
+    var f = document.createElement('iframe'); f.id = 'seeFr'; f.src = u; f.title = '기물 창';
+    f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;background:transparent;z-index:2147483000;color-scheme:normal';
+    document.body.appendChild(f);
+  }
+  window.addEventListener('message', function (e) { if (e.origin === location.origin && e.data === 'mokgagu-see-close') { var f = document.getElementById('seeFr'); if (f) f.remove(); } });
+
   document.addEventListener('click', function (e) {
     if (e.target.closest && e.target.closest('#cls')) { window.close(); setTimeout(function () { location.href = 'index.html'; }, 250); return; }
     var b = e.target.closest && e.target.closest('[data-i]');
@@ -294,7 +303,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       if (c && c.k && c.k.indexOf('col/') !== 0) {
         var ks = window.__cols.filter(function (x) { return x.k && x.k.indexOf('col/') !== 0; }).map(function (x) { return x.k; });
         try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비교' })); } catch (er) {}
-        window.open('index.html#see=' + c.k.split('/')[0] + '/' + encodeURIComponent(c.k.split('/').slice(1).join('/')), '_blank'); return; }
+        openSee('index.html?embed=1#see=' + c.k.split('/')[0] + '/' + encodeURIComponent(c.k.split('/').slice(1).join('/'))); return; }
       openLb(ii); return; }
     var r = e.target.closest && e.target.closest('[data-rm]'); if (r) { (function(){var k=r.getAttribute('data-rm');try{var a=list().filter(function(x){return x.k!==k;});localStorage.setItem('mokgagu_cmp',JSON.stringify(a));}catch(er){}start();})(); }
   });

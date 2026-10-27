@@ -15,7 +15,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('emb');</script>
 <style>
+html.emb,html.emb body{background:transparent!important}html.emb body{visibility:hidden!important;overflow:hidden!important}html.emb dialog,html.emb dialog *{visibility:visible}
+
 :root{
   --bg:#ffffff; --card:#ffffff; --fg:#1f2433; --muted:#6b7183; --line:#e6e8f0;
   --brand:#4b55d6; --brand2:#7b4fd6; --brand-soft:#eef0ff;
@@ -467,7 +470,7 @@ function openItem(i) {
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
     <dl>${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
-    ${askNotes(r.b + '/' + r.pid)}<a href="${r.b}.html">도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
+    ${askNotes(r.b + '/' + r.pid)}<a href="${r.b}.html"${document.documentElement.classList.contains('emb') ? ' target="_blank" rel="noopener"' : ''}>도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
   $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : seqLabel ? seqLabel + ' ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
@@ -498,6 +501,7 @@ function openSeen() {
 }
 /* 다른 화면(비례 자 등)에서 열었으면 창을 닫을 때 그 화면으로 돌아간다 */
 $('dlg').addEventListener('close', () => {
+  if (document.documentElement.classList.contains('emb')) { try { parent.postMessage('mokgagu-see-close', location.origin); } catch (e) {} return; }
   if (!seqBack) return; const to = seqBack; seqBack = '';
   if (document.referrer && document.referrer.indexOf(to) >= 0 && history.length > 1) history.back(); else location.href = to;
 });
