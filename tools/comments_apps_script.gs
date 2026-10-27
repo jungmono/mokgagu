@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v21: 지역 퀴즈 순위표 — action=rank(누구나 읽기, GET·POST) · doPost rkadd {id, who(거믄|힌|벗), name, score, total}. 시트 '퀴즈순위' 탭. 거믄·힌은 가족 암호, 벗은 이름만.
  * v20: 공부방 노트 고치기·사진 추가 — doPost nlist(읽기)·nsave·ndel. 시트 '노트수정' 탭(고친 곳만 덮어씀) · '노트수정이력' 탭(고치기 전 글). 재배포 때 노트수정준비() 한 번 실행 권장.
  * v17: doGet 은 주소로 온 code 를 무시한다(가족 암호는 POST 로만). 가족 전용 읽기는 GET 으로는 'code' 오류가 난다.
  * v16: 가족 암호가 필요한 읽기(list·likes·stats·wlist·rlist·cmplist·clist·cimg·aget)를 doPost 본문({action, code, …})으로도 받는다. 사이트는 POST만 쓰고, 옛 GET 경로는 전환이 끝난 뒤 닫는다. 재배포 필요.
@@ -82,7 +83,7 @@ function doGet(e) {
   return read_(p);
 }
 // 읽기 동작 본체. 가족 암호가 필요한 읽기는 POST 본문으로도 받는다(주소에 암호가 남지 않게) — doPost 참고.
-const READ_POST_ = ['nlist', 'list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
+const READ_POST_ = ['rank', 'nlist', 'list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
 function read_(p) {
   const fam = isFam_(p.code);
   if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
@@ -94,6 +95,7 @@ function read_(p) {
   if (p.action === 'cmplist') return cmpGet_(fam);
   if (p.action === 'aget') return auGet_(p, fam);
   if (p.action === 'nlist') return nGet_(fam);
+  if (p.action === 'rank') return rankGet_();
   const rows = sheet_().getDataRange().getValues(); rows.shift();
   const list = rows.filter(r => r[0] && !r[7]).map(row_).filter(c => fam || c.pub);
   return out_({ ok: true, fam: fam, bad: !!p.code && !fam, list: list });
@@ -127,6 +129,7 @@ function doPost(e) {
       return out_({ ok: true });
     }
     if (d.action === 'like') return likePost_(d, fam);
+    if (d.action === 'rkadd') return rankPost_(d, fam);
     if (d.action === 'log') return logPost_(d, fam);
     if (d.action === 'qadd' || d.action === 'qedit' || d.action === 'qdel') return qPost_(d, fam);
     if (d.action === 'wsave' || d.action === 'wdel') return wPost_(d, fam);
@@ -562,3 +565,36 @@ function nPost_(d, fam) {
   return out_({ ok: true, item: nRow_(row) });
 }
 function 노트수정준비() { tab_(N_SHEET, N_HEAD); tab_(NH_SHEET, NH_HEAD); }
+
+
+/* ───────── 지역 퀴즈 순위표 (v21) ─────────
+   '퀴즈순위' 탭: id | time(한국 시각) | who(거믄|힌|벗) | name | score | total
+   같은 who+name 은 판이 쌓일수록 합산(누적), 한 판 최고점(best), 이번 달 합(msum). */
+const RANK_SHEET = '퀴즈순위';
+function rkSheet_() { return tab_(RANK_SHEET, ['id', 'time', 'who', 'name', 'score', 'total']); }
+function rankList_(sh) {
+  const rows = sh.getDataRange().getValues(); rows.shift();
+  const month = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM'), m = {};
+  rows.forEach(r => {
+    if (!r[0]) return;
+    const who = String(r[2]), name = String(r[3]), k = who + '|' + name, s = Number(r[4]) || 0, t = Number(r[5]) || 0;
+    const o = m[k] = m[k] || { who: who, name: name, sum: 0, tot: 0, games: 0, best: 0, msum: 0, mtot: 0 };
+    o.sum += s; o.tot += t; o.games++; if (s > o.best) o.best = s;
+    if (String(r[1]).slice(0, 7) === month) { o.msum += s; o.mtot += t; }
+  });
+  return Object.keys(m).map(k => m[k]);
+}
+function rankGet_() { return out_({ ok: true, list: rankList_(rkSheet_()) }); }
+function rankPost_(d, fam) {
+  let who = String(d.who || ''), name;
+  if (who === '거믄' || who === '힌') { if (!fam) return out_({ ok: false, err: 'code' }); name = who; }
+  else { who = '벗'; name = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 12); if (!name) return out_({ ok: false, err: 'name' }); }
+  const total = Math.max(1, Math.min(20, Math.round(Number(d.total) || 10)));
+  const score = Math.max(0, Math.min(total, Math.round(Number(d.score) || 0)));
+  const id = String(d.id || '').slice(0, 40); if (!id) return out_({ ok: false, err: 'id' });
+  const sh = rkSheet_(), n = sh.getLastRow();
+  const ids = n > 1 ? sh.getRange(Math.max(2, n - 300), 1, Math.min(300, n - 1) + 1, 1).getValues().map(r => String(r[0])) : [];
+  if (ids.indexOf(id) < 0) sh.appendRow([id, Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm'), who, name, String(score), String(total)]);
+  return out_({ ok: true, list: rankList_(sh) });
+}
+function 퀴즈순위준비() { rkSheet_(); }

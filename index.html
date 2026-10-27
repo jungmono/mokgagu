@@ -232,7 +232,7 @@ const JOSEONGWE_N = 161;
 const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
 document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-10-25';
+const SITE_UPDATED = '2026-10-27';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');

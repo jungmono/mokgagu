@@ -22,14 +22,102 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
 .next,.again{display:block;width:100%;margin-top:12px;font:inherit;font-size:16px;font-weight:900;padding:13px;border-radius:12px;border:0;background:#2b2418;color:#fff;cursor:pointer}
 .big{font-size:44px;font-weight:900;text-align:center;margin:10px 0 2px}.res{text-align:center;color:#6d6551}
 .wrong li{margin:4px 0}
+.rk{margin-top:14px}.rk h3{margin:0 0 8px;font-size:17px;font-weight:900}
+.who{display:flex;gap:8px;justify-content:center;margin:14px 0 10px}
+.who button{font:inherit;font-size:15px;font-weight:700;padding:8px 18px;border-radius:999px;border:1.5px solid #d8c9a3;background:#fff;color:#2b2418;cursor:pointer;min-height:40px}
+.who button.on{background:#111;border-color:#111;color:#fff}
+.nm{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1.5px solid #d8c9a3;border-radius:12px;margin:0 0 8px}
+.up{display:block;width:100%;font:inherit;font-size:16px;font-weight:900;padding:12px;border-radius:12px;border:1.5px solid #111;background:#fff;color:#111;cursor:pointer}
+.msg{font-size:13.5px;color:#b3402f;text-align:center;margin:6px 0 0;min-height:1em}.msg.g{color:#1f7a4f}
+.tabs{display:flex;gap:6px;margin:0 0 10px}.tabs button{font:inherit;font-size:14px;font-weight:700;padding:6px 14px;border-radius:999px;border:1px solid #e3d6b8;background:#fff;color:#6d6551;cursor:pointer}
+.tabs button.on{background:#faeeda;border-color:#ef9f27;color:#633806}
+.rt{width:100%;border-collapse:collapse;font-size:15px}.rt th{font-size:12.5px;color:#8a7f66;font-weight:700;text-align:left;padding:0 4px 6px}
+.rt td{padding:9px 4px;border-top:1px solid #efe5cc}.rt .r{text-align:right}.rt tr.me td{background:#fdf3dc}
+.rt .n{font-weight:900;width:2.2em}.ic{display:inline-block;width:1.2em;text-align:center}
+.empty{color:#8a7f66;text-align:center;padding:10px 0;font-size:14px}
 .note{font-size:12.5px;color:#8a7f66;margin-top:14px;line-height:1.6;text-align:center}
 </style>
 <script src="common.js?v=8" defer></script></head><body><main>
 <script src="tools-head.js" data-k="quiz"></script>
 <div class="card" id="box"><p style="text-align:center;color:#6d6551">문제를 준비하는 중…</p></div>
+<div class="card rk" id="rank"><h3>순위표</h3><div class="tabs" id="rtabs"><button type="button" data-t="sum" class="on">누적</button><button type="button" data-t="best">최고점</button><button type="button" data-t="month">이번 달</button></div><div id="rbody"><p class="empty">순위표를 불러오는 중…</p></div><p class="note" style="margin-top:8px">같은 이름은 판이 쌓일수록 합산돼요.</p></div>
 <p class="note">사진은 도록 원본 사진을 불러오며, 안 되면 작은 사진으로 바꿔요. 이름에 지역이 적힌 반닫이만 문제로 나와요.</p>
 </main>
 <script src="search.js"></script>
+<script>
+/* 순위표 — 거믄·힌은 「누구세요?」에서 고른 대로, 벗은 이름을 적는다. 시트 '퀴즈순위' 탭(누적=맞힌 수 합계). */
+window.RK = (function () {
+  var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
+  var g = function (k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  var st = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+  var sg = function (k) { try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var fam = function () { return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code'); };
+  var who0 = function () { var w = g('mokgagu_lk_shared') === '1' ? sg('mokgagu_lk_who_s') : g('mokgagu_cm_who'); return (w === '거믄' || w === '힌') && fam() ? w : '벗'; };
+  var list = [], tab = 'sum', mine = '';
+  var STAR = { '거믄': '<span class="ic" style="color:#c62828">★</span>', '힌': '<span class="ic" style="color:#c62828">☆</span>', '벗': '<span class="ic">💬</span>' };
+  function sorted(t) {
+    var key = t === 'best' ? 'best' : t === 'month' ? 'msum' : 'sum', tot = t === 'month' ? 'mtot' : 'tot';
+    return list.filter(function (o) { return o[key] > 0 || (t !== 'month' && o.games); })
+      .map(function (o) { return { o: o, v: o[key], p: o[tot] ? Math.round(o[t === 'month' ? 'msum' : 'sum'] / o[tot] * 100) : 0 }; })
+      .sort(function (a, b) { return b.v - a.v || b.p - a.p; });
+  }
+  function place(t, k) { var a = sorted(t); for (var i = 0; i < a.length; i++) if (a[i].o.who + '|' + a[i].o.name === k) return i + 1; return 0; }
+  function paint() {
+    var a = sorted(tab), el = document.getElementById('rbody');
+    if (!a.length) { el.innerHTML = '<p class="empty">' + (tab === 'month' ? '이번 달 기록이 아직 없어요.' : '첫 기록을 올려 보세요!') + '</p>'; return; }
+    var h = tab === 'best' ? '한 판 최고' : '맞힌 수';
+    el.innerHTML = '<table class="rt"><tr><th>순위</th><th>이름</th><th class="r">' + h + '</th><th class="r">정답률</th></tr>' + a.slice(0, 30).map(function (x, i) {
+      var o = x.o, nm = o.who === '벗' ? '벗 ' + esc(o.name) : esc(o.name);
+      return '<tr' + (o.who + '|' + o.name === mine ? ' class="me"' : '') + '><td class="n">' + (i + 1) + '</td><td>' + (STAR[o.who] || '') + ' ' + nm + '</td><td class="r">' + x.v + (tab === 'best' ? ' / 10' : '') + '</td><td class="r">' + x.p + '%</td></tr>';
+    }).join('') + '</table>';
+  }
+  function load() {
+    fetch(API, { method: 'POST', body: JSON.stringify({ action: 'rank' }) }).then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.ok) { list = j.list || []; paint(); } else document.getElementById('rbody').innerHTML = '<p class="empty">순위표를 준비하는 중이에요.</p>'; })
+      .catch(function () { document.getElementById('rbody').innerHTML = '<p class="empty">순위표를 불러오지 못했어요.</p>'; });
+  }
+  document.getElementById('rtabs').onclick = function (e) {
+    var b = e.target.closest('button'); if (!b) return; tab = b.dataset.t;
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); }); paint();
+  };
+  function form() {
+    var w = who0();
+    return '<div class="who" id="rkwho">' + ['거믄', '힌', '벗'].map(function (x) { return '<button type="button" data-w="' + x + '"' + (x === w ? ' class="on"' : '') + '>' + x + '</button>'; }).join('') + '</div>'
+      + '<input class="nm" id="rkname" maxlength="12" placeholder="벗이면 이름을 적어 주세요" value="' + esc(g('mokgagu_cm_name')) + '"' + (w === '벗' ? '' : ' hidden') + '>'
+      + '<button type="button" class="up" id="rkup">순위표에 올리기</button><p class="msg" id="rkmsg"></p>';
+  }
+  function bind(box, score, total) {
+    var w = who0(), id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), sent = false;
+    var nm = box.querySelector('#rkname'), msg = box.querySelector('#rkmsg'), up = box.querySelector('#rkup');
+    box.querySelector('#rkwho').onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.w !== '벗' && !fam()) { msg.className = 'msg'; msg.textContent = '거믄·힌은 「누구세요?」에서 가족 암호를 넣은 기기에서 골라요.'; return; }
+      w = b.dataset.w; msg.textContent = '';
+      this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+      nm.hidden = w !== '벗'; if (w === '벗') nm.focus();
+    };
+    nm.oninput = function () { msg.textContent = ''; };
+    up.onclick = function () {
+      if (sent) return;
+      var name = w === '벗' ? nm.value.replace(/\s+/g, ' ').trim() : w;
+      if (!name) { msg.className = 'msg'; msg.textContent = '이름을 먼저 적어 주세요.'; nm.focus(); return; }
+      if (w === '벗') st('mokgagu_cm_name', name);
+      up.textContent = '올리는 중…';
+      fetch(API, { method: 'POST', body: JSON.stringify({ action: 'rkadd', id: id, who: w, name: name, score: score, total: total, code: w === '벗' ? '' : g('mokgagu_cm_code') }) })
+        .then(function (r) { return r.json(); }).then(function (j) {
+          if (!j || !j.ok) { up.textContent = '순위표에 올리기'; msg.className = 'msg'; msg.textContent = j && j.err === 'code' ? '가족 암호가 맞지 않아요. 「누구세요?」에서 다시 골라 주세요.' : '올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'; return; }
+          sent = true; list = j.list || []; mine = (w === '벗' ? '벗' : w) + '|' + name; paint();
+          var k = place('sum', mine);
+          up.textContent = '올렸어요'; msg.className = 'msg g'; msg.textContent = '누적 ' + k + '등이에요!';
+          document.getElementById('rank').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }).catch(function () { up.textContent = '순위표에 올리기'; msg.className = 'msg'; msg.textContent = '인터넷 연결을 확인해 주세요.'; });
+    };
+  }
+  load();
+  return { form: form, bind: bind };
+})();
+</script>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id), box = $('box');
@@ -72,9 +160,12 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
   function end() {
     box.innerHTML = `<div class="big">${score} / ${ROUND}</div><p class="res">${score >= 8 ? '눈썰미가 대단해요!' : score >= 5 ? '꽤 잘 보셨어요.' : '자꾸 보면 눈에 익어요.'}</p>
       ${wrong.length ? `<h3 style="margin:14px 0 6px">틀린 것 다시 보기</h3><ul class="wrong">${wrong.map((r) => `<li>${esc(regOf(r))} — <a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">${esc(r.name)}</a> (${esc(r.cat)})</li>`).join('')}</ul>` : ''}
+      ${RK.form()}
       <button type="button" class="again">한 번 더</button>`;
     box.querySelector('.again').onclick = start;
+    RK.bind(box, score, ROUND);
   }
   start();
 })();
+
 </script></body></html>
