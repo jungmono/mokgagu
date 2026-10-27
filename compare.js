@@ -11,8 +11,6 @@
 
   var css = document.createElement('style');
   css.textContent =
-    '.cmpbtn{position:absolute;top:8px;left:84px;z-index:5;background:#fff;color:#111;border:1.5px solid #111;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;line-height:1.4}' +
-    '.cmpbtn.on{background:#111;color:#fff}' +
     '#cmp-tray{position:fixed;left:12px;bottom:12px;z-index:2147482000;display:none;align-items:center;gap:8px;background:#fff;border:2px solid #111;border-radius:16px;padding:8px 10px;box-shadow:0 6px 18px rgba(0,0,0,.18);max-width:calc(100vw - 24px);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}' +
     '#cmp-tray .th{position:relative;width:40px;height:40px;flex:none}#cmp-tray .th img{width:40px;height:40px;object-fit:cover;border-radius:8px;border:1px solid #e5e1da;display:block}' +
     '#cmp-tray .th button{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;border:1.5px solid #111;background:#fff;font-size:11px;line-height:1;padding:0;cursor:pointer}' +
@@ -64,11 +62,13 @@
   }
   function has(k) { return load().some(function (x) { return x.k === k; }); }
 
+  /* 창 단추 공통 모양(common.js 의 MOKGAGU_WB) */
+  function btnHtml(on) { var W = window.MOKGAGU_WB; return W ? W.html(on ? 'check' : 'scale', on ? '담김' : '비교') : (on ? '✓ 담김' : '비교'); }
   function attach(dlg) {
     if (path === 'compare.html') return;
     var b = dlg.querySelector('.cmpbtn');
     if (!b) {
-      b = document.createElement('button'); b.type = 'button'; b.className = 'cmpbtn';
+      b = document.createElement('button'); b.type = 'button'; b.className = 'cmpbtn wb'; b.innerHTML = btnHtml(false);
       b.onclick = function (ev) {
         ev.stopPropagation();
         resolve(parse(dlg)).then(function (c) {
@@ -95,7 +95,7 @@
     var s = dlg.querySelector('.shr'); b.style.left = s ? (s.offsetLeft + s.offsetWidth + 8) + 'px' : '8px';
     var p = parse(dlg), c = current(dlg), on = c && c.pid && has(c.b + '/' + c.pid);
     if (p && !p.pid && !window.SEARCH) loadIdx().then(function () { sync(dlg); });
-    b.className = 'cmpbtn' + (on ? ' on' : ''); b.textContent = on ? '✓ 비교에 담김' : '비교에 담기';
+    b.className = 'cmpbtn wb' + (on ? ' on' : ''); b.innerHTML = btnHtml(on);
     b.style.display = p ? '' : 'none';
   }
   function scan() { document.querySelectorAll('dialog[open]').forEach(attach); }

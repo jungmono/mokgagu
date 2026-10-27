@@ -85,6 +85,66 @@
 (function () {
   var d = document;
   if (d.querySelector('script[src^="compare.js"]')) return;
-  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=5'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=2'; m.defer = true; d.head.appendChild(m); }
+  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=6'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=2'; m.defer = true; d.head.appendChild(m); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', go); else go();
+})();
+
+/* 창 단추 공통 모양(2026-10-27) — 반투명 동그라미 아이콘 + 아래 작은 이름.
+   · 닫기·이전·다음·공유·비교에 담기 같은 창 단추는 모두 이 모양 하나를 쓴다(높이 36px 동그라미, 이름 11px).
+   · 새 창을 만들 때: 단추에 class="wb" 를 달고 안에 MOKGAGU_WB.html('x','닫기') 를 넣거나(주요 단추는 class="wb m"),
+     아래 MAP 에 선택자 한 줄만 보태면 자동으로 바뀐다. 아이콘: x share left right scale check */
+(function () {
+  if (window.MOKGAGU_WB) return;
+  var ICO = {
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    share: '<path d="M4 13v6a1 1 0 001 1h14a1 1 0 001-1v-6M16 7l-4-4-4 4M12 3v12"/>',
+    left: '<path d="M15 5l-7 7 7 7"/>',
+    right: '<path d="M9 5l7 7-7 7"/>',
+    scale: '<path d="M4 5h6v14H4zM14 5h6v14h-6z"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+  };
+  function html(icon, label) {
+    return '<span class="wb-c"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + (ICO[icon] || '') + '</svg></span><span class="wb-t">' + label + '</span>';
+  }
+  window.MOKGAGU_WB = { html: html, icons: ICO };
+  var css = document.createElement('style'); css.id = 'wb-css';
+  css.textContent = [
+    '.wb{display:inline-flex!important;flex-direction:column;align-items:center;gap:3px;min-width:44px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;margin:0;font:inherit;color:#2b2418!important;cursor:pointer;line-height:1;-webkit-tap-highlight-color:transparent}',
+    '.wb .wb-c{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.5);border:1.5px solid rgba(43,36,24,.4);color:#2b2418;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .12s,transform .12s}',
+    '.wb .wb-t{font-size:11px;font-weight:500;color:#6d6551;white-space:nowrap}',
+    '.wb.m .wb-c,.wb.on .wb-c{background:rgba(43,36,24,.78);border-color:transparent;color:#fff}',
+    '.wb:hover .wb-c{background:rgba(255,255,255,.75)}.wb.m:hover .wb-c,.wb.on:hover .wb-c{background:rgba(43,36,24,.9)}',
+    '.wb:active .wb-c{transform:scale(.94)}',
+    '.wb:disabled{opacity:.35;cursor:default}',
+    '.wb:focus-visible .wb-c{outline:2px solid #2b2418;outline-offset:2px}',
+    /* 사진 위에 떠 있는 단추(공유·비교에 담기): 이름에 옅은 바탕을 깔아 어떤 사진 위에서도 읽히게 */
+    '.shr.wb,.cmpbtn.wb{position:absolute;top:8px;z-index:5}.shr.wb{left:8px}.cmpbtn.wb{left:62px}',
+    '.shr.wb .wb-t,.cmpbtn.wb .wb-t{background:rgba(255,255,255,.72);padding:2px 6px;border-radius:6px;color:#2b2418}',
+    /* 검은 띠 위(사진 넘겨 보기)에서는 밝은 동그라미 */
+    '.mp-bar .wb .wb-c{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff}.mp-bar .wb .wb-t{color:#ddd}.mp-bar .wb.m .wb-c{background:rgba(255,255,255,.88);color:#111}',
+    '.d-foot .wb,.sd-foot .wb,#lb .ft .wb{margin:0 2px}dialog .d-body{max-height:calc(92vh - 82px)!important}#st-dlg .sd-body{max-height:calc(92vh - 82px)!important}.sa-top .wb+.wb{margin-left:10px}.sa-top .wb{vertical-align:top}'
+  ].join('');
+  document.head.appendChild(css);
+  var MAP = [
+    ['#d-prev', 'left', '이전'], ['#d-next', 'right', '다음', 1], ['#d-close', 'x', '닫기'],
+    ['#st-prev', 'left', '이전'], ['#st-next', 'right', '다음', 1], ['#st-close', 'x', '닫기'],
+    ['#lb-p', 'left', '이전'], ['#lb-n', 'right', '다음', 1], ['#lb-x', 'x', '닫기'],
+    ['#cls', 'x', '닫기'], ['#cmp-share', 'share', '공유'], ['.shr', 'share', '공유'],
+    ['.mp-bar button[data-mpn="-1"]', 'left', '이전'], ['.mp-bar button[data-mpn="1"]', 'right', '다음', 1], ['.mp-bar button[data-mpn="0"]', 'x', '닫기']
+  ];
+  var ALL = MAP.map(function (m) { return m[0]; }).join(',');
+  function conv(el, m) {
+    if (el.dataset.wb) return; el.dataset.wb = '1';
+    el.classList.remove('sa-close'); el.classList.add('wb'); if (m[3]) el.classList.add('m');
+    el.removeAttribute('style'); el.innerHTML = html(m[1], m[2]);
+  }
+  var busy = false;
+  function scan() {
+    busy = false;
+    if (!document.querySelector(ALL)) return;
+    MAP.forEach(function (m) { document.querySelectorAll(m[0]).forEach(function (el) { conv(el, m); }); });
+  }
+  function soon() { if (!busy) { busy = true; requestAnimationFrame(scan); } }
+  new MutationObserver(soon).observe(document.documentElement, { childList: true, subtree: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', soon); else soon();
 })();
