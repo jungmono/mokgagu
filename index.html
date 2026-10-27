@@ -183,6 +183,8 @@ body{position:relative}
 .hm-home .row:hover{background:#f6f6f4}
 .hm-home .row .i{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--ink);color:#fff}.hm-home .row .i svg{width:28px;height:28px}
 .hm-home .row b{font-size:15px}.hm-home .row small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px}.hm-home .go{color:#b0b4c3;font-size:20px}
+/* 노트북 폭에서 오른쪽 떠 있는 창(60px)이 내용을 가리지 않도록 양옆을 넉넉히 */
+@media (min-width:821px) and (max-width:1360px){.wrap{max-width:calc(100vw - 168px)}}
 @media (max-width:820px){.hm-two{grid-template-columns:1fr}.hm-home .rows{grid-template-columns:1fr}.hm-home .row{border-left:0;border-top:1px solid var(--line)}.hm-home .row:first-child{border-top:0}.bk-arr{display:none}}
 @media (max-width:560px){.bk-shelf a{width:96px}.bk-shelf .cv{width:96px;height:128px}.bk-shelf{gap:14px}.bk-shelf .bd{margin-right:-14px}
   .hm-fold{grid-template-columns:44px 72px 1fr;row-gap:2px}.hm-fold .i{width:44px;height:44px;grid-row:span 2}.hm-fold .i svg{width:30px;height:30px}.hm-fold em{grid-column:2/4;text-align:left}}
