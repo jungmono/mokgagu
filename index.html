@@ -16,6 +16,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('emb');</script>
+<script>/* 나란히 보기에서 띄운 기물 창(embed): 이전·다음은 비교한 순서대로 부모(compare)가 넘겨 준다 */
+window.MOKGAGU_EMB = {
+  on: document.documentElement.classList.contains('emb'),
+  all: function () { try { return JSON.parse(sessionStorage.getItem('mokgagu_cmp_all') || '[]'); } catch (e) { return []; } },
+  go: function (key, d) { var a = this.all(), i = a.indexOf(key), t = a[i + d]; if (t) parent.postMessage({ t: 'mokgagu-see-go', k: t }, location.origin); },
+  label: function (key) { var a = this.all(), i = a.indexOf(key); return i < 0 ? null : { text: '비교 ' + (i + 1) + ' / ' + a.length, first: i === 0, last: i === a.length - 1 }; }
+};</script>
 <style>
 html.emb,html.emb body{background:transparent!important}html.emb body{visibility:hidden!important;overflow:hidden!important}html.emb dialog,html.emb dialog *{visibility:visible}
 
@@ -474,6 +481,18 @@ function openItem(i) {
   $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : seqLabel ? seqLabel + ' ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
+}
+
+/* 나란히 보기에서 띄운 경우: 이전·다음은 비교한 순서(도록·소장품 모두)로 */
+if (MOKGAGU_EMB.on) {
+  const _oi = openItem;
+  openItem = function (i) {
+    const key = shown[cur] ? shown[cur].b + '/' + shown[cur].pid : '';
+    if (cur >= 0 && i !== cur && key) { MOKGAGU_EMB.go(key, i > cur ? 1 : -1); return; }
+    _oi(i);
+    const L = MOKGAGU_EMB.label(shown[cur].b + '/' + shown[cur].pid);
+    if (L) { $('d-pos').textContent = L.text; $('d-prev').disabled = L.first; $('d-next').disabled = L.last; }
+  };
 }
 $('d-prev').addEventListener('click', () => openItem(cur - 1));
 $('d-next').addEventListener('click', () => openItem(cur + 1));
