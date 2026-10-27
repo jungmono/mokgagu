@@ -153,11 +153,11 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       if (f3.length >= 2) {
         var mw = Math.max.apply(null, f3.map(function (c) { return c.dm.w; })), md = Math.max.apply(null, f3.map(function (c) { return c.dm.d; })), mh = Math.max.apply(null, f3.map(function (c) { return c.dm.h; }));
         var Sz = wide ? 430 : pw, ex = mw * 1.1, ey = md * 1.1, ez = mh * 1.1, RR = Math.sqrt(ex * ex + ey * ey + ez * ez) / 2, sI = (Sz / 2 - 28) / RR;
-        var V3 = { yaw: Math.PI / 4, pitch: Math.PI / 6 };
+        var V3 = { yaw: Math.PI / 4, pitch: Math.PI / 6, z: 1 };
         var order3 = f3.map(function (c) { return { c: c, i: fc.indexOf(c) }; }).sort(function (x, y) { return y.c.dm.w * y.c.dm.d - x.c.dm.w * x.c.dm.d; });
         var draw3 = function () {
           var cy = Math.cos(V3.yaw), sy = Math.sin(V3.yaw), cp = Math.cos(V3.pitch), sp = Math.sin(V3.pitch);
-          var pr = function (x, y, z) { var dx = x - ex / 2, dy = y - ey / 2, dz = z - ez / 2, u = dx * cy - dy * sy, v = dx * sy + dy * cy; return { x: Sz / 2 + u * sI, y: Sz / 2 + (v * sp - dz * cp) * sI, w: v * cp + dz * sp }; };
+          var pr = function (x, y, z) { var dx = x - ex / 2, dy = y - ey / 2, dz = z - ez / 2, u = dx * cy - dy * sy, v = dx * sy + dy * cy; return { x: Sz / 2 + u * sI * V3.z, y: Sz / 2 + (v * sp - dz * cp) * sI * V3.z, w: v * cp + dz * sp }; };
           var PT = function (x, y, z) { var q = pr(x, y, z); return q.x.toFixed(1) + ',' + q.y.toFixed(1); };
           var o = pr(0, 0, 0), g = '<polygon points="' + [[0, 0], [ex, 0], [ex, ey], [0, ey]].map(function (q) { return PT(q[0], q[1], 0); }).join(' ') + '" fill="#00000008" stroke="#bbb" stroke-width="1"/>';
           var ax = function (x, y, z, lb) { var q = pr(x, y, z), dx = q.x - o.x, dy = q.y - o.y, n = Math.sqrt(dx * dx + dy * dy) || 1; return '<line x1="' + o.x.toFixed(1) + '" y1="' + o.y.toFixed(1) + '" x2="' + q.x.toFixed(1) + '" y2="' + q.y.toFixed(1) + '" stroke="#555" stroke-width="1.3"/><text x="' + (q.x + dx / n * 14).toFixed(1) + '" y="' + (q.y + dy / n * 12 + 4).toFixed(1) + '" font-size="11" font-weight="700" fill="#111" text-anchor="middle">' + lb + '</text>'; };
@@ -180,10 +180,10 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
           });
           return g + '<circle cx="' + o.x.toFixed(1) + '" cy="' + o.y.toFixed(1) + '" r="4" fill="#111"/>';
         };
-        window.__v3 = { V: V3, draw: draw3, def: { yaw: Math.PI / 4, pitch: Math.PI / 6 } };
+        window.__v3 = { V: V3, draw: draw3, def: { yaw: Math.PI / 4, pitch: Math.PI / 6, z: 1 } };
         var svg = '<svg id="v3" width="' + Sz + '" height="' + Sz + '" viewBox="0 0 ' + Sz + ' ' + Sz + '" style="display:block;margin:0 auto;max-width:100%;height:auto;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none">' + draw3() + '</svg>';
         var lg = '<div style="display:flex;flex-direction:row;flex-wrap:wrap;gap:2px 10px;justify-content:center;font-size:13px">' + fc.map(function (c, i) { return '<span data-fi="' + i + '" style="cursor:pointer;display:flex;align-items:center;gap:6px;color:#222;padding:6px 8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent"><i style="width:14px;height:14px;border-radius:3px;background:' + c.color + ';flex:none"></i>' + esc((c.name || '').slice(0, 9)) + '</span>'; }).join('') + '</div>';
-        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div><div style="font-size:11.5px;color:#777;text-align:center;margin-top:2px">그림을 끌면 돌려 볼 수 있어요 · 두 번 누르면 처음 각도</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
+        R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div><div style="font-size:11.5px;color:#777;text-align:center;margin-top:2px">그림을 끌면 돌려 보고, 휠·두 손가락으로 크게·작게 · 두 번 누르면 처음으로</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
       var leg = '';
       figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button type="button" id="fbreset" style="flex:none;border:1.5px solid #111;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">초기화</button><div style="flex:1;text-align:center;font-size:11px;color:#777">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div><span style="flex:none;width:58px"></span></div></div>';
@@ -220,13 +220,22 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
 
   /* 입체 겹쳐 보기: 끌어서 돌리기 */
   (function () {
-    var st = null;
+    var st = null, pts = {}, pd0 = 0, pz0 = 1;
     var redraw = function () { var v = window.__v3, el = document.getElementById('v3'); if (!v || !el) return; el.innerHTML = v.draw(); if (window.__fbApply) window.__fbApply(); };
-    document.addEventListener('pointerdown', function (e) { var el = document.getElementById('v3'); if (!el || !el.contains(e.target) || e.button) return; st = { x: e.clientX, y: e.clientY, moved: 0, id: e.pointerId }; try { el.setPointerCapture(e.pointerId); } catch (x) {} el.style.cursor = 'grabbing'; });
-    document.addEventListener('pointermove', function (e) { if (!st || e.pointerId !== st.id) return; var v = window.__v3; if (!v) return; var dx = e.clientX - st.x, dy = e.clientY - st.y; if (Math.abs(dx) + Math.abs(dy) > 3) st.moved = 1; st.x = e.clientX; st.y = e.clientY; v.V.yaw += dx * 0.01; v.V.pitch = Math.max(0.05, Math.min(1.5, v.V.pitch + dy * 0.01)); redraw(); });
-    var end = function () { var el = document.getElementById('v3'); if (st && st.moved) { window.__v3drag = 1; setTimeout(function () { window.__v3drag = 0; }, 60); } st = null; if (el) el.style.cursor = 'grab'; };
+    var zoomBy = function (f) { var v = window.__v3; if (!v) return; v.V.z = Math.max(0.4, Math.min(5, v.V.z * f)); redraw(); };
+    var pdist = function () { var k = Object.keys(pts); return k.length === 2 ? Math.hypot(pts[k[0]][0] - pts[k[1]][0], pts[k[0]][1] - pts[k[1]][1]) : 0; };
+    document.addEventListener('pointerdown', function (e) { var el = document.getElementById('v3'); if (!el || !el.contains(e.target) || e.button) return; pts[e.pointerId] = [e.clientX, e.clientY]; try { el.setPointerCapture(e.pointerId); } catch (x) {}
+      if (Object.keys(pts).length === 2) { st = null; pd0 = pdist(); pz0 = window.__v3 ? window.__v3.V.z : 1; window.__v3drag = 1; return; }
+      st = { x: e.clientX, y: e.clientY, moved: 0, id: e.pointerId }; el.style.cursor = 'grabbing'; });
+    document.addEventListener('pointermove', function (e) { var v = window.__v3; if (!v || !pts[e.pointerId]) return; pts[e.pointerId] = [e.clientX, e.clientY];
+      if (Object.keys(pts).length === 2 && pd0) { var d = pdist(); if (d) { v.V.z = Math.max(0.4, Math.min(5, pz0 * d / pd0)); redraw(); } return; }
+      if (!st || e.pointerId !== st.id) return; var dx = e.clientX - st.x, dy = e.clientY - st.y; if (Math.abs(dx) + Math.abs(dy) > 3) st.moved = 1; st.x = e.clientX; st.y = e.clientY; v.V.yaw += dx * 0.01; v.V.pitch = Math.max(0.05, Math.min(1.5, v.V.pitch + dy * 0.01)); redraw(); });
+    var end = function (e) { var el = document.getElementById('v3'); if (e && pts[e.pointerId]) delete pts[e.pointerId]; if (Object.keys(pts).length < 2) pd0 = 0;
+      if (st && st.moved) { window.__v3drag = 1; setTimeout(function () { window.__v3drag = 0; }, 60); } else if (window.__v3drag && !Object.keys(pts).length) setTimeout(function () { window.__v3drag = 0; }, 60);
+      st = null; if (el) el.style.cursor = 'grab'; };
     document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
-    document.addEventListener('dblclick', function (e) { var el = document.getElementById('v3'), v = window.__v3; if (!el || !v || !el.contains(e.target)) return; v.V.yaw = v.def.yaw; v.V.pitch = v.def.pitch; redraw(); });
+    document.addEventListener('wheel', function (e) { var el = document.getElementById('v3'); if (!el || !el.contains(e.target)) return; e.preventDefault(); zoomBy(Math.pow(1.0015, -e.deltaY)); }, { passive: false });
+    document.addEventListener('dblclick', function (e) { var el = document.getElementById('v3'), v = window.__v3; if (!el || !v || !el.contains(e.target)) return; v.V.yaw = v.def.yaw; v.V.pitch = v.def.pitch; v.V.z = 1; redraw(); });
   })();
 
   /* 나란히 보기 공유: 지금 비교 중인 기물이 그대로 열리는 링크 */
