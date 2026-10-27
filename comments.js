@@ -208,7 +208,6 @@
     else h += '<span class="cm-pick vis" role="radiogroup" aria-label="누가 볼 수 있나요"><button type="button" data-v="priv" class="' + (state.pub ? '' : 'on') + '">🔒 비공개</button><button type="button" data-v="pub" class="' + (state.pub ? 'on' : '') + '">공개</button></span>';
     h += '</div><textarea class="cm-text" placeholder="이 기물에 대한 이야기를 남겨 주세요"></textarea>' +
       '<div class="cm-row" style="justify-content:space-between">' +
-      '<p class="cm-note">' + (w === '벗' ? '벗의 이야기는 누구나 볼 수 있어요.' : (state.pub ? '공개 — 누구나 볼 수 있어요.' : '비공개 — 가족 암호를 넣은 기기에서만 보여요.')) + '</p>' +
       '<button type="button" class="cm-go cm-send">남기기</button></div>' +
       '</div>';
     return h;
