@@ -50,9 +50,14 @@ self.addEventListener('fetch', function (e) {
     }));
     return;
   }
-  /* 화면·스크립트·자료: 네트워크 먼저, 안 되면 저장본 */
-  e.respondWith(fetch(req).then(function (r) {
-    if (r.ok) { var copy = r.clone(); caches.open(PAGES).then(function (c) { c.put(req, copy); }); }
+  /* 화면·스크립트·자료: 네트워크 먼저, 안 되면 저장본.
+     GitHub Pages는 10분 동안 브라우저 저장본을 써도 된다고 보내므로, 고친 화면이 바로 보이도록
+     늘 서버에 바뀌었는지 묻는다(cache:'no-cache' — 안 바뀌었으면 짧은 304만 오가서 가볍다) (2026-10-28) */
+  var fresh = req.mode === 'navigate'
+    ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin', redirect: 'manual' })
+    : new Request(req, { cache: 'no-cache' });
+  e.respondWith(fetch(fresh).then(function (r) {
+    if (r.ok && r.type !== 'opaqueredirect') { var copy = r.clone(); caches.open(PAGES).then(function (c) { c.put(req, copy); }); }
     return r;
   }).catch(function () {
     return caches.match(req, { ignoreSearch: false }).then(function (hit) { return hit || caches.match(req, { ignoreSearch: true }); });
