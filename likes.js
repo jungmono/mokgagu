@@ -115,10 +115,10 @@
   css.textContent = [
     '.lk-st{position:absolute;top:4px;left:4px;z-index:5;display:inline-flex;align-items:center;gap:1px}',
     '.lk-btn{position:relative;width:22px;height:22px;border-radius:50%;border:0;padding:0;margin:0;background:rgba(255,255,255,.88);box-shadow:0 1px 3px rgba(0,0,0,.16);display:grid;place-items:center;cursor:pointer;transition:transform .12s}.lk-btn::before{content:"";position:absolute;inset:-8px}',
-    '.lk-btn{width:26px!important;height:26px!important;background:#fff!important;border:1px solid #b5aa98!important;box-shadow:none!important}.lk-btn svg{width:15px!important;height:15px!important}',
+    '.lk-btn{width:26px!important;height:26px!important;background:rgba(255,255,255,.7)!important;border:0!important;outline:0!important;box-shadow:none!important}.lk-btn svg{width:15px!important;height:15px!important}',
     '.lk-big[data-lk]{width:34px;height:34px;padding:0;border-radius:50%;border:1px solid #b5aa98;font-size:0;gap:0;justify-content:center}.lk-big[data-lk] svg{width:18px;height:18px}.lk-big[data-lk].on{border-color:#b5aa98}',
     '.lk-btn:hover{transform:scale(1.08)}.lk-btn:active{transform:scale(.92)}.lk-btn svg{width:14px;height:14px;display:block}',
-    '.lk-btn.on{box-shadow:0 1px 3px rgba(0,0,0,.16)}',
+    ".lk-btn.on{box-shadow:none}",
     '.lk-other{display:inline-flex;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));pointer-events:none}.lk-other svg{width:13px;height:13px;display:block}',
     '.lk-pop{animation:lkpop .35s ease}@keyframes lkpop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}',
     '#rv .rv-it .lk-st{top:1px;left:1px}#rv .rv-it .lk-btn{display:none}#rv .rv-it .lk-other svg{width:12px;height:12px}',
