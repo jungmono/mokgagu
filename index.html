@@ -465,6 +465,20 @@ $('r-fac').addEventListener('click', (e) => { const c = e.target.closest('.r-chi
 $('r-chips').addEventListener('click', (e) => { const c = e.target.closest('.r-chip'); if (!c) return; only = c.dataset.k; drawResults(); });
 $('r-grid').addEventListener('click', (e) => { const c = e.target.closest('.r-item'); if (c) openItem(Number(c.dataset.i)); });
 
+/* 자료 묶음을 더블클릭하면 그 묶음의 기물을 한꺼번에 모아 보여 준다 */
+function showGroup(k) {
+  const f = FOLDERS.find((x) => x[0] === k); if (!f) return;
+  const paths = f[3].map((d) => d.path);
+  loadIdx().then(() => {
+    hits = (window.SEARCH || []).filter((r) => paths.includes(r.b));
+    hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
+    only = ''; fa = {}; lastLabel = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
+    $('results').hidden = false; $('home').hidden = true;
+    drawResults(f[1] + ' 전체'); window.scrollTo({ top: 0 });
+  });
+}
+document.getElementById('hm-folds').addEventListener('dblclick', (e) => { const a = e.target.closest('.hm-fold'); if (!a) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(a.dataset.k); });
+
 /* 통계의 「선생님께 여쭤볼 것」에서 왔으면 사진 창에 그 기물에 대한 질문과 선생님 말씀을 함께 */
 function askNotes(cid) {
   const L = seqNotes && seqNotes[cid]; if (!L || !L.length) return '';
