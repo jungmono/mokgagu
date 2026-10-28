@@ -451,13 +451,13 @@ function drawResults(label) {
   const conds = Object.values(fa).filter(Boolean);
   if (label != null) lastLabel = label;
   $('r-title').innerHTML = `‘${esc(lastLabel ?? $('q').value.trim())}’ 검색 결과 <b>${hits.length.toLocaleString('ko-KR')}</b>건` + (conds.length ? ` <span class="r-sub">→ ${esc(conds.join(' + '))} <b>${shown.length}</b>점</span>` : '');
-  const chips = [['', '전체', hits.length], ...ORDER.filter((k) => counts[k]).map((k) => [k, TITLE[k], counts[k]])];
+  const chips = [['', '전체', hits.length], ...ORDER.filter((k) => counts[k]).map((k) => [k, SHORT[k] || TITLE[k], counts[k]])];
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
     `<button class="r-chip" data-k="${k}" aria-pressed="${only === k}">${esc(t)}<small>${n}</small></button>`).join('') : '';
   $('r-grid').innerHTML = shown.length ? shown.map((r, i) => `
     <button class="r-item" data-i="${i}" data-cid="${esc(r.b + '/' + r.pid)}">
       <div class="ph">${r.t ? `<img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="">` : ''}</div>
-      <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat)}</div>
+      <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat.replace(/^우리나라 전통 무늬 \d+\s*/, ""))}</div>
       <div class="mt">${esc([r.era, r.size, r.wood].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';
 }
