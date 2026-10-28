@@ -8,7 +8,7 @@ function say(t){var d=document.createElement('div');d.textContent=t;d.style.cssT
 /* ── 공유창: 카카오톡 · 문자 · 인스타그램 · 링크복사 ──
    카카오톡 대화창으로 바로 보내려면 카카오 개발자(developers.kakao.com)에서 앱을 만들고
    「JavaScript 키」를 아래에 넣고, 플랫폼 → Web 에 https://jungmono.github.io 를 등록한다. 키가 비어 있으면 링크를 복사해 준다. */
-var KAKAO_KEY='';
+var KAKAO_KEY='c9f47b5a6780c5bb506586cda58fab6e';
 var ISM=/Android|iPhone|iPad/i.test(navigator.userAgent),ISI=/iPhone|iPad/i.test(navigator.userAgent);
 var sheetCss=document.createElement('style');
 sheetCss.textContent='#mk-sh{position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif}#mk-sh[hidden]{display:none}'+
