@@ -54,6 +54,14 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 .ses.o-h .body h3{border-left-color:#bbb}
 @media (max-width:480px){.tabs button{padding:8px 11px;font-size:14px}}
 @media (max-width:600px){.tabs{display:grid;grid-template-columns:repeat(12,1fr);gap:1.5px;background:#111;width:auto;overflow:hidden}.tabs button,.tabs button+button{grid-column:span 3;border:0;padding:10px 2px;font-size:13px;white-space:nowrap;min-width:0}.tabs button.t-w,.tabs button.t-q,.tabs button.t-m{grid-column:span 4;font-size:14px}}
+/* 공부방 모든 메뉴 공통: 같은 가로폭 · 같은 글꼴/글자 크기 (제목 20~23px 굵게 · 본문 15.5px · 작은 글 13~14px) */
+#wr,#qz,#kgm{max-width:none!important;width:100%;margin-left:0!important;margin-right:0!important}
+#wr,#wr *,#qz,#qz *,#kgm,#kgm *{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+#qz .hd h2{font-size:clamp(20px,2.6vw,23px)!important;font-weight:900;letter-spacing:-.02em}
+#qz .q,.kg-det h2,#wr .wr-title{font-size:clamp(19px,2.6vw,23px)!important;font-weight:900}
+#qz .opt,#qz .ex,#qz .miss,#wr .wr-body,#wr .wr-tip,.kg-det p,.kg-det li,.kg-list button,.kg-bar input{font-size:15.5px!important;line-height:1.8}
+#qz .score b{font-family:"Noto Serif KR",serif}
+@media (max-width:480px){#qz .opt,#qz .ex,#wr .wr-body,.kg-det p,.kg-det li{font-size:15px!important}}
 /* 목차 */
 .toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 26px}
 .toc a{text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;background:#fff}
@@ -219,7 +227,8 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     }
     if (tab === '지도') {
       app.innerHTML = html.split('<div class="tools">')[0] + '<div id="kgm"></div>';
-      window.MOKGAGU_KG.mount(document.getElementById('kgm'), {
+      var kgEl = document.getElementById('kgm');
+      var mountKg = function () { window.MOKGAGU_KG.mount(kgEl, {
         sessions: DATA.sessions,
         load: function () { return dec('study/kg.bin').then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }); },
         goSession: function (se) {
@@ -227,7 +236,9 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
           var id = 'd' + (se.owner === '힌' ? 'h' : 'g') + se.date;
           setTimeout(function () { var a = document.getElementById(id); if (a) a.scrollIntoView(); }, 60);
         }
-      });
+      }); };
+      /* 지식 지도는 d3가 필요하니 이 화면에 들어올 때만 받는다 */
+      if (window.d3) mountKg(); else { var d3s = document.createElement('script'); d3s.src = 'd3.min.js'; d3s.onload = mountKg; d3s.onerror = function () { kgEl.innerHTML = '<p class="foot">지도를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.</p>'; }; document.head.appendChild(d3s); }
       return;
     }
     if (tab === '퀴즈') {
