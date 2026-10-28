@@ -13,7 +13,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
 .prog{display:flex;justify-content:space-between;font-size:14px;color:#6d6551;margin:0 0 8px;font-weight:700}
 .qa{display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);gap:14px;align-items:start}
 .ph{position:relative;aspect-ratio:4/3;width:100%;max-height:max(260px,calc(100vh - 330px));background:#f4ecd8;border-radius:12px;overflow:hidden}
-.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+.ph{touch-action:none;cursor:zoom-in}.ph.z{cursor:grab}.ph img{transform-origin:0 0;user-select:none;-webkit-user-drag:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
 .side{min-width:0;padding-top:56px}
 @media(max-width:640px){.qa{grid-template-columns:1fr}.ph{max-height:none}.side{padding-top:0}}
 .opts{display:grid;grid-template-columns:1fr;gap:6px;margin:0}
@@ -146,12 +146,30 @@ window.RK = (function () {
     while (Q.length < ROUND) { const g = order[k++ % order.length]; if (bag[g].length) Q.push(bag[g].pop()); }
     Q = shuffle(Q); i = 0; score = 0; wrong = []; show();
   }
+  function zoomable(ph) {
+    const im = ph.querySelector('img'); let k = 1, x = 0, y = 0; const P = new Map(); let d0 = 0, k0 = 1, last = null, moved = 0;
+    const apply = () => { const w = ph.clientWidth, h = ph.clientHeight; k = Math.min(8, Math.max(1, k));
+      x = Math.min(0, Math.max(w - w * k, x)); y = Math.min(0, Math.max(h - h * k, y));
+      im.style.transform = `translate(${x}px,${y}px) scale(${k})`; ph.classList.toggle('z', k > 1); };
+    const zoomAt = (cx, cy, nk) => { nk = Math.min(8, Math.max(1, nk)); x = cx - (cx - x) * nk / k; y = cy - (cy - y) * nk / k; k = nk; apply(); };
+    const pos = (e) => { const r = ph.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    ph.addEventListener('wheel', (e) => { e.preventDefault(); const [cx, cy] = pos(e); zoomAt(cx, cy, k * Math.exp(-e.deltaY * 0.0018)); }, { passive: false });
+    ph.addEventListener('pointerdown', (e) => { ph.setPointerCapture(e.pointerId); P.set(e.pointerId, pos(e)); moved = 0;
+      if (P.size === 2) { const a = [...P.values()]; d0 = Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]); k0 = k; } last = pos(e); });
+    ph.addEventListener('pointermove', (e) => { if (!P.has(e.pointerId)) return; const p = pos(e); P.set(e.pointerId, p);
+      if (P.size === 2) { const a = [...P.values()]; const d = Math.hypot(a[0][0] - a[1][0], a[0][1] - a[1][1]); if (d0) zoomAt((a[0][0] + a[1][0]) / 2, (a[0][1] + a[1][1]) / 2, k0 * d / d0); }
+      else if (k > 1 && last) { x += p[0] - last[0]; y += p[1] - last[1]; apply(); } last = p; });
+    const up = (e) => { P.delete(e.pointerId); last = P.size === 1 ? [...P.values()][0] : null; d0 = 0; };
+    ph.addEventListener('pointerup', up); ph.addEventListener('pointercancel', up);
+    ph.addEventListener('dblclick', (e) => { const [cx, cy] = pos(e); k > 1 ? (k = 1, x = y = 0, apply()) : zoomAt(cx, cy, 3); });
+  }
   function show() {
     const r = Q[i], ans = regOf(r); warm(Q[i + 1]);
     const others = shuffle(regs.filter((g) => g !== ans)).slice(0, 3), opts = shuffle([ans].concat(others));
     box.innerHTML = `<div class="prog"><span>${i + 1} / ${ROUND}</span><span>맞힌 것 ${score}</span></div>
       <div class="qa"><div class="ph"><img src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt="어느 지역 반닫이일까요?"></div>
       <div class="side"><div class="opts">${opts.map((o) => `<button type="button" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div><div id="fb"></div></div></div>`;
+    zoomable(box.querySelector('.ph'));
     box.querySelector('.opts').onclick = (e) => {
       const b = e.target.closest('button'); if (!b || b.disabled) return;
       const ok = b.dataset.o === ans; if (ok) score++; else wrong.push(r);
