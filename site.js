@@ -42,7 +42,7 @@
     var b = BOOKS[slug]; if (!b) return;
     var h1 = document.querySelector('h1');
     var cv = document.createElement('section'); cv.className = 'st-cover';
-    cv.innerHTML = '<img src="covers/' + slug + '.jpg" alt="' + esc(b.t) + ' 표지" onerror="this.remove()">' +
+    cv.innerHTML = '<img src="covers/' + slug + '.jpg?v=2" alt="' + esc(b.t) + ' 표지" onerror="this.remove()">' +
       '<div class="st-tx"><span class="st-grp">' + GROUP[b.g || ''] + '</span><h2>' + esc(b.t) + '</h2><p>' + esc(b.d) + '</p><p class="st-n">기물 ' + b.n.toLocaleString('ko-KR') + '건</p></div>';
     if (h1) { h1.parentNode.insertBefore(cv, h1); h1.classList.add('st-h1-hide'); }
     else top.parentNode.insertBefore(cv, top.nextSibling);

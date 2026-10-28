@@ -325,7 +325,7 @@ document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added
 const grid = document.getElementById('grid');
 const card = (d) => `
     <a class="card" href="${url(d)}">
-      <div class="cover t-${d.tone}"><img src="covers/${d.path}.jpg" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></div>
+      <div class="cover t-${d.tone}"><img src="covers/${d.path}.jpg?v=2" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></div>
       <div style="min-width:0">
         <h3>${d.title}${d.added === latest.added && newest.length < DASHBOARDS.length ? '<span class="new">NEW</span>' : ''}</h3>
         <p>${d.desc}</p>
@@ -350,7 +350,7 @@ const MOON = '<svg viewBox="0 0 60 60" width="42" height="42" aria-label="거믄
 const isNew = (d) => d.added === latest.added && newest.length < DASHBOARDS.length;
 /* 도록 서가 */
 document.getElementById('bk-n').textContent = `${MAIN.length}권 · 옆으로 밀어서 보기`;
-document.getElementById('bk-shelf').innerHTML = MAIN.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span>${isNew(d) ? '<span class="new">NEW</span>' : ''}<div class="bd"></div><div class="lb">${d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('');
+document.getElementById('bk-shelf').innerHTML = MAIN.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg?v=2" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span>${isNew(d) ? '<span class="new">NEW</span>' : ''}<div class="bd"></div><div class="lb">${d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('');
 document.querySelectorAll('.bk-arr').forEach((btn) => btn.addEventListener('click', () => { const sh = document.getElementById('bk-shelf'); sh.scrollBy({ left: Number(btn.dataset.d) * sh.clientWidth * 0.8, behavior: 'smooth' }); }));
 document.getElementById('bk-all').addEventListener('click', (e) => { const box = document.getElementById('bk-box'); const o = box.classList.toggle('open'); e.currentTarget.textContent = o ? '한 줄로 접기' : '모두 펼쳐 보기'; });
 /* 탐색 도구 — 아이콘 모양은 아래 TOOL_ICO, 지도는 아래쪽 MAPICO(선생님 손지도 윤곽) */
