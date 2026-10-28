@@ -303,7 +303,7 @@
 })();
 
 /* 좋아요(빨간 별)와 「누구세요?」는 likes.js — 기물 이야기가 붙는 모든 페이지에 함께 불러온다 */
-(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js?v=20261027e'; s.defer = true; document.head.appendChild(s); })();
+(function () { if (document.querySelector('script[src$="likes.js"]')) return; var s = document.createElement('script'); s.src = 'likes.js?v=20261028e'; s.defer = true; document.head.appendChild(s); })();
 
 /* 방문자 수(오늘/누적)는 visit.js */
 (function () { if (document.querySelector('script[src^="visit.js"]')) return; var s = document.createElement('script'); s.src = 'visit.js?v=20261019'; s.defer = true; document.head.appendChild(s); })();

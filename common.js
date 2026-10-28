@@ -97,7 +97,7 @@
   if (window.MOKGAGU_WB) return;
   var ICO = {
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
-    share: '<path d="M4 13v6a1 1 0 001 1h14a1 1 0 001-1v-6M16 7l-4-4-4 4M12 3v12"/>',
+    share: '<circle cx="18" cy="5.5" r="2.7" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="2.7" fill="currentColor" stroke="none"/><circle cx="18" cy="18.5" r="2.7" fill="currentColor" stroke="none"/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1"/>',
     left: '<path d="M15 5l-7 7 7 7"/>',
     right: '<path d="M9 5l7 7-7 7"/>',
     scale: '<path d="M4 5h6v14H4zM14 5h6v14h-6z"/>',
@@ -119,6 +119,8 @@
     '.wb:focus-visible .wb-c{outline:2px solid #2b2418;outline-offset:2px}',
     /* 사진 위에 떠 있는 단추(공유·비교에 담기): 이름에 옅은 바탕을 깔아 어떤 사진 위에서도 읽히게 */
     '.shr.wb,.cmpbtn.wb{position:absolute;top:8px;z-index:5}.shr.wb{left:8px}.cmpbtn.wb{left:62px}',
+    /* 좋아요·공유: 글자 없는 얇은 테두리 동그라미 단추 */
+    '.shr.wb,#cmp-share.wb{min-width:0}.shr.wb .wb-t,#cmp-share.wb .wb-t{display:none}.shr.wb .wb-c,#cmp-share.wb .wb-c{width:34px;height:34px;background:#fff;border:1px solid #b5aa98;color:#4a4339;-webkit-backdrop-filter:none;backdrop-filter:none}.shr.wb .wb-c svg,#cmp-share.wb .wb-c svg{width:16px;height:16px}.shr.wb:hover .wb-c,#cmp-share.wb:hover .wb-c{background:#f6f2ea}',
     '.shr.wb .wb-t,.cmpbtn.wb .wb-t{background:rgba(255,255,255,.72);padding:2px 6px;border-radius:6px;color:#2b2418}',
     /* 검은 띠 위(사진 넘겨 보기)에서는 밝은 동그라미 */
     '.mp-bar .wb .wb-c{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff}.mp-bar .wb .wb-t{color:#ddd}.mp-bar .wb.m .wb-c{background:rgba(255,255,255,.88);color:#111}',
