@@ -87,7 +87,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
   const qs = (a, q) => { a = a.slice().sort((x, y) => x - y); return a[Math.floor((a.length - 1) * q)]; };
   /* 부채꼴 그래프: 가로·세로 모두 0에서 시작, 1cm 같은 길이
      - 0에서 뻗는 직선 = 같은 비율(가로:세로)  - 0을 중심으로 한 호 = 같은 크기(0에서 앞면 모서리까지 거리) */
-  const XM = 140, YM = 100, W = 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
+  /* 휴대폰(좁은 화면)에서는 그림 폭을 줄여 그려 눈금·비율 글자가 덜 작아지게 */
+  const XM = 140, YM = 100, W = (window.innerWidth || 800) < 560 ? 470 : 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
   const sx = (v) => L + v * S, sy = (v) => H - B - v * S;
   const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양반닫이 (compare.js 의 기준과 같은 값) */
   const RAYS = [1, 1.25, 1.5, 1.75, 2];   /* 가로:세로 */
@@ -141,7 +142,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
     for (let v = 0; v <= YM; v += 10) s += `<line x1="${sx(0)}" y1="${sy(v)}" x2="${sx(XM)}" y2="${sy(v)}" stroke="#efe6cf"/>` + (v % 20 ? '' : `<text x="${L - 6}" y="${sy(v) + 4}" text-anchor="end" font-size="12" fill="#6d6551">${v}</text>`);
     s += `<text x="${W - R}" y="${H - 2}" text-anchor="end" font-size="12" fill="#8a7f66">가로 cm</text><text x="4" y="${T - 14}" font-size="12" fill="#8a7f66">세로 cm</text>`;
     s += `<g clip-path="url(#pl)">${cell(w, h)}`;
-    [[R1, '소 | 중'], [R2, '중 | 대']].forEach(([r, t]) => { const x0 = r > YM ? Math.sqrt(r * r - YM * YM) : 0; s += `<path d="M ${sx(x0)} ${sy(Math.min(r, YM))} A ${r * S} ${r * S} 0 0 1 ${sx(r)} ${sy(0)}" fill="none" stroke="#8a5a2b" stroke-width="2" stroke-dasharray="7 5"/><text x="${sx(r) + 5}" y="${sy(4)}" font-size="13" font-weight="700" fill="#8a5a2b">${t}</text>`; });
+    [[R1, '소 | 중'], [R2, '중 | 대']].forEach(([r, t], ai) => { const x0 = r > YM ? Math.sqrt(r * r - YM * YM) : 0; s += `<path d="M ${sx(x0)} ${sy(Math.min(r, YM))} A ${r * S} ${r * S} 0 0 1 ${sx(r)} ${sy(0)}" fill="none" stroke="#8a5a2b" stroke-width="2" stroke-dasharray="7 5"/><text x="${sx(r) + 4}" y="${sy(W < 700 ? 4 + ai * 9 : 4)}" font-size="${W < 700 ? 12 : 13}" font-weight="700" fill="#8a5a2b">${W < 700 ? t.replace(/ /g, '') : t}</text>`; });
     s += `<rect x="${sx(0)}" y="${sy(REFM.h)}" width="${REFM.w * S}" height="${REFM.h * S}" fill="#d12b2b" fill-opacity=".06" stroke="#d12b2b" stroke-width="1.5"/>`;
     if (own) s += `<rect x="${sx(0)}" y="${sy(h)}" width="${w * S}" height="${h * S}" fill="none" stroke="#111" stroke-width="1.5" stroke-dasharray="5 4"/>`;
     s += '</g>';

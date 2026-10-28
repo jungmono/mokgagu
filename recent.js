@@ -28,6 +28,8 @@
     '#rv.folded .rv-list,#rv.folded .rv-nav{display:none}',
     '@media (max-width:720px){#rv{right:10px;bottom:10px;gap:6px}#rv .rv-box{width:56px;padding:6px 4px;gap:4px;border-radius:12px}#rv .rv-it{width:46px;height:46px;border-radius:7px}#rv .rv-t{font-size:10.5px}#rv .rv-t small{display:none}#rv .rv-top{width:42px;height:42px}#rv .rv-top svg{width:20px;height:20px}#rv .rv-nav{height:18px}}',
     '@media print{#rv{display:none}}',
+    /* 휴대폰: 화면을 내리는 동안에는 떠 있는 창을 오른쪽으로 비켜 두고, 멈추면 다시 보인다 */
+    '@media (max-width:720px){#rv{transition:transform .25s,opacity .25s}#rv.rv-away{transform:translateX(84px);opacity:0;pointer-events:none}}',
     /* 사진 칸 비율 고정 — 아이패드·아이폰 사파리에서 사진이 칸 밖으로 넘치거나 칸이 길어지지 않게.
        칸 높이를 너비 기준(padding-top)으로 정하고, 사진은 칸 안에 꽉 맞춰(object-fit: contain) 넣는다. */
     '.r-item .ph,.lk-gal .lk-ph,.grid .card .ph{position:relative!important;overflow:hidden!important;aspect-ratio:auto!important;height:0!important;padding:0!important;padding-top:' + (/(heritage|nmk|horim|ewha)\.html/.test(location.pathname) ? '75%' : '100%') + '!important}',
@@ -118,4 +120,12 @@
   window.addEventListener('storage', function (e) { if (e.key === KEY) { list = load(); render(); } });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { mount(); watch(); });
   else { mount(); watch(); }
+  /* 휴대폰에서 내리는 동안 비켜 두기 */
+  (function () {
+    var mq = window.matchMedia ? window.matchMedia('(max-width:720px)') : null, t = 0;
+    window.addEventListener('scroll', function () {
+      if (!mq || !mq.matches) return; var rv = document.getElementById('rv'); if (!rv) return;
+      rv.classList.add('rv-away'); clearTimeout(t); t = setTimeout(function () { rv.classList.remove('rv-away'); }, 900);
+    }, { passive: true });
+  })();
 })();

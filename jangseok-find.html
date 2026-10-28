@@ -56,7 +56,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
 <div id="res"></div>
 <p class="foot">기준표 출처: 지역N문화 「각 지역별 반닫이 특징」「목공예품을 견고하고 아름답게 하는 금속장석」「한국 목공예의 특성」(한국문화원연합회), 반닫이여지도에 정리해 둔 논문 요약. 정대영 「조선의 궤」 자료는 더할 예정입니다.<br>이 화면은 기준표와 맞대어 본 결과일 뿐 감정이 아닙니다. 장석은 바뀌어 달리는 일이 많아 몸체·나무·비례와 함께 보아야 합니다.</p>
 </main>
-<script src="search.js"></script><script src="jangseok-criteria.js?v=2"></script>
+<script src="jangseok-criteria.js?v=2"></script>
 <script>
 (function () {
   const J = window.MOKGAGU_JANGSEOK, $ = (id) => document.getElementById(id);
@@ -79,7 +79,10 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
   const KIND = /반닫이|櫃|궤/;
   const keysOf = (c) => (J.find && J.find[c.id]) || (c.kind === '도' ? [c.id.slice(0, 2)] : c.id.replace(/\(.*\)/, '').split('·'));
   const photos = {};
+  /* 검색 색인(1.7MB)은 화면을 그린 뒤 뒤에서 받는다. 받기 전에는 참고 사진을 비워 두고, 받으면 다시 그린다 */
+  if (!window.SEARCH) { const s = document.createElement('script'); s.src = 'search.js'; s.async = true; s.onload = () => { for (const k in photos) delete photos[k]; try { run(); } catch (e) {} }; document.head.appendChild(s); }
   const pics = (c) => {
+    if (!window.SEARCH) return [];
     if (photos[c.id]) return photos[c.id];
     const ks = keysOf(c), out = [];
     (window.SEARCH || []).forEach((r) => {

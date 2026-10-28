@@ -85,7 +85,7 @@
 (function () {
   var d = document;
   if (d.querySelector('script[src^="compare.js"]')) return;
-  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=6'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=2'; m.defer = true; d.head.appendChild(m); }
+  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=6'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=3'; m.defer = true; d.head.appendChild(m); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', go); else go();
 })();
 
@@ -149,4 +149,32 @@
   function soon() { if (!busy) { busy = true; requestAnimationFrame(scan); } }
   new MutationObserver(soon).observe(document.documentElement, { childList: true, subtree: true });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', soon); else soon();
+})();
+
+/* 옆으로 밀리는 메뉴 줄(첫 화면 고정 메뉴·탐색 도구 탭): 더 있으면 끝을 흐리게 하고 「›」를 보여 준다 (2026-10-28) */
+(function () {
+  var d = document, SEL = '.topbar .in,.th-tools';
+  var css = d.createElement('style');
+  css.textContent = '.sc-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}' +
+    '.sc-l.sc-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 44px),transparent)}' +
+    '.sc-l:not(.sc-r){-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}' +
+    '.sc-hint{position:absolute;pointer-events:none;font:900 18px/1 system-ui,sans-serif;opacity:.75;transform:translateY(-50%)}';
+  d.head.appendChild(css);
+  function upd(el) {
+    var more = el.scrollLeft + el.clientWidth < el.scrollWidth - 2, back = el.scrollLeft > 2;
+    el.classList.toggle('sc-r', more); el.classList.toggle('sc-l', back);
+    var h = el._hint; if (!h) return;
+    h.hidden = !more; var r = el.getBoundingClientRect(), pr = el.offsetParent ? el.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+    h.style.left = (r.right - pr.left - 12) + 'px'; h.style.top = (r.top - pr.top + r.height / 2) + 'px';
+  }
+  function wire(el) {
+    if (el._sc) return; el._sc = 1;
+    var h = d.createElement('span'); h.className = 'sc-hint'; h.textContent = '›'; h.setAttribute('aria-hidden', 'true');
+    h.style.color = getComputedStyle(el).color; el._hint = h; (el.offsetParent || d.body).appendChild(h);
+    el.addEventListener('scroll', function () { upd(el); }, { passive: true }); upd(el);
+  }
+  function all() { [].forEach.call(d.querySelectorAll(SEL), function (el) { wire(el); upd(el); }); }
+  window.addEventListener('resize', all); window.addEventListener('load', all);
+  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', all); else all();
+  setTimeout(all, 1500);
 })();

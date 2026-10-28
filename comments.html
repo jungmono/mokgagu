@@ -77,14 +77,15 @@ select{font:inherit;font-size:13.5px;border:1px solid #d9d4cc;border-radius:8px;
   <div class="count" id="count"></div>
   <div class="list" id="list"><p class="empty">불러오는 중…</p></div>
 </div>
-<script src="search.js"></script>
 <script src="books.js?v=1"></script><script src="site.js"></script>
 <script src="comments.js?v=20261031"></script>
 <script>
 (function () {
   var C = window.MOKGAGU_COMMENTS, $ = function (id) { return document.getElementById(id); };
-  var BOOK = {}; (window.SEARCH || []).forEach(function (r) { BOOK[r.b] = BOOK[r.b] || r.cat; });
-  var IDX = {}; (window.SEARCH || []).forEach(function (r) { IDX[r.b + '/' + r.pid] = r; });
+  /* 검색 색인(1.7MB)은 목록을 먼저 보인 뒤 뒤에서 받아 기물 이름·도록 이름을 채운다 */
+  var BOOK = {}, IDX = {};
+  function fillIdx() { (window.SEARCH || []).forEach(function (r) { BOOK[r.b] = BOOK[r.b] || r.cat; IDX[r.b + '/' + r.pid] = r; }); }
+  if (window.SEARCH) fillIdx(); else (function () { var s = document.createElement('script'); s.src = 'search.js'; s.async = true; s.onload = function () { fillIdx(); try { draw(); } catch (e) {} }; document.head.appendChild(s); })();
   var st = { vis: 'all', who: 'all', sort: 'new', book: '' };
   try { var sv = JSON.parse(localStorage.getItem('mokgagu_cl_filter') || '{}'); for (var k in sv) if (k in st) st[k] = sv[k]; } catch (e) {}
   var sure = '', editing = '', lastOrder = [];
