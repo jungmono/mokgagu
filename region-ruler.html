@@ -34,6 +34,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .bx button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}
 .bx .rh button{background:#f4ecd8;font-weight:700;writing-mode:vertical-rl;min-width:40px;min-height:64px;letter-spacing:.02em}
 .bx .ch button{background:#f4ecd8;font-weight:700}
+.bx .ch button[aria-pressed="true"],.bx .rh button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}.bx .all button{font-size:13px;line-height:1.25}.bx .all button b{font-size:15px}.bx .all button small{display:block;font-size:10.5px;font-weight:500;opacity:.7}
 .bx td button b{display:block;font-size:15px}.bx td button{min-height:48px}
 .bx td button.z{color:#c9bc9c;cursor:default;background:#fbf8f1}
 .bx td button.me{box-shadow:inset 0 0 0 2px #d12b2b}
@@ -114,9 +115,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
     const cnt = (hi, wi) => PS.filter((p) => (hi < 0 || inB(p.h, HB[hi])) && (wi < 0 || inB(p.w, WB[wi]))).length;
     const on = (hi, wi) => sel.h === hi && sel.w === wi;
     const bt = (hi, wi, txt, cls) => { const n = cnt(hi, wi); return `<button type="button" data-h="${hi}" data-w="${wi}" aria-pressed="${on(hi, wi)}"${cls ? ` class="${cls}"` : ''}${n || hi < 0 || wi < 0 ? '' : ' disabled'}>${txt}</button>`; };
-    let t = '<table class="bx"><tr><td class="ax">세로↓<br>가로→</td>' + WB.map(([a, b], wi) => `<th class="ch">${bt(-1, wi, `${a}~${b}`)}</th>`).join('') + `<th class="ch all">${bt(-1, -1, '모두')}</th></tr>`;
+    let t = '<table class="bx"><tr><th class="ch all">' + bt(-1, -1, `전체 <b>${PS.length}</b>점<small>세로↓ 가로→</small>`) + '</th>' + WB.map(([a, b], wi) => `<th class="ch">${bt(-1, wi, `${a}~${b}`)}</th>`).join('') + '</tr>';
     HB.forEach(([a, b], hi) => {
-      t += `<tr><th class="rh">${bt(hi, -1, `${a}~${b}`)}</th>` + WB.map((wb, wi) => { const n = cnt(hi, wi), me = inB(ch, HB[hi]) && inB(cw, wb); return `<td>${bt(hi, wi, n ? `<b>${n}</b>` : '·', (n ? '' : 'z') + (me ? ' me' : ''))}</td>`; }).join('') + '<td></td></tr>';
+      t += `<tr><th class="rh">${bt(hi, -1, `${a}~${b}`)}</th>` + WB.map((wb, wi) => { const n = cnt(hi, wi), me = inB(ch, HB[hi]) && inB(cw, wb); return `<td>${bt(hi, wi, n ? `<b>${n}</b>` : '·', (n ? '' : 'z') + (me ? ' me' : ''))}</td>`; }).join('') + '</tr>';
     });
     t += '</table>';
     const lab = sel.h < 0 && sel.w < 0 ? '모든 반닫이' : [sel.h >= 0 ? `세로 ${HB[sel.h][0]}~${HB[sel.h][1]}cm` : '', sel.w >= 0 ? `가로 ${WB[sel.w][0]}~${WB[sel.w][1]}cm` : ''].filter(Boolean).join(' · ');
