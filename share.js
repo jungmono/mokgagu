@@ -12,13 +12,13 @@ var KAKAO_KEY='c9f47b5a6780c5bb506586cda58fab6e';
 var ISM=/Android|iPhone|iPad/i.test(navigator.userAgent),ISI=/iPhone|iPad/i.test(navigator.userAgent);
 var sheetCss=document.createElement('style');
 sheetCss.textContent='#mk-sh{position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif}#mk-sh[hidden]{display:none}'+
-'#mk-sh .b{background:#fff;border-radius:6px;width:min(400px,calc(100vw - 24px));box-shadow:0 10px 36px rgba(0,0,0,.3)}'+
-'#mk-sh .h{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;font-size:18px;font-weight:700;color:#111;border-bottom:1px solid #e5e5e5}'+
-'#mk-sh .x{border:0;background:none;padding:2px;cursor:pointer;color:#777;display:grid}#mk-sh .x svg{width:22px;height:22px}'+
-'#mk-sh .g{display:flex;flex-wrap:wrap;justify-content:center;gap:22px 20px;padding:26px 14px 22px}'+
-'#mk-sh .g button{width:72px;display:flex;flex-direction:column;align-items:center;gap:9px;border:0;background:none;padding:0;cursor:pointer;font:inherit;font-size:14px;color:#222}'+
-'#mk-sh .g i{width:58px;height:58px;border-radius:50%;display:grid;place-items:center}#mk-sh .g i svg{width:32px;height:32px}'+
-'#mk-sh .m{margin:-6px 18px 18px;text-align:center;font-size:13px;color:#0f6e56;font-weight:700;min-height:1.2em;word-break:break-all}'+
+'#mk-sh .b{background:#fff;border-radius:6px;width:min(310px,calc(100vw - 24px));box-shadow:0 10px 36px rgba(0,0,0,.3)}'+
+'#mk-sh .h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;font-weight:700;color:#111;border-bottom:1px solid #e5e5e5}'+
+'#mk-sh .x{border:0;background:none;padding:2px;cursor:pointer;color:#777;display:grid}#mk-sh .x svg{width:18px;height:18px}'+
+'#mk-sh .g{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 10px;padding:16px 10px 14px}'+
+'#mk-sh .g button{width:60px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:pointer;font:inherit;font-size:11.5px;color:#222}'+
+'#mk-sh .g i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center}#mk-sh .g i svg{width:23px;height:23px}'+
+'#mk-sh .m{margin:-4px 14px 12px;text-align:center;font-size:12px;color:#0f6e56;font-weight:700;min-height:1.2em;word-break:break-all}'+
 '@media (max-width:520px){#mk-sh{align-items:flex-end}#mk-sh .b{width:100%;border-radius:16px 16px 0 0}}';
 document.head.appendChild(sheetCss);
 var IC={
