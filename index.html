@@ -189,7 +189,7 @@ body{position:relative}
 .hm-folds.has-open{grid-auto-rows:auto}.hm-two.fopen .hm-tiles{flex:0 0 auto}.hm-two.fopen{align-items:start}
 .hm-mini{display:flex;flex-wrap:wrap;gap:6px 8px;padding:2px 4px 4px 16px}.hm-mini[hidden]{display:none}
 .hm-mini a{display:inline-flex;align-items:baseline;gap:5px;font-size:14px;font-weight:700;color:var(--fg);text-decoration:none;background:#f4f2ee;border-radius:999px;padding:7px 14px;transition:background .15s}
-.hm-mini a:hover{background:#111;color:#fff}.hm-mini a small{font-size:12px;font-weight:700;color:var(--brand)}.hm-mini a:hover small{color:#c9ccff}
+.hm-mini a:hover,.hm-mini .all:hover{background:#111;color:#fff}.hm-mini .all{font:inherit;font-size:13.5px;font-weight:800;color:#2b2418;background:#fff;border:1.5px solid #b39a6a;border-radius:999px;padding:6px 14px;cursor:pointer}.hm-mini a small{font-size:12px;font-weight:700;color:var(--brand)}.hm-mini a:hover small{color:#c9ccff}
 #grid:empty{display:none}#grid{margin-bottom:30px}
 /* 거믄·힌의 방 */
 .hm-home{border:2px solid var(--ink);border-radius:18px;overflow:hidden;margin-top:10px}
@@ -367,7 +367,8 @@ function buildTools() {
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
 const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
-document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}</div></div>`).join('');
+document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}<button type="button" class="all" data-all="${k}">전체 ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 보기 →</button></div></div>`).join('');
+document.getElementById('hm-folds').addEventListener('click', (e) => { const b = e.target.closest('[data-all]'); if (!b) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(b.dataset.all); });
 /* 거믄·힌의 방 — 들어가면 각 화면에서 가족 확인을 한다 */
 document.getElementById('hm-home').innerHTML = `<div class="hd"><span class="mark">${MOON}</span><div class="t">거믄·힌의 방<small>거믄·힌만 들어갈 수 있습니다</small></div><nav class="rows">${[['study.html', svg('seoan'), '공부방'], ['collection.html', svg('bandaji'), '소장품'], ['stats.html', SANGAJI, '통계']].map(([h, ic, t]) => `<a class="row" href="${h}"><span class="i">${ic}</span><b>${t}</b></a>`).join('')}</nav><span class="lk">${LOCK_JS}</span></div>`;
 grid.classList.add('hm-sec');

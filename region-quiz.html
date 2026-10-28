@@ -13,7 +13,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
 .prog{display:flex;justify-content:space-between;font-size:14px;color:#6d6551;margin:0 0 8px;font-weight:700}
 .qa{display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);gap:14px;align-items:start}
 .ph{position:relative;aspect-ratio:4/3;width:100%;max-height:max(260px,calc(100vh - 330px));background:#f4ecd8;border-radius:12px;overflow:hidden}
-.ph{touch-action:none;cursor:zoom-in}.ph.z{cursor:grab}.ph img{transform-origin:0 0;user-select:none;-webkit-user-drag:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+.ph{touch-action:pan-y;cursor:zoom-in}.ph.z{touch-action:none;cursor:grab}.ph img{transform-origin:0 0;user-select:none;-webkit-user-drag:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
 .side{min-width:0;padding-top:56px}
 @media(max-width:640px){.qa{grid-template-columns:1fr}.ph{max-height:none}.side{padding-top:0}}
 .opts{display:grid;grid-template-columns:1fr;gap:6px;margin:0}
@@ -143,7 +143,7 @@ window.RK = (function () {
     if (usable.length < ROUND || regs.length < 4) { box.innerHTML = '<p style="text-align:center">문제를 만들 사진이 아직 부족해요.</p>'; return; }
     /* 지역이 골고루 나오도록 지역별로 돌아가며 뽑는다 */
     let seen = []; try { seen = JSON.parse(localStorage.getItem('mokgagu_rq_seen') || '[]'); } catch (x) {}
-    const key = (r) => r.b + '/' + r.pid; let fresh = byReg; const left = {}; regs.forEach((g) => (left[g] = byReg[g].filter((r) => !seen.includes(key(r)))));
+    const key = (r) => r.b + '/' + r.pid; const left = {}; regs.forEach((g) => (left[g] = byReg[g].filter((r) => !seen.includes(key(r)))));
     if (regs.some((g) => left[g].length < 1)) { seen = []; regs.forEach((g) => (left[g] = byReg[g])); }
     const bag = {}; regs.forEach((g) => (bag[g] = shuffle(left[g]))); const order = shuffle(regs); Q = []; let k = 0;
     while (Q.length < ROUND) { const g = order[k++ % order.length]; if (bag[g].length) Q.push(bag[g].pop()); }
