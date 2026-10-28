@@ -130,7 +130,7 @@ window.RK = (function () {
   const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기' };
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-  const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
+  const regOf = (r) => { const m = ((r.name || '') + ' ' + (r.hanja || '')).match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
   const pool = (window.SEARCH || []).filter((r) => r.t && /반닫이/.test((r.name || '') + (r.hanja || '')) && regOf(r));
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
@@ -142,8 +142,12 @@ window.RK = (function () {
   function start() {
     if (usable.length < ROUND || regs.length < 4) { box.innerHTML = '<p style="text-align:center">문제를 만들 사진이 아직 부족해요.</p>'; return; }
     /* 지역이 골고루 나오도록 지역별로 돌아가며 뽑는다 */
-    const bag = {}; regs.forEach((g) => (bag[g] = shuffle(byReg[g]))); const order = shuffle(regs); Q = []; let k = 0;
+    let seen = []; try { seen = JSON.parse(localStorage.getItem('mokgagu_rq_seen') || '[]'); } catch (x) {}
+    const key = (r) => r.b + '/' + r.pid; let fresh = byReg; const left = {}; regs.forEach((g) => (left[g] = byReg[g].filter((r) => !seen.includes(key(r)))));
+    if (regs.some((g) => left[g].length < 1)) { seen = []; regs.forEach((g) => (left[g] = byReg[g])); }
+    const bag = {}; regs.forEach((g) => (bag[g] = shuffle(left[g]))); const order = shuffle(regs); Q = []; let k = 0;
     while (Q.length < ROUND) { const g = order[k++ % order.length]; if (bag[g].length) Q.push(bag[g].pop()); }
+    try { localStorage.setItem('mokgagu_rq_seen', JSON.stringify(seen.concat(Q.map(key)).slice(-150))); } catch (x) {}
     Q = shuffle(Q); i = 0; score = 0; wrong = []; show();
   }
   function zoomable(ph) {
