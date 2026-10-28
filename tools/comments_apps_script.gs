@@ -3,6 +3,8 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v22: 벗 이야기 알림 메일 — 벗이 기물 이야기를 남기면 NOTIFY_TO(비우면 스크립트 주인)에게 메일. 하루 30통까지.
+ *      재배포 뒤 알림준비() 를 한 번 실행해 메일 보내기 권한을 허락하고 시험 메일을 받아 본다.
  * v21: 지역 퀴즈 순위표 — action=rank(누구나 읽기, GET·POST) · doPost rkadd {id, who(거믄|힌|벗), name, score, total}. 시트 '퀴즈순위' 탭. 거믄·힌은 가족 암호, 벗은 이름만.
  * v20: 공부방 노트 고치기·사진 추가 — doPost nlist(읽기)·nsave·ndel. 시트 '노트수정' 탭(고친 곳만 덮어씀) · '노트수정이력' 탭(고치기 전 글). 재배포 때 노트수정준비() 한 번 실행 권장.
  * v17: doGet 은 주소로 온 code 를 무시한다(가족 암호는 POST 로만). 가족 전용 읽기는 GET 으로는 'code' 오류가 난다.
@@ -26,6 +28,9 @@ const CODE = '여기에-가족-암호';
 const SHEET_ID = '여기에-시트-ID';
 const SHEET = '코멘트';
 const HEAD = ['id', 'cid', 'author', 'name', 'text', 'time', 'page', 'deleted', 'public', 'key', 'edited'];
+/* 벗 이야기 알림을 받을 주소. 여러 곳이면 쉼표로. 비워 두면 이 스크립트를 배포한 계정으로 보낸다. */
+const NOTIFY_TO = '';
+const SITE = 'https://jungmono.github.io/mokgagu/';
 
 function sheet_() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -119,6 +124,7 @@ function doPost(e) {
       if (!find_(sh, c.id)) {
         sh.appendRow([String(c.id).slice(0, 40), String(c.cid).slice(0, 200), author, String(c.name || '').slice(0, 30),
           text.slice(0, fam ? 4000 : 1000), new Date().toISOString(), String(c.page || '').slice(0, 60), '', pub, String(c.key || '').slice(0, 40)]);
+        if (author === '벗') notifyFriend_(c, text);   // v22
       }
       return out_({ ok: true });
     }
@@ -157,6 +163,35 @@ function doPost(e) {
 }
 
 function 시트준비() { sheet_(); }
+
+/* ───────── v22 벗 이야기 알림 메일 ─────────
+ * 벗이 글을 남기면 바로 한 통. 글 저장이 먼저이고, 메일이 실패해도 저장에는 영향이 없다.
+ * 장난 글이 몰려도 하루 30통에서 멈춘다(구글 무료 계정 하루 한도 100통 안쪽).                 */
+function notifyFriend_(c, text) {
+  try {
+    const to = NOTIFY_TO || Session.getEffectiveUser().getEmail(); if (!to) return;
+    const day = Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyyMMdd'), props = PropertiesService.getScriptProperties();
+    const k = 'mail_' + day, n = Number(props.getProperty(k) || 0); if (n >= 30) return;
+    props.setProperty(k, String(n + 1));
+    const cid = String(c.cid || ''), name = String(c.name || '벗').slice(0, 30);
+    const item = cid.split('/').slice(1).join('/') + ' (' + (String(c.page || '').replace(/^.*\//, '') || cid.split('/')[0]) + ')';   // 기물 번호 (도록 화면)
+    const url = SITE + 'index.html#see=' + cid.split('/')[0] + '/' + encodeURIComponent(cid.split('/').slice(1).join('/'));
+    const esc = (x) => String(x).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    MailApp.sendEmail({
+      to: to,
+      subject: '[조선의 목가구] 벗 ' + name + '님이 기물 이야기를 남겼어요',
+      body: name + '님의 이야기\n\n' + text.slice(0, 1000) + '\n\n기물: ' + item + '\n바로 보기: ' + url + '\n모아 보기: ' + SITE + 'comments.html',
+      htmlBody: '<p><b>' + esc(name) + '</b>님의 이야기</p><blockquote style="border-left:3px solid #b39a6a;margin:0;padding:6px 12px;white-space:pre-wrap">' + esc(text.slice(0, 1000)) + '</blockquote>' +
+        '<p>기물: ' + esc(item) + '<br><a href="' + url + '">기물 바로 보기</a> · <a href="' + SITE + 'comments.html">이야기 모아 보기</a></p>',
+      name: '조선의 목가구'
+    });
+  } catch (x) { /* 메일이 안 가도 글은 이미 저장됨 */ }
+}
+/* 재배포 뒤 한 번 실행: 메일 권한을 허락하고 시험 메일을 받아 본다 */
+function 알림준비() {
+  const to = NOTIFY_TO || Session.getEffectiveUser().getEmail();
+  MailApp.sendEmail(to, '[조선의 목가구] 벗 이야기 알림 시험', '이 메일이 오면 벗 이야기 알림이 준비된 것입니다.\n남은 하루 메일 한도: ' + MailApp.getRemainingDailyQuota());
+}
 
 
 /* ───────── 거믄과 힌의 소장품 도록 (v4) ─────────

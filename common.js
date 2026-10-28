@@ -85,7 +85,7 @@
 (function () {
   var d = document;
   if (d.querySelector('script[src^="compare.js"]')) return;
-  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=6'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=3'; m.defer = true; d.head.appendChild(m); }
+  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=6'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=3'; m.defer = true; d.head.appendChild(m); var pr = d.createElement('script'); pr.src = 'price.js?v=1'; pr.defer = true; d.head.appendChild(pr); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', go); else go();
 })();
 

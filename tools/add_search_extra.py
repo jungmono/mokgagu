@@ -5,8 +5,9 @@
   - search.js 에서 두 도록의 옛 줄을 지우고 다시 넣으므로 여러 번 돌려도 같다.
   - 작은 사진은 thumbs/<도록>/<번호>.jpg 규칙(다른 도록과 같은 규칙)으로 복사해 둔다.
     (서울옥션 원본은 thumbs/seoul/<아이디>.jpg, 해외경매는 thumbs/overseas/<아이디>.jpg)
+  - search.js 는 줄인 모양(tools/search_pack.js)이라 node 로 펼쳐 읽고, 다 쓴 뒤 다시 줄인다.
 """
-import json, os, re, shutil
+import json, os, re, shutil, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
@@ -27,8 +28,8 @@ def won(n):
     return f'{int(n):,}원' if n else ''
 
 
-s = open('search.js', encoding='utf-8').read()
-rows = json.loads(s[len('window.SEARCH='):s.rindex(';')])
+# 줄인 색인도 줄이지 않은 색인도 읽을 수 있게 node 로 펼쳐 읽는다
+rows = json.loads(subprocess.run(['node', '-e', "global.window={};new Function('window',require('fs').readFileSync('search.js','utf8'))(window);process.stdout.write(JSON.stringify(window.SEARCH))"], capture_output=True, text=True, check=True).stdout)
 rows = [r for r in rows if r['b'] not in {b[0] for b in BOOKS}]
 
 for slug, tdir, cat in BOOKS:
@@ -55,4 +56,5 @@ for slug, tdir, cat in BOOKS:
                      'q': ' '.join(sorted(hay)).lower()})
 
 open('search.js', 'w', encoding='utf-8').write('window.SEARCH=' + json.dumps(rows, ensure_ascii=False, separators=(',', ':')) + ';')
+subprocess.run(['node', 'tools/search_pack.js'], check=True)   # 다시 줄이기
 print(len(rows), '건 (', {b[0]: sum(1 for r in rows if r['b'] == b[0]) for b in BOOKS}, ')')
