@@ -295,7 +295,7 @@ dash.calc('compare', {
     for (const r of items) { const c = map[r.kind]; if (c) { k[c] = (k[c] || 0) + 1; kt++; } }
     const l = {}; let lt = 0;
     for (const r of lee) if (r.group === '목가구' && cats.includes(r.category)) { l[r.category] = Number(r.items); lt += Number(r.items); }
-    return cats.map((c) => ({ category: c, this_n: k[c] || 0, this_pct: Math.round((k[c] || 0) / kt * 1000) / 10, lee_n: l[c] || 0, lee_pct: Math.round((l[c] || 0) / lt * 1000) / 10 }));
+    return cats.map((c) => ({ category: c, this_n: k[c] || 0, this_pct: kt ? Math.round((k[c] || 0) / kt * 1000) / 10 : 0, lee_n: l[c] || 0, lee_pct: lt ? Math.round((l[c] || 0) / lt * 1000) / 10 : 0 }));
   },
 });
 
@@ -490,6 +490,14 @@ dash.calc('compare', {
       return b;
     }));
   }
+  /* 이 도록에 목가구 기종이 하나도 없으면(도자기·금속·직물·석조·와전) 「견주어 보기」 절을 통째로 숨긴다 — NaN% 막대와 빈 크기 분포가 보이던 것 고침(2026-10-29) */
+  function compareApplies() {
+    const s = dash.data('compare');
+    if (s.status === 'ok' && s.data.some((r) => r.this_n > 0)) return true;
+    const h = document.getElementById('compare');
+    if (h) { const g = h.nextElementSibling; if (g && g.classList.contains('lk-grid')) g.hidden = true; h.hidden = true; }
+    return false;
+  }
   function drawCompare() {
     const el = document.getElementById('chart-compare'), s = dash.data('compare');
     if (s.status !== 'ok') return fail(el, s.status);
@@ -574,7 +582,7 @@ dash.calc('compare', {
       let row; if (n.dataset.where) { const [k, v] = n.dataset.where.split('='); row = d.find((r) => String(r[k]) === v); } else row = d[Number(n.dataset.row || 0)];
       n.textContent = row && row[n.dataset.field] != null ? String(row[n.dataset.field]) : '—';
     });
-    drawKinds(); drawGroup(); drawChips(); drawGallery();  drawCompare(); drawSize(); drawTable();
+    drawKinds(); drawGroup(); drawChips(); drawGallery();  if (compareApplies()) { drawCompare(); drawSize(); } drawTable();
     if (dlg.open) showDetail();
   });
   const named = document.getElementById(location.hash.slice(1));
