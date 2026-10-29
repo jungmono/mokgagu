@@ -170,15 +170,16 @@ body{position:relative}
 .bk-arr{position:absolute;top:58px;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--ink);display:grid;place-items:center;font-size:22px;font-weight:900;line-height:1;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}.bk-arr.l{left:-14px}.bk-arr.r{right:-14px}
 .bk-box.open .bk-shelf{flex-wrap:wrap;overflow:visible;row-gap:22px}.bk-box.open .bk-arr{display:none}
 /* 도록 서가 개선(2026-10-29): 고재 선반은 고정, 설명글은 선반 위(표지 위)로, 도록만 옆으로 밀린다 */
-.bk-box{--lbh:62px;--wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='40'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .11 0 0 0 0 .07 0 0 0 1.5 -.45'/%3E%3C/filter%3E%3Crect width='360' height='40' filter='url(%23f)'/%3E%3C/svg%3E")}
+.bk-box{--lbh:30px;--wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='40'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .11 0 0 0 0 .07 0 0 0 1.5 -.45'/%3E%3C/filter%3E%3Crect width='360' height='40' filter='url(%23f)'/%3E%3C/svg%3E")}
 .bk-box::after,.bk-shelf .bd{height:16px;border-radius:2px;background:var(--wood),linear-gradient(180deg,#a89a82 0,#8d7d64 18%,#6f6049 60%,#4d4130 100%);background-size:360px 100%,auto;box-shadow:inset 0 2px 0 rgba(255,255,255,.28),inset 0 -2px 0 rgba(0,0,0,.35),0 7px 9px -5px rgba(0,0,0,.55)}
 .bk-box::after{top:calc(6px + var(--lbh) + var(--cvh))}
 .bk-shelf a{display:flex;flex-direction:column}
-.bk-shelf .lb{order:0;height:var(--lbh);box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 8px;overflow:hidden}
+.bk-shelf .lb{white-space:nowrap;font-size:12px;letter-spacing:-.04em;order:0;height:var(--lbh);box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 8px;overflow:hidden;display:block;line-height:22px}
 .bk-shelf .cv{order:1}.bk-shelf .bd{order:2;margin-top:0}
 .bk-shelf .new{top:calc(var(--lbh) + 6px)}
 .bk-arr{top:calc(6px + var(--lbh) + var(--cvh)/2 - 19px)}
 .bk-box.open .bk-shelf{row-gap:14px}
+.bk-shelf .lb small{display:inline;margin:0 0 0 5px;font-size:12px}
 /* 탐색 도구 · 자료 묶음 */
 .hm-two{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch;margin-bottom:30px}
 .hm-col{display:flex;flex-direction:column;min-width:0}
@@ -360,7 +361,8 @@ const MOON = '<svg viewBox="0 0 60 60" width="42" height="42" aria-label="거믄
 const isNew = (d) => d.added === latest.added && newest.length < DASHBOARDS.length;
 /* 도록 서가 */
 document.getElementById('bk-n').textContent = `${MAIN.length}권 · 옆으로 밀어서 보기`;
-document.getElementById('bk-shelf').innerHTML = MAIN.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg?v=2" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span>${isNew(d) ? '<span class="new">NEW</span>' : ''}<div class="bd"></div><div class="lb">${d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('');
+const BKSHORT = { lee: '이건희', munui: '전통무늬', yakjang: '약장', wonju: '나전', soban: '소반장', busan: '부산박물관', yangsan: '양산반닫이', minsok: '민속유물이해', namu: '나무의 이치', salm: '삶을 담다', migam: '목가구의 미감', kwon: '권옥연' };
+document.getElementById('bk-shelf').innerHTML = MAIN.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg?v=2" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span>${isNew(d) ? '<span class="new">NEW</span>' : ''}<div class="bd"></div><div class="lb">${BKSHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('');
 document.querySelectorAll('.bk-arr').forEach((btn) => btn.addEventListener('click', () => { const sh = document.getElementById('bk-shelf'); sh.scrollBy({ left: Number(btn.dataset.d) * sh.clientWidth * 0.8, behavior: 'smooth' }); }));
 document.getElementById('bk-all').addEventListener('click', (e) => { const box = document.getElementById('bk-box'); const o = box.classList.toggle('open'); e.currentTarget.textContent = o ? '한 줄로 접기' : '모두 펼쳐 보기'; });
 /* 탐색 도구 — 아이콘 모양은 아래 TOOL_ICO, 지도는 아래쪽 MAPICO(선생님 손지도 윤곽) */
