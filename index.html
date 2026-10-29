@@ -420,9 +420,11 @@ function search(raw) {
   /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주·약장은 각자 자리에서) */
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
   /* 「함」은 책장의 다른 이름(책함)·의함 같은 풀이에도 들어 있으니, 이름이 장·농으로 끝나는 것(책장 등)은 장·농에 넣고 뺀다 */
-  const hamOk = (r) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); if (/^(상자|합)( |·|$)/.test(r.kind || '') && !/(장|농)$/.test(n)) return true;   /* 나전·화각의 상자·합도 나무로 만든 함 */
-    return r.q.includes('함') && r.fam !== '장·농' && !/(장|농)$/.test(n); };
-  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농') : q === '함' ? hamOk(r) : r.q.includes(q)));
+  const hamOk = (r) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); if (/문갑/.test(n) || /(장|농)$/.test(n)) return false;
+    if (/빗접|반짇고리|연상/.test(n)) return true;   /* 빗접·반짇고리·연상은 함 */
+    if (/^(상자|합)( |·|$)/.test(r.kind || '')) return true;   /* 나전·화각의 상자·합도 나무로 만든 함 */
+    return r.q.includes('함') && r.fam !== '장·농'; };
+  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농' || /문갑/.test(r.name)) : q === '함' ? hamOk(r) : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = ''; fa = {}; lastLabel = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; $('home').hidden = true;
