@@ -178,3 +178,28 @@
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', all); else all();
   setTimeout(all, 1500);
 })();
+
+/* 두 번 톡(더블탭·더블클릭) = 손가락으로 확대한 화면을 원래 크기로 (2026-10-29)
+   - 확대(핀치)한 상태(visualViewport.scale>1)에서만 동작한다. 사진 확대 창·단추·입력칸 위에서는 건드리지 않는다. */
+(function () {
+  if (window.MOKGAGU_RZ) return; window.MOKGAGU_RZ = 1;
+  var vv = window.visualViewport; if (!vv) return;
+  var SKIP = 'a,button,input,select,textarea,label,summary,dialog[open],#zv,.zoomable,[data-zoom],svg circle.pt';
+  var busy = false;
+  function reset() {
+    if (busy || !(vv.scale > 1.02)) return; busy = true;
+    var m = document.querySelector('meta[name="viewport"]'); if (!m) { busy = false; return; }
+    var orig = m.getAttribute('content');
+    m.setAttribute('content', 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1');
+    setTimeout(function () { m.setAttribute('content', orig); busy = false; }, 120);
+  }
+  function ok(t) { return !(t && t.closest && t.closest(SKIP)); }
+  document.addEventListener('dblclick', function (e) { if (ok(e.target)) reset(); });
+  var last = 0, lx = 0, ly = 0;
+  document.addEventListener('touchend', function (e) {
+    if (e.touches.length || e.changedTouches.length !== 1) return;
+    var t = e.changedTouches[0], now = Date.now();
+    if (now - last < 320 && Math.abs(t.clientX - lx) < 30 && Math.abs(t.clientY - ly) < 30) { last = 0; if (ok(e.target)) reset(); }
+    else { last = now; lx = t.clientX; ly = t.clientY; }
+  }, { passive: true });
+})();
