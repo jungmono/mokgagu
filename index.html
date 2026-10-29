@@ -167,7 +167,7 @@ body{position:relative}
 .bk-shelf .bd{height:12px;margin-right:-18px;background:linear-gradient(var(--board),#24190f);box-shadow:0 6px 10px -6px rgba(0,0,0,.5)}.bk-shelf a:first-child .bd{margin-left:-6px}
 .bk-shelf .lb{padding-top:10px;font-size:12.5px;font-weight:700;line-height:1.35;letter-spacing:-.02em}.bk-shelf .lb small{display:block;color:var(--brand);font-weight:900;margin-top:2px}
 .bk-shelf .new{position:absolute;top:6px;left:6px;margin:0}
-.bk-arr{position:absolute;top:58px;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--ink);display:grid;place-items:center;font-size:22px;font-weight:900;line-height:1;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}.bk-arr.l{left:-14px}.bk-arr.r{right:-14px}
+.bk-arr svg{display:block}.bk-arr{position:absolute;top:58px;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid var(--ink);display:grid;place-items:center;font-size:22px;font-weight:900;line-height:1;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}.bk-arr.l{left:-14px}.bk-arr.r{right:-14px}
 .bk-box.open .bk-shelf{flex-wrap:wrap;overflow:visible;row-gap:22px}.bk-box.open .bk-arr{display:none}
 /* 도록 서가 개선(2026-10-29): 고재 선반은 고정, 설명글은 선반 위(표지 위)로, 도록만 옆으로 밀린다 */
 .bk-box{--lbh:30px;--wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='40'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .11 0 0 0 0 .07 0 0 0 1.5 -.45'/%3E%3C/filter%3E%3Crect width='360' height='40' filter='url(%23f)'/%3E%3C/svg%3E")}
@@ -261,7 +261,7 @@ body{position:relative}
 
   <div id="home">
     <section class="hm-sec" id="sec-books"><div class="hm-head"><div class="hm-t"><h2>도록 서가</h2><small id="bk-n"></small></div><button type="button" class="more" id="bk-all">모두 펼쳐 보기</button></div>
-      <div class="bk-box" id="bk-box"><div class="bk-shelf" id="bk-shelf"></div><button type="button" class="bk-arr l" data-d="-1" aria-label="앞 도록">‹</button><button type="button" class="bk-arr r" data-d="1" aria-label="다음 도록">›</button></div></section>
+      <div class="bk-box" id="bk-box"><div class="bk-shelf" id="bk-shelf"></div><button type="button" class="bk-arr l" data-d="-1" aria-label="앞 도록"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="bk-arr r" data-d="1" aria-label="다음 도록"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div></section>
     <div class="hm-two">
       <section class="hm-col hm-sec" id="sec-tools"><div class="hm-head"><div class="hm-t"><h2>탐색 도구</h2><small>놀면서 알아보기</small></div></div><div class="hm-tiles" id="hm-tiles"></div></section>
       <section class="hm-col hm-sec" id="sec-folds"><div class="hm-head"><div class="hm-t"><h2>자료 묶음</h2><small>누르면 펼쳐집니다</small></div></div><div class="hm-folds" id="hm-folds"></div></section>
