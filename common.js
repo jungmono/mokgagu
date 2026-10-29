@@ -203,3 +203,28 @@
     else { last = now; lx = t.clientX; ly = t.clientY; }
   }, { passive: true });
 })();
+
+/* 터치패드 두 손가락 벌리기·오므리기(Ctrl+휠) = 이 페이지만 확대·축소, 더블클릭 = 원래대로 (2026-10-29)
+   브라우저 자체 확대는 코드로 되돌릴 수 없어서, 이 페이지 안에서 직접 확대를 처리한다. */
+(function () {
+  if (window.MOKGAGU_PZ) return; window.MOKGAGU_PZ = 1;
+  var de = document.documentElement, z = 1;
+  var SKIP = '#zv,.zoomable,[data-zoom],dialog[open]';
+  function setZ(nz, px, py) {
+    nz = Math.max(1, Math.min(3, nz)); if (Math.abs(nz - z) < 0.001) return;
+    var sx = window.scrollX, sy = window.scrollY, k = nz / z;
+    de.style.zoom = nz === 1 ? '' : String(nz); z = nz;
+    window.scrollTo((sx + px) * k - px, (sy + py) * k - py);
+  }
+  window.addEventListener('wheel', function (e) {
+    if (!e.ctrlKey) return;
+    if (e.target && e.target.closest && e.target.closest(SKIP)) return;
+    e.preventDefault();
+    setZ(z * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY);
+  }, { passive: false });
+  document.addEventListener('dblclick', function (e) {
+    if (z === 1) return;
+    if (e.target && e.target.closest && e.target.closest('a,button,input,select,textarea,label,summary,' + SKIP + ',svg circle.pt')) return;
+    setZ(1, e.clientX, e.clientY);
+  });
+})();
