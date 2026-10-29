@@ -68,15 +68,23 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
   const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기' };
-  const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
+  const regOf = (r) => { const m = ((r.name || '') + ' ' + (r.hanja || '')).match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
   /* 치수 글자 → 가로·높이. 이름표(가로·높이)가 있으면 그대로, 없으면 ×로 이은 세 수 중 앞 둘의 큰 쪽이 가로, 마지막이 높이 */
   function dims(s, b) {
     s = String(s || ''); let w, h;
-    const g = (k) => { const m = s.match(new RegExp(k + '\\s*([0-9]+(?:\\.[0-9]+)?)')); return m ? +m[1] : null; };
-    if (/가로/.test(s) && /높이/.test(s)) { w = g('가로'); h = g('높이'); }
-    else if (/높이/.test(s) && /×/.test(s)) { h = g('높이'); const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
+    const gs = (k) => { const out = []; const re = new RegExp('(?<!옆)' + k + '\\s*([0-9]+(?:\\.[0-9]+)?)', 'g'); let m; while ((m = re.exec(s))) out.push(+m[1]); return out; };
+    if (/높이/.test(s) && /(가로|세로|너비|길이)\s*[0-9]/.test(s) && !/×/.test(s)) {
+      /* 이름표 방식: 높이는 높이, 가로(앞면 너비)는 가로·세로 중 큰 쪽 / 길이 / 너비 중 가장 큰 값 */
+      h = gs('높이')[0];
+      const ga = gs('가로'), se = gs('세로'), gi = gs('길이'), ne = gs('너비');
+      if (ga.length && se.length) w = Math.max(...ga, ...se);
+      else if (ga.length) w = ga[0];
+      else if (gi.length) w = gi[0];
+      else if (ne.length) w = Math.max(...ne);
+    }
+    else if (/높이/.test(s) && /×/.test(s)) { h = +(s.match(/높이\s*([0-9.]+)/) || [])[1]; const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
     else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { if (b === 'auction') { h = +m[1]; w = +m[3]; } else { w = Math.max(+m[1], +m[2]); h = +m[3]; } } }   /* 경매 도록은 높이×깊이×가로 순서 (사진으로 확인) */
-    return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 100 ? { w, h } : null;
+    return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 120 ? { w, h } : null;
   }
   const P = [];
   (window.SEARCH || []).forEach((r) => {
@@ -85,13 +93,13 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
     const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));
   });
   const COL = { 경상: '#c0532b', 전라: '#2f7d5b', 충청: '#7a5aa6', 강원: '#2b6cb0', 경기: '#b8892a', 평안: '#3b3b3b', 제주: '#d0508a', 황해: '#6b8e23', 함경: '#008b8b' };
-  const regs = Object.keys(COL).filter((g) => P.filter((p) => p.g === g).length >= 5);
+  const regs = Object.keys(COL).filter((g) => P.some((p) => p.g === g));   /* 지역이 정해진 반닫이는 점 수와 상관없이 모두 */
   const med = (a) => { a = a.slice().sort((x, y) => x - y); const n = a.length; return n ? (n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2) : 0; };
   const qs = (a, q) => { a = a.slice().sort((x, y) => x - y); return a[Math.floor((a.length - 1) * q)]; };
   /* 부채꼴 그래프: 가로·세로 모두 0에서 시작, 1cm 같은 길이
      - 0에서 뻗는 직선 = 같은 비율(가로:세로)  - 0을 중심으로 한 호 = 같은 크기(0에서 앞면 모서리까지 거리) */
   /* 휴대폰(좁은 화면)에서는 그림 폭을 줄여 그려 눈금·비율 글자가 덜 작아지게 */
-  const XM = 140, YM = 100, W = (window.innerWidth || 800) < 560 ? 470 : 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
+  const XM = 140, YM = 125, W = (window.innerWidth || 800) < 560 ? 470 : 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
   const sx = (v) => L + v * S, sy = (v) => H - B - v * S;
   const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양반닫이 (compare.js 의 기준과 같은 값) */
   const RAYS = [1, 1.25, 1.5, 1.75, 2];   /* 가로:세로 */
@@ -108,7 +116,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
     return `<path d="M ${pt(r1, a1)} L ${pt(r2, a1)} A ${r2 * S} ${r2 * S} 0 0 1 ${pt(r2, a2)} L ${pt(r1, a2)}${r1 ? ` A ${r1 * S} ${r1 * S} 0 0 0 ${pt(r1, a1)}` : ''} Z" fill="#f2c94c" fill-opacity=".4" stroke="#b8892a"/>`;
   }
   /* 구간 색인: 세로 20cm(세로 방향 줄) × 가로 20cm(가로 방향 칸). 구간은 '아래값 초과 ~ 위값 이하' */
-  const HB = [[80, 100], [60, 80], [40, 60], [20, 40]], WB = [[40, 60], [60, 80], [80, 100], [100, 120], [120, 140]];
+  const HB = [[100, 120], [80, 100], [60, 80], [40, 60], [20, 40]], WB = [[40, 60], [60, 80], [80, 100], [100, 120], [120, 140]];
   const inB = (v, [a, b]) => v > a && v <= b;
   let sel = { h: 0, w: -1 };   /* 처음에는 세로 80~100 줄 */
   function bands(cw, ch) {
