@@ -172,7 +172,6 @@ body{position:relative}
 /* 도록 서가 개선(2026-10-29): 고재 선반은 고정, 설명글은 선반 위(표지 위)로, 도록만 옆으로 밀린다 */
 .bk-box{--lbh:30px;--wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='40'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .11 0 0 0 0 .07 0 0 0 1.5 -.45'/%3E%3C/filter%3E%3Crect width='360' height='40' filter='url(%23f)'/%3E%3C/svg%3E")}
 .bk-box::after,.bk-shelf .bd{height:20px;border-radius:2px 2px 1px 1px;background:linear-gradient(rgba(255,200,150,.2) 0 7px,rgba(0,0,0,.5) 7px 8px,rgba(0,0,0,.28) 8px 100%),url(wood.svg?v=2) repeat-x 0 0/900px 100%;box-shadow:0 7px 9px -5px rgba(0,0,0,.5)}
-.bk-box:not(.open)::before{content:'';position:absolute;left:3px;right:3px;top:calc(6px + var(--lbh) + var(--cvh) + 14px);height:26px;background:url(wood.svg?v=2) left top/18px 100% no-repeat,url(wood.svg?v=2) right top/18px 100% no-repeat;filter:brightness(.55);pointer-events:none;z-index:0;clip-path:polygon(0 0,18px 0,18px 100%,0 100%,0 0,calc(100% - 18px) 0,100% 0,100% 100%,calc(100% - 18px) 100%,calc(100% - 18px) 0)}
 .bk-shelf a:nth-child(3n+2) .bd{background-position:0 0,-300px 0}.bk-shelf a:nth-child(3n) .bd{background-position:0 0,-600px 0}
 .bk-box::after{top:calc(6px + var(--lbh) + var(--cvh))}
 .bk-shelf a{display:flex;flex-direction:column}
