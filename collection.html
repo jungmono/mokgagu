@@ -427,6 +427,14 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   function drawView() {
     var x = shown[vi], P = x.photos || [];
     $('v-main').innerHTML = P.length ? '<img data-pid="' + esc(P[vp].f) + '" alt="' + esc(x.name) + '">' : '<img class="none" src="mark_angwe.png" alt="">';
+    /* 큰 사진이 오기 전에 이미 받아 둔 작은 사진(썸네일)을 먼저 보여 준다 (2026-10-29) */
+    if (P.length && P[vp].t && P[vp].t !== P[vp].f) {
+      var mi = $('v-main').querySelector('img'), fid = P[vp].f;
+      if (urls[fid]) { mi.removeAttribute('data-pid'); mi.src = urls[fid]; }
+      else imgURL(P[vp].t, true).then(function (u) { if (u && mi.isConnected && !mi.getAttribute('src')) mi.src = u; });
+    }
+    /* 다음·이전 기물의 큰 사진을 미리 받아 둔다 */
+    [vi + 1, vi - 1].forEach(function (k) { var q = shown[k] && shown[k].photos && shown[k].photos[0]; if (q) imgURL(q.f, false); });
     $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
     $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
