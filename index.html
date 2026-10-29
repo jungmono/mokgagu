@@ -376,7 +376,7 @@ const TOOL_ICO = {
   stats: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
 };
 function buildTools() {
-  const T = [['bandaji-map.html', 'map', '지도로 보기', '선생님 손지도로 지역별 반닫이'], ['region-quiz.html', 'quiz', '지역 퀴즈', '사진만 보고 지역 맞히기'], ['region-ruler.html', 'ruler', '비례 자', '우리 언양반닫이와 비례 견주기'], ['auction-stats.html', 'stats', '경매 시세', '종류별 낙찰가 흐름']];
+  const T = [['bandaji-map.html', 'map', '지도로 보기', '선생님 손지도로 지역별 반닫이'], ['region-ruler.html', 'ruler', '비례 자', '우리 언양반닫이와 비례 견주기'], ['region-quiz.html', 'quiz', '지역 퀴즈', '사진만 보고 지역 맞히기'], ['auction-stats.html', 'stats', '경매 시세', '종류별 낙찰가 흐름']];
   document.getElementById('hm-tiles').innerHTML = T.map(([h, k, n, d]) => `<a class="hm-tile" href="${h}"><span class="i">${k === 'map' ? `<span class="mp">${MAPICO}</span>` : TOOL_ICO[k]}</span><b>${n}</b><small>${d}</small></a>`).join('');
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
