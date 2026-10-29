@@ -3,7 +3,7 @@
    새 도구를 넣으려면 아래 TOOLS 에 한 줄 보태면 모든 화면에 함께 나온다. */
 (function () {
   var TOOLS = [
-    { k: 'map', href: 'bandaji-map.html', t: '지도로 보기', title: '반닫이(궤)여지도', sub: '선생님 손지도로 지역별 반닫이를 봅니다' },
+    { k: 'map', href: 'bandaji-map.html', t: '지도로 보기', title: '반닫이(궤)여지도', sub: '' },
     { k: 'quiz', href: 'region-quiz.html', t: '지역 퀴즈', title: '이 반닫이는 어느 지역?', sub: '사진만 보고 지역을 맞혀 보세요' },
     { k: 'ruler', href: 'region-ruler.html', t: '비례 자', title: '비례 자', sub: '우리 언양반닫이를 기준으로 지역별 비례를 견줘 봅니다' },
     { k: 'auction', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }
@@ -37,6 +37,6 @@
   d.innerHTML = '<div class="th-row"><a class="m a" href="index.html" aria-label="처음 화면으로"><img src="mark_angwe.png" alt="안궤" width="328" height="200"></a><a class="tt" href="index.html">조선의 목가구</a><a class="m" href="index.html" aria-label="처음 화면으로"><img src="mark_eonyang_white.png" alt="언양반닫이" width="400" height="243"></a></div>' +
     '<nav class="th-nav" aria-label="탐색 도구"><a class="th-back" href="' + back.href + '">' + back.t + '</a><div class="th-tools">' +
     TOOLS.map(function (x) { return '<a href="' + x.href + '"' + (x.k === key ? ' class="on" aria-current="page"' : '') + '>' + x.t + '</a>'; }).join('') + '</div></nav>' +
-    '<div class="th-hero"><span class="th-tag">탐색 도구</span><div class="th-h" role="heading" aria-level="1">' + cur.title + '</div><p class="th-s">' + cur.sub + '</p></div>';
+    '<div class="th-hero"><span class="th-tag">탐색 도구</span><div class="th-h" role="heading" aria-level="1">' + cur.title + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
   me.parentNode.insertBefore(d, me);
 })();

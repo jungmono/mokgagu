@@ -262,12 +262,13 @@ ${base()}
     }
     function showRegion(id) {
       sel = id; selP = ''; draw(); const r = R.find((x) => x[0] === id), p = P.by[id], d = edits[id] != null ? edits[id] : r[8], pn = provOf[id] || '';
-      panel.innerHTML = `<h3>${esc(r[1])} <small style="font-weight:400;color:#7a6c50">${r[2]}${pn ? ' · ' + pn : ''}</small></h3><div id="bm-d" style="white-space:pre-wrap;line-height:1.65">${esc(d)}</div>
-<div class="src">출처: ${esc(r[9])}${edits[id] != null ? ' · (고친 글' + (meta[id] && meta[id].editor ? ' · ' + esc(meta[id].editor) : '') + ')' : ''}</div>
-<div class="bm-b"><button type="button" id="bm-e">설명 고치기</button></div>
+      panel.innerHTML = `<h3>${esc(r[1])} <small style="font-weight:400;color:#7a6c50">${r[2]}${pn ? ' · ' + pn : ''}</small></h3>
 ${jgHTML(JG[id])}
-${KEY ? '<div id="bm-k"></div>' : ''}
-<div class="bm-it">${items(p) || '<span class="src">이 지역으로 분류된 기물이 아직 없어요.</span>'}</div>`;
+<div id="bm-d" style="white-space:pre-wrap;line-height:1.65">${esc(d)}</div>
+<div class="src">출처: ${esc(r[9])}${edits[id] != null ? ' · (고친 글' + (meta[id] && meta[id].editor ? ' · ' + esc(meta[id].editor) : '') + ')' : ''}</div>
+<div class="bm-b"><button type="button" id="bm-e">편집</button></div>
+<div class="bm-it">${items(p) || '<span class="src">이 지역으로 분류된 기물이 아직 없어요.</span>'}</div>
+${KEY ? '<div id="bm-k"></div>' : ''}`;
       fillOwn(panel); emit(p);
       panel.querySelector('#bm-e').onclick = () => {
         panel.querySelector('#bm-d').outerHTML = `<textarea id="bm-ta">${esc(d)}</textarea>`;
