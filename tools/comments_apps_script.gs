@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v23: 소장품 작은 사진을 한 번에 받기(action=cimgs) — 목록 첫 화면 속도. 재배포 필요.
  * v22: 벗 이야기 알림 메일 — 벗이 기물 이야기를 남기면 NOTIFY_TO(비우면 스크립트 주인)에게 메일. 하루 30통까지.
  *      재배포 뒤 알림준비() 를 한 번 실행해 메일 보내기 권한을 허락하고 시험 메일을 받아 본다.
  * v21: 지역 퀴즈 순위표 — action=rank(누구나 읽기, GET·POST) · doPost rkadd {id, who(거믄|힌|벗), name, score, total}. 시트 '퀴즈순위' 탭. 거믄·힌은 가족 암호, 벗은 이름만.
@@ -88,10 +89,10 @@ function doGet(e) {
   return read_(p);
 }
 // 읽기 동작 본체. 가족 암호가 필요한 읽기는 POST 본문으로도 받는다(주소에 암호가 남지 않게) — doPost 참고.
-const READ_POST_ = ['rank', 'nlist', 'list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'aget'];
+const READ_POST_ = ['rank', 'nlist', 'list', 'likes', 'stats', 'wlist', 'rlist', 'cmplist', 'clist', 'cimg', 'cimgs', 'aget'];
 function read_(p) {
   const fam = isFam_(p.code);
-  if (p.action === 'clist' || p.action === 'cimg') return colGet_(p, fam);
+  if (p.action === 'clist' || p.action === 'cimg' || p.action === 'cimgs') return colGet_(p, fam);
   if (p.action === 'likes') return likesGet_(fam);
   if (p.action === 'visit') return visit_(p);
   if (p.action === 'stats') return statsGet_(fam);
@@ -233,8 +234,28 @@ function colGet_(p, fam) {
     if (f.getParents().next().getName() !== PHOTO_FOLDER) return out_({ ok: false, err: 'none' });
     return out_({ ok: true, type: f.getMimeType(), data: Utilities.base64Encode(f.getBlob().getBytes()) });
   }
+  if (p.action === 'cimgs') return colImgs_(p);
   const rows = colSheet_().getDataRange().getValues(); rows.shift();
   return out_({ ok: true, list: rows.filter(r => r[0] && !r[15]).map(colRow_) });
+}
+/* v23: 작은 사진 여러 장을 한 번에 — {action:'cimgs', ids:[…최대 24]} → {ok, imgs:{id:{type,data}}}. 시트 소장품 탭에 적힌 사진 id만 내주고, 6시간 캐시한다. */
+function colImgs_(p) {
+  const ids = (p.ids || []).map(String).slice(0, 24), cache = CacheService.getScriptCache(), imgs = {};
+  const okSet = {}; colSheet_().getDataRange().getValues().forEach(function (r) { try { JSON.parse(r[COL_HEAD.indexOf('photos')] || '[]').forEach(function (x) { if (x.f) okSet[x.f] = 1; if (x.t) okSet[x.t] = 1; }); } catch (e) {} });
+  const keys = ids.map(function (i) { return 'ci_' + i; }), hit = cache.getAll(keys);
+  ids.forEach(function (id) {
+    if (!okSet[id]) return;
+    let v = hit['ci_' + id], o = null;
+    if (v) { try { o = JSON.parse(v); } catch (e) {} }
+    if (!o) {
+      try {
+        const b = DriveApp.getFileById(id).getBlob(); o = { type: b.getContentType(), data: Utilities.base64Encode(b.getBytes()) };
+        if (o.data.length < 90000) cache.put('ci_' + id, JSON.stringify(o), 21600);
+      } catch (e) { return; }
+    }
+    imgs[id] = o;
+  });
+  return out_({ ok: true, imgs: imgs });
 }
 function colPost_(d, fam) {
   if (!fam) return out_({ ok: false, err: 'code' });

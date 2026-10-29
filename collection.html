@@ -279,16 +279,33 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
       (function (j) { apiGet({ action: 'cimg', id: j.id }).then(j.ok, j.no).then(function () { netN--; pump(); }); })(j);
     }
   }
+  /* 작은 사진은 24장씩 묶어서 받는다 (시트 스크립트 v23 이상). 옛 배포본이면 아래 한 장씩 받기로 넘어간다. */
+  var bulkQ = [], bulkT = 0, bulkOK = true, bulkWait = {};
+  function bulkGet(id) {
+    return new Promise(function (ok, no) {
+      (bulkWait[id] = bulkWait[id] || []).push({ ok: ok, no: no }); bulkQ.push(id);
+      clearTimeout(bulkT); bulkT = setTimeout(bulkRun, 30);
+    });
+  }
+  function bulkRun() {
+    var ids = bulkQ.splice(0, 24); if (!ids.length) return;
+    apiGet({ action: 'cimgs', ids: ids }).then(function (j) {
+      var got = j && j.ok && j.imgs;
+      if (!got) bulkOK = false;
+      ids.forEach(function (id) { var w = bulkWait[id] || []; delete bulkWait[id]; w.forEach(function (x) { x.ok(got && got[id] ? { ok: true, data: got[id].data, type: got[id].type } : null); }); });
+    }, function () { ids.forEach(function (id) { var w = bulkWait[id] || []; delete bulkWait[id]; w.forEach(function (x) { x.ok(null); }); }); });
+    if (bulkQ.length) setTimeout(bulkRun, 0);
+  }
   var inflight = {};
-  function imgURL(id, front) {
+  function imgURL(id, front, thumb) {
     if (!id) return Promise.resolve('');
     if (urls[id]) return Promise.resolve(urls[id]);
     if (inflight[id]) return inflight[id];
     return inflight[id] = idb.get('img', id).catch(function () { return null; }).then(function (blob) {
       if (blob) return blob;
       if (/^L/.test(id)) return null;
-      return netGet(id, front).then(function (j) {
-        if (!j.ok) return null;
+      return (thumb && bulkOK ? bulkGet(id).then(function (j) { return j || netGet(id, front); }) : netGet(id, front)).then(function (j) {
+        if (!j || !j.ok) return null;
         var b = new Blob([b64u(j.data)], { type: j.type || 'image/jpeg' });
         idb.put('img', b, id).catch(function () {});
         return b;
@@ -301,7 +318,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   }, { rootMargin: '600px 0px' }) : null;
   function fillOne(im, front) {
     var id = im.dataset.pid; if (!id) return; im.removeAttribute('data-pid');
-    imgURL(id, front).then(function (u) { if (u) im.src = u; else im.replaceWith(Object.assign(document.createElement('img'), { src: 'mark_angwe.png', className: 'none', alt: '' })); });
+    imgURL(id, front, im.dataset.th === '1').then(function (u) { if (u) im.src = u; else im.replaceWith(Object.assign(document.createElement('img'), { src: 'mark_angwe.png', className: 'none', alt: '' })); });
   }
   function fillImgs(root) {
     (root || document).querySelectorAll('img[data-pid]').forEach(function (im) {
@@ -392,7 +409,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
       '<div class="bar"><span class="seg st" id="stf">' + ['소장', '판매 예정', '판매함', '전체'].map(function (k) { var n = k === '전체' ? items.length : items.filter(function (x) { return st(x) === k; }).length; return '<button type="button" data-st="' + k + '" class="' + (stf === k ? 'on' : '') + '">' + k + ' <small>' + n + '</small></button>'; }).join('') + '</span></div>';
     h += '<div class="grid" id="grid">' + (shown.length ? shown.map(function (x, i) {
       var p = (x.photos || [])[0];
-      return '<button type="button" class="it" data-i="' + i + '"><div class="ph">' + (p ? '<img data-pid="' + esc(p.t || p.f) + '" alt="">' : '<img class="none" src="mark_angwe.png" alt="">') +
+      return '<button type="button" class="it" data-i="' + i + '"><div class="ph">' + (p ? '<img data-th="' + (p.t ? 1 : 0) + '" data-pid="' + esc(p.t || p.f) + '" alt="">' : '<img class="none" src="mark_angwe.png" alt="">') +
         ((x.photos || []).length > 1 ? '<span class="n">📷 ' + x.photos.length + '</span>' : '') + (x.pending ? '<span class="pend">이 기기에만</span>' : '') + (st(x) !== '소장' ? '<span class="stb' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div>' +
         '<div class="tx"><div class="nm">' + owners(x.owner) + esc(x.name) + '</div>' + (x.kind ? '<div class="kd">' + esc(x.kind) + '</div>' : '') +
         '<div class="mt">' + esc([fmtD(x.bought), x.place].filter(Boolean).join(' · ')) + '</div>' + (st(x) !== '소장' && (x.sprice || x.sold) ? '<div class="mt sl">' + esc([st(x) === '판매함' ? '판매' : '판매 예정', fmtD(x.sold), won(x.sprice)].filter(Boolean).join(' · ')) + '</div>' : '') + '</div></button>';
@@ -431,11 +448,11 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     if (P.length && P[vp].t && P[vp].t !== P[vp].f) {
       var mi = $('v-main').querySelector('img'), fid = P[vp].f;
       if (urls[fid]) { mi.removeAttribute('data-pid'); mi.src = urls[fid]; }
-      else imgURL(P[vp].t, true).then(function (u) { if (u && mi.isConnected && !mi.getAttribute('src')) mi.src = u; });
+      else imgURL(P[vp].t, true, true).then(function (u) { if (u && mi.isConnected && !mi.getAttribute('src')) mi.src = u; });
     }
     /* 다음·이전 기물의 큰 사진을 미리 받아 둔다 */
     [vi + 1, vi - 1].forEach(function (k) { var q = shown[k] && shown[k].photos && shown[k].photos[0]; if (q) imgURL(q.f, false); });
-    $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
+    $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-th="' + (p.t ? 1 : 0) + '" data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
     $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
       row('상태', st(x)) + (st(x) !== '소장' ? row('판매일', fmtD(x.sold)) + row(st(x) === '판매함' ? '판매가' : '받을 금액', won(x.sprice)) + row('판매처', x.sto) : '') + row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', won(x.price)) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
