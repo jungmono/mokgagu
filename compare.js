@@ -1,6 +1,6 @@
 /* 기물 나란히 비교 (최대 5점) — 모든 페이지 공통.
    · 기물 사진 창에 「비교에 담기」 단추를 단다 (공유 단추 옆).
-   · 담은 기물은 이 기기에 기억하고, 화면 아래 작은 띠에 보여 준다. 「나란히 보기」는 compare.html. */
+   · 담은 기물은 이 기기에 기억하고, 화면 아래 작은 띠에 보여 준다. 「비교하기」는 compare.html. */
 (function () {
   if (window.MOKGAGU_CMP) return;
   var KEY = 'mokgagu_cmp', MAX = 5;
@@ -82,7 +82,7 @@
             if (c.b === 'col') { var x = window.MOKGAGU_COLCUR(), im = dlg.querySelector('#v-main img');
               ent.rec = { name: x.name, kind: x.kind || '', era: x.era || '', size: x.size || '', wood: x.wood || '', owner: '우리 소장품', cat: '우리 소장품' };
               try { var cv = document.createElement('canvas'), w = im.naturalWidth, h = im.naturalHeight, r = Math.min(1, 220 / Math.max(w, h)); cv.width = Math.round(w * r); cv.height = Math.round(h * r); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); ent.u = cv.toDataURL('image/jpeg', .7); } catch (e) { ent.u = ''; } }
-            a.push(ent); save(a); say(a.length + '점 담았어요' + (a.length > 1 ? ' — 아래 「나란히 보기」' : ''));
+            a.push(ent); save(a); say(a.length + '점 담았어요' + (a.length > 1 ? ' — 아래 「비교하기」' : ''));
           }
           paint(); sync(dlg);
         });
@@ -122,9 +122,9 @@
     tray.style.display = 'flex';
     tray.innerHTML = a.map(function (x) { return '<span class="th" title="' + esc(x.n) + '"><img src="' + esc(x.u) + '" alt="' + esc(x.n) + '"><button type="button" data-rm="' + esc(x.k) + '" aria-label="' + esc(x.n) + ' 빼기">×</button></span>'; }).join('') +
       '<span class="tx"><b>' + a.length + '/' + MAX + '점</b>비교에 담음</span>' +
-      '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html" target="_blank" rel="noopener">' + (a.length < 2 ? '2점부터' : '나란히 보기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
+      '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html" target="_blank" rel="noopener">' + (a.length < 2 ? '2점부터' : '비교하기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
   }
-  /* 「나란히 보기」를 누르면 거믄·힌·벗으로 들어온 기기에서는 무엇을 비교했는지 통계에 남긴다 */
+  /* 「비교하기」를 누르면 거믄·힌·벗으로 들어온 기기에서는 무엇을 비교했는지 통계에 남긴다 */
   function logCmp() {
     try {
       var L = window.MOKGAGU_LIKES, a = load(); if (!L || !L.me || !L.post || a.length < 2) return;

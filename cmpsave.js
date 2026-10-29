@@ -1,4 +1,4 @@
-/* 나란히 보기: 「이 비교 저장」 + 「저장한 비교」 목록.
+/* 비교하기: 「이 비교 저장」 + 「저장한 비교」 목록.
    가족(거믄·힌)은 구글 시트에 저장되어 휴대폰·노트북이 같다. 벗은 이 기기에만. */
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
