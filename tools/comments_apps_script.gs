@@ -4,6 +4,7 @@
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
  * v23: 소장품 작은 사진을 한 번에 받기(action=cimgs) — 목록 첫 화면 속도. 재배포 필요.
+ * v24: 벗이 나란히 비교한 기물도 '로그' 탭에 남긴다(logPost_ guest 에 compare 추가).
  * v22: 벗 이야기 알림 메일 — 벗이 기물 이야기를 남기면 NOTIFY_TO(비우면 스크립트 주인)에게 메일. 하루 30통까지.
  *      재배포 뒤 알림준비() 를 한 번 실행해 메일 보내기 권한을 허락하고 시험 메일을 받아 본다.
  * v21: 지역 퀴즈 순위표 — action=rank(누구나 읽기, GET·POST) · doPost rkadd {id, who(거믄|힌|벗), name, score, total}. 시트 '퀴즈순위' 탭. 거믄·힌은 가족 암호, 벗은 이름만.
@@ -378,7 +379,7 @@ function statsGet_(fam) {
 }
 function famWho_(w) { w = String(w || ''); return (w === '거믄' || w === '힌') ? w : ''; }
 function logPost_(d, fam) {
-  const guest = String(d.who || '') === '벗' && (d.kind === 'view' || d.kind === 'search');   // v16: 벗의 찾아본 기물·검색어
+  const guest = String(d.who || '') === '벗' && (d.kind === 'view' || d.kind === 'search' || d.kind === 'compare');   // v16: 벗의 찾아본 기물·검색어 · v24: 나란히 비교
   if (!fam && !guest) return out_({ ok: false, err: 'code' });
   const who = guest ? '벗' : famWho_(d.who); if (!who) return out_({ ok: false, err: 'bad' });
   const kind = d.kind === 'search' ? 'search' : d.kind === 'compare' ? 'compare' : 'view';   // v13: compare = 나란히 본 기물들(cid 에 '도록/번호'를 공백으로 이어 적음, q 에 이름)
