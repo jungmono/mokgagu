@@ -47,7 +47,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacin
 <div class="card rk" id="rank"><h3>순위표</h3><div class="tabs" id="rtabs"><button type="button" data-t="sum" class="on">누적</button><button type="button" data-t="best">최고점</button><button type="button" data-t="month">이번 달</button></div><div id="rbody"><p class="empty">순위표를 불러오는 중…</p></div><p class="note" style="margin-top:8px">같은 이름은 판이 쌓일수록 합산돼요.</p></div>
 <p class="note">사진은 도록 원본 사진을 불러오며, 안 되면 작은 사진으로 바꿔요. 이름에 지역이 적힌 반닫이만 문제로 나와요.</p>
 </main>
-<script src="search.js"></script>
+<script src="bandaji-idx.js"></script>
 <script>
 /* 순위표 — 거믄·힌은 「누구세요?」에서 고른 대로, 벗은 이름을 적는다. 시트 '퀴즈순위' 탭(누적=맞힌 수 합계). */
 window.RK = (function () {
@@ -131,7 +131,7 @@ window.RK = (function () {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const regOf = (r) => { const m = ((r.name || '') + ' ' + (r.hanja || '')).match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
-  const pool = (window.SEARCH || []).filter((r) => r.t && /반닫이/.test((r.name || '') + (r.hanja || '')) && regOf(r));
+  const pool = (window.BANDAJI_IDX || []).filter((r) => r.t && /반닫이/.test((r.name || '') + (r.hanja || '')) && regOf(r));
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
   const usable = pool.filter((r) => regs.includes(regOf(r)));

@@ -61,7 +61,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html" style="display:inline-block;padding:10px 4px">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
-<script src="search.js"></script>
+<script src="bandaji-idx.js"></script>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -87,7 +87,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
     return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 120 ? { w, h } : null;
   }
   const P = [];
-  (window.SEARCH || []).forEach((r) => {
+  (window.BANDAJI_IDX || []).forEach((r) => {
     if (!/반닫이/.test((r.name || '') + (r.hanja || ''))) return;
     if (/반닫이\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
     const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));

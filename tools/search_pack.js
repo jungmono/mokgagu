@@ -73,3 +73,6 @@ if (JSON.stringify(w2.SEARCH) !== JSON.stringify(R.map((r) => Object.fromEntries
 const before = fs.statSync(FILE).size;
 fs.writeFileSync(FILE, out);
 console.log('기물 ' + R.length + '줄 · 도록 ' + books.length + '개 · ' + (before / 1024).toFixed(0) + 'KB → ' + (Buffer.byteLength(out) / 1024).toFixed(0) + 'KB');
+
+/* 비례 자·지역 퀴즈가 쓰는 반닫이 작은 색인도 함께 다시 만든다 */
+{ const r = require('./build_bandaji_idx.js')(); console.log('반닫이 작은 색인 ' + r.n + '줄 · ' + r.kb.toFixed(0) + 'KB → bandaji-idx.js'); }

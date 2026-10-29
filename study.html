@@ -239,7 +239,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
         }
       }); };
       /* 지식 지도는 d3가 필요하니 이 화면에 들어올 때만 받는다 */
-      if (window.d3) mountKg(); else { var d3s = document.createElement('script'); d3s.src = 'd3.min.js'; d3s.onload = mountKg; d3s.onerror = function () { kgEl.innerHTML = '<p class="foot">지도를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.</p>'; }; document.head.appendChild(d3s); }
+      if (window.d3) mountKg(); else { var d3s = document.createElement('script'); d3s.src = 'd3kg.min.js';  /* d3 전체(279KB) 대신 지식 지도에 쓰는 부분만 묶은 64KB */ d3s.onload = mountKg; d3s.onerror = function () { kgEl.innerHTML = '<p class="foot">지도를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.</p>'; }; document.head.appendChild(d3s); }
       return;
     }
     if (tab === '퀴즈') {

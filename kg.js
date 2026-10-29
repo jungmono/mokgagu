@@ -1,5 +1,5 @@
 /* 공부방 「지식 지도」 — 수업·개념·지역을 점과 선으로 잇는 화면.
-   window.MOKGAGU_KG.mount(el, { sessions, load(), goSession(s) })  (d3.min.js 필요) */
+   window.MOKGAGU_KG.mount(el, { sessions, load(), goSession(s) })  (d3kg.min.js 필요 — d3 v7에서 selection·drag·zoom·force·transition만 묶은 것. 다시 만드는 법은 tools/build_d3kg.sh) */
 (function () {
   if (window.MOKGAGU_KG) return;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
