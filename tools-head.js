@@ -37,6 +37,6 @@
   d.innerHTML = '<div class="th-row"><a class="m a" href="index.html" aria-label="처음 화면으로"><img src="mark_angwe.png" alt="안궤" width="328" height="200"></a><a class="tt" href="index.html">조선의 목가구</a><a class="m" href="index.html" aria-label="처음 화면으로"><img src="mark_eonyang_white.png" alt="언양반닫이" width="400" height="243"></a></div>' +
     '<nav class="th-nav" aria-label="탐색 도구"><a class="th-back" href="' + back.href + '">' + back.t + '</a><div class="th-tools">' +
     TOOLS.map(function (x) { return '<a href="' + x.href + '"' + (x.k === key ? ' class="on" aria-current="page"' : '') + '>' + x.t + '</a>'; }).join('') + '</div></nav>' +
-    '<div class="th-hero"><span class="th-tag">탐색 도구</span><div class="th-h" role="heading" aria-level="1">' + cur.title + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
+    '<div class="th-hero"><div class="th-h" role="heading" aria-level="1">' + cur.title + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
   me.parentNode.insertBefore(d, me);
 })();
