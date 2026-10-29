@@ -204,7 +204,7 @@ ${base()}
       list = [];
       return TYPES.filter(([k]) => on[k] && o[k] && o[k].length).map(([k, n, c]) => o[k].map((r) => {
         list.push(r); const i = list.length - 1;
-        return r.own ? `<button type="button" data-i="${i}">${r.t ? `<img class="ow" alt="" data-pid="${esc(r.t)}">` : ''}<span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
+        return r.own ? `<button type="button" data-i="${i}">${r.t ? `<img class="ow" alt="" data-th="1" data-pid="${esc(r.t)}">` : ''}<span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
           `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="${r.thumb || `thumbs/${r.b}/${r.n}.jpg`}" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || r.cat || n).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
       }).join('')).join('');
     }
@@ -220,7 +220,7 @@ ${base()}
         delete dlg.dataset.cid; img.removeAttribute('src'); img.alt = c.name || '';
         if (P[vp]) photo(P[vp].f).then((u) => { if (cur === i && u) img.src = u; });
         $d('d-info').innerHTML = `<div class="cat">우리 소장품 · ${esc(c.kind || '소장품')}</div><h3>${esc(c.name || '')}</h3><dl>${dRow('상태', c.status || '소장')}${dRow('구입일', dDate(c.bought))}${dRow('구입처', c.place)}${dRow('크기', c.size)}${dRow('연대', c.era)}${dRow('재질·수종', c.wood)}${dRow('비고', c.note)}${dRow('감정·관찰', c.memo)}</dl>` +
-          (P.length > 1 ? `<div class="bm-st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : '') + '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 →</a>';
+          (P.length > 1 ? `<div class="bm-st">${P.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" data-th="${p.t ? 1 : 0}" data-pid="${esc(p.t || p.f)}"></button>`).join('')}</div>` : '') + '<a href="collection.html" target="_blank" rel="noopener">소장품 도록에서 보기 →</a>';
         fillOwn($d('d-info'));
       } else {
         dlg.dataset.cid = r.b + '/' + (r.pid || r.n);
@@ -245,11 +245,24 @@ ${base()}
     const b64u = (t) => { t = t.replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
     const urls = {};
     const idbGet = (id) => new Promise((ok) => { try { const q = indexedDB.open('mokgagu_collection', 1); q.onsuccess = () => { try { const r = q.result.transaction('img').objectStore('img').get(id); r.onsuccess = () => ok(r.result || null); r.onerror = () => ok(null); } catch (e) { ok(null); } }; q.onerror = () => ok(null); } catch (e) { ok(null); } });
-    function photo(id) {
-      if (urls[id]) return Promise.resolve(urls[id]);
-      return idbGet(id).then((b) => b || get('cimg&id=' + encodeURIComponent(id)).then((j) => (j && j.ok ? new Blob([b64u(j.data)], { type: j.type || 'image/jpeg' }) : null))).then((b) => (b ? (urls[id] = URL.createObjectURL(b)) : '')).catch(() => '');
+    /* 시트에서 받기: 작은 사진은 24장씩 한 번에(시트 스크립트 v23), 큰 사진은 한 장씩. (예전엔 사진 주소가 잘못 만들어져 새 기기에서는 시트에서 못 받았다) */
+    const post = (o) => fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ code: code() }, o)) }).then((r) => r.json());
+    const bq = [], bw = {}; let bt = 0;
+    const one = (id, ws) => post({ action: 'cimg', id }).then((j) => ws.forEach((f) => f(j)), () => ws.forEach((f) => f(null)));
+    function bulkRun() {
+      const ids = bq.splice(0, 24); if (!ids.length) return;
+      post({ action: 'cimgs', ids }).then((j) => { const g = j && j.ok && j.imgs; ids.forEach((id) => { const ws = bw[id] || []; delete bw[id]; const o = g && g[id]; if (o) ws.forEach((f) => f({ ok: true, data: o.data, type: o.type })); else one(id, ws); }); }, () => ids.forEach((id) => { const ws = bw[id] || []; delete bw[id]; one(id, ws); }));
+      if (bq.length) setTimeout(bulkRun, 0);
     }
-    function fillOwn(root) { root.querySelectorAll('img[data-pid]').forEach((im) => { const id = im.dataset.pid; im.removeAttribute('data-pid'); photo(id).then((u) => { if (u) im.src = u; else im.style.visibility = 'hidden'; }); }); }
+    const netPhoto = (id, thumb) => new Promise((ok) => {
+      if (!thumb) return one(id, [ok]);
+      (bw[id] = bw[id] || []).push(ok); bq.push(id); clearTimeout(bt); bt = setTimeout(bulkRun, 30);
+    });
+    function photo(id, thumb) {
+      if (urls[id]) return Promise.resolve(urls[id]);
+      return idbGet(id).then((b) => b || netPhoto(id, thumb).then((j) => (j && j.ok ? new Blob([b64u(j.data)], { type: j.type || 'image/jpeg' }) : null))).then((b) => (b ? (urls[id] = URL.createObjectURL(b)) : '')).catch(() => '');
+    }
+    function fillOwn(root) { root.querySelectorAll('img[data-pid]').forEach((im) => { const id = im.dataset.pid; im.removeAttribute('data-pid'); photo(id, im.dataset.th === '1').then((u) => { if (u) im.src = u; else im.style.visibility = 'hidden'; }); }); }
     function emit(o) {   // 이 페이지 아래 목록을 고른 지역 것만 보이게 알린다
       const keys = o ? [].concat(...TYPES.filter(([k]) => on[k]).map(([k]) => (o[k] || []).filter((r) => !r.own).map((r) => r.b + '/' + r.n))) : null;
       window.dispatchEvent(new CustomEvent('bmap:filter', { detail: { keys, label: o ? (selP || (R.find((x) => x[0] === sel) || [])[1] || '') : '' } }));
