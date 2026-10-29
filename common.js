@@ -204,27 +204,28 @@
   }, { passive: true });
 })();
 
-/* 터치패드 두 손가락 벌리기·오므리기(Ctrl+휠) = 이 페이지만 확대·축소, 더블클릭 = 원래대로 (2026-10-29)
-   브라우저 자체 확대는 코드로 되돌릴 수 없어서, 이 페이지 안에서 직접 확대를 처리한다. */
+/* 터치패드 두 손가락 벌리기·오므리기(Ctrl+휠) = 이 페이지만 확대·축소, 더블클릭 = 어디서든 원래 크기로 (2026-10-29)
+   브라우저 자체 확대는 코드로 되돌릴 수 없어서, 이 페이지 안에서 직접 확대를 처리하고
+   이미 브라우저 확대가 걸려 있으면 반대로 줄여서 보이는 크기를 100%로 맞춘다. */
 (function () {
   if (window.MOKGAGU_PZ) return; window.MOKGAGU_PZ = 1;
   var de = document.documentElement, z = 1;
-  var SKIP = '#zv,.zoomable,[data-zoom],dialog[open]';
+  var br = function () { var r = (window.outerWidth || 0) / (window.innerWidth || 1); return r > 0.3 && r < 6 ? (Math.abs(r - 1) < 0.04 ? 1 : r) : 1; };   /* 브라우저 확대 배율 추정 */
   function setZ(nz, px, py) {
-    nz = Math.max(1, Math.min(3, nz)); if (Math.abs(nz - z) < 0.001) return;
+    nz = Math.max(0.2, Math.min(6, nz)); if (Math.abs(nz - z) < 0.001) return;
     var sx = window.scrollX, sy = window.scrollY, k = nz / z;
-    de.style.zoom = nz === 1 ? '' : String(nz); z = nz;
+    de.style.zoom = Math.abs(nz - 1) < 0.001 ? '' : String(nz); z = nz;
     window.scrollTo((sx + px) * k - px, (sy + py) * k - py);
   }
   window.addEventListener('wheel', function (e) {
     if (!e.ctrlKey) return;
-    if (e.target && e.target.closest && e.target.closest(SKIP)) return;
+    if (e.target && e.target.closest && e.target.closest('#zv,.zoomable,[data-zoom]')) return;
     e.preventDefault();
-    setZ(z * Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY);
+    var b = br(); setZ(Math.max(1 / b, Math.min(3 / b, z * Math.exp(-e.deltaY * 0.01))), e.clientX, e.clientY);
   }, { passive: false });
   document.addEventListener('dblclick', function (e) {
-    if (z === 1) return;
-    if (e.target && e.target.closest && e.target.closest('a,button,input,select,textarea,label,summary,' + SKIP + ',svg circle.pt')) return;
-    setZ(1, e.clientX, e.clientY);
+    if (e.target && e.target.closest && e.target.closest('#zv')) return;
+    var eff = br() * z; if (Math.abs(eff - 1) < 0.04) return;
+    setZ(z / eff, e.clientX, e.clientY);
   });
 })();
