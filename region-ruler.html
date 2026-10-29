@@ -48,6 +48,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .bl .sr{color:#8a7f66;font-size:11.5px}
 @media(max-width:520px){.bx{border-spacing:3px;font-size:12px}.bx button{min-width:0;padding:4px 2px}.bx .rh button{min-width:38px}.bx td button b{font-size:14px}.bx .ax{font-size:11px}}
 @media(max-width:720px){.bl{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.bl{grid-template-columns:repeat(2,1fr)}}
+circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stroke-width:2.6}
+#pick:empty{display:none}#pick .pk{display:grid;grid-template-columns:minmax(0,46%) 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid #efe6cf}#pick .pk:first-of-type{border-top:0}#pick .pk img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;border-radius:10px;display:block}#pick .pk .t{font-size:15px;font-weight:800;line-height:1.4}#pick .pk .m{font-size:13px;color:#4a4130;line-height:1.7;margin-top:4px}#pick .pk .rg{display:inline-block;color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px}#pick .pk a.go{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#111;text-decoration:none;border-bottom:1.5px solid #111}#pick .hd{display:flex;align-items:baseline;gap:8px}#pick .hd small{color:#8a7f66}#pick .hd button{margin-left:auto;font:inherit;font-size:13px;font-weight:700;border:1px solid #e3d6b8;background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}@media(max-width:520px){#pick .pk{grid-template-columns:1fr}}
 #svg.dim circle.pt{fill-opacity:.12}#svg.dim circle.pt.on{fill-opacity:.95;stroke:#111;stroke-width:1.2}
 </style>
 <script src="common.js?v=13" defer></script></head><body><main>
@@ -135,6 +137,29 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
       svg.querySelectorAll('circle.pt').forEach((c) => c.classList.toggle('on', !all && set.has(+c.dataset.i)));
     }
   }
+  /* 점을 누르면 그래프 바로 아래에 그 기물이 나온다 (겹친 점은 가까운 순으로 최대 6점) */
+  let picked = [];
+  const hiUrl = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
+  function showPick(scroll) {
+    const box = $('pick'), svg = $('svg'); if (!box || !svg) return;
+    svg.querySelectorAll('circle.pt').forEach((c) => { const on = picked.indexOf(+c.dataset.i) >= 0; c.classList.toggle('sel', on); if (on) svg.insertBefore(c, svg.querySelector('text[font-size="13"][fill="#d12b2b"]')); });
+    if (!picked.length) { box.innerHTML = ''; window.__pickKeys = []; return; }
+    window.__pickKeys = picked.map((i) => PS[i].r.b + '/' + PS[i].r.pid);
+    box.innerHTML = '<div class="card"><div class="hd"><b>고른 점</b><small>' + picked.length + '점 · 겹친 점은 함께 나옵니다</small><button type="button" id="pk-x">닫기</button></div>' + picked.map((i) => {
+      const p = PS[i], r = p.r, k = (p.w / p.h).toFixed(2);
+      return `<div class="pk"><a data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img src="${hiUrl(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt="${esc(r.name)}"></a><div><div class="t"><span class="rg" style="background:${COL[p.g]}">${p.g}</span>${esc(r.name)}</div><div class="m">가로 ${p.w} × 세로 ${p.h} cm<br>가로:세로 ${k} : 1 · 크기 ${sizeOf(p.w, p.h)}${r.era ? '<br>' + esc(r.era) : ''}${r.page ? '<br>도록 ' + esc(String(r.page)) + '쪽' : ''}<br><a class="go" data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">사진 크게 보기 →</a></div></div></div>`;
+    }).join('') + '</div>';
+    $('pk-x').onclick = () => { picked = []; showPick(); };
+    if (scroll) box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function pickAt(e) {
+    const svg = $('svg'); if (!svg || !svg.getScreenCTM) return;
+    const m = svg.getScreenCTM(); if (!m) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse());
+    const near = PS.map((p, i) => ({ i, d: Math.hypot(sx(p.w) - q.x, sy(p.h) - q.y) })).filter((o) => o.d <= (e.pointerType === 'touch' || e.detail === 0 ? 14 : 9)).sort((a, b) => a.d - b.d).slice(0, 6);
+    if (!near.length) return;
+    picked = near.map((o) => o.i); showPick(true);
+  }
   function draw() {
     const iw = parseFloat($('w').value), ih = parseFloat($('h').value), own = iw > 0 && ih > 0;
     const w = own ? iw : REFM.w, h = own ? ih : REFM.h, ok = true;
@@ -171,8 +196,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
       v += `<div class="card"><b>비율이 가장 닮은 반닫이</b> <small style="color:#8a7f66">크기는 달라도 가로:세로가 같은 것</small><div class="near">${cards(nearR, (p) => fmt(p.w / p.h) + ' (' + p.w + '×' + p.h + ')')}</div></div>`;
     }
     window.__nearKeys = (window.__seeKeys || []).slice();
-    $('out').innerHTML = `<div class="card">${s}</div><div class="card" id="bands"></div>` + v;
-    bands(w, h);
+    $('out').innerHTML = `<div class="card">${s}</div><div id="pick"></div><div class="card" id="bands"></div>` + v;
+    $('svg').addEventListener('click', pickAt);
+    bands(w, h); showPick(false);
   }
   if (!P.length) { $('out').innerHTML = '<div class="card">치수가 적힌 반닫이를 찾지 못했어요.</div>'; return; }
   ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
@@ -182,7 +208,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 
 document.addEventListener('click', (e) => {
   const a = e.target.closest && e.target.closest('a[data-see]'); if (!a) return;
-  const ks = ((a.dataset.band ? window.__bandKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
+  const ks = ((a.dataset.band ? window.__bandKeys : a.dataset.pick ? window.__pickKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
   try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비례 자', back: 'region-ruler.html' })); } catch (x) {}
 });
 </script></body></html>
