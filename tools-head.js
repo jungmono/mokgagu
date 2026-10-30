@@ -2,10 +2,12 @@
    쓰는 법: 머리가 들어갈 자리에  <script src="tools-head.js" data-k="map|auction|quiz|ruler"></script>  한 줄.
    새 도구를 넣으려면 아래 TOOLS 에 한 줄 보태면 모든 화면에 함께 나온다. */
 (function () {
+  /* 제목 오른쪽 아이콘: 언양반닫이 들쇠고리 (symbols/eonyang_deulsoe_icon.svg) */
+  var DEUL = '<svg class="th-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="11" y="1.8" width="10" height="5.2" rx="1.2"/><circle cx="13.7" cy="4.4" r=".9" fill="currentColor" stroke="none"/><circle cx="18.3" cy="4.4" r=".9" fill="currentColor" stroke="none"/><rect x="9.8" y="7" width="12.4" height="2.7" rx="1"/><path d="M14 7v2.7M18 7v2.7"/><path d="M12.2 9.7V13L16 18.4L19.8 13V9.7"/><circle cx="16" cy="14.4" r=".9" fill="currentColor" stroke="none"/><path d="M12.2 12.2H11.4M19.8 12.2H20.6"/><path d="M4.8 13.8L8.2 12.2L11.4 13.8V18.6L8.2 20.2L4.8 18.6Z"/><path d="M27.2 13.8L23.8 12.2L20.6 13.8V18.6L23.8 20.2L27.2 18.6Z"/><path d="M6 20.4C3 25.6 8.2 30.8 16 30.8S29 25.6 26 20.4"/><path d="M9.8 20.9C8.9 24.2 11.8 27.6 16 27.6S23.1 24.2 22.2 20.9"/><path d="M14.2 27.6a1.8 1.8 0 0 1 3.6 0"/><path stroke-width="1.2" d="M5.4 25.2l2.8-1M8 28.6l2.2-1.7M26.6 25.2l-2.8-1M24 28.6l-2.2-1.7"/></svg>';
   var TOOLS = [
     { k: 'map', href: 'bandaji-map.html', t: '반닫이여지도', title: '반닫이(궤)여지도', sub: '' },
     { k: 'quiz', href: 'region-quiz.html', t: '반닫이 퀴즈', title: '반닫이 퀴즈', sub: '사진으로 반닫이 지역 맞추기' },
-    { k: 'ruler', href: 'region-ruler.html', t: '비례로 보는 반닫이', title: '비례로 보는 반닫이', sub: '가로 세로 비율로 보는 반닫이' },
+    { k: 'ruler', href: 'region-ruler.html', t: '비례로 보는 반닫이', title: '비례로 보는 반닫이', sub: '가로 세로 비율로 보는 반닫이', ico: DEUL },
     { k: 'auction', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }
   ];
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
@@ -27,7 +29,8 @@
     '.th-tools a.on{background:#111;color:#fff;border-color:#111}',
     '.th-hero{background:#fff;border:1px solid #e3d6b8;border-radius:16px;padding:14px 20px}',
     '.th-tag{display:inline-block;background:#111;color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}',
-    '.th-h{margin:8px 0 4px;font-size:clamp(24px,4.6vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1.2}',
+    '.th-h{display:flex;align-items:center;gap:10px;margin:8px 0 4px;font-size:clamp(24px,4.6vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1.2}',
+    '.th-ic{flex:none;width:1.25em;height:1.25em;display:block}',
     '.th-s{margin:0;color:#6d6551;font-size:15px;line-height:1.5}',
     '@media (max-width:640px){.th-tools{margin-left:0;width:100%}}',
     '@media print{.th-nav{display:none}}'
@@ -37,6 +40,6 @@
   d.innerHTML = '<div class="th-row"><a class="m a" href="index.html" aria-label="처음 화면으로"><img src="mark_angwe.png" alt="안궤" width="328" height="200"></a><a class="tt" href="index.html">조선의 목가구</a><a class="m" href="index.html" aria-label="처음 화면으로"><img src="mark_eonyang_white.png" alt="언양반닫이" width="400" height="243"></a></div>' +
     '<nav class="th-nav" aria-label="탐색 도구"><a class="th-back" href="' + back.href + '">' + back.t + '</a><div class="th-tools">' +
     TOOLS.map(function (x) { return '<a href="' + x.href + '"' + (x.k === key ? ' class="on" aria-current="page"' : '') + '>' + x.t + '</a>'; }).join('') + '</div></nav>' +
-    '<div class="th-hero"><div class="th-h" role="heading" aria-level="1">' + cur.title + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
+    '<div class="th-hero"><div class="th-h" role="heading" aria-level="1"><span>' + cur.title + '</span>' + (cur.ico || '') + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
   me.parentNode.insertBefore(d, me);
 })();
