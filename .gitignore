@@ -1,3 +1,6 @@
 # 평문 도판은 저장소에 올리지 않는다 — study/joseongwe.bin(암호) 만 올린다. 고칠 때: tools/lock_tool.py 참고
 /joseongwe.js
 /gijun.js
+
+# 논문 재현 결과(『조선의 궤』 치수가 들어갈 수 있음) — 저장소에 올리지 않는다
+/tools/paper/out/

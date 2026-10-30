@@ -61,9 +61,19 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html" style="display:inline-block;padding:10px 4px">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
+<script>/* (반닫이여지도와 같은 코드) 가족(가족 암호 + 거믄·힌)일 때만 『조선의 궤』 반닫이를 비례 자에 더한다. 도판은 공개 저장소에 평문으로 두지 않고 가족 암호로 잠근 study/joseongwe.bin 에서 풀어 쓴다(메모리에서만). 벗·모르는 분에게는 메뉴가 나오지 않는다 */
+window.MOKGAGU_READY=(async function(){try{var g=function(k){return localStorage.getItem(k)||''},w=g('mokgagu_lk_shared')==='1'?(sessionStorage.getItem('mokgagu_lk_who_s')||''):g('mokgagu_cm_who'),code=g('mokgagu_cm_code');
+if(!(g('mokgagu_cm_fam')==='1'&&code&&(w==='거믄'||w==='힌')))return;
+var b64=function(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
+var meta=await fetch('study/salt.json',{cache:'no-store'}).then(function(r){return r.json()});
+var base=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']);
+var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(meta.salt),iterations:meta.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+var buf=new Uint8Array(await fetch('study/joseongwe.bin',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}));
+var o=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12))));
+new Function(o.j)();new Function(o.g)();}catch(e){}})();</script>
 <script src="bandaji-idx.js"></script>
 <script>
-(function () {
+Promise.resolve(window.MOKGAGU_READY).then(function () {
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
@@ -90,7 +100,18 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
   (window.BANDAJI_IDX || []).forEach((r) => {
     if (!/반닫이/.test((r.name || '') + (r.hanja || ''))) return;
     if (/반닫이\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
+    if (/책\s*반닫이|冊/.test((r.name || '') + (r.hanja || ''))) return;   /* 책반닫이는 옷 반닫이와 쓰임·비례가 달라 뺌(논문과 같은 기준) */
     const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));
+  });
+  { const inN = new Set(P.filter((p) => p.r.b === 'nmk').map((p) => String(p.r.pid))); for (let i = P.length - 1; i >= 0; i--) if (P[i].r.nmk && inN.has(P[i].r.nmk)) P.splice(i, 1); }   /* 이건희 ↔ 국립중앙박물관 같은 기물은 한 번만 */
+  /* 가족이면 『조선의 궤』 반닫이도 더한다: 치수는 가로×깊이×높이. 족대 포함·제외 두 값을 함께 적은 것(괄호)·윗닫이는 뺌(논문과 같은 기준) */
+  const JDO = { haeju: '황해', gaeseong: '경기', ganghwa: '경기', gyeongdo: '경기', namhan: '경기', geumsan: '충청', sangju: '경상', yecheon: '경상', eonyang: '경상', miryang: '경상', yangsan: '경상', jinju: '경상', gimhae: '경상', namhae: '경상', tongyeong: '경상', iksan: '전라', jeonju: '전라', namwon: '전라', naju: '전라', yeonggwang: '전라', jangheung: '전라', jeju: '제주' };
+  let NJ = 0;
+  (window.JOSEONGWE || []).forEach((r) => {
+    if (/윗닫이/.test(r.name || '')) return;
+    const g = JDO[r.r] || String(r.p || '').replace(/도$/, ''), m = String(r.size || '').match(/^([0-9.]+)×([0-9.]+)×([0-9.]+)$/);
+    if (!g || !m) return; const w = +m[1], h = +m[3]; if (w < 40 || w > 140 || h < 25 || h > 120) return;
+    P.push({ g, r, w, h }); NJ++;
   });
   const COL = { 경상: '#c0532b', 전라: '#2f7d5b', 충청: '#7a5aa6', 강원: '#2b6cb0', 경기: '#b8892a', 평안: '#3b3b3b', 제주: '#d0508a', 황해: '#6b8e23', 함경: '#008b8b' };
   const regs = Object.keys(COL).filter((g) => P.some((p) => p.g === g));   /* 지역이 정해진 반닫이는 점 수와 상관없이 모두 */
@@ -168,6 +189,32 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
     if (!near.length) return;
     picked = near.map((o) => o.i); showPick(true);
   }
+  /* 지역별 비례 띠 — 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026)의 그림 1을 이 화면 자료로 다시 그린다.
+     띠 = 가운데 절반(사분위 범위), 세로 막대 = 중앙값, 붉은 점선 = 넣은 치수(없으면 우리 언양반닫이)의 가로:세로 */
+  const ORD = ['평안', '황해', '함경', '강원', '경기', '충청', '전라', '경상', '제주'];
+  const BINS = [[0, 1.15, '1.15 미만'], [1.15, 1.3, '1.15~1.3'], [1.3, 1.5, '1.3~1.5'], [1.5, 99, '1.5 이상']];
+  function stripCard(ratio, own) {
+    const rg = ORD.filter((g) => P.some((p) => p.g === g)), X0 = 0.8, X1 = 2.3, SW = W, Z = W < 700 ? 1.3 : 1, SL = 56 * Z, SR = 40 * Z, RH = 30 * Z, ST = 22 * Z, SH = ST + rg.length * RH + 30 * Z;   /* 휴대폰: 글자·줄을 1.3배로 */
+    const xs = (k) => SL + (Math.min(X1, Math.max(X0, k)) - X0) / (X1 - X0) * (SW - SL - SR);
+    let s = `<svg viewBox="0 0 ${SW} ${SH}" width="100%" role="img" aria-label="지역별 가로:세로 띠">`;
+    for (let k = 1; k <= 2.25; k += 0.25) s += `<line x1="${xs(k)}" y1="${ST - 6}" x2="${xs(k)}" y2="${SH - 26 * Z}" stroke="#efe6cf"/><text x="${xs(k)}" y="${SH - 10 * Z}" text-anchor="middle" font-size="${12 * Z}" fill="#6d6551">${k.toFixed(2).replace(/0$/, '')}</text>`;
+    rg.forEach((g, i) => {
+      const q = P.filter((p) => p.g === g).map((p) => p.w / p.h), y = ST + i * RH + RH / 2, a = qs(q, .25), b = qs(q, .75), m = med(q);
+      s += `<text x="${SL - 8}" y="${y + 4}" text-anchor="end" font-size="${13 * Z}" font-weight="700" fill="#2b2418">${g}</text>`;
+      q.forEach((k) => { s += `<circle cx="${xs(k).toFixed(1)}" cy="${y}" r="${2.6 * Z}" fill="${COL[g]}" fill-opacity=".28"/>`; });
+      s += `<rect x="${xs(a)}" y="${y - 7 * Z}" width="${Math.max(2, xs(b) - xs(a))}" height="${14 * Z}" rx="4" fill="${COL[g]}" fill-opacity=".35" stroke="${COL[g]}"/><line x1="${xs(m)}" y1="${y - 10 * Z}" x2="${xs(m)}" y2="${y + 10 * Z}" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>`;
+      s += `<text x="${SW - SR + 6}" y="${y + 4}" font-size="${11.5 * Z}" fill="#8a7f66">${q.length}</text>`;
+    });
+    s += `<line x1="${xs(ratio)}" y1="${ST - 10}" x2="${xs(ratio)}" y2="${SH - 26 * Z}" stroke="#d12b2b" stroke-width="2" stroke-dasharray="5 4"/><text x="${xs(ratio)}" y="${ST - 12}" text-anchor="middle" font-size="${12.5 * Z}" font-weight="700" fill="#d12b2b">${ratio.toFixed(2)}</text></svg>`;
+    const bi = BINS.findIndex((x) => ratio >= x[0] && ratio < x[1]), inb = P.filter((p) => { const k = p.w / p.h; return k >= BINS[bi][0] && k < BINS[bi][1]; });
+    const c = {}; inb.forEach((p) => (c[p.g] = (c[p.g] || 0) + 1)); const top = Object.entries(c).sort((x, y) => y[1] - x[1]), mx = top.length ? top[0][1] : 1;
+    const bars = top.map(([g, n]) => `<div style="display:grid;grid-template-columns:3em 1fr 2.5em;gap:8px;align-items:center;font-size:13.5px"><span>${g}</span><i style="display:block;height:10px;border-radius:99px;background:${COL[g]};width:${Math.round(n / mx * 100)}%"></i><span style="color:#6d6551">${n}</span></div>`).join('');
+    const word = bi === 3 ? '경상 반닫이에 많은 비례' : bi === 2 ? '전라·경상·경기에 걸친 비례' : '여러 지역에 걸친 비례 — 비례만으로는 가리지 않음';
+    return `<div class="card"><b>지역별 가로:세로</b> <small style="color:#8a7f66">띠는 가운데 절반, 검은 막대는 중앙값</small>${s}` +
+      `<p style="margin:10px 0 6px;font-size:15px">${own ? '넣은 치수' : '우리 언양반닫이'} <b>${ratio.toFixed(2)} : 1</b> → <b>${BINS[bi][2]}</b> 구간 · ${word}</p>` +
+      `<p class="hint" style="margin:0 0 6px">이 구간 반닫이 ${inb.length}점의 지역</p>${bars}` +
+      `<p class="hint">자료: 도록에 지역과 치수가 적힌 반닫이 ${P.length}점${NJ ? `(『조선의 궤』 ${NJ}점 포함 — 가족에게만 보임)` : ''}. 책반닫이·두 도록에 거듭 실린 기물은 뺐습니다. 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026)와 같은 기준이며 도록이 늘면 숫자도 함께 바뀝니다.</p></div>`;
+  }
   function draw() {
     const iw = parseFloat($('w').value), ih = parseFloat($('h').value), own = iw > 0 && ih > 0;
     const w = own ? iw : REFM.w, h = own ? ih : REFM.h, ok = true;
@@ -199,6 +246,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
       window.__seeKeys = [];
       const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
       v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
+      v += stripCard(ratio, own);
       v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
       v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">${cards(nearS, (p) => p.w + '×' + p.h)}</div></div>`;
       v += `<div class="card"><b>비율이 가장 닮은 반닫이</b> <small style="color:#8a7f66">크기는 달라도 가로:세로가 같은 것</small><div class="near">${cards(nearR, (p) => fmt(p.w / p.h) + ' (' + p.w + '×' + p.h + ')')}</div></div>`;
@@ -212,10 +260,11 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
   ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
   const q = new URLSearchParams(location.search); if (q.get('w')) $('w').value = q.get('w'); if (q.get('h')) $('h').value = q.get('h');
   draw(); window.__P = P.length;
-})();
+});
 
 document.addEventListener('click', (e) => {
   const a = e.target.closest && e.target.closest('a[data-see]'); if (!a) return;
+  if (/^joseongwe\//.test(a.dataset.see || '')) { e.preventDefault(); window.open('https://jungmono.github.io/mokgagu-photos/photos/joseongwe/' + encodeURIComponent(a.dataset.see.slice(10)) + '.jpg', '_blank'); return; }   /* 『조선의 궤』는 사진 창이 없으니 사진만 연다 */
   const ks = ((a.dataset.band ? window.__bandKeys : a.dataset.pick ? window.__pickKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
   try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비례 자', back: 'region-ruler.html' })); } catch (x) {}
 });

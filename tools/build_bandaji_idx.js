@@ -12,6 +12,12 @@ function build() {
   const rows = (w.SEARCH || []).filter((r) => /반닫이/.test((r.name || '') + (r.hanja || '')))
     .map((r) => Object.fromEntries(KEYS.map((k) => [k, r[k]])));
   if (!rows.length) throw new Error('search.js에서 반닫이를 찾지 못했습니다');
+  /* 같은 물건이 두 도록에 실린 것(이건희 기증 목록집 ↔ 국립중앙박물관 소장품, mklink.js 의 번호 짝): 이건희 쪽 줄에 짝 번호(nmk)를 적어 둔다.
+     비례 자는 짝인 국립중앙박물관 기물이 함께 세어질 때만 이건희 쪽을 뺀다 — 한 기물이 두 번 세지지 않게(논문과 같은 기준) */
+  const N2L = JSON.parse(fs.readFileSync(path.join(ROOT, 'mklink.js'), 'utf8').match(/var N2L = (\{[^;]*\});/)[1]), L2N = {};
+  for (const k in N2L) L2N[N2L[k]] = k;
+  const nmk = new Set(rows.filter((r) => r.b === 'nmk').map((r) => String(r.pid)));
+  rows.forEach((r) => { if (r.b === 'lee' && L2N[r.pid] && nmk.has(L2N[r.pid])) r.nmk = L2N[r.pid]; });
   /* 도록 이름(cat)은 도록마다 같으므로 한 번만 적고 불러올 때 채운다 */
   const C = {};
   rows.forEach((r) => { C[r.b] = r.cat; delete r.cat; });
