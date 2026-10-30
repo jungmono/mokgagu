@@ -234,11 +234,13 @@ ${base()}
       $d('d-pos').textContent = `${i + 1} / ${list.length}`; $d('d-prev').disabled = i === 0; $d('d-next').disabled = i === list.length - 1;
       if (!dlg.open) dlg.showModal();
     }
+    /* 지도는 색인이 오기 전·후 두 번 그려지므로(mount 두 번) 창 단추·손으로 밀기는 한 번만 달고, 늘 마지막으로 그린 목록(open·cur·list)을 쓰게 한다 */
+    if (dlg) dlg.__bmS = { open: (k, v) => open(k, v), cur: () => cur, n: () => list.length };
     if (dlg && !dlg.__bm) {
-      dlg.__bm = 1;
-      $d('d-prev').addEventListener('click', () => open(cur - 1)); $d('d-next').addEventListener('click', () => open(cur + 1)); $d('d-close').addEventListener('click', () => dlg.close());
-      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); const ph = e.target.closest('.bm-st [data-p]'); if (ph) open(cur, Number(ph.dataset.p)); });
-      if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: dlg.querySelector('.d-img'), next: () => open(cur + 1), prev: () => open(cur - 1), canNext: () => cur < list.length - 1, canPrev: () => cur > 0 });
+      dlg.__bm = 1; const S = () => dlg.__bmS;
+      $d('d-prev').addEventListener('click', () => S().open(S().cur() - 1)); $d('d-next').addEventListener('click', () => S().open(S().cur() + 1)); $d('d-close').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); const ph = e.target.closest('.bm-st [data-p]'); if (ph) S().open(S().cur(), Number(ph.dataset.p)); });
+      if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: dlg.querySelector('.d-img'), next: () => S().open(S().cur() + 1), prev: () => S().open(S().cur() - 1), canNext: () => S().cur() < S().n() - 1, canPrev: () => S().cur() > 0 });
     }
 
     /* 우리 소장품 사진: 소장품 도록과 같은 이 기기 저장소(IndexedDB)를 먼저 보고, 없으면 시트에서 받는다 */
