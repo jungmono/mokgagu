@@ -334,7 +334,7 @@ const JOSEONGWE_N = 161;
 const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
 document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-10-29';
+const SITE_UPDATED = '2026-10-31';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -371,7 +371,8 @@ document.querySelectorAll('.bk-arr').forEach((btn) => btn.addEventListener('clic
 document.getElementById('bk-all').addEventListener('click', (e) => { const box = document.getElementById('bk-box'); const o = box.classList.toggle('open'); e.currentTarget.textContent = o ? '한 줄로 접기' : '모두 펼쳐 보기'; });
 /* 탐색 도구 — 아이콘 모양은 아래 TOOL_ICO, 지도는 아래쪽 MAPICO(선생님 손지도 윤곽) */
 const TOOL_ICO = {
-  quiz: T32('<path stroke-width="1.8" d="M5 4H27V11A3.2 3.2 0 0 1 25.4 17A3.2 3.2 0 0 1 21.4 21.5A3 3 0 0 1 18.2 24.5L16.0 27L13.8 24.5A3 3 0 0 1 10.6 21.5A3.2 3.2 0 0 1 6.6 17A3.2 3.2 0 0 1 5 11Z"/><path stroke-width="1.4" d="M16 9.9V17.1M12.4 13.5H19.6M16 9.9H13.6M12.4 13.5V15.9M16 17.1H18.4M19.6 13.5V11.1"/><circle cx="9" cy="7.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="23" cy="7.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="16" cy="22.2" r="0.8" fill="currentColor" stroke="none"/>'),
+  /* 반닫이 퀴즈: 언양반닫이 앞바탕 장석(2026-10-31, symbols/eonyang_apbatang_icon.svg) */
+  quiz: T32('<g stroke-width="1.6"><path d="M7 2.8H25Q28 2.8 28 5.8V22.4A2.38 2.38 0 0 1 25.00 24.00A2.38 2.38 0 0 1 22.00 25.60A2.41 2.41 0 0 1 19.00 27.30L16 29.0L13.00 27.30A2.41 2.41 0 0 1 10.00 25.60A2.38 2.38 0 0 1 7.00 24.00A2.38 2.38 0 0 1 4.00 22.40V5.8Q4 2.8 7 2.8Z"/><circle cx="7.4" cy="6.2" r=".7" stroke-width=".85"/><circle cx="7.4" cy="9.6" r=".7" stroke-width=".85"/><circle cx="24.6" cy="6.2" r=".7" stroke-width=".85"/><circle cx="24.6" cy="9.6" r=".7" stroke-width=".85"/><circle cx="16" cy="12.2" r="3.2" stroke-width="1.2"/><path stroke-width="1.1" d="M16 10.6V13.799999999999999M14.4 12.2H17.6M16 10.6H17.2M17.6 12.2V13.399999999999999M16 13.799999999999999H14.8M14.4 12.2V11.0"/><circle cx="25.82" cy="21.92" r=".58" stroke-width=".8"/><circle cx="22.82" cy="23.52" r=".58" stroke-width=".8"/><circle cx="19.79" cy="25.19" r=".58" stroke-width=".8"/><circle cx="12.21" cy="25.19" r=".58" stroke-width=".8"/><circle cx="9.18" cy="23.52" r=".58" stroke-width=".8"/><circle cx="6.18" cy="21.92" r=".58" stroke-width=".8"/><circle cx="26.54" cy="19.66" r=".9" fill="currentColor" stroke="none"/><circle cx="20.65" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="16.00" cy="26.00" r=".9" fill="currentColor" stroke="none"/><circle cx="11.35" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="5.46" cy="19.66" r=".9" fill="currentColor" stroke="none"/></g>'),
   ruler: T32('<path d="M5 26 26 5"/><path d="M5 26V9M5 26h17"/><path d="M5 13h3M5 17h4M5 21h3M9 26v-3M13 26v-4M17 26v-3"/>'),
   stats: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
 };
