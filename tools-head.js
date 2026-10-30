@@ -1,11 +1,11 @@
-/* 탐색 도구 화면(반닫이여지도·경매 시세·지역 퀴즈·비례 자)의 공통 머리.
+/* 탐색 도구 화면(반닫이여지도·경매 시세·반닫이 퀴즈·비례로 보는 반닫이)의 공통 머리.
    쓰는 법: 머리가 들어갈 자리에  <script src="tools-head.js" data-k="map|auction|quiz|ruler"></script>  한 줄.
    새 도구를 넣으려면 아래 TOOLS 에 한 줄 보태면 모든 화면에 함께 나온다. */
 (function () {
   var TOOLS = [
-    { k: 'map', href: 'bandaji-map.html', t: '지도로 보기', title: '반닫이(궤)여지도', sub: '' },
-    { k: 'quiz', href: 'region-quiz.html', t: '지역 퀴즈', title: '이 반닫이는 어느 지역?', sub: '사진만 보고 지역을 맞혀 보세요' },
-    { k: 'ruler', href: 'region-ruler.html', t: '비례 자', title: '비례 자', sub: '우리 언양반닫이를 기준으로 지역별 비례를 견줘 봅니다' },
+    { k: 'map', href: 'bandaji-map.html', t: '반닫이여지도', title: '반닫이(궤)여지도', sub: '' },
+    { k: 'quiz', href: 'region-quiz.html', t: '반닫이 퀴즈', title: '반닫이 퀴즈', sub: '사진으로 반닫이 지역 맞추기' },
+    { k: 'ruler', href: 'region-ruler.html', t: '비례로 보는 반닫이', title: '비례로 보는 반닫이', sub: '가로 세로 비율로 보는 반닫이' },
     { k: 'auction', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }
   ];
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
