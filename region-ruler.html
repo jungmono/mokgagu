@@ -209,7 +209,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(m.inverse());
     const near = PS.map((p, i) => ({ i, d: Math.hypot(sx(p.w) - q.x, sy(p.h) - q.y) })).filter((o) => o.d <= (e.pointerType === 'touch' || e.detail === 0 ? 14 : 9)).sort((a, b) => a.d - b.d).slice(0, 6);
     if (!near.length) return;
-    picked = near.map((o) => o.i); showPick(true);
+    picked = near.map((o) => o.i); showPick(false);
   }
   /* 지역별 비례 띠 — 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026)의 그림 1을 이 화면 자료로 다시 그린다.
      띠 = 가운데 절반(사분위 범위), 세로 막대 = 중앙값, 붉은 점선 = 넣은 치수(없으면 우리 언양반닫이)의 가로:세로 */
