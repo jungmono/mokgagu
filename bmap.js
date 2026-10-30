@@ -102,6 +102,10 @@
     (window.JOSEONGWE || []).forEach((d) => { if (d.r && by[d.r]) by[d.r].j.push(d); else if (d.p && prov[d.p]) prov[d.p].j.push(d); });   // 정대영 『조선의 궤』 도판
     const GJ = [], gat = {};   // 같은 기물의 여러 장(g가 같거나 지역·메모가 같은 것)은 한 점으로 묶고 사진을 pics에 모은다
     (window.GIJUN || []).forEach((d) => { const k = d.g || (d.note ? d.region + '|' + d.note : d.n); if (gat[k]) { gat[k].pics.push(d); return; } gat[k] = Object.assign({}, d, { pics: [d] }); GJ.push(gat[k]); });
+    GJ.forEach((d) => {   // 이름은 「<지역>반닫이」로(올린 도판이라는 말은 이름에 쓰지 않는다)
+      const rg = String(d.region || '').replace(/반닫이$/, ''); if (rg) { d.name = rg + '반닫이'; d.hanja = ''; d.cat = ''; d.owner = ''; d.gj = 1; }
+      if (/기준\s*도판/.test(d.note || '')) d.note = '';
+    });
     GJ.forEach((d) => {   // 장석 감정실에서 올린 기준 도판(가족만): 지역 이름으로 고을·도를 찾는다
       const nm = String(d.region || ''); let hit = false;
       R.forEach((g) => { if (!hit && (g[1] === nm || g[5].some((k) => nm.includes(k)))) { by[g[0]].g.push(d); hit = true; } });
@@ -179,21 +183,24 @@ ${base()}
 <div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">지도출처 : 동인방</div>
 <div id="bm-p"><div class="src">위의 도 이름이나 지도의 고을 상자를 눌러 보세요. 도를 누르면 그 도에 속한 고을의 기물이 모두 나옵니다.</div></div></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = document.getElementById('dlg');
+    /* 개수 점: 켜 둔 종류 가운데 기물이 있는 것만 왼쪽부터 차례로 붙인다(종류 번호 자리에 두면 『조선의 궤』·기준 도판 점이 상자 밖으로 밀려 옆 고을 뒤에 가려졌다) */
+    const dotsOf = (p, x, y) => { const ks = TYPES.filter(([k]) => on[k] && p[k] && p[k].length), gap = ks.length > 4 ? (W - 36) / (ks.length - 1) : 29;
+      return ks.map(([k, , col], i) => `<circle cx="${x + 18 + i * gap}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * gap}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>`).join(''); };
     function draw() {
       g.innerHTML = R.map((r) => {
         const p = P.by[r[0]], n = cntT(p), x = r[3] - W / 2, y = r[4] - H / 2, pn = provOf[r[0]] || '', c = pn ? PV[pn][0] : '#6f6450';
         const inP = selP && provOf[r[0]] === selP;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 18 + i * 29}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * 29}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = dotsOf(p, x, y);
         return `<g class="bx ${n ? 'has' : ''} ${sel === r[0] ? 'sel' : ''} ${inP ? 'pin' : ''} ${selP && !inP ? 'dim' : ''}" data-id="${r[0]}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hj" x="${r[3]}" y="${y + 34}">${r[2]}</text><text class="hg" x="${r[3]}" y="${y + 72}">${esc(r[1]).replace(/\(.*\)/, '')}</text>${dots}</g>`;
       }).join('') + PN.map((pn) => {
         const p = P.prov[pn], n = cntT(p); if (!p || !(p.m.length + p.a.length + p.o.length)) return '';
         const [c, , , , cx, cy] = PV[pn], x = cx - W / 2, y = cy - H / 2;
-        const dots = TYPES.map(([k, , col], i) => (on[k] && p[k].length ? `<circle cx="${x + 18 + i * 29}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * 29}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>` : '')).join('');
+        const dots = dotsOf(p, x, y);
         return `<g class="bx pb ${n ? 'has' : ''} ${selP === pn ? 'sel' : ''} ${selP && selP !== pn ? 'dim' : ''}" data-p="${pn}" style="--c:${c}"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8"/><text class="hg" x="${cx}" y="${y + 56}">${pn}</text>${dots}</g>`;
       }).join('');
       {   // 기물별 개수와 전체 총계(한 기물이 여러 고을에 걸려도 한 번만 센다)
         const S = {}; TYPES.forEach(([k]) => { S[k] = new Set(); });
-        [P.by, P.prov].forEach((grp) => Object.values(grp).forEach((o) => TYPES.forEach(([k]) => (o[k] || []).forEach((r) => S[k].add(r.own ? 'own:' + r.id : (r.b + '/' + r.n))))));
+        [P.by, P.prov].forEach((grp) => Object.values(grp).forEach((o) => TYPES.forEach(([k]) => (o[k] || []).forEach((r) => S[k].add(r.own ? 'own:' + r.id : r.b + '/' + (r.n != null ? r.n : (r.g || r.sha || r.thumb || r.name)))))));
         const all = new Set(); TYPES.forEach(([k]) => { if (on[k]) S[k].forEach((x) => all.add(x)); });
         el.querySelectorAll('#bm-t button').forEach((b) => { const sm = b.querySelector('small'); if (sm) sm.textContent = S[b.dataset.k] ? S[b.dataset.k].size : ''; });
         const tt = el.querySelector('#bm-tot'); if (tt) tt.innerHTML = `반닫이·궤 전체 <b>${all.size}</b>점`;
@@ -205,7 +212,7 @@ ${base()}
       return TYPES.filter(([k]) => on[k] && o[k] && o[k].length).map(([k, n, c]) => o[k].map((r) => {
         list.push(r); const i = list.length - 1;
         return r.own ? `<button type="button" data-i="${i}">${r.t ? `<img class="ow" alt="" data-th="1" data-pid="${esc(r.t)}">` : ''}<span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
-          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="${r.thumb || `thumbs/${r.b}/${r.n}.jpg`}" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.owner || r.cat || n).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
+          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="${r.thumb || `thumbs/${r.b}/${r.n}.jpg`}" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.gj ? r.name : (r.owner || r.cat || n)).slice(0, 12))}${/반닫이/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
       }).join('')).join('');
     }
     /* 기물 창: 도록과 같은 사진 창(#dlg) — 이 지도 화면 위에서 열고, 닫으면 지도로 돌아온다. 크게 보기·확대·밀어 넘기기는 도록과 같다 */
