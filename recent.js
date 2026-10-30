@@ -1,9 +1,9 @@
 /* 최근 본 기물 — 화면 오른쪽 아래 떠 있는 창.
    어느 도록에서든 사진 창(dialog#dlg)을 열면 그 기물을 기억해 두고(이 브라우저에만, 최대 20개),
-   썸네일을 3개씩 보여 준다. ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
+   썸네일을 처음엔 1개, 「펼치기」를 누르면 3개 보여 준다(「접기」로 다시 1개). ▲▼로 앞뒤 기물, 맨 아래 ↑ 단추로 맨 위로.
    썸네일을 누르면 첫 화면(index.html)에서 그 기물 사진 창이 열린다. */
 (function () {
-  var KEY = 'mokgagu_recent_v1', MAX = 20, SHOW = 3;
+  var KEY = 'mokgagu_recent_v1', MAX = 20, SHOW = 1;   /* SHOW: 접힘 1개 · 펼침 3개 */
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
   var list = load(), start = 0;
@@ -56,6 +56,7 @@
 
   function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function render() {
+    try { SHOW = localStorage.getItem(KEY + '_exp') === '1' ? 3 : 1; } catch (e) { SHOW = 1; }
     var box = root.querySelector('.rv-box');
     box.style.display = list.length ? '' : 'none';
     if (start > Math.max(0, list.length - SHOW)) start = Math.max(0, list.length - SHOW);
@@ -63,20 +64,19 @@
     root.querySelector('#rv-list').innerHTML = view.map(function (r, k) {
       return '<button type="button" class="rv-it" data-k="' + (start + k) + '" data-cid="' + esc(r.b + '/' + r.pid) + '" title="' + esc(r.name) + '"><img alt="' + esc(r.name) + '" src="' + esc(r.th) + '"><span>' + esc(r.name) + '</span></button>';
     }).join('');
-    root.querySelector('#rv-n').textContent = list.length > SHOW ? (start + 1) + '–' + Math.min(start + SHOW, list.length) + ' / ' + list.length : list.length + '점';
+    root.querySelector('#rv-n').textContent = list.length > SHOW ? (SHOW === 1 ? (start + 1) : (start + 1) + '–' + Math.min(start + SHOW, list.length)) + ' / ' + list.length : list.length + '점';
     root.querySelector('#rv-prev').disabled = start === 0;
     root.querySelector('#rv-next').disabled = start + SHOW >= list.length;
     var p = root.querySelector('#rv-prev'), n = root.querySelector('#rv-next');
     p.style.visibility = n.style.visibility = list.length > SHOW ? '' : 'hidden';
-    try { root.classList.toggle('folded', localStorage.getItem(KEY + '_fold') === '1'); } catch (e) {}
-    root.querySelector('#rv-fold').textContent = root.classList.contains('folded') ? '펼치기' : '접기';
+    root.querySelector('#rv-fold').textContent = SHOW === 3 ? '접기' : '펼치기';
   }
   root.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t) return;
     if (t.id === 'rv-top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     if (t.id === 'rv-prev') { start = Math.max(0, start - 1); render(); return; }
     if (t.id === 'rv-next') { start = Math.min(Math.max(0, list.length - SHOW), start + 1); render(); return; }
-    if (t.id === 'rv-fold') { var f = !root.classList.contains('folded'); try { localStorage.setItem(KEY + '_fold', f ? '1' : '0'); } catch (x) {} render(); return; }
+    if (t.id === 'rv-fold') { try { localStorage.setItem(KEY + '_exp', SHOW === 3 ? '0' : '1'); } catch (x) {} render(); return; }
     if (t.classList.contains('rv-it')) {
       var r = list[+t.dataset.k]; if (!r) return;
       var target = 'see=' + encodeURIComponent(r.b) + '/' + encodeURIComponent(r.pid);
