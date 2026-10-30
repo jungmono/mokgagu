@@ -271,7 +271,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     $('out').innerHTML = `<div class="card">${s}</div><div id="regbox"></div><div id="pick"></div><div class="card" id="bands"></div>` + v;
     $('svg').addEventListener('click', pickAt);
     bands(w, h); showPick(false); showReg(false);
-    $('leg').onclick = (e) => { const b = e.target.closest('button[data-reg]'); if (!b) return; selReg = selReg === b.dataset.reg ? '' : b.dataset.reg; $('leg').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.reg === selReg))); if (selReg) showReg(true); else { showReg(false); bands(w, h); } };
+    $('leg').onclick = (e) => { const b = e.target.closest('button[data-reg]'); if (!b) return; selReg = selReg === b.dataset.reg ? '' : b.dataset.reg; $('leg').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.reg === selReg))); if (selReg) showReg(false); else { showReg(false); bands(w, h); } };
   }
   if (!P.length) { $('out').innerHTML = '<div class="card">치수가 적힌 반닫이를 찾지 못했어요.</div>'; return; }
   ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
