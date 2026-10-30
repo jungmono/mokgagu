@@ -51,6 +51,25 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stroke-width:2.6}
 #pick:empty{display:none}#pick .pk{display:grid;grid-template-columns:minmax(0,46%) 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid #efe6cf}#pick .pk:first-of-type{border-top:0}#pick .pk img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;border-radius:10px;display:block}#pick .pk .t{font-size:15px;font-weight:800;line-height:1.4}#pick .pk .m{font-size:13px;color:#4a4130;line-height:1.7;margin-top:4px}#pick .pk .rg{display:inline-block;color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px}#pick .pk a.go{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#111;text-decoration:none;border-bottom:1.5px solid #111}#pick .hd{display:flex;align-items:baseline;gap:8px}#pick .hd small{color:#8a7f66}#pick .hd button{margin-left:auto;font:inherit;font-size:13px;font-weight:700;border:1px solid #e3d6b8;background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}@media(max-width:520px){#pick .pk{grid-template-columns:1fr}}
 #svg.dim circle.pt{fill-opacity:.12}#svg.dim circle.pt.on{fill-opacity:.95;stroke:#111;stroke-width:1.2}
+#dlg{border:none;border-radius:18px;padding:0;width:min(1100px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.3);color:#1f2433}
+#dlg::backdrop{background:rgba(20,20,24,.55)}
+.d-body{display:flex;gap:24px;padding:22px;max-height:calc(92vh - 64px);overflow:auto}
+.d-img{flex:1 1 60%;display:grid;place-items:center;min-height:300px;background:#fafaf8;border-radius:12px}
+.d-img img{max-width:100%;max-height:72vh;object-fit:contain}
+.d-info{flex:1 1 40%;min-width:220px}
+.d-info .cat{color:#4b55d6;font-weight:700;font-size:14px}
+.d-info h3{margin:4px 0 12px;font-size:28px;font-weight:900;letter-spacing:-.04em}
+.d-info h3 small{font-size:16px;color:#6b7183;font-weight:500;margin-left:8px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}
+.d-info dt{color:#6b7183}.d-info dd{margin:0}
+.d-info a{display:inline-block;margin-top:18px;color:#fff;background:#1f2433;text-decoration:none;font-weight:700;font-size:14px;border-radius:10px;padding:10px 16px}
+.d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid #e6e8f0;font-size:14px;color:#6b7183}
+.d-foot button{font:inherit;background:#fff;border:1px solid #e6e8f0;border-radius:8px;padding:6px 12px;cursor:pointer;color:#1f2433}.d-foot button:disabled{opacity:.4}
+.d-r{display:flex;gap:8px}
+.bm-st{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.bm-st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}.bm-st button.on{border-color:#111}.bm-st img{width:100%;height:100%;object-fit:cover}
+@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}}
+#dlg img{-webkit-user-drag:none;user-select:none}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}
+
 </style>
 <script src="common.js?v=17" defer></script></head><body><main>
 <script src="tools-head.js" data-k="ruler"></script>
@@ -71,6 +90,9 @@ var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(meta.salt),iterati
 var buf=new Uint8Array(await fetch('study/joseongwe.bin',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}));
 var o=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12))));
 new Function(o.j)();new Function(o.g)();}catch(e){}})();</script>
+<dialog id="dlg" aria-label="기물 사진"><div class="d-body"><div class="d-img"><img id="d-img" alt=""></div><div class="d-info" id="d-info"></div></div>
+<div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos"></span><span class="d-r"><button id="d-next">다음 →</button><button id="d-close">닫기</button></span></div></dialog>
+<script src="photozoom.js"></script>
 <script src="bandaji-idx.js"></script>
 <script>
 Promise.resolve(window.MOKGAGU_READY).then(function () {
@@ -277,12 +299,35 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   ['w', 'h'].forEach((id) => $(id).addEventListener('input', draw));
   const q = new URLSearchParams(location.search); if (q.get('w')) $('w').value = q.get('w'); if (q.get('h')) $('h').value = q.get('h');
   draw(); window.__P = P.length;
+  window.__RIX = {}; P.forEach((p) => { window.__RIX[p.r.b + '/' + p.r.pid] = p; });   /* 사진 창에서 쓸 색인 */
 });
 
-document.addEventListener('click', (e) => {
-  const a = e.target.closest && e.target.closest('a[data-see]'); if (!a) return;
-  if (/^joseongwe\//.test(a.dataset.see || '')) { e.preventDefault(); window.open('https://jungmono.github.io/mokgagu-photos/photos/joseongwe/' + encodeURIComponent(a.dataset.see.slice(10)) + '.jpg', '_blank'); return; }   /* 『조선의 궤』는 사진 창이 없으니 사진만 연다 */
-  const ks = ((a.dataset.reg ? window.__regKeys : a.dataset.band ? window.__bandKeys : a.dataset.pick ? window.__pickKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
-  try { sessionStorage.setItem('mokgagu_see_list', JSON.stringify({ list: ks, label: '비례 자', back: 'region-ruler.html' })); } catch (x) {}
-});
-</script></body></html>
+/* 반닫이를 누르면 도록과 같은 사진 창(#dlg)을 이 화면 위에 연다 — 『조선의 궤』도 같은 창. 이전·다음은 지금 보던 목록(지역·띠·고른 점) 순서 */
+(function () {
+  const $ = (id) => document.getElementById(id), dlg = $('dlg');
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const dRow = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
+  let L = [], cur = -1;
+  function open(i) {
+    const p = L[i]; if (!p) return; cur = i; const r = p.r, img = $('d-img'), jw = r.b === 'joseongwe';
+    img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
+    img.src = 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg'; img.alt = r.name || '';
+    $('d-info').innerHTML = `<div class="cat">${esc(jw ? '정대영, 『조선의 궤』' : (r.cat || ''))}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('지역', p.g)}${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('가로:세로', p.w && p.h ? (p.w / p.h).toFixed(2) + ' : 1' : '')}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? String(r.page).replace(/쪽$/, '') + '쪽' : '')}${dRow('비고', r.note || r.cap)}</dl>` +
+      (jw ? '' : `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">도록에서 보기 →</a>`);
+    $('d-pos').textContent = `${i + 1} / ${L.length}`; $('d-prev').disabled = i === 0; $('d-next').disabled = i === L.length - 1;
+    if (!dlg.open) dlg.showModal();
+  }
+  $('d-prev').addEventListener('click', () => open(cur - 1)); $('d-next').addEventListener('click', () => open(cur + 1)); $('d-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: dlg.querySelector('.d-img'), next: () => open(cur + 1), prev: () => open(cur - 1), canNext: () => cur < L.length - 1, canPrev: () => cur > 0 });
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[data-see]'); if (!a || a.closest('#dlg')) return;
+    const IX = window.__RIX || {}, k0 = a.dataset.see; if (!IX[k0]) return;   /* 색인에 없으면 원래대로 도록으로 */
+    e.preventDefault();
+    const ks = ((a.dataset.reg ? window.__regKeys : a.dataset.band ? window.__bandKeys : a.dataset.pick ? window.__pickKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
+    L = ks.map((k) => IX[k]).filter(Boolean); let at = L.indexOf(IX[k0]); if (at < 0) { L = [IX[k0]]; at = 0; }
+    open(at);
+  });
+})();
+</script>
+</body></html>
