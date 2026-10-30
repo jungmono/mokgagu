@@ -184,7 +184,7 @@
 (function () {
   if (window.MOKGAGU_RZ) return; window.MOKGAGU_RZ = 1;
   var vv = window.visualViewport; if (!vv) return;
-  var SKIP = 'a,button,input,select,textarea,label,summary,dialog[open],#zv,.zoomable,[data-zoom],svg circle.pt';
+  var SKIP = 'a,button,input,select,textarea,label,summary,dialog[open],#zv,.zoomable,[data-zoom],svg circle.pt,.kmap';
   var busy = false;
   function reset() {
     if (busy || !(vv.scale > 1.02)) return; busy = true;
@@ -219,7 +219,7 @@
   }
   window.addEventListener('wheel', function (e) {
     if (!e.ctrlKey) return;
-    if (e.target && e.target.closest && e.target.closest('#zv,.zoomable,[data-zoom]')) return;
+    if (e.target && e.target.closest && e.target.closest('#zv,.zoomable,[data-zoom],.kmap')) return;   /* 지도(.kmap)는 지도가 직접 확대 */
     e.preventDefault();
     var b = br(); setZ(Math.max(1 / b, Math.min(3 / b, z * Math.exp(-e.deltaY * 0.01))), e.clientX, e.clientY);
   }, { passive: false });
