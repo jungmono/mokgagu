@@ -96,7 +96,9 @@
     all.forEach((r) => {
       const t = AUC[r.b] ? 'a' : MUS[r.b] ? 'm' : 'e', hay = hayOf(r);
       let hit = false;
-      R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { by[g[0]][t].push(r); hit = true; } });
+      // 이름에 고을이 있으면 그 고을만(기물 이야기로 고친 이름이 소장처 원래 이름보다 앞선다), 없을 때만 한자·검색어로 찾는다
+      const nm = clean(r.name), byName = R.filter((g) => g[5].some((k) => nm.includes(k)));
+      (byName.length ? byName : R.filter((g) => g[5].some((k) => hay.includes(k)))).forEach((g) => { by[g[0]][t].push(r); hit = true; });
       if (!hit) PROV.forEach((p) => { if (p[1].some((k) => hay.includes(k))) prov[p[0]][t].push(r); });
     });
     (window.JOSEONGWE || []).forEach((d) => { if (d.r && by[d.r]) by[d.r].j.push(d); else if (d.p && prov[d.p]) prov[d.p].j.push(d); });   // 정대영 『조선의 궤』 도판
