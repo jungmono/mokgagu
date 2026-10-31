@@ -101,7 +101,7 @@ h1 .ttl-ico.ttl-angwe{height:clamp(30px,4.8vw,55px)}
 .r-head h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.03em}
 .r-head h2 b{color:var(--brand)}
 .r-chips{display:flex;flex-wrap:wrap;gap:6px}
-.own-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 12px;padding:10px 14px;border:1.5px solid #111;border-radius:14px;background:#fff}.own-box>b{font-size:14px;margin-right:4px}.own-it{display:inline-flex;flex-direction:column;text-decoration:none;color:inherit;font-weight:800;font-size:14.5px;border:1px solid var(--line);border-radius:10px;padding:6px 12px;background:#faf6ec}.own-it small{font-weight:500;color:#7a736a;font-size:12px}.own-it:hover{border-color:#111}
+.own-box{margin:2px 0 16px;padding:12px 14px 14px;border:1.5px solid #111;border-radius:16px;background:#fff}.own-box>b{display:block;font-size:15px;margin-bottom:10px}a.r-item.own{display:block;text-decoration:none;color:inherit}
 .r-chip{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
 .r-chip[aria-pressed="true"]{background:var(--fg);color:#fff;border-color:var(--fg)}
 .r-chip:not([aria-pressed="true"]){background:rgba(244,236,214,.55);border-color:rgba(179,154,106,.45)}.r-chip:not([aria-pressed="true"]):hover{background:rgba(244,236,214,.9)}
@@ -434,7 +434,28 @@ function drawOwn() {
   const box = $('r-own'); if (!box) return; let list = [];
   try { list = JSON.parse(localStorage.getItem('mokgagu_col_cache') || '[]'); } catch (e) {}
   const m = (Array.isArray(list) ? list : []).filter((x) => !x.deleted && lastTerms.some((t) => norm((x.name || '') + (x.kind || '')).includes(t)));
-  box.innerHTML = m.length ? `<div class="own-box"><b>내 소장품 ${m.length}건</b>` + m.map((x) => `<a class="own-it" href="collection.html#open=${encodeURIComponent(x.id)}">${esc(x.name)}<small>${esc(x.status || '소장')}${x.era ? ' · ' + esc(x.era) : ''}</small></a>`).join('') + '</div>' : '';
+  if (!m.length) { box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="own-box"><b>내 소장품 ${m.length}건</b><div class="r-grid">` + m.map((x) => { const p = (x.photos || [])[0], pid = p ? (p.t || p.f) : '';
+    return `<a class="r-item own" href="collection.html#open=${encodeURIComponent(x.id)}"><div class="ph">${pid ? `<img data-own="${esc(pid)}" data-th="${p.t ? 1 : 0}" alt="">` : '<img src="mark_angwe.png" alt="" style="object-fit:contain;padding:18px">'}</div><div class="tx"><div class="nm">${esc(x.name)}</div><div class="ct">내 소장품 · ${esc(x.status || '소장')}</div><div class="mt">${esc([x.era, x.size, x.wood].filter(Boolean).join(' · '))}</div></div></a>`; }).join('') + '</div></div>';
+  ownImgs(box);
+}
+/* 소장품 사진: 소장품 도록이 이 기기에 저장해 둔 것(IndexedDB)을 먼저 쓰고, 없으면 시트에서 작은 사진을 묶어 받는다 */
+function ownImgs(box) {
+  const ims = [...box.querySelectorAll('img[data-own]')]; if (!ims.length) return;
+  const pw = localStorage.getItem('mokgagu_cm_code') || localStorage.getItem('mokgagu_study_pw') || '';
+  const open = new Promise((ok) => { try { const r = indexedDB.open('mokgagu_collection', 1); r.onupgradeneeded = () => { r.result.createObjectStore('img'); r.result.createObjectStore('local', { keyPath: 'id' }); }; r.onsuccess = () => ok(r.result); r.onerror = () => ok(null); } catch (e) { ok(null); } });
+  const getIdb = (d, id) => new Promise((ok) => { if (!d) return ok(null); try { const q = d.transaction('img').objectStore('img').get(id); q.onsuccess = () => ok(q.result || null); q.onerror = () => ok(null); } catch (e) { ok(null); } });
+  const putIdb = (d, id, b) => { try { if (d) d.transaction('img', 'readwrite').objectStore('img').put(b, id); } catch (e) {} };
+  const u8 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+  open.then(async (d) => {
+    const need = [];
+    for (const im of ims) { const id = im.dataset.own, b = await getIdb(d, id); if (b) im.src = URL.createObjectURL(b); else need.push(im); }
+    if (!need.length || !pw) return;
+    try {
+      const j = await fetch('https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec', { method: 'POST', body: JSON.stringify({ action: 'cimgs', ids: need.map((im) => im.dataset.own).slice(0, 24), code: pw }) }).then((r) => r.json());
+      need.forEach((im) => { const g = j && j.imgs && j.imgs[im.dataset.own]; if (!g) return; const b = new Blob([u8(g.data)], { type: g.type || 'image/jpeg' }); putIdb(d, im.dataset.own, b); im.src = URL.createObjectURL(b); });
+    } catch (e) {}
+  });
 }
 function search(raw) {
   if (!window.SEARCH && raw && raw.trim()) { loadIdx().then(() => { if (window.SEARCH) search(raw); }); return; }
