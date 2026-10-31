@@ -101,6 +101,7 @@ h1 .ttl-ico.ttl-angwe{height:clamp(30px,4.8vw,55px)}
 .r-head h2{margin:0;font-size:20px;font-weight:900;letter-spacing:-.03em}
 .r-head h2 b{color:var(--brand)}
 .r-chips{display:flex;flex-wrap:wrap;gap:6px}
+.own-box{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 12px;padding:10px 14px;border:1.5px solid #111;border-radius:14px;background:#fff}.own-box>b{font-size:14px;margin-right:4px}.own-it{display:inline-flex;flex-direction:column;text-decoration:none;color:inherit;font-weight:800;font-size:14.5px;border:1px solid var(--line);border-radius:10px;padding:6px 12px;background:#faf6ec}.own-it small{font-weight:500;color:#7a736a;font-size:12px}.own-it:hover{border-color:#111}
 .r-chip{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--fg);border-radius:999px;padding:5px 12px;cursor:pointer}
 .r-chip[aria-pressed="true"]{background:var(--fg);color:#fff;border-color:var(--fg)}
 .r-chip:not([aria-pressed="true"]){background:rgba(244,236,214,.55);border-color:rgba(179,154,106,.45)}.r-chip:not([aria-pressed="true"]):hover{background:rgba(244,236,214,.9)}
@@ -259,6 +260,7 @@ body{position:relative}
 
   <section id="results" hidden>
     <div class="r-head"><h2 id="r-title"></h2><div class="r-chips" id="r-chips"></div></div>
+    <div id="r-own"></div>
     <div id="r-fac" class="r-fac"></div>
     <div class="r-grid" id="r-grid"></div>
   </section>
@@ -426,6 +428,14 @@ function loadIdx() {
   if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
   return idxLoading;
 }
+let lastTerms = [];
+/* 내 소장품 — 소장품 도록을 한 번이라도 연 기기(암호 입력한 기기)에만 저장된 목록에서 찾는다. 사진 없이 이름·상태만 */
+function drawOwn() {
+  const box = $('r-own'); if (!box) return; let list = [];
+  try { list = JSON.parse(localStorage.getItem('mokgagu_col_cache') || '[]'); } catch (e) {}
+  const m = (Array.isArray(list) ? list : []).filter((x) => !x.deleted && lastTerms.some((t) => norm((x.name || '') + (x.kind || '')).includes(t)));
+  box.innerHTML = m.length ? `<div class="own-box"><b>내 소장품 ${m.length}건</b>` + m.map((x) => `<a class="own-it" href="collection.html#open=${encodeURIComponent(x.id)}">${esc(x.name)}<small>${esc(x.status || '소장')}${x.era ? ' · ' + esc(x.era) : ''}</small></a>`).join('') + '</div>' : '';
+}
 function search(raw) {
   if (!window.SEARCH && raw && raw.trim()) { loadIdx().then(() => { if (window.SEARCH) search(raw); }); return; }
   let terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
@@ -433,6 +443,7 @@ function search(raw) {
   const SYN = [['반닫이', '반다지', '드닫이'], ['궤', '궤짝'], ['사방탁자', '책탁자'], ['뒤주', '쌀뒤주'], ['소반', '밥상', '개다리소반']];
   { const extra = []; terms.forEach((t) => { SYN.forEach((g) => { if (g.includes(t)) g.forEach((n) => extra.push(n)); }); }); terms = [...new Set(terms.concat(extra))]; }
   if (!terms.length) { $('results').hidden = true; $('home').hidden = false; return; }
+  lastTerms = terms;
   const all = window.SEARCH || [];
   /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주·약장은 각자 자리에서) */
   const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
@@ -473,6 +484,7 @@ function drawResults(label) {
   shown = base.filter((r) => facOk(r));
   const conds = Object.values(fa).filter(Boolean);
   if (label != null) lastLabel = label;
+  drawOwn();
   $('r-title').innerHTML = `‘${esc(lastLabel ?? $('q').value.trim())}’ 검색 결과 <b>${hits.length.toLocaleString('ko-KR')}</b>건` + (conds.length ? ` <span class="r-sub">→ ${esc(conds.join(' + '))} <b>${shown.length}</b>점</span>` : '');
   const chips = [['', '전체', hits.length], ...ORDER.filter((k) => counts[k]).map((k) => [k, SHORT[k] || TITLE[k], counts[k]])];
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
