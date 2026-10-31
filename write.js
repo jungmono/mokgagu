@@ -1,8 +1,8 @@
 /* 공부방 「바로 쓰기」 탭 — 수업 내용을 공부방에서 바로 적고 사진을 붙인다.
    글은 구글 시트 「쓰기」 탭에 저장되고(고치기 전 글은 「쓰기이력」), 거믄·힌이 서로의 글을 고칠 수 있다.
    「정리 전」 글은 Claude 에게 「바로 쓰기 정리해줘」 하면 기존 수업 노트와 같은 모양으로 정리해 공부방 노트·퀴즈에 보탠다.
-   수업 녹음: 끝내면 이 기기(IndexedDB)에 보관 → 「드라이브에 저장」을 누르면 시트 스크립트를 거쳐 3MB씩 드라이브에 올리고,
-   다 올라가면 글에 붙는다. 글의 「▶ 녹음 듣기」는 가족 암호로 드라이브에서 받아 재생한다.
+   수업 녹음: 끝내면 이 기기(IndexedDB)에 보관 → 「휴대폰에 저장」으로 파일로 받는다(2026-10-31부터 구글 드라이브에는 올리지 않음; 옛 upload() 코드는 남겨 둠).
+   이미 드라이브에 붙은 녹음은 그대로 재생된다. 글의 「▶ 녹음 듣기」는 가족 암호로 드라이브에서 받아 재생한다.
    MOKGAGU_WRITE.mount(요소)  — 필요: mkphoto.js, classes.js */
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycbyQoDpYNaIA034Inb2J-SaW5-dhstcZQBJWOug7FxJKnP-evddQtprYUontg5GlSvkyBA/exec';
@@ -261,24 +261,24 @@
     function whenTxt(t) { var d = new Date(t); return (d.getMonth() + 1) + '. ' + d.getDate() + '. ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
     function pendHTML() {
       if (!PEND.length) return '';
-      return '<div class="pd"><h4>드라이브에 올리지 않은 녹음 ' + PEND.length + '개 <span class="hint" style="font-weight:400">— 이 기기에만 있어요</span></h4>' + PEND.map(function (r) {
+      return '<div class="pd"><h4>이 기기에 있는 녹음 ' + PEND.length + '개 <span class="hint" style="font-weight:400">— 구글에는 올리지 않아요</span></h4>' + PEND.map(function (r) {
         var up = UP && UP.id === r.id;
         return '<div class="p1"><div class="rb"><span class="nm">🎙 ' + whenTxt(r.t) + ' 녹음</span><span class="hint" style="margin:0">' + dur(r.dur / 1000) + ' · ' + mb(r.blob.size) + ' · ' + esc(r.who || '') + '</span></div>' +
           (PURL[r.id] ? '<audio controls src="' + PURL[r.id] + '"></audio>' : '') +
           (up ? '<div class="bar"><i style="width:' + Math.round(UP.i / UP.n * 100) + '%"></i></div><div class="hint">드라이브에 올리는 중 ' + Math.round(UP.i / UP.n * 100) + '% — 화면을 닫지 마세요</div>' :
             '<div class="rb" style="margin-top:6px">' + (PURL[r.id] ? '' : '<button type="button" data-pv="' + r.id + '">▶ 미리 듣기</button>') +
-            '<button type="button" class="up" data-up="' + r.id + '"' + (UP ? ' disabled' : '') + '>☁ 드라이브에 저장</button>' +
-            '<button type="button" data-dl="' + r.id + '">⬇ 이 기기에 파일로</button><button type="button" class="del" data-pdel="' + r.id + '"' + (UP ? ' disabled' : '') + '>지우기</button></div>') + '</div>';
+            '<button type="button" class="up" data-dl="' + r.id + '">⬇ 휴대폰에 저장</button><button type="button" class="del" data-pdel="' + r.id + '"' + (UP ? ' disabled' : '') + '>지우기</button></div>') + '</div>';
       }).join('') + '</div>';
     }
     function rpaint() {
       var h = '<div class="rb">';
       if (RC.on) h += '<span class="dot"></span><b>녹음 중 ' + mm(Date.now() - RC.t0) + '</b><button type="button" id="rc-stop">■ 끝내기</button>';
-      else h += '<button type="button" class="go" id="rc-go"' + (UP ? ' disabled' : '') + '>🎙 수업 녹음</button><span class="hint hm" title="녹음하는 동안 화면을 켜 두세요. 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 앞뒤를 맞춰 정리해요.">끝내면 받아쓴 글은 새 글에, 소리는 아래 보관함에 들어가요</span>';
+      else h += '<button type="button" class="go" id="rc-go"' + (UP ? ' disabled' : '') + '>🎙 수업 녹음</button><span class="hint hm" title="녹음하는 동안 화면을 켜 두세요. 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 앞뒤를 맞춰 정리해요.">끝내면 받아쓴 글은 새 글에, 소리는 이 기기 보관함에 들어가요(구글에 올리지 않아요)</span>';
+      if (!RC.on && /Android/i.test(navigator.userAgent)) h += '<a class="go" href="intent://#Intent;package=com.sec.android.app.voicenote;end" style="text-decoration:none;display:inline-block" title="삼성 녹음 앱이 열려요. 녹음은 휴대폰에만 저장돼요">📱 삼성 녹음 앱 열기</a>';
       h += '</div>';
       if (RC.on && SR) h += '<div class="tx">' + esc(RC.text + RC.interim || '말씀을 받아쓰는 중…') + '</div>';
       if (RC.on && !SR) h += '<div class="hint">이 브라우저는 받아쓰기를 지원하지 않아 소리만 녹음해요. (안드로이드·PC 크롬은 받아써 줍니다)</div>';
-      if (!RC.on) h += pendHTML() + '<div class="hint hm">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 「드라이브에 저장」은 와이파이에서 누르면 빨라요.</div>';
+      if (!RC.on) h += pendHTML() + '<div class="hint hm">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 「휴대폰에 저장」을 누르면 다운로드 폴더에 파일로 저장돼요. 삼성 녹음 앱으로 녹음해도 돼요.</div>';
       bar.innerHTML = h;
     }
     function startSR() {
@@ -318,7 +318,7 @@
       var block = '## 🎙 수업 녹음 받아쓰기 (' + mins + '분 · 기계가 받아쓴 글이라 틀린 낱말이 있어요)\n' + (txt || '(받아쓴 글이 없어요. 소리는 녹음 보관함에 있어요)');
       if (!ED) { open(null); }
       ED.body = (ED.body ? ED.body + '\n\n' : '') + block; if (!ED.title) ED.title = '수업 녹음 ' + new Date(RC.t0 + 9 * 3600e3).toISOString().slice(0, 10); saveDraft(); draw(); rpaint();
-      toast('받아쓴 글을 새 글에 넣었어요. 녹음은 「드라이브에 저장」을 눌러 올려 주세요');
+      toast('받아쓴 글을 새 글에 넣었어요. 녹음은 「휴대폰에 저장」으로 파일로 받아 두세요(구글에는 올리지 않아요)');
     }
     function blob64(b) { return new Promise(function (ok, no) { var fr = new FileReader(); fr.onload = function () { ok(String(fr.result).split(',')[1] || ''); }; fr.onerror = function () { no(fr.error); }; fr.readAsDataURL(b); }); }
     function upload(rec) {
@@ -360,7 +360,7 @@
       if (b.dataset.pv) { PURL[r.id] = URL.createObjectURL(r.blob); rpaint(); return; }
       if (b.dataset.up) { if (!UP) upload(r); return; }
       if (b.dataset.dl) { var a = document.createElement('a'); a.href = PURL[r.id] || URL.createObjectURL(r.blob); a.download = '수업녹음-' + new Date(r.t + 9 * 3600e3).toISOString().slice(0, 10) + '.' + (r.ext || 'webm'); document.body.appendChild(a); a.click(); a.remove(); return; }
-      if (b.dataset.pdel) { if (!confirm('이 녹음을 이 기기에서 지울까요?\n드라이브에 올리지 않았다면 되살릴 수 없어요.')) return; PEND = PEND.filter(function (x) { return x.id !== r.id; }); IDB.del(r.id).catch(function () {}); rpaint(); }
+      if (b.dataset.pdel) { if (!confirm('이 녹음을 이 기기에서 지울까요?\n「휴대폰에 저장」으로 받아 두지 않았다면 되살릴 수 없어요.')) return; PEND = PEND.filter(function (x) { return x.id !== r.id; }); IDB.del(r.id).catch(function () {}); rpaint(); }
     });
     window.addEventListener('beforeunload', function (e) { if (RC.on || UP) { e.preventDefault(); e.returnValue = ''; } });
     IDB.all().then(function (L) { if (L && L.length) { PEND = L.filter(function (r) { return r && r.blob; }).sort(function (a, b) { return a.t - b.t; }); rpaint(); } }).catch(function () {});
