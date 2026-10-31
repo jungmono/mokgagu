@@ -1,5 +1,5 @@
 /* 기물 이야기(코멘트) — 모든 도록 페이지에서 기물 사진 창을 열면 그 아래에 코멘트를 남기고 볼 수 있다.
-   - 거믄·힌 : 가족 암호를 넣어야 쓴다. 기본은 비공개(가족만 봄), [공개]를 고르면 누구나 본다.
+   - 거믄·힌 : 가족 암호를 넣어야 쓴다. 기본은 공개(누구나 봄), [비공개]를 고르면 가족만 본다.
    - 벗     : 암호 없이 이름만 적고 쓴다. 벗의 글은 늘 공개. 자기 글은 쓴 기기에서 지울 수 있다.
    - 저장   : 구글 시트(Apps Script 웹 앱). 노트북·아이패드·휴대폰 어디서나 같은 코멘트를 본다.
    - 표시   : 목록 사진 오른쪽 위에 거믄이 쓴 기물은 검은 별, 힌이 쓴 기물은 흰 별, 벗만 쓴 기물은 회색 말풍선.
@@ -19,7 +19,7 @@
   var local = ls.json(K_LOCAL, []);        // 아직 시트에 못 올린 코멘트(인터넷이 끊겼을 때)
   var keys = ls.json(K_KEYS, {});          // 벗으로 쓴 글을 지울 수 있는 열쇠 {id: key}
   var fam = ls.get(K_FAM, '') === '1' && !!ls.get(K_CODE, '');
-  var state = { loading: false, err: '', codeErr: '', pub: false };
+  var state = { loading: false, err: '', codeErr: '', pub: true };
   var subs = [];
   function list() { return all.concat(local).filter(function (c) { return !c.del; }); }
   function byCid(cid) { return list().filter(function (c) { return c.cid === cid; }).sort(function (a, b) { return a.t < b.t ? -1 : 1; }); }
@@ -246,7 +246,7 @@
       if (w === '벗') { nm = ((p.querySelector('.cm-name') || {}).value || '').trim(); if (!nm) { p.querySelector('.cm-name').focus(); return; } ls.set(K_NAME, nm); }
       var c = { id: uid(), cid: p.dataset.cid, author: w, name: nm, text: text.slice(0, FAMW[w] ? 4000 : 1000), t: new Date().toISOString(), page: location.pathname.split('/').pop() || 'index.html', pub: w === '벗' ? true : state.pub };
       if (w === '벗') { c.key = uid() + uid(); keys[c.id] = c.key; }
-      p.querySelector('.cm-text').value = ''; b.disabled = true; state.pub = false;
+      p.querySelector('.cm-text').value = ''; b.disabled = true; state.pub = true;
       add(c).then(function () { b.disabled = false; });
     }
   });
