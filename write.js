@@ -274,11 +274,10 @@
       var h = '<div class="rb">';
       if (RC.on) h += '<span class="dot"></span><b>녹음 중 ' + mm(Date.now() - RC.t0) + '</b><button type="button" id="rc-stop">■ 끝내기</button>';
       else h += '<button type="button" class="go" id="rc-go"' + (UP ? ' disabled' : '') + '>🎙 수업 녹음</button><span class="hint hm" title="녹음하는 동안 화면을 켜 두세요. 받아쓰기는 기계라 낱말이 틀릴 수 있고, 올려 주시면 앞뒤를 맞춰 정리해요.">끝내면 받아쓴 글은 새 글에, 소리는 이 기기 보관함에 들어가요(구글에 올리지 않아요)</span>';
-      if (!RC.on && /Android/i.test(navigator.userAgent)) h += '<a class="go" href="intent://#Intent;package=com.sec.android.app.voicenote;end" style="text-decoration:none;display:inline-block" title="삼성 녹음 앱이 열려요. 녹음은 휴대폰에만 저장돼요">📱 삼성 녹음 앱 열기</a>';
       h += '</div>';
       if (RC.on && SR) h += '<div class="tx">' + esc(RC.text + RC.interim || '말씀을 받아쓰는 중…') + '</div>';
       if (RC.on && !SR) h += '<div class="hint">이 브라우저는 받아쓰기를 지원하지 않아 소리만 녹음해요. (안드로이드·PC 크롬은 받아써 줍니다)</div>';
-      if (!RC.on) h += pendHTML() + '<div class="hint hm">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 「휴대폰에 저장」을 누르면 다운로드 폴더에 파일로 저장돼요. 삼성 녹음 앱으로 녹음해도 돼요.</div>';
+      if (!RC.on) h += pendHTML() + '<div class="hint hm">녹음하는 동안 화면을 켜 두세요(꺼지면 끊길 수 있어요). 「휴대폰에 저장」을 누르면 다운로드 폴더에 파일로 저장돼요. 삼성 녹음 앱으로 녹음해도 돼요(홈 화면의 녹음 앱을 직접 여세요).</div>';
       bar.innerHTML = h;
     }
     function startSR() {
