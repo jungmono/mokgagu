@@ -479,8 +479,11 @@ function search(raw) {
   const nm = (r) => r.name.replace(/\([^)]*\)|[^가-힣]/g, '');
   /* 장: 이름이 장으로 끝나는 것(이층장·삼층장·관복장·의걸이장·책장·머릿장…) · 농: 이름이 농으로 끝나는 것(이층농·삼층농·사층농…) */
   const jangNong = (r, q) => q === '농' ? (nameEnd(r, '농')) : (nameEnd(r, '장') || ((r.fam === '장·농' || /문갑/.test(r.name)) && !/농$/.test(nm(r))));
-  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? jangNong(r, q) : q === '함' ? hamOk(r) : r.q.includes(q)));
-  hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
+  /* 경상(經床): 서안을 찾으면 경상도 함께 — 이름에 경상이 든 책상(경상도 반닫이·청동 경상 불교 의기는 뺌)을 먼저 보여 준다 */
+  const gyeong = (r) => /경상/.test(r.name.replace(/경상(남|북)?도/g, '')) && !/반닫이/.test(r.name) && r.b !== 'geumsok';
+  const seoan = terms.includes('서안');
+  hits = all.filter((r) => (seoan && gyeong(r)) || terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? jangNong(r, q) : q === '함' ? hamOk(r) : r.q.includes(q)));
+  hits.sort((a, b) => (seoan ? (gyeong(b) ? 1 : 0) - (gyeong(a) ? 1 : 0) : 0) || ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = ''; fa = {}; lastLabel = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; $('home').hidden = true;
   drawResults(raw.trim());
