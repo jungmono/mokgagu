@@ -56,7 +56,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
 <div id="res"></div>
 <p class="foot">기준표 출처: 지역N문화 「각 지역별 반닫이 특징」「목공예품을 견고하고 아름답게 하는 금속장석」「한국 목공예의 특성」(한국문화원연합회), 반닫이여지도에 정리해 둔 논문 요약. 정대영 「조선의 궤」 자료는 더할 예정입니다.<br>이 화면은 기준표와 맞대어 본 결과일 뿐 감정이 아닙니다. 장석은 바뀌어 달리는 일이 많아 몸체·나무·비례와 함께 보아야 합니다.</p>
 </main>
-<script src="jangseok-criteria.js?v=2"></script>
+<script src="jangseok-criteria.js?v=3"></script>
 <script>
 (function () {
   const J = window.MOKGAGU_JANGSEOK, $ = (id) => document.getElementById(id);
@@ -69,9 +69,9 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
   /* 사진 미리 보기(이 기기 안에서만) */
   $('file').onchange = (e) => { const f = e.target.files[0]; if (!f) return; const u = URL.createObjectURL(f); $('ph').innerHTML = `<img src="${u}" alt="올린 반닫이">`; $('ph').appendChild($('file')); };
 
-  /* 후보 = 고을 + 도. 고을은 자기 낱말 + 속한 도의 낱말을 함께 가짐 */
+  /* 후보 = 지역 + 도. 지역은 자기 낱말 + 속한 도의 낱말을 함께 가짐 */
   const prov = {}; J.prov.forEach((p) => { prov[p.id] = p; });
-  const cands = J.city.map((c) => ({ id: c.id, kind: '고을', p: c.prov, own: new Set(c.tags || []), up: new Set((prov[c.prov] || {}).tags || []), d: c }))
+  const cands = J.city.map((c) => ({ id: c.id, kind: '지역', p: c.prov, own: new Set(c.tags || []), up: new Set((prov[c.prov] || {}).tags || []), d: c }))
     .concat(J.prov.filter((p) => !J.city.some((c) => c.id === p.id.slice(0, 2))).map((p) => ({ id: p.id, kind: '도', p: p.id, own: new Set(p.tags || []), up: new Set(), d: p })));
   const FIELDS = ['재질', '경첩', '앞바탕', '들쇠', '감잡이', '광두정', '투각무늬', '덮는비율', '나무', '비례', '구조', '별칭', '느낌'];
 
@@ -117,7 +117,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
       const big = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
       return `<a href="${big}" target="_blank" rel="noopener"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="" onerror="this.style.visibility='hidden'">${esc((r.owner || r.cat || '').slice(0, 10))}</a>`;
     }).join('');
-    return `<div class="cand"><h4>${i + 1}. ${esc(x.c.id)} <small>${x.c.kind === '고을' ? esc(x.c.p) : '도 단위'}</small></h4>
+    return `<div class="cand"><h4>${i + 1}. ${esc(x.c.id)} <small>${x.c.kind === '지역' ? esc(x.c.p) : '도 단위'}</small></h4>
       <div class="meter"><i style="width:${Math.round(x.s / max * 100)}%"></i></div>
       <div class="ln"><b>맞음</b><span class="hit">${x.hit.map(esc).join(' · ')}</span></div>
       ${x.miss.length ? `<div class="ln"><b>안 맞음</b><span class="miss">${x.miss.map(esc).join(' · ')}</span></div>` : ''}

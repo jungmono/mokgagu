@@ -83,7 +83,7 @@ def srcdiff(sub):
 res=dict(n=len(rows),desc=desc(rows),kw=kw(rows),dunn=dunn(rows),jt=jt(rows),lat=lat_rho(rows),size=size_rho(rows),ref=refband(rows),src=srcdiff(rows))
 terc=np.percentile([r['D'] for r in rows if r['region'] in REG],[100/3,200/3]); res['D_cut']=[round(float(x),1) for x in terc]
 sens={}
-for name,f in [('조선의 궤 제외',lambda r:r['src']!='joseongwe'),('경매 제외',lambda r:r['src']!='auction'),('민속유물이해 제외',lambda r:r['src']!='minsok'),('고을명 표기만',lambda r:bool(r['town']) and r['town'] not in ('경상','전라','충청','강원','경기','황해','평안','함경','제주'))]:
+for name,f in [('조선의 궤 제외',lambda r:r['src']!='joseongwe'),('경매 제외',lambda r:r['src']!='auction'),('민속유물이해 제외',lambda r:r['src']!='minsok'),('지역명 표기만',lambda r:bool(r['town']) and r['town'] not in ('경상','전라','충청','강원','경기','황해','평안','함경','제주'))]:
     sub=[r for r in rows if f(r)]
     try: sens[name]=dict(n=len([r for r in sub if r['region'] in REG]),kw=kw(sub),jt=jt(sub,perm=5000),med={g:v['med'] for g,v in desc(sub).items()},nreg={g:v['n'] for g,v in desc(sub).items()})
     except Exception as e: sens[name]=str(e)
