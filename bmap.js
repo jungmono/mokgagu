@@ -183,7 +183,7 @@ ${base()}
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
 <div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">지도출처 : 동인방</div>
-<div id="bm-p"><div class="src">위의 도 이름이나 지도의 지역 상자를 눌러 보세요. 도를 누르면 그 도에 속한 지역의 기물이 모두 나옵니다.</div></div></div>`;
+<div id="bm-p"><div class="src">위의 도 이름이나 지도의 지역을 눌러 보세요. 도를 누르면 그 도에 속한 지역의 기물이 모두 나옵니다.</div></div></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = document.getElementById('dlg');
     /* 개수 점: 켜 둔 종류 가운데 기물이 있는 것만 왼쪽부터 차례로 붙인다(종류 번호 자리에 두면 『조선의 궤』·기준 도판 점이 상자 밖으로 밀려 옆 지역 뒤에 가려졌다) */
     const dotsOf = (p, x, y) => { const ks = TYPES.filter(([k]) => on[k] && p[k] && p[k].length), gap = ks.length > 4 ? (W - 36) / (ks.length - 1) : 29;
