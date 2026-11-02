@@ -296,7 +296,7 @@ body{position:relative}
 <script>
 /* ───────── 새 대시보드를 추가할 때는 이 목록 맨 위에 한 덩어리만 더 붙이면 됩니다 ─────────
    path  : 대시보드 파일 이름 (예: lee → lee.html)
-   icon  : bandaji(반닫이) · seoan(서안) · soban(소반) · takja(사방탁자) · duiju(뒤주) · yakjang(약장) · jang(이층장) · ham(함) 중 하나
+   icon  : bandaji(반닫이) · seoan(서안) · soban(소반) · takja(사방탁자) · duiju(뒤주) · yakjang(약장) · jang(장)·nong(농) · ham(함) 중 하나
    tone  : ju(주칠) · meok(먹) · hwang(황동) · jjok(쪽빛) · nok(녹색) · jaju(자주) 중 하나
    added : 추가한 날짜 (가장 최근 날짜의 도록이 위 큰 배너에 나옵니다)            */
 const DASHBOARDS = window.MOKGAGU_BOOKS;
@@ -315,7 +315,10 @@ const ICONS = {
   /* 약장: 작은 서랍이 바둑판처럼 들어찬 장 */
   yakjang: '<rect x="5.5" y="3.5" width="21" height="23" rx=".8"/><path d="M5.5 9.25h21M5.5 15h21M5.5 20.75h21M12.5 3.5v23M19.5 3.5v23"/><path d="M8.6 6.4h.8M15.6 6.4h.8M22.6 6.4h.8M8.6 12.1h.8M15.6 12.1h.8M22.6 12.1h.8M8.6 17.9h.8M15.6 17.9h.8M22.6 17.9h.8M8.6 23.6h.8M15.6 23.6h.8M22.6 23.6h.8"/><path d="M7 26.5v2.5M25 26.5v2.5"/>',
   /* 이층장: 위아래 두 층, 여닫이문과 경첩·자물쇠 앞바탕 */
-  jang: '<rect x="6.5" y="3" width="19" height="24" rx=".8"/><path d="M6.5 15h19"/><path d="M16 5v8M16 17v8"/><rect x="14.6" y="7.6" width="2.8" height="2.8" rx=".4"/><rect x="14.6" y="19.6" width="2.8" height="2.8" rx=".4"/><path d="M6.5 6.5h2M6.5 11.5h2M23.5 6.5h2M23.5 11.5h2M6.5 18.5h2M6.5 23.5h2M23.5 18.5h2M23.5 23.5h2"/><path d="M8 27v2.5M24 27v2.5"/>',
+  /* 농: 위아래 층이 따로 포개지는 이층·삼층 농 */
+  nong: '<rect x="6.5" y="3" width="19" height="24" rx=".8"/><path d="M6.5 15h19"/><path d="M16 5v8M16 17v8"/><rect x="14.6" y="7.6" width="2.8" height="2.8" rx=".4"/><rect x="14.6" y="19.6" width="2.8" height="2.8" rx=".4"/><path d="M6.5 6.5h2M6.5 11.5h2M23.5 6.5h2M23.5 11.5h2M6.5 18.5h2M6.5 23.5h2M23.5 18.5h2M23.5 23.5h2"/><path d="M8 27v2.5M24 27v2.5"/>',
+  /* 장: 층이 나뉘지 않는 한 몸 — 이층장·삼층장·의걸이장·책장·머릿장 */
+  jang: '<path d="M5.8 3h20.4"/><rect x="7" y="4.5" width="18" height="22"/><path d="M16 4.5v14.5M7 19h18"/><path d="M14.4 9.5v3.5M17.6 9.5v3.5"/><path d="M7 7.5h1.8M7 15h1.8M23.2 7.5h1.8M23.2 15h1.8"/><path d="M14.2 22.6h3.6"/><path d="M9 26.5v3M23 26.5v3"/>',
   /* 함: 위로 여는 뚜껑, 귀장식 */
   ham: '<path d="M4 12.5h24v12H4z"/><path d="M4.8 12.5 6.5 8.5h19l1.7 4"/><rect x="14" y="12.5" width="4" height="4.5" rx=".5"/><path d="M4 15.5l3-3M28 15.5l-3-3M4 21.5l3 3M28 21.5l-3 3"/>',
 };
@@ -336,7 +339,7 @@ const JOSEONGWE_N = 161;
 const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
 document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-10-31';
+const SITE_UPDATED = '2026-11-02';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -473,7 +476,10 @@ function search(raw) {
     if (/빗접|반짇고리|연상/.test(n)) return true;   /* 빗접·반짇고리·연상은 함 */
     if (/^(상자|합)( |·|$)/.test(r.kind || '')) return true;   /* 나전·화각의 상자·합도 나무로 만든 함 */
     return r.q.includes('함') && r.fam !== '장·농'; };
-  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? (nameEnd(r, q) || r.fam === '장·농' || /문갑/.test(r.name)) : q === '함' ? hamOk(r) : r.q.includes(q)));
+  const nm = (r) => r.name.replace(/\([^)]*\)|[^가-힣]/g, '');
+  /* 장: 이름이 장으로 끝나는 것(이층장·삼층장·관복장·의걸이장·책장·머릿장…) · 농: 이름이 농으로 끝나는 것(이층농·삼층농·사층농…) */
+  const jangNong = (r, q) => q === '농' ? (nameEnd(r, '농')) : (nameEnd(r, '장') || ((r.fam === '장·농' || /문갑/.test(r.name)) && !/농$/.test(nm(r))));
+  hits = all.filter((r) => terms.some((q) => (q.length === 1 && (q === '장' || q === '농')) ? jangNong(r, q) : q === '함' ? hamOk(r) : r.q.includes(q)));
   hits.sort((a, b) => ORDER.indexOf(a.b) - ORDER.indexOf(b.b) || a.n - b.n);
   only = ''; fa = {}; lastLabel = null; seqFrom = ''; seqLabel = ''; seqBack = ''; seqNotes = null;
   $('results').hidden = false; $('home').hidden = true;
@@ -603,7 +609,7 @@ window.addEventListener('hashchange', openSeen);
 window.addEventListener('load', openSeen);
 openSeen();
 const QUICK = [['반닫이', 'bandaji', 'jjok'], ['서안', 'seoan', 'meok'], ['소반', 'soban', 'hwang'], ['사방탁자', 'takja', 'ju'],
-  ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장·농', 'jang', 'meok'], ['함', 'ham', 'ju']];
+  ['뒤주', 'duiju', 'nok'], ['약장', 'yakjang', 'jaju'], ['장', 'jang', 'meok'], ['농', 'nong', 'meok'], ['함', 'ham', 'ju']];
 const MAPICO = '<svg viewBox="-40 -40 798 1357" width="28" height="42" aria-hidden="true"><path d="M622 9 L612 6 L592 6 L584 10 L579 15 L570 37 L565 76 L560 81 L552 84 L539 79 L525 81 L513 100 L511 112 L491 131 L486 133 L421 131 L405 137 L399 148 L398 165 L407 189 L421 204 L421 209 L415 215 L407 215 L397 208 L388 208 L381 212 L371 211 L356 200 L335 201 L321 189 L301 163 L296 160 L282 160 L265 176 L249 177 L246 180 L243 188 L245 213 L215 252 L189 279 L183 282 L173 282 L119 314 L85 325 L67 339 L55 345 L35 369 L27 372 L21 378 L16 393 L7 405 L8 418 L13 424 L28 429 L41 440 L42 452 L46 458 L55 459 L68 453 L96 468 L112 470 L118 477 L117 496 L105 510 L92 538 L89 549 L90 563 L80 571 L75 580 L74 595 L59 620 L59 636 L43 647 L41 652 L43 663 L52 669 L72 668 L76 672 L76 682 L80 690 L97 694 L105 705 L120 715 L129 715 L138 711 L144 705 L154 701 L161 693 L166 692 L174 695 L188 715 L197 720 L211 721 L222 735 L230 738 L235 743 L235 760 L242 772 L241 788 L227 801 L209 801 L204 805 L188 832 L185 850 L193 862 L199 864 L209 877 L216 879 L222 885 L225 909 L223 923 L227 933 L237 942 L237 950 L220 966 L214 977 L212 989 L215 1006 L198 1029 L201 1060 L199 1077 L183 1091 L167 1118 L167 1129 L172 1138 L213 1156 L223 1164 L236 1164 L252 1152 L272 1151 L287 1141 L299 1146 L318 1145 L334 1137 L346 1125 L373 1125 L387 1116 L401 1114 L410 1103 L417 1100 L423 1101 L432 1110 L449 1110 L460 1106 L472 1095 L475 1087 L474 1070 L481 1063 L489 1063 L501 1072 L508 1071 L531 1049 L540 1033 L541 1021 L557 994 L565 975 L571 951 L571 934 L568 924 L554 914 L554 909 L560 897 L560 889 L556 881 L559 854 L559 818 L551 779 L477 665 L462 635 L453 612 L451 598 L442 581 L421 557 L370 515 L373 497 L363 483 L362 476 L364 455 L389 432 L411 418 L441 415 L455 399 L473 390 L477 376 L481 372 L511 355 L545 326 L570 314 L585 298 L590 286 L590 276 L586 262 L597 243 L597 233 L582 214 L579 201 L601 177 L612 149 L617 143 L631 137 L642 126 L661 125 L673 119 L680 102 L679 90 L667 75 L660 60 L651 52 L640 49 L634 44 L633 22ZM220 1220 L218 1216 L204 1210 L195 1203 L188 1203 L180 1207 L168 1207 L149 1218 L133 1219 L118 1237 L114 1245 L114 1253 L118 1261 L130 1269 L143 1268 L148 1271 L163 1271 L176 1265 L187 1265 L214 1248 L220 1233Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="42" stroke-linejoin="round" stroke-linecap="round"/><circle cx="688" cy="694" r="16" fill="currentColor"/></svg>';
 buildTools();
 $('quick').innerHTML = QUICK.map(([w, ic], k) => `<button type="button" data-w="${w}" aria-pressed="false"><span class="qi m${k % 8}">${svg(ic)}</span>${w}</button>`).join('');
