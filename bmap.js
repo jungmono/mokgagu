@@ -183,7 +183,7 @@ ${base()}
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
 <div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">지도출처 : 동인방</div>
-<div id="bm-p"><div class="src">위의 도 이름이나 지도의 지역을 눌러 보세요. 도를 누르면 그 도에 속한 지역의 기물이 모두 나옵니다.</div></div></div>`;
+<div id="bm-p"><div class="src">위의 도 이름이나 지도의 지역을 눌러 보세요. 도를 누르면 그 도에 속한 지역의 반닫이가 모두 나옵니다.</div></div></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = document.getElementById('dlg');
     /* 개수 점: 켜 둔 종류 가운데 기물이 있는 것만 왼쪽부터 차례로 붙인다(종류 번호 자리에 두면 『조선의 궤』·기준 도판 점이 상자 밖으로 밀려 옆 지역 뒤에 가려졌다) */
     const dotsOf = (p, x, y) => { const ks = TYPES.filter(([k]) => on[k] && p[k] && p[k].length), gap = ks.length > 4 ? (W - 36) / (ks.length - 1) : 29;
@@ -318,7 +318,7 @@ ${KEY ? '<div id="bm-k"></div>' : ''}`;
     function showProv(pn) {
       selP = pn; sel = ''; draw(); const ids = PV[pn][1], o = merge(ids, pn);
       panel.innerHTML = `<h3 style="color:${PV[pn][0]}">${pn} <small style="font-weight:400;color:#7a6c50">${cntT(o)}점</small></h3>
-<div class="src">${ids.length ? `선생님 지도의 ${pn} 지역: ${ids.length}곳 — 지역을 눌러 그 지역만 볼 수 있어요.` : `선생님 지도에는 ${pn}의 지역이 아직 없어요. 지역이 적히지 않은 ${pn} 기물만 나옵니다.`}${pn === '경기도' ? ' (강화도 포함)' : ''}</div>
+<div class="src">${ids.length ? `선생님 지도의 ${pn} 지역: ${ids.length}곳 — 지역을 눌러 그 지역만 볼 수 있어요.` : `선생님 지도에는 ${pn}의 지역이 아직 없어요. 지역이 적히지 않은 ${pn} 반닫이만 나옵니다.`}${pn === '경기도' ? ' (강화도 포함)' : ''}</div>
 ${jgHTML(JGP[pn])}
 <div class="bm-go" style="--c:${PV[pn][0]}">${ids.map((id) => { const r = R.find((x) => x[0] === id); return `<button type="button" data-r="${id}">${esc(r[1])} ${cntT(P.by[id]) || ''}</button>`; }).join('')}</div>
 <div class="bm-it">${items(o) || '<span class="src">이 도로 분류된 기물이 아직 없어요.</span>'}</div>`;
