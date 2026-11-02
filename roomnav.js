@@ -22,24 +22,25 @@
     '#rn.top nav a{display:flex;flex-direction:column;align-items:center;gap:3px;color:#c9c5bd;font-size:12px;font-weight:700;width:78px}' +
     '#rn.top .i{width:42px;height:42px;border-radius:12px;background:#fff;color:#111;display:grid;place-items:center;padding:8px;opacity:.5;transition:opacity .15s}' +
     '#rn.top nav a:hover .i{opacity:.85}#rn.top nav a.on{color:#fff;font-weight:900}#rn.top nav a.on .i{opacity:1;box-shadow:0 0 0 3px #fff}' +
-    '#rn.top .hm{flex:none;color:#aaa;font-size:13px;font-weight:700;width:38px;text-align:right}#rn.top .hm:hover{color:#fff}' +
+    '#rn.top .hm{flex:none;color:#ddd;font-size:15px;font-weight:800;width:60px;padding:10px 0}#rn.top a.hm:hover{color:#fff;text-decoration:underline}' +
     '#rn.bot{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;background:#fff;border-top:1.5px solid #111;padding:6px 8px calc(8px + env(safe-area-inset-bottom))}' +
     '#rn.bot a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:700;color:#777;flex:1;max-width:96px;padding:5px 0;border-radius:12px}' +
     '#rn.bot .i{width:26px;height:26px;display:block}#rn.bot a.on{color:#111;font-weight:900;background:#f1efeb}#rn svg{width:100%;height:100%;display:block}' +
-    'body.rn-bot #rv{bottom:84px!important}body.rn-bot .toast,body.rn-bot #toast{bottom:92px!important}' +
+    'body.rn-on #cls{display:none!important}body.rn-on #cmp-share{margin-left:0!important}body.rn-bot #rv{bottom:84px!important}body.rn-bot .toast,body.rn-bot #toast{bottom:92px!important}' +
     '@media print{#rn{display:none!important}}';
   document.head.appendChild(css);
   var el = null, mode = '', mq = window.matchMedia('(max-width:700px)');
   function build() {
     var m = mq.matches ? 'bot' : 'top';
-    if (!fam()) { if (el) { el.remove(); el = null; mode = ''; document.body.style.paddingBottom = ''; } return; }
+    if (!fam()) { if (el) { el.remove(); el = null; mode = ''; document.body.style.paddingBottom = ''; document.body.style.paddingTop = ''; document.body.classList.remove('rn-bot', 'rn-on'); } return; }
     if (el && mode === m) return;
     if (el) el.remove();
-    mode = m; el = document.createElement('div'); el.id = 'rn'; el.className = m; el.setAttribute('role', 'navigation'); el.setAttribute('aria-label', '거믄·힌의 방 이동');
+    mode = m; document.body.classList.add('rn-on'); el = document.createElement('div'); el.id = 'rn'; el.className = m; el.setAttribute('role', 'navigation'); el.setAttribute('aria-label', '거믄·힌의 방 이동');
     var links = ROOMS.map(function (r) { return '<a href="' + r[0] + '"' + (r[0] === P ? ' class="on" aria-current="page"' : '') + '><span class="i">' + IC[r[2]] + '</span><b style="font-weight:inherit">' + r[1] + '</b></a>'; }).join('');
-    if (m === 'top') { el.innerHTML = '<span class="mn">' + MOON + '</span><nav>' + links + '</nav><a class="hm" href="index.html">처음</a>'; document.body.insertBefore(el, document.body.firstChild); document.body.style.paddingBottom = ''; document.body.style.paddingTop = '88px'; document.body.classList.remove('rn-bot'); }
+    if (m === 'top') { el.innerHTML = '<a class="hm" href="index.html" target="_top">처음</a><nav>' + links + '</nav><span class="hm" aria-hidden="true"></span>'; document.body.insertBefore(el, document.body.firstChild); document.body.style.paddingBottom = ''; document.body.style.paddingTop = '88px'; document.body.classList.remove('rn-bot'); }
     else { el.innerHTML = links; document.body.appendChild(el); document.body.style.paddingBottom = '76px'; document.body.style.paddingTop = ''; document.body.classList.add('rn-bot'); }
   }
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('#rn a.hm'); if (!a) return; e.preventDefault(); location.assign(new URL('index.html', location.href).href); });
   build(); setInterval(build, 1200); window.addEventListener('storage', build);
   if (mq.addEventListener) mq.addEventListener('change', build); else mq.addListener(build);
 })();
