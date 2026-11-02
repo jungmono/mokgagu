@@ -470,15 +470,18 @@ function search(raw) {
   lastTerms = terms;
   const all = window.SEARCH || [];
   /* 한 글자(장·농)는 '소장품'·'장석'·'장터경매'에도 들어 있으니, 물건 이름이 그 글자로 끝나는 것만 (반닫이·뒤주·약장은 각자 자리에서) */
-  const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장'); };
+  /* 빗접·반짇고리·연상·연갑·가께수리(각게수리)는 이름이 장·농으로 끝나도 모두 함 — 연상문갑은 문갑이라 장·농에 둔다 */
+  const isHam = (n) => !/문갑/.test(n) && /빗접|반짇고리|연상|연갑|가께수리|가게수리|각게수리|개수리/.test(n);
+  const nameEnd = (r, q) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); return n.endsWith(q) && !n.includes('반닫이') && !n.includes('뒤주') && !n.includes('약장') && !isHam(n); };
   /* 「함」은 책장의 다른 이름(책함)·의함 같은 풀이에도 들어 있으니, 이름이 장·농으로 끝나는 것(책장 등)은 장·농에 넣고 뺀다 */
-  const hamOk = (r) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); if (/문갑/.test(n) || /(장|농)$/.test(n)) return false;
-    if (/빗접|반짇고리|연상/.test(n)) return true;   /* 빗접·반짇고리·연상은 함 */
+  const hamOk = (r) => { const n = r.name.replace(/\([^)]*\)|[^가-힣]/g, ''); if (/문갑/.test(n)) return false;
+    if (isHam(n)) return true;   /* 빗접·반짇고리·연상·연갑·가께수리는 함 */
+    if (/(장|농)$/.test(n)) return false;
     if (/^(상자|합)( |·|$)/.test(r.kind || '')) return true;   /* 나전·화각의 상자·합도 나무로 만든 함 */
     return r.q.includes('함') && r.fam !== '장·농'; };
   const nm = (r) => r.name.replace(/\([^)]*\)|[^가-힣]/g, '');
   /* 장: 이름이 장으로 끝나는 것(이층장·삼층장·관복장·의걸이장·책장·머릿장…) · 농: 이름이 농으로 끝나는 것(이층농·삼층농·사층농…) */
-  const jangNong = (r, q) => q === '농' ? (nameEnd(r, '농')) : (nameEnd(r, '장') || ((r.fam === '장·농' || /문갑/.test(r.name)) && !/농$/.test(nm(r))));
+  const jangNong = (r, q) => isHam(nm(r)) ? false : q === '농' ? (nameEnd(r, '농')) : (nameEnd(r, '장') || ((r.fam === '장·농' || /문갑/.test(r.name)) && !/농$/.test(nm(r))));
   /* 경상(經床): 서안을 찾으면 경상도 함께 — 이름에 경상이 든 책상(경상도 반닫이·청동 경상 불교 의기는 뺌)을 먼저 보여 준다 */
   const gyeong = (r) => /경상/.test(r.name.replace(/경상(남|북)?도/g, '')) && !/반닫이/.test(r.name) && r.b !== 'geumsok';
   const seoan = terms.includes('서안');
