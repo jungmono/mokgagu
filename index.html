@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('emb');</script>
-<script>/* 나란히 보기에서 띄운 기물 창(embed): 이전·다음은 비교한 순서대로 부모(compare)가 넘겨 준다 */
+<script>/* 비교하기에서 띄운 기물 창(embed): 이전·다음은 비교한 순서대로 부모(compare)가 넘겨 준다 */
 window.MOKGAGU_EMB = {
   on: document.documentElement.classList.contains('emb'),
   all: function () { try { return JSON.parse(sessionStorage.getItem('mokgagu_cmp_all') || '[]'); } catch (e) { return []; } },
@@ -569,7 +569,7 @@ function openItem(i) {
   if (!$('dlg').open) $('dlg').showModal();
 }
 
-/* 나란히 보기에서 띄운 경우: 이전·다음은 비교한 순서(도록·소장품 모두)로 */
+/* 비교하기에서 띄운 경우: 이전·다음은 비교한 순서(도록·소장품 모두)로 */
 if (MOKGAGU_EMB.on) {
   const _oi = openItem;
   openItem = function (i) {

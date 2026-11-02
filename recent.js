@@ -28,6 +28,9 @@
     '#rv.folded .rv-list,#rv.folded .rv-nav{display:none}',
     '@media (max-width:720px){#rv{right:10px;bottom:10px;gap:6px}#rv .rv-box{width:56px;padding:6px 4px;gap:4px;border-radius:12px}#rv .rv-it{width:46px;height:46px;border-radius:7px}#rv .rv-t{font-size:10.5px}#rv .rv-t small{display:none}#rv .rv-top{width:42px;height:42px}#rv .rv-top svg{width:20px;height:20px}#rv .rv-nav{height:18px}}',
     '@media print{#rv{display:none}}',
+    /* 휴대폰: 최근 본 기물·좋아요 상자는 평소에 접어 두고 작은 단추(▤)를 누르면 펼친다 — 글자를 가리지 않도록 */
+    '#rv .rv-more{display:none}',
+    '@media (max-width:720px){#rv:not(.open) .rv-box,#rv:not(.open) #lk-box{display:none!important}#rv .rv-more{display:grid;width:40px;height:40px;border-radius:50%;border:1px solid #d9d4cc;background:#fff;color:#3b3833;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.18);padding:0}#rv .rv-more svg{width:20px;height:20px}#rv.open .rv-more{background:#1d1b18;color:#fff}}',
     /* 휴대폰: 화면을 내리는 동안에는 떠 있는 창을 오른쪽으로 비켜 두고, 멈추면 다시 보인다 */
     '@media (max-width:720px){#rv{transition:transform .25s,opacity .25s}#rv.rv-away{transform:translateX(84px);opacity:0;pointer-events:none}}',
     /* 사진 칸 비율 고정 — 아이패드·아이폰 사파리에서 사진이 칸 밖으로 넘치거나 칸이 길어지지 않게.
@@ -51,7 +54,7 @@
     '<div class="rv-list" id="rv-list" style="display:flex;flex-direction:column;gap:5px"></div>' +
     '<button type="button" class="rv-nav" id="rv-next" aria-label="이전에 본 기물">' + down + '</button>' +
     '<button type="button" class="rv-fold" id="rv-fold">접기</button>' +
-    '</div><button type="button" class="rv-top" id="rv-top" aria-label="맨 위로" title="맨 위로">' + top + '</button>';
+    '</div><button type="button" class="rv-more" id="rv-more" aria-label="최근 본 기물·좋아요 펼치기" title="최근 본 기물·좋아요"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button><button type="button" class="rv-top" id="rv-top" aria-label="맨 위로" title="맨 위로">' + top + '</button>';
   function mount() { document.body.appendChild(root); render(); }
 
   function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -73,6 +76,7 @@
   }
   root.addEventListener('click', function (e) {
     var t = e.target.closest('button'); if (!t) return;
+    if (t.id === 'rv-more') { root.classList.toggle('open'); return; }
     if (t.id === 'rv-top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     if (t.id === 'rv-prev') { start = Math.max(0, start - 1); render(); return; }
     if (t.id === 'rv-next') { start = Math.min(Math.max(0, list.length - SHOW), start + 1); render(); return; }

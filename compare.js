@@ -67,6 +67,7 @@
   function btnHtml(on) { var W = window.MOKGAGU_WB; return W ? W.html(on ? 'check' : 'scale', on ? '담김' : '비교') : (on ? '✓ 담김' : '비교'); }
   function attach(dlg) {
     if (path === 'compare.html') return;
+    if (dlg.id === 'lk-who' || dlg.hasAttribute('data-noshare')) { var o = dlg.querySelector('.cmpbtn'); if (o) o.remove(); return; }   /* 「누구세요?」 같은 안내 창에는 비교 단추를 붙이지 않는다 */
     var b = dlg.querySelector('.cmpbtn');
     if (!b) {
       b = document.createElement('button'); b.type = 'button'; b.className = 'cmpbtn wb'; b.innerHTML = btnHtml(false);

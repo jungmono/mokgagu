@@ -348,7 +348,7 @@
   var whoDlg;
   function ask() {
     if (!whoDlg) {
-      whoDlg = document.createElement('dialog'); whoDlg.id = 'lk-who'; whoDlg.setAttribute('aria-label', '누구세요');
+      whoDlg = document.createElement('dialog'); whoDlg.id = 'lk-who'; whoDlg.setAttribute('data-noshare', '1'); whoDlg.setAttribute('aria-label', '누구세요');
       whoDlg.innerHTML = '<h2>누구세요?</h2><p>고르면 좋아요와 기물 이야기에 이름이 붙어요.</p>' +
         '<div class="lk-pick"><button type="button" data-w="거믄">' + star('거믄') + '<b>거믄</b></button>' +
         '<button type="button" data-w="힌">' + star('힌') + '<b>힌</b></button>' +
