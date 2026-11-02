@@ -37,7 +37,7 @@ svg{display:block;width:100%;height:auto;min-width:520px;font-family:var(--sans)
 </div>
 <script>
 (function(){
-var COL={'장·농':'#8a2f22','반닫이·궤':'#1f5f3a','함·소품':'#9a6a10','문방·기타':'#6b665e','소반·상':'#2b5d8a','서안·경상·연상':'#7a4a8a','책장·사방탁자·찬탁':'#b0602a'};
+var COL={'장':'#8a2f22','농':'#a8552e','반닫이·궤':'#1f5f3a','함·소품':'#9a6a10','문방·기타':'#6b665e','소반·상':'#2b5d8a','서안·경상·연상':'#7a4a8a','책장·사방탁자·찬탁':'#b0602a'};
 var ALL=[],view='year',site='전체',yr='전체',sel=null;
 function parse(it,src){var o=it.owner||'',m=o.match(/^(\S+)\s.*?\((\d{4})\)\s*Lot\s*(\S+)/),pr=o.match(/낙찰\s*([\d,]+)원/);
  return {id:it.id,name:it.name,kind:it.kind,site:m?m[1]:'',year:m?+m[2]:0,lot:m?m[3]:'',price:pr?+pr[1].replace(/,/g,''):null,fail:/유찰/.test(o),src:src,type:it.type};}
