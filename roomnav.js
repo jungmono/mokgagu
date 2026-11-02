@@ -38,9 +38,9 @@
     mode = m; document.body.classList.add('rn-on'); el = document.createElement('div'); el.id = 'rn'; el.className = m; el.setAttribute('role', 'navigation'); el.setAttribute('aria-label', '거믄·힌의 방 이동');
     var links = ROOMS.map(function (r) { return '<a href="' + r[0] + '"' + (r[0] === P ? ' class="on" aria-current="page"' : '') + '><span class="i">' + IC[r[2]] + '</span><b style="font-weight:inherit">' + r[1] + '</b></a>'; }).join('');
     if (m === 'top') { el.innerHTML = '<a class="hm" href="index.html" target="_top">처음</a><nav>' + links + '</nav><span class="hm" aria-hidden="true"></span>'; document.body.insertBefore(el, document.body.firstChild); document.body.style.paddingBottom = ''; document.body.style.paddingTop = '88px'; document.body.classList.remove('rn-bot'); }
-    else { el.innerHTML = links; document.body.appendChild(el); document.body.style.paddingBottom = '76px'; document.body.style.paddingTop = ''; document.body.classList.add('rn-bot'); }
+    else { el.innerHTML = '<a href="index.html" target="_top" class="hmb"><span class="i">' + T32('<path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/>') + '</span><b style="font-weight:inherit">홈</b></a>' + links; document.body.appendChild(el); document.body.style.paddingBottom = '76px'; document.body.style.paddingTop = ''; document.body.classList.add('rn-bot'); }
   }
-  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('#rn a.hm'); if (!a) return; e.preventDefault(); location.assign(new URL('index.html', location.href).href); });
+  document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('#rn a.hm, #rn a.hmb'); if (!a) return; e.preventDefault(); location.assign(new URL('index.html', location.href).href); });
   build(); setInterval(build, 1200); window.addEventListener('storage', build);
   if (mq.addEventListener) mq.addEventListener('change', build); else mq.addListener(build);
 })();
