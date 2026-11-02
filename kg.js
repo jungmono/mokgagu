@@ -13,6 +13,9 @@
     '.kg-seg button.on{background:#111;color:#fff}' +
     '.kg-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#6b645a;margin:0 2px 8px}' +
     '.kg-legend i{display:inline-block;vertical-align:-2px;margin-right:4px}' +
+    '.kg-legend button.own{font:inherit;font-size:12.5px;font-weight:800;color:#111;border:1.5px solid #cfc8bd;border-radius:999px;background:#fff;padding:3px 11px;cursor:pointer}' +
+    '.kg-legend button.own[aria-pressed=true]{background:#111;color:#fff;border-color:#111}' +
+    '.kg-legend button.own[aria-pressed=true] svg circle:first-child{filter:invert(1)}' +
     '.kg-stage{position:relative;border:1px solid #ddd6ca;border-radius:16px;background:#fff;overflow:hidden;touch-action:none}' +
     '.kg-stage svg{display:block;width:100%;height:min(66vh,560px);cursor:grab}' +
     '.kg-stage svg:active{cursor:grabbing}' +
@@ -84,7 +87,7 @@
     var N = G.N, nodes = Object.keys(N).map(function (k) { return N[k]; }), links = G.L;
     el.innerHTML = '<div class="kg"><div class="kg-bar"><input type="search" id="kg-q" placeholder="점 찾기 — 예: 감정, 전라도, 자물쇠" aria-label="지식 지도 검색">' +
       '<div class="kg-seg"><button type="button" data-v="g" class="on">그래프</button><button type="button" data-v="l">목록</button></div></div>' +
-      '<div class="kg-legend"><span><i><svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="#111"/></svg></i>거믄 수업</span><span><i><svg width="14" height="14"><circle cx="7" cy="7" r="5.5" fill="#fff" stroke="#111" stroke-width="2"/></svg></i>힌 수업</span><span><i><svg width="14" height="14"><rect x="1.5" y="1.5" width="11" height="11" rx="3" fill="#8a837a"/></svg></i>개념</span><span><i><svg width="14" height="14"><path d="M7 1L13 7 7 13 1 7z" fill="#5b3a05"/></svg></i>지역</span><span><i><svg width="14" height="14"><circle cx="7" cy="7" r="3" fill="#cfc8bd"/></svg></i>태그</span></div>' +
+      '<div class="kg-legend"><button type="button" class="own" data-own="거믄" aria-pressed="false"><i><svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="#111" stroke="#fff" stroke-width="1"/></svg></i>거믄 수업</button><button type="button" class="own" data-own="힌" aria-pressed="false"><i><svg width="14" height="14"><circle cx="7" cy="7" r="5.5" fill="#fff" stroke="#111" stroke-width="2"/></svg></i>힌 수업</button><span><i><svg width="14" height="14"><rect x="1.5" y="1.5" width="11" height="11" rx="3" fill="#8a837a"/></svg></i>개념</span><span><i><svg width="14" height="14"><path d="M7 1L13 7 7 13 1 7z" fill="#5b3a05"/></svg></i>지역</span><span><i><svg width="14" height="14"><circle cx="7" cy="7" r="3" fill="#cfc8bd"/></svg></i>태그</span></div>' +
       '<div class="kg-stage"><svg id="kg-sv" role="img" aria-label="수업·개념·지역 연결 그래프"></svg><div class="kg-zoom"><button type="button" id="kg-zi" aria-label="확대">+</button><button type="button" id="kg-zo" aria-label="축소">−</button><button type="button" id="kg-zr" aria-label="처음 크기" style="font-size:14px">⟲</button></div><div class="kg-hint">끌어서 이동 · 두 손가락으로 확대 · 점을 누르면 내용</div></div>' +
       '<div class="kg-list" id="kg-ls"></div><div class="kg-det" id="kg-det"><span class="empty">점이나 목록의 이름을 누르면 여기에 내용과 연결된 곳이 나와요.</span></div></div>';
     var svg = d3.select(el.querySelector('#kg-sv')), W = 0, H = 0;
@@ -163,10 +166,34 @@
     });
     window.addEventListener('resize', size);
     function fit() {   // 처음에 전체가 한눈에 들어오게
-      var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; nodes.forEach(function (d) { x0 = Math.min(x0, d.x); x1 = Math.max(x1, d.x); y0 = Math.min(y0, d.y); y1 = Math.max(y1, d.y); });
+      var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; nodes.filter(visible).forEach(function (d) { x0 = Math.min(x0, d.x); x1 = Math.max(x1, d.x); y0 = Math.min(y0, d.y); y1 = Math.max(y1, d.y); });
       if (!isFinite(x0) || !W) return; var pw = 70, k = Math.min(1.1, Math.min((W - pw) / Math.max(1, x1 - x0), (H - pw) / Math.max(1, y1 - y0)));
       svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity.scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2));
     }
+    /* 거믄 수업 / 힌 수업을 누르면 그 사람의 수업과 거기 이어진 점만 보인다(다시 누르면 전체) */
+    var own = '';
+    function visible(n) {
+      if (!own) return true;
+      if (n.type === 's') return n.owner === own;
+      return (nb[n.id] || []).some(function (k) { var m = N[k]; return m && m.type === 's' && m.owner === own; });
+    }
+    function applyOwn() {
+      var vn = nodes.filter(visible), ok = {}; vn.forEach(function (n) { ok[n.id] = 1; });
+      var vl = links.filter(function (l) { return ok[l.source.id] && ok[l.target.id]; });
+      ne.style('display', function (d) { return ok[d.id] ? '' : 'none'; }).style('opacity', 1);
+      le.style('display', function (d) { return ok[d.source.id] && ok[d.target.id] ? '' : 'none'; }).attr('stroke', '#c9c1b4').attr('stroke-width', 1.2).style('opacity', 1);
+      ne.select('.tl').style('opacity', 0); cur = null;
+      sim.nodes(vn); sim.force('link').links(vl); sim.alpha(.9).restart();
+      el.querySelector('#kg-q').value = '';
+      [].forEach.call(ls.querySelectorAll('button'), function (b) { var n = N[b.dataset.go]; b.style.display = !n || ok[n.id] ? '' : 'none'; });
+      [].forEach.call(ls.querySelectorAll('h3'), function (h) { var any = false, x = h.nextElementSibling; while (x && x.tagName !== 'H3') { if (x.style.display !== 'none') any = true; x = x.nextElementSibling; } h.style.display = any ? '' : 'none'; });
+      [].forEach.call(el.querySelectorAll('.kg-legend button.own'), function (b) { b.setAttribute('aria-pressed', String(b.dataset.own === own)); });
+      setTimeout(fit, 900);
+    }
+    el.querySelector('.kg-legend').addEventListener('click', function (e) {
+      var b = e.target.closest('button.own'); if (!b) return;
+      own = own === b.dataset.own ? '' : b.dataset.own; applyOwn();
+    });
     el.querySelector('#kg-zr').onclick = fit;
     sim.on('end', fit); setTimeout(fit, 1800);
     setTimeout(function () { sim.alpha(.9).restart(); }, 50);
