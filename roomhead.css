@@ -12,6 +12,3 @@
 .rh .out{background:#fff;border:1.5px solid #111;color:#111;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:34px}
 .rh .out:hover{background:#f1efeb}
 .rh+#sub{text-align:left}
-/* 공유받은 화면(보기 전용) — 이동 줄·홈 단추·떠 있는 창·수정 단추를 모두 숨긴다 */
-html.sv #hb,html.sv #rv,html.sv #rn,html.sv #lk-box,html.sv .rh-act,html.sv .ne-act,html.sv .ne-bar,html.sv .ne-hint,html.sv .mp-add,html.sv .mp-open,html.sv .mp-x,html.sv #to-top,html.sv #pwa-bar{display:none!important}
-html.sv body{padding-top:0!important;padding-bottom:0!important}

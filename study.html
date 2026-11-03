@@ -6,10 +6,6 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light">
 <title>거믄 · 힌의 공부방 — 조선의 목가구</title>
-<script>/* 공유받은 화면(보기 전용): 주소 끝 #v=열쇠 로 열리면 암호 없이 노트만 보여 준다. 가족 기기(암호 저장됨)에서는 쓰지 않는다 */
-(function(){try{var m=/^#v=([A-Za-z0-9_-]{20,})/.exec(location.hash),k=null,fam=localStorage.getItem('mokgagu_study_pw')||localStorage.getItem('mokgagu_cm_code');
-if(m){k=m[1];try{sessionStorage.setItem('mk_sv',k);}catch(e){}}else if(!fam){try{k=sessionStorage.getItem('mk_sv');}catch(e){}}
-if(k){window.__SV=k;document.documentElement.classList.add('sv');}}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +13,7 @@ if(k){window.__SV=k;document.documentElement.classList.add('sv');}}catch(e){}})(
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--fg)}
 body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
-.wrap{max-width:920px;margin:0 auto;padding:18px 16px 72px}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 72px}
 .hd{text-align:center;margin:26px 0 10px}
 .hd .mk{display:inline-flex;font-weight:900;font-size:15px}.hd .mk span{display:inline-block;min-width:2.9em;padding:.12em .45em;border:1.5px solid #111;line-height:1.25}
 .hd .mk .b{background:#111;color:#fff}.hd .mk .w{background:#fff;color:#111}
@@ -123,7 +119,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 </head>
 <body>
 <div class="wrap">
-  <header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>공부방</h1><p>선생님께 배운 내용을 날짜별로 적어 두는 노트</p><span class="rh-act"><button type="button" class="out" id="rh-share" hidden>공유하기</button></span></header>
+  <header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>공부방</h1><p>선생님께 배운 내용을 날짜별로 적어 두는 노트</p></header>
   <div id="app"></div>
 </div>
 <dialog id="lb" aria-label="노트 크게 보기"><div class="in" id="lb-in"><img id="lb-img" alt=""></div><div class="cap" id="lb-cap"></div>
@@ -190,25 +186,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     var buf = new Uint8Array(await fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('net'); return r.arrayBuffer(); }));
     return crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, key, buf.slice(12));
   }
-  var lastPw = '';
-  function b64url(u) { var s = ''; for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
-  function unb64url(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return b64(s); }
-  /* 공유 열쇠: 암호에서 만든 풀이 열쇠를 꺼내 링크에 담는다(암호 자체는 담지 않는다) */
-  async function shareKey(pw) {
-    var meta = await fetch('study/salt.json', { cache: 'no-store' }).then(function (r) { return r.json(); });
-    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
-    var k = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(meta.salt), iterations: meta.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
-    return b64url(new Uint8Array(await crypto.subtle.exportKey('raw', k)));
-  }
-  async function unlockShared(k) {
-    key = await crypto.subtle.importKey('raw', unb64url(k), 'AES-GCM', false, ['decrypt']);
-    var plain = await dec('study/data.bin');
-    DATA = JSON.parse(new TextDecoder().decode(plain));
-    var p = document.querySelector('.rh p'); if (p) p.textContent = '공유받은 화면이에요 · 보기만 할 수 있어요';
-    render();
-  }
   async function unlock(pw, remember) {
-    lastPw = pw;
     key = await derive(pw);
     var plain = await dec('study/data.bin');   // 암호가 틀리면 여기서 실패
     DATA = JSON.parse(new TextDecoder().decode(plain));
@@ -216,22 +194,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     window.MOKGAGU_NOTEEDIT.load(function () { if (DATA && !(document.activeElement && document.activeElement.id === 'q') && !document.querySelector('#ne-dlg[open]')) render(); });
     if (remember) { ls.set(K_STUDY, pw); if (!ls.get(K_CODE)) ls.set(K_CODE, pw); }
     render();
-    var sb = document.getElementById('rh-share'); if (sb) sb.hidden = false;
   }
-  (function () {
-    var sb = document.getElementById('rh-share'); if (!sb) return;
-    sb.addEventListener('click', async function () {
-      var pw = ls.get(K_STUDY) || ls.get(K_CODE) || lastPw; if (!pw) return;
-      if (!confirm('이 링크를 받은 사람은 암호 없이 공부방 노트를 볼 수 있어요(보기만 가능).\n믿을 수 있는 사람에게만 보내 주세요. 공유 링크를 만들까요?')) return;
-      sb.disabled = true;
-      try {
-        var url = location.href.split('#')[0] + '#v=' + await shareKey(pw), t = '거믄 · 힌의 공부방 (보기 전용)';
-        if (window.MOKGAGU_SHARE) window.MOKGAGU_SHARE(t, t + ' — 암호 없이 볼 수 있는 링크예요.', url);
-        else if (navigator.clipboard) { await navigator.clipboard.writeText(url); alert('링크를 복사했어요.'); }
-      } catch (e) { alert('링크를 만들지 못했어요. 다시 시도해 주세요.'); }
-      sb.disabled = false;
-    });
-  })();
   function lockView(msg) {
     app.innerHTML = '<div class="lock"><div class="ic">🔒</div><h2>가족 암호를 넣어 주세요</h2><p>거믄과 힌의 수업 노트가 들어 있는 공부방이에요.<br>내용은 암호로 잠가 두어 암호 없이는 열리지 않아요.</p>' +
       '<form id="f"><input id="pw" type="password" inputmode="text" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" maxlength="64" aria-label="가족 암호" autofocus>' +
@@ -247,12 +210,12 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
   var K_TAB = 'mokgagu_study_tab';
   var tab = /^#write/.test(location.hash) ? '쓰기' : /^#quiz/.test(location.hash) ? '퀴즈' : /^#talk/.test(location.hash) ? '말씀' : (ls.get(K_TAB) || '거믄');
   function render() {
-    if (['거믄', '힌', '함께', '말씀', '지도', '쓰기', '퀴즈'].indexOf(tab) < 0 || (window.__SV && ['말씀', '쓰기', '퀴즈'].indexOf(tab) >= 0)) tab = '거믄';
+    if (['거믄', '힌', '함께', '말씀', '지도', '쓰기', '퀴즈'].indexOf(tab) < 0) tab = '거믄';
     var own = function (o) { return DATA.sessions.filter(function (s) { return (s.owner || '거믄') === o; }); };
     var cnt = { '거믄': own('거믄').length, '힌': own('힌').length };
     var S = (tab === '함께' ? DATA.sessions.slice() : own(tab)).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : ((a.owner || '거믄') < (b.owner || '거믄') ? -1 : 1); });
     allImgs = [];
-    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀'], ['지도', '지식 지도'], ['쓰기', '바로 쓰기'], ['퀴즈', '복습 퀴즈']].filter(function (t) { return !window.__SV || ['거믄', '힌', '함께', '지도'].indexOf(t[0]) >= 0; }).map(function (t) {
+    var html = '<div class="tabs" role="tablist">' + [['거믄', '거믄의 노트'], ['힌', '힌의 노트'], ['함께', '날짜별 함께'], ['말씀', '선생님 말씀'], ['지도', '지식 지도'], ['쓰기', '바로 쓰기'], ['퀴즈', '복습 퀴즈']].map(function (t) {
       return '<button type="button" role="tab" data-tab="' + t[0] + '" aria-selected="' + (tab === t[0]) + '" class="t-' + (t[0] === '거믄' ? 'g' : t[0] === '힌' ? 'h' : t[0] === '말씀' ? 'k' : t[0] === '퀴즈' ? 'q' : t[0] === '쓰기' ? 'w' : t[0] === '지도' ? 'm' : 'b') + (tab === t[0] ? ' on' : '') + '">' + t[1] + (t[0] === '말씀' ? ' <small>' + Object.keys(talkDays()).length + '</small>' : (t[0] === '퀴즈' || t[0] === '쓰기' || t[0] === '지도') ? '' : t[0] !== '함께' ? ' <small>' + cnt[t[0]] + '</small>' : '') + '</button>'; }).join('') + '</div>';
     html += '<div class="tools"><input type="search" id="q" placeholder="노트에서 찾기 — 예: 경첩, 연대, 빗접" aria-label="노트 검색"><button id="order">오래된 수업부터</button></div>';
     if (tab === '쓰기') {
@@ -346,8 +309,7 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
 
   if (!window.crypto || !crypto.subtle) { app.innerHTML = '<div class="lock"><p>이 브라우저에서는 열 수 없어요. 최신 크롬·사파리로 열어 주세요.</p></div>'; return; }
   var saved = ls.get(K_STUDY) || ls.get(K_CODE);
-  if (window.__SV) { app.innerHTML = '<p style="text-align:center;color:#756e65;margin:40px 0">여는 중…</p>'; unlockShared(window.__SV).catch(function () { app.innerHTML = '<div class="lock"><p>공유 링크가 맞지 않거나 만료되었어요.<br>보낸 사람에게 새 링크를 부탁해 주세요.</p></div>'; }); }
-  else if (saved) { app.innerHTML = '<p style="text-align:center;color:#756e65;margin:40px 0">여는 중…</p>'; unlock(saved, false).catch(function () { lockView(); }); }
+  if (saved) { app.innerHTML = '<p style="text-align:center;color:#756e65;margin:40px 0">여는 중…</p>'; unlock(saved, false).catch(function () { lockView(); }); }
   else lockView();
 })();
 </script>
