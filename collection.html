@@ -23,7 +23,7 @@ html.emb,html.emb body{background:transparent!important}html.emb body{visibility
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--fg)}
 body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
-.wrap{max-width:1080px;margin:0 auto;padding:10px 16px 80px}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 80px}
 button{font:inherit;cursor:pointer}
 /* 잠금 */
 .lock{max-width:420px;margin:60px auto;text-align:center}
@@ -400,7 +400,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   var shown = [];
   function render() {
     shown = view();
-    var h = '<header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>소장품</h1><p>우리 집에 들인 목가구와 기물을 사진·구입일·구입처·비고와 함께 적어 두는 도록</p><span class="rh-act"><button class="out" id="out">이 기기에서 잠그기</button></span></header>';
+    var h = '<header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>소장품</h1><p>우리 집에 들인 목가구와 기물을 사진·구입일·구입처·비고와 함께 적어 두는 도록</p></header>';
     if (note) h += '<p class="note' + (mode === 'offline' ? ' bad' : '') + '">' + note + '</p>';
     h += '<div class="bar"><button class="add" id="add"><b>＋</b> 소장품 넣기</button><input type="search" id="q" placeholder="소장품에서 찾기 — 이름, 구입처, 메모" value="' + esc(q) + '">' +
       '<span class="seg" id="sort">' + [['new', '최근 구입'], ['old', '오래된 구입'], ['name', '이름순']].map(function (s) { return '<button type="button" data-s="' + s[0] + '" class="' + (sort === s[0] ? 'on' : '') + '">' + s[1] + '</button>'; }).join('') + '</span>' +

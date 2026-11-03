@@ -192,7 +192,7 @@
   function toast(t) { if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'lk-toast'; document.body.appendChild(toastEl); } toastEl.textContent = t; toastEl.classList.add('on'); clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.classList.remove('on'); }, 1600); }
 
   /* ── 목록 사진 위 별 ── */
-  var SKIP = '.cm,.lk-st,#lk-col,#lk-box';
+  var SKIP = '.cm,.lk-st,#lk-col,#lk-box,.cmp-x';
   function paintCards(pop) {
     var w = me(), m = state(), on = canStar();
     document.querySelectorAll('[data-cid]').forEach(function (el) {
