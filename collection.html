@@ -400,7 +400,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
   var shown = [];
   function render() {
     shown = view();
-    var h = '<header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>소장품</h1><p>우리 집에 들인 목가구와 기물을 사진·구입일·구입처·비고와 함께 적어 두는 도록</p></header>';
+    var h = '<header class="rh"><span class="mk"><span class="b">거믄</span><span class="w">힌</span></span><h1>소장품</h1><p>우리 집에 들인 목가구와 기물을 적어 두는 도록</p></header>';
     if (note) h += '<p class="note' + (mode === 'offline' ? ' bad' : '') + '">' + note + '</p>';
     h += '<div class="bar"><button class="add" id="add"><b>＋</b> 소장품 넣기</button><input type="search" id="q" placeholder="소장품에서 찾기 — 이름, 구입처, 메모" value="' + esc(q) + '">' +
       '<span class="seg" id="sort">' + [['new', '최근 구입'], ['old', '오래된 구입'], ['name', '이름순']].map(function (s) { return '<button type="button" data-s="' + s[0] + '" class="' + (sort === s[0] ? 'on' : '') + '">' + s[1] + '</button>'; }).join('') + '</span>' +
