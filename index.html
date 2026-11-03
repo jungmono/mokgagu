@@ -340,7 +340,7 @@ const JOSEONGWE_N = 161;
 const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
 document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-11-02';
+const SITE_UPDATED = '2026-11-03';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -436,6 +436,8 @@ let lastTerms = [];
 /* 내 소장품 — 소장품 도록을 한 번이라도 연 기기(암호 입력한 기기)에만 저장된 목록에서 찾는다. 사진 없이 이름·상태만 */
 function drawOwn() {
   const box = $('r-own'); if (!box) return; let list = [];
+  /* 기물 버튼(반닫이·장·농…)으로 고른 결과에는 내 소장품을 섞지 않는다 — 직접 글자를 쳐서 찾을 때만 */
+  { const qv = ($('q').value || '').trim(); if (QUICK.some((x) => x[0] === qv)) { box.innerHTML = ''; return; } }
   try { list = JSON.parse(localStorage.getItem('mokgagu_col_cache') || '[]'); } catch (e) {}
   const m = (Array.isArray(list) ? list : []).filter((x) => !x.deleted && lastTerms.some((t) => norm((x.name || '') + (x.kind || '')).includes(t)));
   if (!m.length) { box.innerHTML = ''; return; }
