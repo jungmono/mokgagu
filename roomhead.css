@@ -1,0 +1,14 @@
+/* 거믄·힌의 방 네 화면(공부방·소장품·통계·비교하기) 공통 상단 제목 — B안(왼쪽 한 줄) */
+.st-top{display:none!important}
+.rh{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1100px;margin:22px auto 16px;padding:0 0 14px;border-bottom:1.5px solid #111;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#111;text-align:left}
+.rh .mk{display:inline-flex;flex:none;font-weight:900;font-size:15px}
+.rh .mk span{display:inline-block;min-width:2.9em;padding:.12em .45em;border:1.5px solid #111;line-height:1.25;text-align:center}
+.rh .mk .b{background:#111;color:#fff}.rh .mk .w{background:#fff;color:#111}
+.rh h1{margin:0;font-family:inherit;font-weight:900;font-size:clamp(26px,3.6vw,34px);letter-spacing:-.04em;line-height:1.2}
+.rh p{margin:0 0 0 auto;color:#6b665e;font-size:15px;font-weight:500;text-align:right}
+.rh .rh-act{display:flex;gap:8px;flex:none}
+@media (max-width:640px){.rh{margin:14px 0 12px;gap:10px}.rh p{flex-basis:100%;margin:0;text-align:left;font-size:14px}}
+@media print{.rh .rh-act{display:none}}
+.rh .out{background:#fff;border:1.5px solid #111;color:#111;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:34px}
+.rh .out:hover{background:#f1efeb}
+.rh+#sub{text-align:left}
