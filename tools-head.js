@@ -12,8 +12,8 @@
   ];
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
   if (!cur) return;
-  /* 통계에서 들어왔으면 「통계로」, 아니면 「처음으로」 */
-  var back = { href: 'index.html', t: '← 처음으로' };
+  /* 통계에서 들어왔으면 「통계로」, 아니면 「홈」 */
+  var back = { href: 'index.html', t: '<svg viewBox="0 0 32 32" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px"><path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/></svg>홈' };
   try { if (/\/stats\.html/.test(document.referrer) || /[?&]from=stats/.test(location.search)) back = { href: 'stats.html', t: '← 통계로' }; } catch (e) {}
   var css = document.createElement('style');
   css.textContent = [
