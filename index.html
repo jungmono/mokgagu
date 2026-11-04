@@ -718,5 +718,21 @@ d.addEventListener('close',reset);
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
 <script src="comments.js?v=20261031b" defer></script>
-<script src="share.js" defer></script><script src="mklink.js?v=5" defer></script></body>
+<script src="share.js" defer></script><script src="mklink.js?v=5" defer></script><script>/* 휴대폰 뒤로가기: 사진 창만 닫고 보던 화면(검색 결과)에 그대로 남긴다 */
+(function () {
+  var d = document.getElementById('dlg'); if (!d || document.documentElement.classList.contains('emb')) return;
+  var pushed = false, byPop = false;
+  new MutationObserver(function () {
+    if (d.open && !pushed && !seqBack) { try { history.pushState({ mkdlg: 1 }, '', location.href); pushed = true; } catch (e) {} }
+  }).observe(d, { attributes: true, attributeFilter: ['open'] });
+  window.addEventListener('popstate', function () {
+    if (pushed && d.open) { byPop = true; pushed = false; d.close(); byPop = false; }
+    else if (pushed) { pushed = false; }
+  });
+  d.addEventListener('close', function () {
+    if (pushed && !byPop) { pushed = false; try { history.back(); } catch (e) {} }
+  });
+})();
+</script>
+</body>
 </html>
