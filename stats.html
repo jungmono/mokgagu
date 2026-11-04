@@ -188,7 +188,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 .d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
 .d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}.d-foot button:disabled{opacity:.35}
 .d-r{display:flex;gap:8px}
-@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.d-foot{padding:10px 12px}}
+@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{flex:0 0 auto;min-height:0;padding:8px 0}.d-img img{max-height:52vh}.d-foot{padding:10px 12px}}
 /* 수업용 인쇄: 다음 수업 질문만 */
 @media print{
   body.pr .hd,body.pr #app > *:not(#ask-sec){display:none!important}

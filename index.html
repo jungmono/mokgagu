@@ -133,7 +133,7 @@ h1 .ttl-ico.ttl-angwe{height:clamp(30px,4.8vw,55px)}
 .d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
 .d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
 .d-r{display:flex;gap:8px}
-@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{min-height:220px}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+@media (max-width:720px){.d-body{flex-direction:column;padding:14px}.d-img{flex:0 0 auto;min-height:0;padding:8px 0}.d-img img{max-height:52vh}.r-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 footer{margin-top:44px;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}footer .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}footer .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center;box-sizing:border-box}footer .ft-mark .ew-blk{background:#fff;color:#111}footer .ft-mark .ew-wht{background:#111;color:#fff}footer .ft-icons{display:flex;justify-content:center;align-items:flex-end;gap:clamp(28px,5vw,48px);margin:18px auto 8px}footer .ft-icon{display:block;margin:0;width:144px;height:auto}footer .ft-icon.ft-angwe{width:104px;margin-bottom:5px}footer .ft-mark.ft-r{margin-right:0;margin-left:8px}footer .ft-upd{margin-top:6px;display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
 
 .card.folder .cover.fd[class*="fd-"] svg{width:58px;height:58px}.cover.fd{display:grid;place-items:center;background:#f4f2ee;color:#111;font-size:30px;font-weight:900}.card.folder{border:2px dashed #b9b2a6}.card.folder h3{display:flex;align-items:center;gap:8px}.card.folder.study{border:2px solid #111}.card.folder.study .cover.fd{position:relative;background:#111;color:#fff}.card.folder.study .lk{position:absolute;right:6px;bottom:4px;font-size:18px}.card.folder.study h3 .ew{display:inline-flex;margin-right:2px}.card.folder.study h3 .ew b,.card.folder.study h3 .ew i{display:inline-block;box-sizing:border-box;width:2.5em;text-align:center;font-style:normal;font-size:.8em;font-weight:900;padding:.05em 0;border:1.5px solid #111;line-height:1.2}.card.folder.study h3 .ew b{background:#111;color:#fff}.card.folder.study h3 .ew i{background:#fff;color:#111}
@@ -340,7 +340,7 @@ const JOSEONGWE_N = 161;
 const isFamJ = (() => { try { const g = (k) => localStorage.getItem(k) || '', w = g('mokgagu_lk_shared') === '1' ? (sessionStorage.getItem('mokgagu_lk_who_s') || '') : g('mokgagu_cm_who'); return g('mokgagu_cm_fam') === '1' && !!g('mokgagu_cm_code') && (w === '거믄' || w === '힌'); } catch (e) { return false; } })();
 document.getElementById('n-items').textContent = (DASHBOARDS.reduce((s, d) => s + d.items, 0) + (isFamJ ? JOSEONGWE_N : 0)).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-11-03';
+const SITE_UPDATED = '2026-11-04';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
