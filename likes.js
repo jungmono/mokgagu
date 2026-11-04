@@ -216,6 +216,15 @@
 
   /* ── 사진 창 안 별 단추 ── */
   function infoBox(d) { return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d; }
+  /* 휴대폰: 좋아요 단추를 공유·비교 단추와 같은 간격으로 오른쪽에 둔다 */
+  function alignLike(d) {
+    var l = d.querySelector('.lk-big[data-lk]'); if (!l) return;
+    if (!window.matchMedia('(max-width:720px)').matches) { l.style.left = ''; return; }
+    var sc = d.querySelector('.shr .wb-c') || d.querySelector('.shr'), cc = d.querySelector('.cmpbtn .wb-c') || d.querySelector('.cmpbtn');
+    if (!sc || !cc || !cc.offsetWidth) return;
+    var dr = d.getBoundingClientRect(), a = sc.getBoundingClientRect(), b = cc.getBoundingClientRect(), gap = b.left - a.right;
+    l.style.left = Math.round(b.right - dr.left + gap) + 'px';
+  }
   function paintDlg() {
     document.querySelectorAll('dialog[open]').forEach(function (d) {
       if (d.id === 'lk-who') return;
@@ -230,8 +239,11 @@
         (whoTxt.length ? '<span class="lk-who">' + whoTxt.map(star).join('') + whoTxt.join(' · ') + (whoTxt.length > 1 ? ' 둘 다' : '') + ' 좋아해요</span>' : '');
       if (!bar) { bar = document.createElement('div'); bar.className = 'lk-bar'; var cm = box.querySelector(':scope > .cm'); box.insertBefore(bar, cm || null); }
       if (bar.innerHTML !== html) bar.innerHTML = html;
+      alignLike(d);
     });
   }
+  window.addEventListener('resize', function () { document.querySelectorAll('dialog[open]').forEach(alignLike); });
+  new MutationObserver(function () { document.querySelectorAll('dialog[open]').forEach(alignLike); }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['open', 'class', 'style'] });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-lkask]'); if (b) { e.preventDefault(); ask(); } });
 
   /* ── 수업일: 매달 둘째·넷째 토요일 (한국 시각) ── */
