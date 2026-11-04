@@ -4,7 +4,7 @@
    · 작은 썸네일·아이콘: 한 번 본 것은 저장해 두고 바로 보여 준다.
    · 검색 색인(search.js)은 저장본을 먼저 쓰고 뒤에서 갱신한다(1.7MB를 매번 받지 않도록).
    · 큰 원본 사진(photos/)과 다른 사이트(구글 시트·글꼴)는 건드리지 않는다. */
-var VER = 'v8';
+var VER = 'v9';
 var PAGES = 'mk-pages-' + VER, IMGS = 'mk-imgs-' + VER, MAX_IMGS = 2500;
 
 self.addEventListener('install', function () { self.skipWaiting(); });
