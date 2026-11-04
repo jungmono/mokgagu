@@ -124,7 +124,7 @@
     '#rv .rv-it .lk-st{top:1px;left:1px}#rv .rv-it .lk-btn{display:none}#rv .rv-it .lk-other svg{width:12px;height:12px}',
     '.lk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 0;padding:8px 0;border-top:1px solid #e5e1da;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}',
     '.lk-bar+.cm{margin-top:0;padding-top:8px}',
-    '@media (max-width:720px){.lk-big[data-lk]{position:absolute;top:8px;left:114px;z-index:5;width:36px;height:36px;background:#fff}.lk-bar:not(:has(.lk-askq)):not(:has(.lk-who)){padding:0;margin:0;border:0;height:0}}',
+    '@media (max-width:720px){.lk-top{display:contents}.lk-top .lk-big[data-lk]{position:absolute;top:8px;left:114px;z-index:5;width:36px;height:36px;background:#fff}.lk-bar:not(:has(.lk-askq)):not(:has(.lk-who)){padding:0;margin:0;border:0;height:0}}',
     '.lk-big{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:14.5px;font-weight:700;color:#1d1b18;background:#fff;border:1.5px solid #d9d4cc;border-radius:999px;padding:7px 15px;cursor:pointer}',
     '.lk-big.on{border-color:' + RED + ';color:' + RED + '}.lk-big svg{width:19px;height:19px}',
     '.lk-askq{font:inherit;font-size:13.5px;font-weight:700;color:#1d1b18;background:#fbf6e9;border:1.5px solid #e7d9b4;border-radius:999px;padding:7px 13px;cursor:pointer}.lk-askq:hover{background:#f5ecd4}',
@@ -218,7 +218,7 @@
   function infoBox(d) { return d.querySelector('#d-info') || d.querySelector('.d-info') || (d.querySelector('dl') && d.querySelector('dl').parentElement) || d.querySelector('.d-body') || d; }
   /* 휴대폰: 좋아요 단추를 공유·비교 단추와 같은 간격으로 오른쪽에 둔다 */
   function alignLike(d) {
-    var l = d.querySelector('.lk-big[data-lk]'); if (!l) return;
+    var l = d.querySelector(':scope > .lk-top .lk-big[data-lk]'); if (!l) return;
     if (!window.matchMedia('(max-width:720px)').matches) { l.style.left = ''; return; }
     var sc = d.querySelector('.shr .wb-c') || d.querySelector('.shr'), cc = d.querySelector('.cmpbtn .wb-c') || d.querySelector('.cmpbtn');
     if (!sc || !cc || !cc.offsetWidth) return;
@@ -229,20 +229,29 @@
     document.querySelectorAll('dialog[open]').forEach(function (d) {
       if (d.id === 'lk-who') return;
       var cid = d.dataset.cid, box = infoBox(d), bar = box.querySelector(':scope > .lk-bar');
-      if (!cid || !canStar()) { if (bar) bar.remove(); return; }
+      if (!cid || !canStar()) { if (bar) bar.remove(); var t0 = d.querySelector(':scope > .lk-top'); if (t0) t0.remove(); return; }
       var w = me(), s = state()[cid] || {};
       var whoTxt = fam() ? ['거믄', '힌'].filter(function (k) { return s[k]; }) : [];
       if (w) logView(cid);
-      var html = (w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + icon(w, !!s[w]) + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>' +
+      var ph = window.matchMedia('(max-width:720px)').matches;
+      var big = w ? '<button type="button" class="lk-big' + (s[w] ? ' on' : '') + '" data-lk="' + esc(cid) + '">' + icon(w, !!s[w]) + (s[w] ? '좋아요 했어요' : '좋아요') + '</button>'
+                  : '<button type="button" class="lk-big" data-lkask="1">' + star('') + '누구세요? 고르고 별 달기</button>';
+      /* 휴대폰: 좋아요 단추는 창에 붙박이로 두어, 좌우로 넘길 때 깜박이지 않게 한다 */
+      var top = d.querySelector(':scope > .lk-top');
+      if (ph && w) {
+        if (!top) { top = document.createElement('span'); top.className = 'lk-top'; d.appendChild(top); }
+        if (top.dataset.h !== big) { top.dataset.h = big; top.innerHTML = big; }
+      } else if (top) top.remove();
+      var html = (w ? (ph ? '' : big) +
                       (w !== '벗' ? '<button type="button" class="lk-askq" data-lkq="' + esc(cid) + '">✎ 선생님께 여쭤보기</button>' : '')
-                    : '<button type="button" class="lk-big" data-lkask="1">' + star('') + '누구세요? 고르고 별 달기</button>') +
+                    : big) +
         (whoTxt.length ? '<span class="lk-who">' + whoTxt.map(star).join('') + whoTxt.join(' · ') + (whoTxt.length > 1 ? ' 둘 다' : '') + ' 좋아해요</span>' : '');
       if (!bar) { bar = document.createElement('div'); bar.className = 'lk-bar'; var cm = box.querySelector(':scope > .cm'); box.insertBefore(bar, cm || null); }
       if (bar.innerHTML !== html) bar.innerHTML = html;
       alignLike(d);
     });
   }
-  window.addEventListener('resize', function () { document.querySelectorAll('dialog[open]').forEach(alignLike); });
+  window.addEventListener('resize', function () { paintDlg(); document.querySelectorAll('dialog[open]').forEach(alignLike); });
   new MutationObserver(function () { document.querySelectorAll('dialog[open]').forEach(alignLike); }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['open', 'class', 'style'] });
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-lkask]'); if (b) { e.preventDefault(); ask(); } });
 
