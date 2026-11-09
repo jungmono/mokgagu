@@ -120,9 +120,9 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   }
   const P = [];
   (window.BANDAJI_IDX || []).forEach((r) => {
-    if (!/반닫이/.test((r.name || '') + (r.hanja || ''))) return;
-    if (/반닫이\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
-    if (/책\s*반닫이|冊/.test((r.name || '') + (r.hanja || ''))) return;   /* 책반닫이는 옷 반닫이와 쓰임·비례가 달라 뺌(논문과 같은 기준) */
+    if (!/반닫이|반다지/.test((r.name || '') + (r.hanja || ''))) return;
+    if (/(반닫이|반다지)\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
+    if (/책\s*(반닫이|반다지)|冊/.test((r.name || '') + (r.hanja || ''))) return;   /* 책반닫이는 옷 반닫이와 쓰임·비례가 달라 뺌(논문과 같은 기준) */
     const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));
   });
   { const inN = new Set(P.filter((p) => p.r.b === 'nmk').map((p) => String(p.r.pid))); for (let i = P.length - 1; i >= 0; i--) if (P[i].r.nmk && inN.has(P[i].r.nmk)) P.splice(i, 1); }   /* 이건희 ↔ 국립중앙박물관 같은 기물은 한 번만 */

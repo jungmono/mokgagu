@@ -9,7 +9,7 @@ function build() {
   const w = {};
   new Function('window', fs.readFileSync(path.join(ROOT, 'search.js'), 'utf8'))(w);
   const KEYS = ['b', 'n', 'name', 'hanja', 'cat', 'kind', 'era', 'size', 'wood', 'owner', 'page', 't', 'pid', 'h', 'fam'];
-  const rows = (w.SEARCH || []).filter((r) => /반닫이/.test((r.name || '') + (r.hanja || '')))
+  const rows = (w.SEARCH || []).filter((r) => /반닫이|반다지/.test((r.name || '') + (r.hanja || '')))
     .map((r) => Object.fromEntries(KEYS.map((k) => [k, r[k]])));
   if (!rows.length) throw new Error('search.js에서 반닫이를 찾지 못했습니다');
   /* 같은 물건이 두 도록에 실린 것(이건희 기증 목록집 ↔ 국립중앙박물관 소장품, mklink.js 의 번호 짝): 이건희 쪽 줄에 짝 번호(nmk)를 적어 둔다.
