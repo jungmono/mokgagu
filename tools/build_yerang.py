@@ -13,11 +13,11 @@ HOST = 'https://jungmono.github.io/mokgagu-photos/photos/yerang/'
 os.makedirs(PHOTOS, exist_ok=True); os.makedirs('thumbs/yerang', exist_ok=True)
 
 BOOK = '美術의 해 木工藝品百選展 (예랑방·고목당 공동기획, 1995)'
-GRPS = ['반닫이·돈괘', '장·농', '탁자·책장', '상·서안·문갑', '함·자개']
+GRPS = ['반닫이·돈궤', '장·농', '탁자·책장', '상·서안·문갑', '함·자개']
 
 
 def grp(n):
-    if '반닫이' in n or '돈괘' in n: return '반닫이·돈괘'
+    if '반닫이' in n or '돈궤' in n: return '반닫이·돈궤'
     if '탁자' in n or '찬탁' in n or '책장' in n and '머릿' not in n: return '탁자·책장'
     if n.startswith(('경상', '서안')) or '문갑' in n or '연상' in n: return '상·서안·문갑'
     if '자개' in n or n == '가마': return '함·자개'
@@ -35,7 +35,7 @@ def portal(n):
 
 def hay_extra(n, cat):
     s = ''
-    if '돈괘' in n: s += ' 돈궤'
+    if '돈궤' in n: s += ' 돈궤'
     return s
 
 
@@ -88,7 +88,7 @@ rep("function chips() { chipRow('f-grp', GRPS, grp, gOf, (v) => { grp = v; }); c
 rep("  `이화여자대학교 박물관 소장품 가운데 목기·목가구 <b>${ITEMS.length}</b>점, 사진 ${nPics}장`,", "  `예랑방과 고목당이 1995년 함께 연 『美術의 해 木工藝品百選展』 도록의 기물 <b>${ITEMS.length}</b>점, 사진 ${nPics}장`,")
 rep("  `기종·시대별로 골라 보거나 이름·설명으로 찾을 수 있습니다.`,", "  `기종별로 골라 보거나 이름으로 찾을 수 있습니다. 크기는 도록에 적힌 순서(가로×옆너비×높이, cm) 그대로입니다.`,")
 rep("  `카드를 누르면 박물관 설명과 원본 사진을 크게 볼 수 있습니다.`,", "  `연필 이름은 정대영 선생님이 도록에 직접 써 넣으신 것이며, 도록에 인쇄된 이름은 창 안에 함께 적었습니다.`,")
-tiles = "const TILES = [['', '기물 전체', ITEMS.length, '전체 보기'], ['반닫이·돈괘', '반닫이·돈괘', cnt('반닫이·돈괘'), '지역별 반닫이와 돈괘'], ['장·농', '장·농', cnt('장·농'), '의걸이장·2층장·찬장·약장·머릿장'], ['탁자·책장', '탁자·책장', cnt('탁자·책장'), '사방탁자·3층탁자·찬탁·책장'], ['상·서안·문갑', '상·서안·문갑', cnt('상·서안·문갑'), '경상·서안·문갑·연상'], ['함·자개', '함·자개', cnt('함·자개'), '자개함·경대·가마']];"
+tiles = "const TILES = [['', '기물 전체', ITEMS.length, '전체 보기'], ['반닫이·돈궤', '반닫이·돈궤', cnt('반닫이·돈궤'), '지역별 반닫이와 돈궤'], ['장·농', '장·농', cnt('장·농'), '의걸이장·2층장·찬장·약장·머릿장'], ['탁자·책장', '탁자·책장', cnt('탁자·책장'), '사방탁자·3층탁자·찬탁·책장'], ['상·서안·문갑', '상·서안·문갑', cnt('상·서안·문갑'), '경상·서안·문갑·연상'], ['함·자개', '함·자개', cnt('함·자개'), '자개함·경대·가마']];"
 s = re.sub(r"^const TILES = .*$", lambda m: tiles, s, count=1, flags=re.M)
 rep('grp === g && !era', 'grp === g')
 rep("(!grp || gOf(i) === grp) && (!era || eOf(i) === era) && (!q || (i.name + ' ' + i.kr + ' ' + i.hanja + ' ' + i.mat).includes(q))",

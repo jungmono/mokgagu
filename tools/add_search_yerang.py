@@ -17,7 +17,7 @@ for n, (it, d) in enumerate(zip(items, ds), 1):
     for x in (it['name'], it.get('cat'), d['portal'] if '·' not in d['portal'] else '', it['kind'] if '·' not in it['kind'] else '', CAT, '예랑방', '고목당', '백선전', '목공예품백선전', '1995'):
         if x: hay |= variants(x)
     nm = it['name'] + (it.get('cat') or '')
-    if '돈괘' in nm or '돈괴' in nm: hay |= {'돈궤', '돈괘', '돈괴'}   # 도록은 돈괴, 지금 이름은 돈괘, 표준은 돈궤 — 셋 다 찾아지게
+    if '돈궤' in nm or '돈괴' in nm: hay |= {'돈궤', '돈괘', '돈괴'}   # 도록은 돈괴, 표준은 돈궤 — 옛 표기도 찾아지게
     if '반닫이' in nm or '반다지' in nm: hay |= {'반닫이', '반다지'}   # 도록은 반다지, 지금 이름은 반닫이
     rows.append({'b': SLUG, 'n': n, 'name': it['name'], 'hanja': '', 'cat': CAT, 'kind': it['kind'], 'era': '',
                  'size': (it['size'] + ' cm') if it['size'] else '', 'wood': '', 'owner': '예랑방·고목당 공동기획 · 1995', 'page': '',
