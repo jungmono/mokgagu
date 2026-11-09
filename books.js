@@ -4,7 +4,6 @@ window.MOKGAGU_BOOKS = [
   { path: 'heritage', title: '국가유산 목공예', desc: '국가유산포털 유물·생활공예·목공예 — 국보·보물·민속문화유산 등 지정 문화유산', items: 19, icon: 'ham', tone: 'ju', added: '2026-10-18', group: 'museum' },
   { path: 'ewha', title: '이화여대박물관 목기·목가구', desc: '이화여자대학교 박물관 소장 나무 유물 31점 — 소반·탁자·장·농·함·서안, 박물관 해설과 원본 사진', items: 31, icon: 'bandaji', tone: 'meok', added: '2026-10-23', group: 'museum' },
   { path: 'horim', title: '호림박물관 목기·목가구', desc: '호림박물관 소장품 나무 분류 13점 — 나전·화각·대모 함과 서안·경상', items: 13, icon: 'ham', tone: 'meok', added: '2026-10-23', group: 'museum' },
-  { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반다지·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09', group: 'museum' },
   { path: 'lee',    title: '이건희 기증 목칠공예',      desc: '국립중앙박물관 기증품 목록집(2023)',     items: 488, icon: 'bandaji', tone: 'jjok', added: '2026-10-15' },
   { path: 'seoulauction', title: '서울옥션 경매 목가구·목기', desc: '2026년 서울옥션 경매 19회 — 추정가·낙찰가 (사진은 서울옥션 연결)', items: 97, icon: 'ham', tone: 'cheong', added: '2026-10-24', group: 'auction' },
   { path: 'overseas', title: '해외경매 한국 목가구·칠기', desc: '크리스티·소더비·본햄스 2020~2026 — 나전칠기 중심, 추정가·낙찰가(수수료 포함)', items: 29, icon: 'ham', tone: 'cheong', added: '2026-10-24', group: 'auction' },
@@ -27,4 +26,5 @@ window.MOKGAGU_BOOKS = [
   { path: 'salm',   title: '목가구, 삶을 담다',        desc: '미리벌민속박물관·국립민속박물관 공동기획전 도록(2015)', items: 53,  icon: 'soban',   tone: 'hwang',  added: '2026-10-15' },
   { path: 'migam',  title: '목가구의 미감',            desc: '국립민속박물관·은평역사한옥박물관 공동기획전 도록(2016)',      items: 55,  icon: 'takja',   tone: 'ju',   added: '2026-10-15' },
   { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '북촌민예관 개관전 도록(2012)',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
+  { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반다지·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09' },
 ];
