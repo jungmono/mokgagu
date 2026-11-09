@@ -131,7 +131,7 @@ window.RK = (function () {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const regOf = (r) => { const m = ((r.name || '') + ' ' + (r.hanja || '')).match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
-  const pool = (window.BANDAJI_IDX || []).filter((r) => r.t && /반닫이|반다지/.test((r.name || '') + (r.hanja || '')) && regOf(r) && !/책\s*반다지|반다지장/.test(r.name || ''));
+  const pool = (window.BANDAJI_IDX || []).filter((r) => r.t && /반닫이|반다지/.test((r.name || '') + (r.hanja || '')) && regOf(r) && !/책\s*(반닫이|반다지)|(반닫이|반다지)장/.test(r.name || ''));
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
   const usable = pool.filter((r) => regs.includes(regOf(r)));

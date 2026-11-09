@@ -26,5 +26,5 @@ window.MOKGAGU_BOOKS = [
   { path: 'salm',   title: '목가구, 삶을 담다',        desc: '미리벌민속박물관·국립민속박물관 공동기획전 도록(2015)', items: 53,  icon: 'soban',   tone: 'hwang',  added: '2026-10-15' },
   { path: 'migam',  title: '목가구의 미감',            desc: '국립민속박물관·은평역사한옥박물관 공동기획전 도록(2016)',      items: 55,  icon: 'takja',   tone: 'ju',   added: '2026-10-15' },
   { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '북촌민예관 개관전 도록(2012)',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
-  { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반다지·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09' },
+  { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반닫이·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09' },
 ];

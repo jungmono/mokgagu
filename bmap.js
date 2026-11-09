@@ -85,7 +85,7 @@
 
   /* 반닫이(궤)여지도에 넣는 것: 반닫이, 그리고 이름이 궤·장·함으로 끝나는 것(김해궤→김해, 전주장→전주) */
   const clean = (n) => String(n || '').replace(/\([^)]*\)|[^가-힣]/g, '');
-  const KIND = /(반닫이|반다지|돈괴|궤|장|함)$/;   // 반다지·돈괴는 1995 예랑방·고목당 도록의 표기(= 반닫이·돈궤)
+  const KIND = /(반닫이|반다지|돈괴|돈괘|궤|장|함)$/;   // 반다지·돈괴는 1995 예랑방·고목당 도록의 표기, 돈괘는 지금 쓰는 이름(= 반닫이·돈궤)
   const isKind = (r) => /반닫이|반다지/.test(r.name + (r.hanja || '')) || (KIND.test(clean(r.name)) && !(r.b === 'soban' || /소반|장인|무형/.test(r.name)));
   const hayOf = (r) => { const q = /반닫이|반다지/.test(r.name + (r.hanja || '')) ? (r.q || '') : String(r.q || '').split(/\s+/).filter((w) => !/박물관|연구소|옥션|경매|도록|보고서/.test(w)).join(' '); return (r.name + (r.hanja || '') + q).replace(/나전/g, ''); };   // 나전주흑칠…의 '전주'는 지역이 아니다
   
