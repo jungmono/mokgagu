@@ -309,7 +309,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   const dRow = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
   let L = [], cur = -1;
   function open(i) {
-    const p = L[i]; if (!p) return; cur = i; const r = p.r, img = $('d-img'), jw = r.b === 'joseongwe';
+    const p = L[i]; if (!p) return; cur = i; const r = p.r, img = $('d-img'), jw = r.b === 'joseongwe'; dlg.dataset.cid = r.b + '/' + r.pid;
     img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
     img.src = 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg'; img.alt = r.name || '';
     $('d-info').innerHTML = `<div class="cat">${esc(jw ? '정대영, 『조선의 궤』' : (r.cat || ''))}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('지역', p.g)}${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('가로:세로', p.w && p.h ? (p.w / p.h).toFixed(2) + ' : 1' : '')}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? String(r.page).replace(/쪽$/, '') + '쪽' : '')}${dRow('비고', r.note || r.cap)}</dl>` +
@@ -330,5 +330,5 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   });
 })();
 </script>
-<script src="homebtn.js" defer></script><script src="dlgback.js" defer></script>
+<script src="share.js" defer></script><script src="likes.js?v=20261029e" defer></script><script src="homebtn.js" defer></script><script src="dlgback.js" defer></script>
 </body></html>
