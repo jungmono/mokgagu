@@ -2,73 +2,7 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet"><title>목공예품 백선전(예랑방·고목당 1995) — 조선의 목가구</title>
 <meta name="color-scheme" content="light">
-<style>
-:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--accent:#8a2f22;
-  --sans:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--serif:"Noto Serif KR","AppleMyungjo","Nanum Myeongjo","Batang",serif}
-*{box-sizing:border-box}
-html{background:#fff}
-body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:24px 16px 48px;word-break:keep-all}
-.wrap{max-width:1200px;margin:0 auto}
-.sa-top{max-width:1200px;margin:0 auto 18px}
-.sa-home{display:inline-flex;align-items:center;gap:10px;color:#111;background:#fff;border:2px solid #111;border-radius:999px;padding:8px 18px;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .15s,background .15s}
-.sa-home:hover{background:#f2f0ec;transform:translateY(-1px)}
-.sa-home img{height:34px;width:auto;display:block}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);margin:4px 0 8px}
-ul.lead{margin:0 0 20px;padding-left:20px;color:#3b3833;line-height:1.75;font-size:15px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0 0 22px}
-.tile{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
-.tile .k{font-size:13px;color:var(--muted)}.tile .v{font-family:var(--serif);font-size:28px;margin-top:4px}.tile .v small{font-size:14px;color:var(--muted);margin-left:2px}
-.tile .s{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
-button.tile{font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s}button.tile:hover{border-color:#bdb6aa}button.tile.on{border-color:#1d1b18;box-shadow:inset 0 0 0 1px #1d1b18}
-.zbar{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;z-index:3}.zbar button{width:34px;height:34px;border-radius:8px;border:0;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:17px;line-height:1}
-.zhint{position:absolute;left:10px;bottom:12px;font-size:11.5px;color:#6b665e;background:rgba(255,255,255,.85);border-radius:6px;padding:2px 7px;z-index:3}
-.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 16px}
-.filters .lab{font-size:13px;color:var(--muted);min-width:44px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;color:var(--fg);font-family:inherit}
-.chip:hover{border-color:#bdb6aa}.chip.on{background:#1d1b18;color:#fff;border-color:#1d1b18}.chip .n{opacity:.6;margin-left:4px;font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
-.card{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;padding:0;font:inherit;color:inherit;transition:box-shadow .15s,transform .15s}
-.card:hover{box-shadow:0 8px 22px rgba(0,0,0,.09);transform:translateY(-2px)}
-.card .ph{aspect-ratio:4/3;background:#f6f4f0;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.card .ph img{width:100%;height:100%;object-fit:contain}
-.card .ph .no{font-size:13px;color:var(--muted)}
-.card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
-.badge{display:inline-block;width:max-content;font-size:11.5px;font-weight:700;color:var(--accent);border:1px solid #e8cfc8;background:#fbf4f2;border-radius:6px;padding:2px 7px}
-.nm{font-family:var(--serif);font-size:18px;line-height:1.35}
-.hj{font-size:13px;color:var(--muted)}
-.mt{font-size:12.5px;color:var(--muted);line-height:1.5}
-.pc{font-size:11.5px;color:var(--muted)}
-p.note{font-size:13px;color:var(--muted);line-height:1.7;margin-top:28px}
-dialog{border:0;border-radius:14px;padding:0;width:min(1180px,96vw);max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-dialog::backdrop{background:rgba(20,18,15,.55)}
-.d-body{display:flex;gap:22px;padding:20px;max-height:calc(94vh - 60px);overflow:auto}
-.d-img{flex:1.35;min-width:0;display:flex;flex-direction:column;gap:10px}
-.d-main{position:relative;background:#f6f4f0;border-radius:10px;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;overscroll-behavior:contain}
-.d-main img{max-width:100%;max-height:66vh;object-fit:contain;display:block;transform-origin:0 0;user-select:none;-webkit-user-drag:none;cursor:zoom-in}.d-main.zoomed img{cursor:grab}.d-main.zoomed.drag img{cursor:grabbing}
-.d-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:18px}
-.d-arrow.l{left:10px}.d-arrow.r{right:10px}
-.d-cap{font-size:12.5px;color:var(--muted)}
-.d-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
-.d-strip button{flex:0 0 auto;width:64px;height:52px;border:2px solid transparent;border-radius:6px;padding:0;background:#f6f4f0;cursor:pointer;overflow:hidden}
-.d-strip button.on{border-color:#1d1b18}.d-strip img{width:100%;height:100%;object-fit:cover}
-.d-info{flex:1;min-width:0}
-.d-info h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:6px 0 2px}
-.d-info .hj{margin-bottom:12px}
-.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;margin:0 0 14px}
-.d-info dt{color:var(--muted)}.d-info dd{margin:0}
-.d-desc{font-size:14.5px;line-height:1.85;white-space:pre-line;color:#2e2b27}
-.d-en{font-size:13px;line-height:1.7;color:var(--muted);margin-top:12px}
-.d-en summary{cursor:pointer}
-.d-src{display:inline-block;margin-top:14px;font-size:13.5px;color:var(--accent)}
-.d-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line)}
-.d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
-@media (max-width:760px){.d-body{flex-direction:column;padding:14px}.d-main{min-height:220px}.d-main img{max-height:46vh}}
-.sa-foot{max-width:1200px;margin:40px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}
-.sa-foot .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}
-.sa-foot .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center}
-.sa-foot .ew-blk{background:#fff;color:#111}.sa-foot .ew-wht{background:#111;color:#fff}
-.sa-foot .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}
-</style><link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="catalog-ref.css?v=20261110"><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#111111">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
