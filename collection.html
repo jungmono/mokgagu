@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light">
-<title>거믄 · 힌의 소장품 — 조선의 목가구</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><title>거믄 · 힌의 소장품 — 조선의 목가구</title>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('emb');</script>
 <script>/* 비교하기에서 띄운 기물 창(embed): 이전·다음은 비교한 순서대로 부모(compare)가 넘겨 준다 */
 window.MOKGAGU_EMB = {
@@ -19,7 +17,7 @@ window.MOKGAGU_EMB = {
 <style>
 html.emb,html.emb body{background:transparent!important}html.emb body{visibility:hidden!important;overflow:hidden!important}html.emb dialog,html.emb dialog *{visibility:visible}html.emb #vw .acts{display:none}
 
-:root{--fg:#1d1b18;--muted:#7a736a;--line:#e6e1d9;--soft:#f6f4f0;--k:#151311;--brand:#4b55d6;--warn:#8a2f22}
+:root{--fg:#1d1b18;--muted:#7a736a;--line:#e6e1d9;--soft:#f6f4f0;--k:#151311;--brand:#111111;--warn:#8a2f22}
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff;color:var(--fg)}
 body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all}
@@ -157,7 +155,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="조선의 목가구">
-<script src="common.js?v=17" defer></script>
+<script src="common.js?v=18" defer></script>
 <link rel="stylesheet" href="roomhead.css?v=1"></head>
 <body>
 <div class="wrap" id="app"></div>
@@ -453,7 +451,7 @@ body.dragging::after{content:"사진을 놓으면 새 소장품으로 넣어요"
     [vi + 1, vi - 1].forEach(function (k) { var q = shown[k] && shown[k].photos && shown[k].photos[0]; if (q) imgURL(q.f, false); });
     $('v-strip').innerHTML = P.length > 1 ? P.map(function (p, k) { return '<button type="button" data-p="' + k + '" class="' + (k === vp ? 'on' : '') + '"><img data-th="' + (p.t ? 1 : 0) + '" data-pid="' + esc(p.t || p.f) + '" alt=""></button>'; }).join('') : '';
     var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
-    $('v-info').innerHTML = '<div style="font-size:13px;color:#4b55d6;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
+    $('v-info').innerHTML = '<div style="font-size:13px;color:#111;font-weight:700">' + owners(x.owner) + esc(x.kind || '소장품') + (st(x) !== '소장' ? ' <span class="stb in' + (st(x) === '판매함' ? ' done' : '') + '">' + st(x) + '</span>' : '') + '</div><h3>' + esc(x.name) + '</h3><dl>' +
       row('상태', st(x)) + (st(x) !== '소장' ? row('판매일', fmtD(x.sold)) + row(st(x) === '판매함' ? '판매가' : '받을 금액', won(x.sprice)) + row('판매처', x.sto) : '') + row('구입일', fmtD(x.bought)) + row('구입처', x.place) + row('구입가', won(x.price)) + row('크기', x.size) + row('연대', x.era) + row('재질·수종', x.wood) + row('비고', x.note) + row('감정·관찰', x.memo) + '</dl>' +
       '<div class="acts"><button class="btn k" id="v-edit">✎ 고치기</button><button class="btn del" id="v-del">지우기</button></div>' +
       (x.pending ? '<p class="note" style="margin-top:14px">이 기기에만 저장되어 있어요. 시트 스크립트를 새로 배포하면 자동으로 올라가요.</p>' : '');
