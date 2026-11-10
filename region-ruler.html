@@ -103,6 +103,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   /* 치수 글자 → 가로·높이. 이름표(가로·높이)가 있으면 그대로, 없으면 ×로 이은 세 수 중 앞 둘의 큰 쪽이 가로, 마지막이 높이 */
   function dims(s, b) {
     s = String(s || ''); let w, h;
+    if (/^순서 미확인/.test(s)) return null;
     const gs = (k) => { const out = []; const re = new RegExp('(?<!옆)' + k + '\\s*([0-9]+(?:\\.[0-9]+)?)', 'g'); let m; while ((m = re.exec(s))) out.push(+m[1]); return out; };
     if (/높이/.test(s) && /(가로|세로|너비|길이)\s*[0-9]/.test(s) && !/×/.test(s)) {
       /* 이름표 방식: 높이는 높이, 가로(앞면 너비)는 가로·세로 중 큰 쪽 / 길이 / 너비 중 가장 큰 값 */
@@ -114,7 +115,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
       else if (ne.length) w = Math.max(...ne);
     }
     else if (/높이/.test(s) && /×/.test(s)) { h = +(s.match(/높이\s*([0-9.]+)/) || [])[1]; const m = s.split('·').pop().match(/([0-9.]+)\s*×\s*([0-9.]+)/); if (m) w = Math.max(+m[1], +m[2]); }
-    else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { if (b === 'auction') { h = +m[1]; w = +m[3]; } else { w = Math.max(+m[1], +m[2]); h = +m[3]; } } }   /* 경매 도록은 높이×깊이×가로 순서 (사진으로 확인) */
+    else { const m = s.match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/); if (m) { w = Math.max(+m[1], +m[2]); h = +m[3]; } }   /* 모든 도록이 가로×깊이×높이 순서(아이옥션도 2026-11-10에 바꿈) */
     return w && h && w >= 40 && w <= 140 && h >= 25 && h <= 120 ? { w, h } : null;
   }
   const P = [];

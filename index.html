@@ -497,7 +497,7 @@ function search(raw) {
 let fa = {}, lastLabel = null;
 const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래'];
 const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? ({안동:'경상',진주:'경상',통영:'경상',밀양:'경상',울산:'경상',동래:'경상',나주:'전라',남원:'전라',전주:'전라',평양:'평안',박천:'평안',해주:'황해',개성:'경기',강화:'경기'}[m[0]] || m[0]) : ''; };
-const eraOf = (r) => { const e = r.era || ''; if (!e || /미상/.test(e)) return '시대 미상'; if (/고려/.test(e)) return '고려'; if (/(19|20)세기.*(20)세기|20세기|일제|근대/.test(e) && !/^조선 19세기$|^19세기$/.test(e)) return '19말~20세기'; if (/15세기|16세기|조선 전기/.test(e)) return '조선 전기'; if (/17세기|18세기|조선 후기/.test(e)) return '조선 후기'; if (/19세기/.test(e)) return '19세기'; return '조선(세기 미상)'; };
+const eraOf = (r) => { const e = r.era || ''; if (!e || /미상/.test(e)) return '시대 미상'; if (/고려/.test(e)) return '고려'; if (/(19|20)세기.*(20)세기|20세기|일제|근대/.test(e) && !/^조선 19세기$|^19세기$/.test(e)) return '19말~20세기'; if (/15세기|16세기|조선 전기/.test(e)) return '조선 전기'; if (/17세기|18세기|조선 후기/.test(e)) return '조선 후기'; if (/19세기/.test(e)) return '19세기'; return '조선'; };
 const woodsOf = (r) => (r.wood || '').split(/\s*[,·]\s*/).filter(Boolean);
 const FAC = [['지역', '지역', (r) => [regOf(r)].filter(Boolean)], ['시대', '시대', (r) => [eraOf(r)]], ['수종', '수종', woodsOf]];
 const facOk = (r, skip) => FAC.every(([k, , f]) => k === skip || !fa[k] || f(r).includes(fa[k]));
@@ -563,7 +563,7 @@ function openItem(i) {
   const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
-    <dl>${row('종류', r.kind)}${row('연대', r.era)}${row('치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
+    <dl>${row('종류', r.kind)}${row('연대', r.era)}${row(/^\s*[\d.]+×[\d.]+×[\d.]+/.test(r.size || '') ? '치수(가로×세로×높이)' : '치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
     ${askNotes(r.b + '/' + r.pid)}<a href="${r.b}.html"${document.documentElement.classList.contains('emb') ? ' target="_blank" rel="noopener"' : ''}>도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
   $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : seqLabel ? seqLabel + ' ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;

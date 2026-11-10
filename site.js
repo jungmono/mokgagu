@@ -144,7 +144,7 @@
       img.alt = r.name;
       var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
       dlg.querySelector('#st-info').innerHTML = '<h4>' + esc(r.name) + (r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h4>' +
-        '<dl>' + row('종류', r.kind) + row('연대', r.era) + row('치수', r.size) + row('재질', r.wood) + row('소장', r.owner) + row('도록', r.page ? r.page + '쪽' : '') + '</dl>';
+        '<dl>' + row('종류', r.kind) + row('연대', r.era) + row(/^\s*[\d.]+×[\d.]+×[\d.]+/.test(r.size || '') ? '치수(가로×세로×높이)' : '치수', r.size) + row('재질', r.wood) + row('소장', r.owner) + row('도록', r.page ? r.page + '쪽' : '') + '</dl>';
       dlg.querySelector('#st-pos').textContent = (i + 1) + ' / ' + hits.length;
       dlg.querySelector('#st-prev').disabled = i === 0; dlg.querySelector('#st-next').disabled = i === hits.length - 1;
       if (!dlg.open) dlg.showModal();

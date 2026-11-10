@@ -5,7 +5,7 @@ global.window={};require('../search.js');
     var pair = function (x, y, h) { return { w: Math.max(x, y), d: Math.min(x, y), h: h }; };
     var m = sz.match(/^\s*([\d.]+)\s*[×xX]\s*([\d.]+)\s*[×xX]\s*([\d.]+)/);
     if (m) { var A = +m[1], B = +m[2], C = +m[3];
-      return b === 'auction' ? pair(B, C, A) : pair(A, B, C); }
+      return pair(A, B, C); }
     var m2 = sz.match(/높이\s*([\d.]+)\s*[·,/]?\s*([\d.]+)\s*[×xX]\s*([\d.]+)/);
     if (m2) return pair(+m2[2], +m2[3], +m2[1]);
     var h = sz.match(/높이\s*([\d.]+)/); if (!h) return null;
