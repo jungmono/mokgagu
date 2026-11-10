@@ -76,7 +76,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
 <div class="card"><div class="in">
 <label>가로 (cm)<input id="w" type="number" inputmode="decimal" min="30" max="160"></label>
 <label>세로 (cm)<input id="h" type="number" inputmode="decimal" min="20" max="160"></label></div>
-<p class="hint">우리 언양반닫이 가로 102.5 · 세로 58.4</p></div>
+<p class="hint">우리 언양 반닫이 가로 102.5 · 세로 58.4</p></div>
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html" style="display:inline-block;padding:10px 4px">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
@@ -144,7 +144,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   /* 휴대폰(좁은 화면)에서는 그림 폭을 줄여 그려 눈금·비율 글자가 덜 작아지게 */
   const XM = 140, YM = 125, W = (window.innerWidth || 800) < 560 ? 470 : 700, L = 44, B = 36, T = 34, R = 12, S = (W - L - R) / XM, H = Math.round(T + B + YM * S);
   const sx = (v) => L + v * S, sy = (v) => H - B - v * S;
-  const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양반닫이 (compare.js 의 기준과 같은 값) */
+  const REFM = { w: 102.5, h: 58.4 };   /* 소장 언양 반닫이 (compare.js 의 기준과 같은 값) */
   const RAYS = [1, 1.25, 1.5, 1.75, 2];   /* 가로:세로 */
   const PS = P.filter((p) => regs.includes(p.g));
   const DG = PS.map((p) => Math.hypot(p.w, p.h)).sort((x, y) => x - y), R1 = Math.round(qs(DG, 1 / 3)), R2 = Math.round(qs(DG, 2 / 3));   /* 크기 경계: 자료를 셋으로 나눈 값 */
@@ -177,7 +177,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     const L = list.slice().sort((x, y) => y.h - x.h || x.g.localeCompare(y.g));
     const keys = L.map((p) => p.r.b + '/' + p.r.pid);
     const cards = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-band="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div><span class="rg" style="background:${COL[p.g] || '#888'}">${p.g}</span> ${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }).join('');
-    box.innerHTML = `<div class="bx-h"><b>크기 구간으로 보기</b><small>세로 줄·가로 칸을 누르면 그 구간의 반닫이가 나옵니다. 빨간 테두리 칸 = ${$('w').value && $('h').value ? '넣은 치수' : '우리 언양반닫이'}</small></div><div class="bx-wrap">${t}</div><p style="margin:12px 0 0;font-weight:700">${lab} <span style="color:#8a7f66;font-weight:400">${L.length}점</span></p>` + (L.length ? `<div class="bl">${cards}</div>` : '<p class="sub">이 구간에는 반닫이가 없습니다.</p>');
+    box.innerHTML = `<div class="bx-h"><b>크기 구간으로 보기</b><small>세로 줄·가로 칸을 누르면 그 구간의 반닫이가 나옵니다. 빨간 테두리 칸 = ${$('w').value && $('h').value ? '넣은 치수' : '우리 언양 반닫이'}</small></div><div class="bx-wrap">${t}</div><p style="margin:12px 0 0;font-weight:700">${lab} <span style="color:#8a7f66;font-weight:400">${L.length}점</span></p>` + (L.length ? `<div class="bl">${cards}</div>` : '<p class="sub">이 구간에는 반닫이가 없습니다.</p>');
     box.onclick = (e) => {
       const b = e.target.closest('button[data-h]'); if (b && !b.disabled) { sel = { h: +b.dataset.h, w: +b.dataset.w }; bands(cw, ch); return; }
       if (e.target.closest('a[data-band]')) window.__bandKeys = keys.slice();
@@ -212,7 +212,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     picked = near.map((o) => o.i); showPick(false);
   }
   /* 지역별 비례 띠 — 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026)의 그림 1을 이 화면 자료로 다시 그린다.
-     띠 = 가운데 절반(사분위 범위), 세로 막대 = 중앙값, 붉은 점선 = 넣은 치수(없으면 우리 언양반닫이)의 가로:세로 */
+     띠 = 가운데 절반(사분위 범위), 세로 막대 = 중앙값, 붉은 점선 = 넣은 치수(없으면 우리 언양 반닫이)의 가로:세로 */
   const ORD = ['평안', '황해', '함경', '강원', '경기', '충청', '전라', '경상', '제주'];
   const BINS = [[0, 1.15, '1.15 미만'], [1.15, 1.3, '1.15~1.3'], [1.3, 1.5, '1.3~1.5'], [1.5, 99, '1.5 이상']];
   function stripCard(ratio, own) {
@@ -233,7 +233,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     const bars = top.map(([g, n]) => `<div style="display:grid;grid-template-columns:3em 1fr 2.5em;gap:8px;align-items:center;font-size:13.5px"><span>${g}</span><i style="display:block;height:10px;border-radius:99px;background:${COL[g]};width:${Math.round(n / mx * 100)}%"></i><span style="color:#6d6551">${n}</span></div>`).join('');
     const word = bi === 3 ? '경상 반닫이에 많은 비례' : bi === 2 ? '전라·경상·경기에 걸친 비례' : '여러 지역에 걸친 비례 — 비례만으로는 가리지 않음';
     return `<div class="card"><b>지역별 가로:세로</b> <small style="color:#8a7f66">띠는 가운데 절반, 검은 막대는 중앙값</small>${s}` +
-      `<p style="margin:10px 0 6px;font-size:15px">${own ? '넣은 치수' : '우리 언양반닫이'} <b>${ratio.toFixed(2)} : 1</b> → <b>${BINS[bi][2]}</b> 구간 · ${word}</p>` +
+      `<p style="margin:10px 0 6px;font-size:15px">${own ? '넣은 치수' : '우리 언양 반닫이'} <b>${ratio.toFixed(2)} : 1</b> → <b>${BINS[bi][2]}</b> 구간 · ${word}</p>` +
       `<p class="hint" style="margin:0 0 6px">이 구간 반닫이 ${inb.length}점의 지역</p>${bars}` +
       `<p class="hint">자료: 도록에 지역과 치수가 적힌 반닫이 ${P.length}점${NJ ? `(『조선의 궤』 ${NJ}점 포함 — 가족에게만 보임)` : ''}. 책반닫이·두 도록에 거듭 실린 기물은 뺐습니다. 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026)와 같은 기준이며 도록이 늘면 숫자도 함께 바뀝니다.</p></div>`;
   }
@@ -267,10 +267,10 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     s += '</g>';
     RAYS.forEach((k) => { const x = Math.min(XM, YM * k), y = x / k, top = x < XM; s += `<line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(x)}" y2="${sy(y)}" stroke="#555" stroke-width="1.2"/><text x="${sx(x)}" y="${sy(y) - (top ? 8 : 6)}" text-anchor="${top ? 'middle' : 'end'}" font-size="13" font-weight="700" fill="#333">${k} : 1</text>`; });
     PS.forEach((p, i) => { s += `<circle class="pt" data-i="${i}" cx="${sx(p.w)}" cy="${sy(p.h)}" r="4.5" fill="${COL[p.g]}" fill-opacity=".6"><title>${p.g} · ${esc(p.r.name)} ${p.w}×${p.h}</title></circle>`; });
-    s += `<text x="${sx(REFM.w / 2)}" y="${sy(REFM.h / 2)}" text-anchor="middle" font-size="13" fill="#d12b2b">우리 언양반닫이 앞면 (${REFM.w} × ${REFM.h})</text><circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/>`;
+    s += `<text x="${sx(REFM.w / 2)}" y="${sy(REFM.h / 2)}" text-anchor="middle" font-size="13" fill="#d12b2b">우리 언양 반닫이 앞면 (${REFM.w} × ${REFM.h})</text><circle cx="${sx(REFM.w)}" cy="${sy(REFM.h)}" r="8" fill="#d12b2b" stroke="#fff" stroke-width="2"/>`;
     if (own) s += `<circle cx="${sx(Math.min(w, XM))}" cy="${sy(Math.min(h, YM))}" r="9" fill="#fff" stroke="#111" stroke-width="3"/>`;
     s += '</svg><div class="leg" id="leg">' + regs.map((g) => `<button type="button" data-reg="${g}" aria-pressed="${selReg === g}"><i style="background:${COL[g]}"></i>${g} ${P.filter((p) => p.g === g).length}</button>`).join('') + '<span class="lh">지역을 누르면 그 지역 점과 반닫이가 나옵니다</span></div>';
-    s += `<p class="sub" style="margin:6px 0 0;font-size:13px;line-height:1.6;text-align:left">점 하나는 반닫이 앞면의 오른쪽 위 모서리입니다. 0에서 뻗은 <b>직선</b> 위의 반닫이는 크기가 달라도 생김새(가로 : 세로)가 같고 아래쪽 직선일수록 납작합니다. <b>점선 호</b>는 0에서 모서리까지 거리가 같은 선으로 바깥일수록 큽니다(경계 ${R1}cm · ${R2}cm, 자료를 셋으로 나눈 값). <b>노란 칸</b>은 ${own ? '넣은 치수' : '우리 언양반닫이'}가 들어 있는 칸 — <b>${sizeOf(w, h)} 크기 · ${bandTxt(bandOf(w, h))}</b></p>`;
+    s += `<p class="sub" style="margin:6px 0 0;font-size:13px;line-height:1.6;text-align:left">점 하나는 반닫이 앞면의 오른쪽 위 모서리입니다. 0에서 뻗은 <b>직선</b> 위의 반닫이는 크기가 달라도 생김새(가로 : 세로)가 같고 아래쪽 직선일수록 납작합니다. <b>점선 호</b>는 0에서 모서리까지 거리가 같은 선으로 바깥일수록 큽니다(경계 ${R1}cm · ${R2}cm, 자료를 셋으로 나눈 값). <b>노란 칸</b>은 ${own ? '넣은 치수' : '우리 언양 반닫이'}가 들어 있는 칸 — <b>${sizeOf(w, h)} 크기 · ${bandTxt(bandOf(w, h))}</b></p>`;
     let v = '';
     if (ok) {
       const ratio = w / h, K = 15;   /* 가로:세로 = ratio : 1 */
@@ -283,7 +283,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
       const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
       window.__seeKeys = [];
       const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
-      v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
+      v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양 반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
       v += stripCard(ratio, own);
       v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
       v += `<div class="card"><b>크기가 가장 닮은 반닫이</b><div class="near">${cards(nearS, (p) => p.w + '×' + p.h)}</div></div>`;

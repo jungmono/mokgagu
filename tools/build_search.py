@@ -20,7 +20,7 @@ for m in re.finditer(r"\{ path: '(\w+)',\s*title: '([^']*)',\s*desc: '([^']*)'",
 PROV = r'(경기|강원|충청|전라|경상|황해|평안|함경|제주)(남|북)?도'
 def variants(s):
     s = re.sub(r'\s+', '', s or '')
-    a = re.sub(PROV, r'\1\2', s)          # 강원도반닫이 → 강원반닫이, 경상남도 → 경상남
+    a = re.sub(PROV, r'\1\2', s)          # 강원도 반닫이 → 강원반닫이, 경상남도 → 경상남
     b = re.sub(PROV, r'\1', s)            # 경상남도 → 경상
     return {s, a, b}
 

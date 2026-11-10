@@ -136,8 +136,8 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     h += '<tr><th class="rh"></th>' + cols.map(function (c) { if (c.k.indexOf('col/') === 0) return '<td><a class="lk" href="collection.html#open=' + encodeURIComponent(c.k.slice(4)) + '">소장품에서 보기 →</a></td>'; return '<td><a class="lk" href="index.html#see=' + encodeURIComponent(c.r.b || c.k.split('/')[0]) + '/' + encodeURIComponent(c.r.pid || c.k.split('/').slice(1).join('/')) + '">도록에서 보기 →</a></td>'; }).join('') + '</tr>';
     h += '</table>';
     /* 앞모습 비율을 같은 눈금으로 — 표 위에 크게 */
-    /* 크기 기준: 서안·소반·안궤류 → 소장 안궤, 반닫이·책장·궤류 → 소장 언양반닫이. 기준은 항상 빨간색 */
-    var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '언양반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
+    /* 크기 기준: 서안·소반·안궤류 → 소장 안궤, 반닫이·책장·궤류 → 소장 언양 반닫이. 기준은 항상 빨간색 */
+    var REFS = { a: { name: '소장 안궤', dm: { w: 72.3, d: 33, h: 44.1 } }, b: { name: '언양 반닫이', dm: { w: 102.5, d: 49.8, h: 58.4 } } };
     var kinds = cols.map(function (c) { return (c.r.kind || '') + ' ' + (c.name || ''); }).join(' ');
     var rk = /서안|경상(?!도)|소반|안궤|사방탁자/.test(kinds) ? 'a' : /반닫이|책장|책궤|궤|장|농/.test(kinds) ? 'b' : '';
     var RED = '#c8102e', CL = ['#1f5f3a', '#2b5d8a', '#b07a12', '#6b3f8c', '#2a8a8a'], figH = '', fi = 0;
@@ -201,7 +201,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
         R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px">' + svg + lg + '</div><div style="font-size:11.5px;color:#777;text-align:center;margin-top:2px">그림을 끌면 돌려 보고, 휠·두 손가락으로 크게·작게 · 두 번 누르면 처음으로</div>' + (f3.length < fc.length ? '<div style="font-size:11px;color:#777;text-align:center">깊이 정보가 없는 ' + (fc.length - f3.length) + '점은 빠졌어요</div>' : '') + '</div>';
       } else R = '<div class="fp"><div class="fs">입체 겹쳐 보기</div><div style="font-size:12px;color:#777;text-align:center;padding:30px 6px">깊이(옆너비) 정보가 있는 기물이 둘 이상이어야 그려져요</div></div>';
       var leg = '';
-      figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button type="button" id="fbreset" style="flex:none;border:1.5px solid #111;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">초기화</button><div style="flex:1;text-align:center;font-size:11px;color:#777">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div><span style="flex:none;width:58px"></span></div></div>';
+      figH = '<div class="figbox" id="fb" style="touch-action:manipulation"><div class="figt">크기를 같은 눈금으로 놓으면' + (rk ? ' <small style="font-weight:400;color:' + RED + '">· 빨간색은 우리 ' + (rk === 'a' ? '안궤' : '언양 반닫이') + '(기준)</small>' : '') + '</div><div class="fg3">' + L + M + R + '</div>' + leg + '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button type="button" id="fbreset" style="flex:none;border:1.5px solid #111;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">초기화</button><div style="flex:1;text-align:center;font-size:11px;color:#777">눈금은 50cm 간격입니다. 기물을 누르면 켜지고 한 번 더 누르면 꺼집니다(여러 개 가능). 빨간 기준 기물도 같은 방식입니다.</div><span style="flex:none;width:58px"></span></div></div>';
       window.__fc = fc;
     }
     h += '<p class="note">크기는 도록에 적힌 글자를 읽어서 가로·깊이·높이로 나눈 것이고, 도록마다 적는 순서가 달라 도록별 규칙(아이옥션은 높이×깊이×가로)으로 읽고, 앞면이 긴 쪽을 가로로 봅니다. 읽지 못한 것은 「크기(표기)」 줄에 원문 그대로 둡니다. 앞모습 그림은 같은 눈금으로 그린 대략의 비율입니다.</p>';
