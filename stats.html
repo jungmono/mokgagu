@@ -442,7 +442,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
       '<select id="qcid"><option value="">기물 붙이기 (안 해도 돼요)</option>' + opts + '</select></div>' +
       '<textarea id="qtext" placeholder="선생님께 여쭤볼 것을 적어 주세요 — 예: 전라도 반닫이와 경상도 반닫이의 장석 차이는?">' + esc(draft) + '</textarea>' +
       '<div class="mp-row" id="qpics">' + window.MOKGAGU_PHOTO.thumbs(qpics, 'qform', { del: true }) + '<button type="button" class="mp-add" id="qpick"' + (qbusy ? ' disabled' : '') + '><b>＋</b>사진 추가</button>' + (qbusy ? '<span class="mp-busy">' + esc(qbusy) + '</span>' : '<span class="hint">앨범·카메라에서 여러 장 · 최대 6장 · 질문에 사진을 붙이면 선생님께 바로 보여 드릴 수 있어요</span>') + '</div>' +
-      '<div class="qrow" style="margin:8px 0 0"><span class="hint">사진 창의 「✎ 선생님께 여쭤보기」로도 넣을 수 있고, 기물 이야기에 적은 질문(?, 궁금, 여쭤볼 것…)은 저절로 들어와요. 기물 사진은 이 화면에서 바로 열리고, 손가락으로 좌우로 밀면 이 수업 질문의 다음 기물로 넘어가요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
+      '<div class="qrow" style="margin:8px 0 0"><span class="hint">기물 이야기에 적은 질문(?, 궁금, 여쭤볼 것…)은 저절로 들어와요. 기물 사진은 이 화면에서 바로 열리고, 손가락으로 좌우로 밀면 이 수업 질문의 다음 기물로 넘어가요.</span><button type="button" class="go" id="qgo">질문에 넣기</button></div></div>';
     fut.forEach(function (k) {
       var L = groups[k] || [], g = askSeq(k, L);
       h += '<div class="cls' + (k === nx ? ' now' : '') + '"><h3>' + mdw(k) + ' 수업 <small>' + (k === nx ? dday(k) + ' · ' : '') + L.length + '개</small></h3>' +
