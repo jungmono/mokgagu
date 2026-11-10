@@ -28,4 +28,5 @@ window.MOKGAGU_BOOKS = [
   { path: 'kwon',   title: '권옥연 화백 구장 조선목기', desc: '북촌민예관 개관전 도록(2012)',       items: 50,  icon: 'seoan',   tone: 'meok',   added: '2026-10-15' },
   { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반닫이·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09' },
   { path: 'enar',   title: '조선의 목공예 예나르', desc: '『조선의 목공예 — 부엌 세간과 사랑방의 기물』 1994 — 반닫이·장·소반·문방 107점, 크기 표기', items: 107, icon: 'bandaji', tone: 'hwang', added: '2026-11-10' },
+  { path: 'dugaheon', title: '화가가 애호하는 조선시대 목가구', desc: '두가헌 갤러리 「여섯 화가의 소장 가구」 — 반닫이·장·탁자·서안·문방 64점, 크기 표기', items: 64, icon: 'bandaji', tone: 'meok', added: '2026-11-10' },
 ];

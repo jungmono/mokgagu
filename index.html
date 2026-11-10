@@ -371,7 +371,7 @@ const MOON = '<svg viewBox="0 0 60 60" width="42" height="42" aria-label="거믄
 const isNew = (d) => d.added === latest.added && newest.length < DASHBOARDS.length;
 /* 도록 서가 */
 document.getElementById('bk-n').textContent = `${MAIN.length}권 · 옆으로 밀어서 보기`;
-const BKSHORT = { lee: '이건희', munui: '전통무늬', yakjang: '약장', wonju: '나전', soban: '소반장', busan: '부산박물관', yangsan: '양산 반닫이', minsok: '민속유물이해', namu: '나무의 이치', salm: '삶을 담다', migam: '목가구의 미감', kwon: '권옥연', yerang: '예랑방', enar: '예나르' };
+const BKSHORT = { lee: '이건희', munui: '전통무늬', yakjang: '약장', wonju: '나전', soban: '소반장', busan: '부산박물관', yangsan: '양산 반닫이', minsok: '민속유물이해', namu: '나무의 이치', salm: '삶을 담다', migam: '목가구의 미감', kwon: '권옥연', yerang: '예랑방', enar: '예나르', dugaheon: '두가헌' };
 document.getElementById('bk-shelf').innerHTML = MAIN.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}"><span class="cv t-${d.tone}"><img src="covers/${d.path}.jpg?v=2" alt="${d.title} 표지" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{innerHTML:svg('${d.icon}')}))"></span>${isNew(d) ? '<span class="new">NEW</span>' : ''}<div class="bd"></div><div class="lb">${BKSHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}건</small></div></a>`).join('');
 document.querySelectorAll('.bk-arr').forEach((btn) => btn.addEventListener('click', () => { const sh = document.getElementById('bk-shelf'); sh.scrollBy({ left: Number(btn.dataset.d) * sh.clientWidth * 0.8, behavior: 'smooth' }); }));
 document.getElementById('bk-all').addEventListener('click', (e) => { const box = document.getElementById('bk-box'); const o = box.classList.toggle('open'); e.currentTarget.textContent = o ? '한 줄로 접기' : '모두 펼쳐 보기'; });
@@ -388,7 +388,7 @@ function buildTools() {
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
-const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
+const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
 document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}<button type="button" class="all" data-all="${k}">전체 ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 보기 →</button></div></div>`).join('');
 document.getElementById('hm-folds').addEventListener('click', (e) => { const b = e.target.closest('[data-all]'); if (!b) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(b.dataset.all); });
