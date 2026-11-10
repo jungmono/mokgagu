@@ -18,6 +18,7 @@ const fs = require('fs'), path = require('path'), cp = require('child_process');
 const ROOT = path.join(__dirname, '..');
 const MARK = path.join(__dirname, 'std_applied.json');
 const WRITE = process.argv.includes('--write');
+const NUMBERED_ONLY = process.argv.includes('--numbered-only');   /* 1단계(2026-11-10)에서 빠졌던 ①②③ 묶음만 */
 
 const ERA = new Set(['조선시대', '조선 시대', '조선(세기 미상)', '조선 (세기 미상)', '조선(세기미상)']);
 const stdEra = (e) => (ERA.has(e) ? '조선' : e);
@@ -30,8 +31,18 @@ const SETS = [['가로', '세로', '높이'], ['가로', '옆너비', '높이'],
 
 function stdSize(book, s) {
   if (typeof s !== 'string' || !s) return s;
+  if (NUMBERED_ONLY && !/^\s*①/.test(s)) return s;
   if (book === 'auction') {
     if (/^순서 미확인/.test(s)) return s;
+    /* 같은 종류 여러 점을 ①②③으로 적은 글자(「①79.5×40.5×89.5, ②79.5×41×90」): 각 점을 같은 규칙으로 바꾸고,
+       하나라도 가로<깊이가 되면 통째로 「순서 미확인」으로 둔다 */
+    if (/^\s*①/.test(s)) {
+      const parts = s.split(/,\s*/);
+      if (!parts.every((x) => /^[①②③④⑤]\d+(?:\.\d+)?×\d+(?:\.\d+)?×\d+(?:\.\d+)?\s*(cm)?\s*$/.test(x.trim()))) return s;
+      const conv = parts.map((x) => { const m = x.trim().match(/^([①②③④⑤])(\d+(?:\.\d+)?)×(\d+(?:\.\d+)?)×(\d+(?:\.\d+)?)(\s*cm)?\s*$/); return { m, ok: +m[4] >= +m[3] }; });
+      if (!conv.every((c) => c.ok)) return '순서 미확인 · ' + s.trim();
+      return conv.map((c) => c.m[1] + c.m[4] + '×' + c.m[3] + '×' + c.m[2] + (c.m[5] || '')).join(', ');
+    }
     const m = s.match(/^(\s*)(\d+(?:\.\d+)?)×(\d+(?:\.\d+)?)×(\d+(?:\.\d+)?)(.*)$/);
     if (!m) return s;
     const rest = m[5];
@@ -63,7 +74,8 @@ function stdSize(book, s) {
 module.exports = { stdSize, stdEra };
 if (require.main !== module) return;
 
-if (fs.existsSync(MARK) && WRITE) { console.error('이미 적용했습니다(tools/std_applied.json). 두 번 돌리면 순서가 다시 뒤집힙니다.'); process.exit(1); }
+const done = fs.existsSync(MARK) ? JSON.parse(fs.readFileSync(MARK, 'utf8')) : null;
+if (WRITE && done && (!NUMBERED_ONLY || done.numbered)) { console.error('이미 적용했습니다(tools/std_applied.json). 두 번 돌리면 순서가 다시 뒤집힙니다.'); process.exit(1); }
 
 const stat = { era: 0, size: {}, files: 0 };
 const samples = {};
@@ -105,5 +117,5 @@ for (const f of fs.readdirSync(ROOT).filter((x) => x.endsWith('.html'))) {
 
 console.log('화면 파일 ' + stat.files + '개 · 연대 ' + stat.era + '곳 · 치수 ' + JSON.stringify(stat.size));
 for (const b in samples) console.log(' ' + b + '\n   ' + samples[b].join('\n   '));
-if (WRITE) fs.writeFileSync(MARK, JSON.stringify({ at: new Date().toISOString().slice(0, 10), size: stat.size, era: stat.era }, null, 1) + '\n');
+if (WRITE) fs.writeFileSync(MARK, JSON.stringify(NUMBERED_ONLY ? Object.assign(done || {}, { numbered: true }) : { at: new Date().toISOString().slice(0, 10), size: stat.size, era: stat.era }, null, 1) + '\n');
 else console.log('\n(미리보기 — 고치려면 --write)');
