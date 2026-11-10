@@ -129,5 +129,16 @@ s = s[:a] + ("<dt>크기</dt><dd>${esc(i.size ? i.size + ' cm' : '— (도록 �
              "${i.memo ? `<dt>메모</dt><dd>${esc(i.memo)}</dd>` : ''}"
              "<dt>도록 번호</dt><dd>${i.no}</dd><dt>출처</dt><dd>" + BOOK + "</dd>") + s[b:]
 rep("`연필 이름은 정대영 선생님이 도록에 직접 써 넣으신 것이며, 도록에 인쇄된 이름은 창 안에 함께 적었습니다.`", "`사진으로 찍은 도록이라 도록 번호 63~66은 빠져 있고, 사진은 회색 바탕 부분만 잘랐습니다.`")
+# 공용 photozoom.js(좌우 밀기·확대)로 교체 + 사진 주소 캐시 갱신
+import re as _re
+_a = s.index('/* 사진만 확대'); _b = s.index("dlg.addEventListener('close', zReset);") + len("dlg.addEventListener('close', zReset);")
+s = s[:_a] + """/* 사진 확대·끌기·좌우로 밀어 넘기기 — 다른 도록과 같은 공용 photozoom.js */
+if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: document.getElementById('d-main'),
+  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1 });""" + s[_b:]
+s = s.replace('<script src="common.js', '<script src="photozoom.js?v=20261110"></script>\n<script src="common.js', 1)
+s = s.replace("  zReset();\n", "", 1)
+s = _re.sub(r'<div class="zbar">.*?</div>', '', s, flags=_re.S)
+s = s.replace('overflow:hidden;touch-action:none;', 'overflow:hidden;', 1)
+s = _re.sub(r'(mokgagu-photos/photos/dugaheon/D\d+\.jpg)(?!\?)', r'\1?v=20261110', s)
 open('dugaheon.html', 'w', encoding='utf-8').write(s)
 print(len(items), '점', {g: sum(1 for i in items if i['kind'] == g) for g in GRPS})
