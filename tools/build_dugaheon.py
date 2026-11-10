@@ -91,8 +91,8 @@ im = ImageOps.exif_transpose(Image.open(COVER)).convert('RGB'); im.thumbnail((60
 items, ds, photos = [], [], []
 for n, (no, pg, name, hanja, en, era, size, kind, memo) in enumerate(R, 1):
     id_ = 'D%02d' % no
-    im = Image.open(os.path.join(CROPS, '%d.jpg' % pg)).convert('RGB'); im.thumbnail((1800, 1800)); w, h = im.size
-    im.save(os.path.join(PHOTOS, id_ + '.jpg'), quality=82, optimize=True)
+    im = Image.open(os.path.join(CROPS, '%d.jpg' % pg)).convert('RGB'); im.thumbnail((2800, 2800)); w, h = im.size
+    im.save(os.path.join(PHOTOS, id_ + '.jpg'), quality=90, optimize=True)
     t = im.copy(); t.thumbnail((420, 420)); t.save('thumbs/dugaheon/%d.jpg' % n, quality=80, optimize=True)
     items.append({'id': id_, 'kind': kind, 'name': name, 'hanja': hanja, 'cat': en, 'era': era, 'size': size, 'memo': memo, 'no': no,
                   'pics': [{'src': HOST + id_ + '.jpg', 'w': w, 'h': h}]})
