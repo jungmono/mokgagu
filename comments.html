@@ -106,7 +106,7 @@ select{font:inherit;font-size:13.5px;border:1px solid #d9d4cc;border-radius:8px;
     var sel = $('f-book'), have = {};
     items.forEach(function (c) { have[c.cid.split('/')[0]] = 1; });
     var cur = st.book;
-    sel.innerHTML = '<option value="">모든 도록</option>' + Object.keys(have).sort().map(function (b) { return '<option value="' + b + '"' + (b === cur ? ' selected' : '') + '>' + C.esc(BOOK[b] || b) + '</option>'; }).join('');
+    sel.innerHTML = '<option value="">모든 도록</option>' + Object.keys(have).sort().map(function (b) { return '<option value="' + C.esc(b) + '"' + (b === cur ? ' selected' : '') + '>' + C.esc(BOOK[b] || b) + '</option>'; }).join('');
   }
   function card(c) {
     var r = IDX[c.cid] || {}, b = c.cid.split('/')[0];

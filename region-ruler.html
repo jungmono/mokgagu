@@ -79,16 +79,7 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
 <div id="out"><div class="card"><p class="sub" style="margin:0">자료를 불러오는 중…</p></div></div>
 <p class="note">비례만으로 지역을 정할 수는 없어요. 장석·나무·짜임을 함께 보세요(<a href="jangseok-find.html" style="display:inline-block;padding:10px 4px">장석으로 지역 찾기</a>). 도록에 지역이 적힌 반닫이만 셉니다.</p>
 </main>
-<script>/* (반닫이여지도와 같은 코드) 가족(가족 암호 + 거믄·힌)일 때만 『조선의 궤』 반닫이를 비례 자에 더한다. 도판은 공개 저장소에 평문으로 두지 않고 가족 암호로 잠근 study/joseongwe.bin 에서 풀어 쓴다(메모리에서만). 벗·모르는 분에게는 메뉴가 나오지 않는다 */
-window.MOKGAGU_READY=(async function(){try{var g=function(k){return localStorage.getItem(k)||''},w=g('mokgagu_lk_shared')==='1'?(sessionStorage.getItem('mokgagu_lk_who_s')||''):g('mokgagu_cm_who'),code=g('mokgagu_cm_code');
-if(!(g('mokgagu_cm_fam')==='1'&&code&&(w==='거믄'||w==='힌')))return;
-var b64=function(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u};
-var meta=await fetch('study/salt.json',{cache:'no-store'}).then(function(r){return r.json()});
-var base=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']);
-var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(meta.salt),iterations:meta.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
-var buf=new Uint8Array(await fetch('study/joseongwe.bin',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}));
-var o=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12)},key,buf.slice(12))));
-new Function(o.j)();new Function(o.g)();}catch(e){}})();</script>
+<script src="joseongwe.js"></script><script>window.MOKGAGU_READY=Promise.resolve();/* 『조선의 궤』는 2026-11-11부터 누구나 본다 */</script>
 <dialog id="dlg" aria-label="기물 사진"><div class="d-body"><div class="d-img"><img id="d-img" alt=""></div><div class="d-info" id="d-info"></div></div>
 <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos"></span><span class="d-r"><button id="d-next">다음 →</button><button id="d-close">닫기</button></span></div></dialog>
 <script src="photozoom.js"></script>
@@ -120,13 +111,14 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   }
   const P = [];
   (window.BANDAJI_IDX || []).forEach((r) => {
+    if (r.b === 'joseongwe') return;   /* 『조선의 궤』는 아래에서 따로(겹치지 않게) */
     if (!/반닫이|반다지/.test((r.name || '') + (r.hanja || ''))) return;
     if (/(반닫이|반다지)\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name || '')) return;   /* 반닫이장·반닫이 탁자 등 다른 가구 제외 */
     if (/책\s*(반닫이|반다지)|冊/.test((r.name || '') + (r.hanja || ''))) return;   /* 책반닫이는 옷 반닫이와 쓰임·비례가 달라 뺌(논문과 같은 기준) */
     const g = regOf(r), d = dims(r.size, r.b); if (g && d) P.push(Object.assign({ g, r }, d));
   });
   { const inN = new Set(P.filter((p) => p.r.b === 'nmk').map((p) => String(p.r.pid))); for (let i = P.length - 1; i >= 0; i--) if (P[i].r.nmk && inN.has(P[i].r.nmk)) P.splice(i, 1); }   /* 이건희 ↔ 국립중앙박물관 같은 기물은 한 번만 */
-  /* 가족이면 『조선의 궤』 반닫이도 더한다: 치수는 가로×깊이×높이. 족대 포함·제외 두 값을 함께 적은 것(괄호)·윗닫이는 뺌(논문과 같은 기준) */
+  /* 『조선의 궤』 반닫이도 더한다: 치수는 가로×깊이×높이. 족대 포함·제외 두 값을 함께 적은 것(괄호)·윗닫이는 뺌(논문과 같은 기준) */
   const JDO = { haeju: '황해', gaeseong: '경기', ganghwa: '경기', gyeongdo: '경기', namhan: '경기', geumsan: '충청', sangju: '경상', yecheon: '경상', eonyang: '경상', miryang: '경상', yangsan: '경상', jinju: '경상', gimhae: '경상', namhae: '경상', tongyeong: '경상', iksan: '전라', jeonju: '전라', namwon: '전라', naju: '전라', yeonggwang: '전라', jangheung: '전라', jeju: '제주' };
   let NJ = 0;
   (window.JOSEONGWE || []).forEach((r) => {

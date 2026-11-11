@@ -3,6 +3,7 @@
  *  - 거믄·힌 : 가족 암호가 있어야 쓴다. 기본은 비공개(가족만 봄), 공개로 바꾸면 누구나 본다.
  *  - 벗     : 암호 없이 쓴다. 늘 공개. 자기 글은 그 기기에서만 지울 수 있다(key).
  * 시트: '목가구코멘트' > '코멘트' 탭.  배포: 웹 앱 · 실행 사용자 나 · 액세스 모든 사용자
+ * v25: 기물 번호(cid) 형식 검사 — '도록/번호' 꼴이 아니거나 <>"'& 가 든 값은 받지 않는다(이야기·좋아요·기록). 재배포 필요.
  * v23: 소장품 작은 사진을 한 번에 받기(action=cimgs) — 목록 첫 화면 속도. 재배포 필요.
  * v24: 벗이 나란히 비교한 기물도 '로그' 탭에 남긴다(logPost_ guest 에 compare 추가).
  * v22: 벗 이야기 알림 메일 — 벗이 기물 이야기를 남기면 NOTIFY_TO(비우면 스크립트 주인)에게 메일. 하루 30통까지.
@@ -41,6 +42,8 @@ function sheet_() {
   if (sh.getRange(1, 9).getValue() !== 'public' || sh.getRange(1, 11).getValue() !== 'edited') sh.getRange(1, 1, 1, HEAD.length).setValues([HEAD]);
   return sh;
 }
+/* v25: 기물 번호는 '도록/번호'(영문 소문자 도록 이름, 번호에 HTML 글자 없음)만 받는다 */
+function cidOk_(c) { return /^[a-z][a-z0-9-]{0,20}\/[^\s<>"'&`]{1,80}$/.test(String(c || '')); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 /* v12: 틀린 암호 횟수 제한 — 15분 안에 서로 다른 틀린 암호가 10번 나오면 15분 동안 모든 암호를 받지 않는다.
    (같은 틀린 암호를 되풀이하는 옛 기기는 한 번으로 센다. 암호 자체는 저장하지 않고 요약값만 둔다.) */
@@ -123,6 +126,7 @@ function doPost(e) {
       if (author === '거믄' || author === '힌') { if (!fam) return out_({ ok: false, err: 'code' }); }
       else { author = '벗'; pub = '1'; if (!String(c.name || '').trim()) return out_({ ok: false, err: 'name' }); }
       const text = String(c.text || '').trim(); if (!text) return out_({ ok: false, err: 'text' });
+      if (!cidOk_(c.cid)) return out_({ ok: false, err: 'cid' });   // v25
       if (!find_(sh, c.id)) {
         sh.appendRow([String(c.id).slice(0, 40), String(c.cid).slice(0, 200), author, String(c.name || '').slice(0, 30),
           text.slice(0, fam ? 4000 : 1000), new Date().toISOString(), String(c.page || '').slice(0, 60), '', pub, String(c.key || '').slice(0, 40)]);
@@ -310,7 +314,7 @@ function likesGet_(fam) {
 function likePost_(d, fam) {
   const who = String(d.who || ''), cid = String(d.cid || '').slice(0, 200);
   if (!fam && who !== '벗') return out_({ ok: false, err: 'code' });   // v16: 벗은 암호 없이 좋아요·찾아본 기물만 남긴다
-  if ((who !== '거믄' && who !== '힌' && who !== '벗') || !cid) return out_({ ok: false, err: 'bad' });
+  if ((who !== '거믄' && who !== '힌' && who !== '벗') || !cidOk_(cid)) return out_({ ok: false, err: 'bad' });   // v25
   const sh = likeSheet_(), rows = sh.getDataRange().getValues();
   let at = -1;
   for (let i = 1; i < rows.length; i++) if (String(rows[i][0]) === cid && String(rows[i][1]) === who) { at = i + 1; break; }

@@ -6,8 +6,8 @@
 
 ```sh
 node tools/search_pack.js                     # search.js를 고쳤다면 먼저(반닫이 작은 색인도 함께 새로 만듦)
-node tools/paper/build_data.js                # 공개판 자료표(『조선의 궤』 뺌)
-PW=가족암호 node tools/paper/build_data.js      # 가족판 자료표(『조선의 궤』 넣음) — 둘 중 하나만
+node tools/paper/build_data.js                # 자료표(『조선의 궤』 넣음 — 2026-11-11부터 공개 파일 joseongwe.js 를 읽음)
+NOJW=1 node tools/paper/build_data.js         # 『조선의 궤』 빼고
 python3 tools/paper/analyze.py                # 검정 → out/results.json
 python3 tools/paper/figs.py                   # 그림 1~3 → out/fig1~3.png
 ```

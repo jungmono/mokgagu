@@ -20,6 +20,7 @@ window.MOKGAGU_BOOKS = [
   { path: 'wonju',  title: '우리 나전, 새로 맞는 날',   desc: '원주시역사박물관 소장품 특별전 도록(2024)', items: 31,  icon: 'ham',     tone: 'ju',    added: '2026-10-17' },
   { path: 'soban',  title: '소반장(小盤匠)',          desc: '국립문화재연구소 중요무형문화재 조사보고서(1997)', items: 25, icon: 'soban',  tone: 'hwang', added: '2026-10-17' },
   { path: 'busan',  title: '부산박물관 소장품 「민속」', desc: '부산박물관 소장품 도록 「민속」편 발췌', items: 9,  icon: 'yakjang', tone: 'meok',  added: '2026-10-17' },
+  { path: 'joseongwe', title: '조선의 궤', desc: '정대영 — 지역별 궤(반닫이) 161점, 크기·장석 메모', items: 161, icon: 'bandaji', tone: 'ju', added: '2026-11-11' },
   { path: 'yangsan', title: '양산 반닫이',           desc: '양산시립박물관 특별기획전 도록(2022)', items: 30,  icon: 'bandaji', tone: 'hwang', added: '2026-10-17' },
   { path: 'minsok', title: '민속유물이해Ⅰ 목가구', desc: '국립민속박물관 민속유물이해Ⅰ(2003)', items: 223, icon: 'yakjang', tone: 'jaju', added: '2026-10-15' },
   { path: 'namu',   title: '목가구, 나무의 이치를 담다', desc: '국립민속박물관·영인산산림박물관 공동기획전 도록(2016)', items: 56,  icon: 'duiju',   tone: 'nok',  added: '2026-10-15' },

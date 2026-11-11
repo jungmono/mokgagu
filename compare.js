@@ -17,8 +17,9 @@
     '#cmp-tray .tx{font-size:12.5px;color:#6b665e;white-space:nowrap}#cmp-tray .tx b{color:#111;font-size:13px;display:block}' +
     '#cmp-tray a.go{background:#111;color:#fff;border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;text-decoration:none;white-space:nowrap}' +
     '#cmp-tray a.go.off{background:#bdb8ae;pointer-events:none}' +
-    '#cmp-tray .x{border:0;background:none;color:#6b665e;font-size:13px;text-decoration:underline;cursor:pointer;padding:12px 6px;font-family:inherit}' +
-    '@media (max-width:720px){#cmp-tray{max-width:calc(100vw - 88px);gap:6px;padding:6px 8px}#cmp-tray .tx{font-size:0}#cmp-tray .tx b{font-size:13px}#cmp-tray a.go{padding:10px 12px}#cmp-tray .x{padding:12px 4px}}' +
+    '#cmp-tray .x{border:0;background:none;color:#6b665e;font-size:13px;text-decoration:underline;cursor:pointer;padding:12px 6px;font-family:inherit;white-space:nowrap;flex:none}' +
+    '#cmp-tray .ths{display:flex;gap:8px;flex:none}#cmp-tray a.go{flex:none}' +
+    '@media (max-width:720px){#cmp-tray{bottom:68px;width:calc(100vw - 80px);max-width:330px;flex-wrap:wrap;gap:8px 8px;padding:10px 10px 6px}#cmp-tray .ths{flex:1 0 100%;gap:12px}#cmp-tray .th,#cmp-tray .th img{width:36px;height:36px}#cmp-tray .tx{font-size:0;margin-right:auto}#cmp-tray .tx b{font-size:13px}#cmp-tray a.go{padding:10px 14px}#cmp-tray .x{padding:10px 4px}}' +
     '#cmp-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;z-index:2147483600;font-family:inherit}';
   document.head.appendChild(css);
 
@@ -121,7 +122,7 @@
       });
     }
     tray.style.display = 'flex';
-    tray.innerHTML = a.map(function (x) { return '<span class="th" title="' + esc(x.n) + '"><img src="' + esc(x.u) + '" alt="' + esc(x.n) + '"><button type="button" data-rm="' + esc(x.k) + '" aria-label="' + esc(x.n) + ' 빼기">×</button></span>'; }).join('') +
+    tray.innerHTML = '<span class="ths">' + a.map(function (x) { return '<span class="th" title="' + esc(x.n) + '"><img src="' + esc(x.u) + '" alt="' + esc(x.n) + '"><button type="button" data-rm="' + esc(x.k) + '" aria-label="' + esc(x.n) + ' 빼기">×</button></span>'; }).join('') + '</span>' +
       '<span class="tx"><b>' + a.length + '/' + MAX + '점</b>비교에 담음</span>' +
       '<a class="go' + (a.length < 2 ? ' off' : '') + '" href="compare.html" target="_blank" rel="noopener">' + (a.length < 2 ? '2점부터' : '비교하기') + '</a><button type="button" class="x" data-clr="1">비우기</button>';
   }

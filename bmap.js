@@ -97,7 +97,7 @@
   const hayOf = (r) => { const q = /반닫이|반다지/.test(r.name + (r.hanja || '')) ? (r.q || '') : String(r.q || '').split(/\s+/).filter((w) => !/박물관|연구소|옥션|경매|도록|보고서/.test(w)).join(' '); return (r.name + (r.hanja || '') + q).replace(/나전/g, ''); };   // 나전주흑칠…의 '전주'는 지역이 아니다
   
   function pins() {
-    const all = (window.SEARCH || []).filter(isKind);
+    const all = (window.SEARCH || []).filter((r) => r.b !== 'joseongwe' && isKind(r));   // 『조선의 궤』는 아래 JOSEONGWE 로 따로 셈(겹치지 않게)
     const by = {}; R.forEach((g) => { by[g[0]] = { m: [], a: [], e: [], o: [], j: [], g: [] }; });
     const prov = {}; PROV.forEach((p) => { prov[p[0]] = { m: [], a: [], e: [], o: [], j: [], g: [] }; });
     all.forEach((r) => {
@@ -133,7 +133,7 @@
   }
 
   function mount(el) {
-    if (!window.JOSEONGWE) TYPES = TYPES.filter((t) => t[0] !== 'j' && t[0] !== 'g');   // 『조선의 궤』 메뉴는 가족(거믄·힌)에게만 — joseongwe.js 는 가족일 때만 불러온다
+    TYPES = TYPES.filter((t) => (t[0] !== 'j' || window.JOSEONGWE) && (t[0] !== 'g' || window.GIJUN));   // 『조선의 궤』는 누구나(2026-11-11 공개), 기준 도판은 가족(거믄·힌)에게만
     const P = pins(), local = load(), edits = Object.assign({}, local), meta = {};
     let on = { m: true, a: true, e: true, o: true, j: true, g: true }, sel = '', selP = '', list = [];
     const W = 130, H = 86, PN = Object.keys(PV);

@@ -1,6 +1,6 @@
 /* 논문 「조선 후기 반닫이 정면 비례의 지역별 분포」(2026) 자료표 만들기 — 자세한 것은 tools/paper/README.md
-   node tools/paper/build_data.js            → 공개판(『조선의 궤』 빼고)
-   PW=가족암호 node tools/paper/build_data.js → 가족판(『조선의 궤』 넣음, 암호는 메모리에서만 쓰고 남기지 않음)
+   node tools/paper/build_data.js        → 『조선의 궤』 넣음
+   NOJW=1 node tools/paper/build_data.js → 『조선의 궤』 빼고
    결과: tools/paper/out/data.csv · excluded.csv · dupcand.json (out/ 은 저장소에 올리지 않음) */
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const M=path.join(__dirname,'..','..'),OUT=path.join(__dirname,'out');fs.mkdirSync(OUT,{recursive:true});
@@ -9,15 +9,13 @@ eval(fs.readFileSync(M+'/search.js','utf8'));
 const t=fs.readFileSync(M+'/region-ruler.html','utf8');
 eval(t.slice(t.indexOf('const REG'),t.indexOf('const P = [];')).replace(/const /g,'var '));
 const mk=fs.readFileSync(M+'/mklink.js','utf8');const N2L=JSON.parse(mk.match(/var N2L = (\{[^;]*\});/)[1]);const L2N={};for(const k in N2L)L2N[N2L[k]]=k;
-/* 『조선의 궤』: study/joseongwe.bin 을 PW 로 풀어 메모리에서만 쓴다(study.html·반닫이여지도와 같은 암호틀) */
-window.JOSEONGWE=[];
-if(process.env.PW){const meta=JSON.parse(fs.readFileSync(M+'/study/salt.json','utf8'));const key=crypto.pbkdf2Sync(process.env.PW,Buffer.from(meta.salt,'base64'),meta.iter,32,'sha256');
- const raw=fs.readFileSync(M+'/study/joseongwe.bin'),iv=raw.subarray(0,12),body=raw.subarray(12,raw.length-16),tag=raw.subarray(raw.length-16);
- const d=crypto.createDecipheriv('aes-256-gcm',key,iv);d.setAuthTag(tag);const o=JSON.parse(Buffer.concat([d.update(body),d.final()]).toString('utf8'));new Function('window',o.j)(window);}
+/* 『조선의 궤』: joseongwe.js(2026-11-11 공개)를 읽는다. NOJW=1 이면 빼고 만든다 */
+window.JOSEONGWE=[];if(!process.env.NOJW)eval(fs.readFileSync(M+'/joseongwe.js','utf8'));
 const BOOK={nmk:'국립중앙박물관 소장품',lee:'이건희 기증',minsok:'민속유물이해Ⅰ',auction:'아이옥션',yangsan:'양산 반닫이',kwon:'권옥연 구장',myart:'마이아트옥션',seoulauction:'서울옥션',joseongwe:'조선의 궤'};
 const rows=[],exc=[];
 const depthOf=(s,b)=>{const m=String(s||'').match(/([0-9.]+)\s*×\s*([0-9.]+)\s*×\s*([0-9.]+)/);if(m){return b==='auction'?+m[2]:Math.min(+m[1],+m[2])}const d=String(s||'').match(/(?:세로|옆너비|깊이|폭)\s*([0-9.]+)/);return d?+d[1]:null};
 (window.SEARCH||[]).forEach(r=>{
+ if(r.b==='joseongwe')return;
  if(!/반닫이/.test((r.name||'')+(r.hanja||'')))return;
  const id=r.b+'/'+r.pid;
  if(/반닫이\s*(장|탁자|연상|농|함|문갑|책)/.test(r.name||'')){exc.push([id,r.name,'다른 가구']);return}
