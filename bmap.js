@@ -124,7 +124,7 @@
   }
   /* 우리 소장품(가족 시트): 이름·종류에 반닫이가 들어 있고 지금 소장 중인 것만 */
   function addOwn(P, list) {
-    (list || []).filter((c) => (/반닫이/.test((c.name || '') + (c.kind || '')) || KIND.test(clean(c.name))) && !c.sold && (!c.status || c.status === '소장')).forEach((c) => {
+    (list || []).filter((c) => (/반닫이/.test((c.name || '') + (c.kind || '')) || /(반다지|돈괴|돈궤|궤)$/.test(clean(c.name))) && !c.sold && (!c.status || c.status === '소장')).forEach((c) => {
       const hay = (c.name || '') + (c.kind || '') + (c.note || '') + (c.place || '') + (c.memo || '');
       let hit = false;
       R.forEach((g) => { if (g[5].some((k) => hay.includes(k))) { P.by[g[0]].o.push({ own: 1, name: c.name, era: c.era, size: c.size, id: c.id, c: c, f: ((c.photos || [])[0] || {}).f, t: ((c.photos || [])[0] || {}).t }); hit = true; } });
