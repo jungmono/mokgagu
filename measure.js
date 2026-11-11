@@ -241,7 +241,11 @@
     '#mz-dlg input[type=checkbox]{accent-color:#111;width:18px;height:18px}' +
     '#mz-dlg .mz-svg{overflow-x:auto;border:1px solid #e3dfd6;border-radius:10px;background:#fbfaf7;line-height:0}' +
     '#mz-dlg .mz-svg svg{display:block;margin:0 auto}' +
-    '#mz-dlg .mz-note{margin:10px 2px 0;font-size:13px;line-height:1.6;color:#6b6760}';
+    '#mz-dlg .mz-note{margin:10px 2px 0;font-size:13px;line-height:1.6;color:#6b6760}' +
+    '#mz-room{border:0;padding:0;border-radius:14px;width:min(96vw,880px);height:94dvh;max-height:94dvh;background:#fbf6ea;overflow:hidden}#mz-room::backdrop{background:rgba(0,0,0,.55)}' +
+    '#mz-room .rb{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#fff;border-bottom:1px solid #e3dfd6;font:900 15px "Noto Sans KR",sans-serif;color:#111;height:54px;box-sizing:border-box}' +
+    '#mz-room .rb button{font:inherit;font-size:14px;font-weight:700;min-height:40px;padding:0 16px;border:1px solid #bdb8ae;background:#fff;color:#111;border-radius:10px;cursor:pointer}' +
+    '#mz-room iframe{display:block;width:100%;height:calc(100% - 54px);border:0}';
   document.head.appendChild(css);
 
   var dlg, state = {};
@@ -325,7 +329,7 @@
     var canPlan = !!(o.d && kd.k !== 'pot' && kd.k !== 'generic' && !o.round);
     if (canPlan) row.innerHTML += '<button type="button" class="mz-btn" data-t="plan">📐 실측도</button>';
     row.innerHTML += '<button type="button" class="mz-btn" data-t="person">🧍 사람 옆에</button>';
-    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn" style="display:inline-flex;align-items:center;text-decoration:none" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
+    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn mz-room" style="display:inline-flex;align-items:center;text-decoration:none" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
     row.addEventListener('click', function (e) { var b = e.target.closest('button.mz-btn'); if (b) open({ o: o, kd: kd }, b.getAttribute('data-t')); });
     if (c.host && c.host.parentNode) c.host.parentNode.insertBefore(row, c.host.nextSibling); else c.info.appendChild(row);
   }
@@ -339,5 +343,19 @@
     if (a || b) later();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a.mz-room'); if (!a) return;
+    e.preventDefault();
+    var rd = document.getElementById('mz-room');
+    if (!rd) {
+      rd = document.createElement('dialog'); rd.id = 'mz-room'; rd.setAttribute('data-noshare', ''); rd.setAttribute('aria-label', '우리 집에 놓아 보기');
+      rd.innerHTML = '<div class="rb"><span>🏠 우리 집에 놓아 보기</span><button type="button">닫기</button></div><iframe title="우리 집에 놓아 보기"></iframe>';
+      rd.querySelector('button').onclick = function () { rd.close(); };
+      rd.addEventListener('close', function () { rd.querySelector('iframe').src = 'about:blank'; });
+      document.body.appendChild(rd);
+    }
+    rd.querySelector('iframe').src = a.getAttribute('href') + '&embed=1';
+    rd.showModal();
+  });
   window.MOKGAGU_MEASURE = { parse: parse, kindOf: kindOf, drawPlan: drawPlan, drawPerson: drawPerson, open: open };
 })();

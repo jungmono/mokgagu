@@ -2,7 +2,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.className='emb';</script>
 <style>
+.emb .th,.emb #hb{display:none!important}.emb main{padding-top:8px}
 :root{--ink:#111;--fg:#1f2433;--muted:#6b7183;--line:#e6e2da;--soft:#f6f4f0;--red:#d12b2b}
 *{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:var(--fg);font:15px/1.65 "Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
 main{max-width:760px;margin:0 auto;padding:16px 16px 60px}.g5{margin-top:14px}
@@ -18,8 +20,8 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 .rbtn{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:10px;padding:8px 14px;min-height:40px;cursor:pointer}
 .rbtn.w{background:#fff;color:var(--ink)}
 .selbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:48px;margin-top:8px;font-size:14px}
-.step{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:16px}.step:first-child{margin-top:0}
-.no{width:28px;height:28px;border-radius:50%;background:#111;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.step{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:16px 0 8px;font-size:16px}.step:first-child{margin-top:0}
+.step b{white-space:nowrap}.no{width:28px;height:28px;border-radius:50%;background:#111;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
 .rbtn.big{font-size:15px;min-height:48px;padding:10px 18px;display:inline-flex;align-items:center}
 .up{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .g5in input{font:inherit;font-size:16px;padding:10px;border:1.5px solid #ccc;border-radius:10px;width:130px;min-height:48px}.g5in #g5n{width:170px}
