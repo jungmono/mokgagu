@@ -137,10 +137,10 @@ function sizeBar(){const W=R;$('g5size').innerHTML=`<label>가로 <input type="r
   const on=()=>{R={w:+$('g5rw').value,d:+$('g5rd').value};$('g5rwv').textContent=R.w;$('g5rdv').textContent=R.d;place();items.forEach(clamp);draw();};
   $('g5rw').oninput=on;$('g5rd').oninput=on;}
 /* 평면도 축척 맞추기: 두 점을 누르고 실제 길이 넣기 */
-function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 평면도에 적힌 치수가 있는 벽)<br><small>두 점을 찍으면 길이를 묻습니다. 길이(cm)를 넣고 <b>맞추기</b>를 눌러야 평면도에 기물이 나타납니다.</small>';}
+function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 평면도에 적힌 치수가 있는 벽)<br><small>두 점을 찍으면 길이를 묻습니다. 평면도에 적힌 숫자(예: 4996mm)를 넣고 <b>맞추기</b>를 눌러야 평면도에 기물이 나타납니다.</small>';}
 function calAsk(){const px=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts[0].y);
-  $('g5cal').innerHTML=`두 점 사이의 실제 길이는? <input id="g5len" type="number" inputmode="decimal" placeholder="예: 410"> cm <button class="rbtn" id="g5ok">맞추기</button> <button class="rbtn w" id="g5re">다시</button>`;
-  $('g5ok').onclick=()=>{const L=+$('g5len').value;if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);pend.forEach(x=>putItem(x[0],x[1],x[2],x[3]));pend=[];$('g5link').hidden=true;draw();$('g5plan').scrollIntoView({block:'center',behavior:'smooth'});};
+  $('g5cal').innerHTML=`두 점 사이의 실제 길이는? <small>(평면도 숫자 그대로, 보통 mm)</small><br> <input id="g5len" type="number" inputmode="decimal" placeholder="예: 4996"> <select id="g5u" style="font:inherit;font-size:16px;padding:8px;border:1.5px solid #ccc;border-radius:8px"><option value="10">mm</option><option value="1">cm</option></select> <button class="rbtn" id="g5ok">맞추기</button> <button class="rbtn w" id="g5re">다시</button>`;
+  $('g5ok').onclick=()=>{const L=+$('g5len').value/(+$('g5u').value);if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);pend.forEach(x=>putItem(x[0],x[1],x[2],x[3]));pend=[];$('g5link').hidden=true;draw();$('g5plan').scrollIntoView({block:'center',behavior:'smooth'});};
   $('g5re').onclick=()=>{calStart();draw();};setTimeout(()=>{$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});$('g5len').focus();},50);}
 PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;pend=[];$('g5link').hidden=true;$('g5cal').hidden=true;sel=-1;
   document.querySelectorAll('#g5room button').forEach(x=>x.classList.toggle('on',x===b));sizeBar();homeSet();items.forEach(clamp);draw();};if(i===1)b.classList.add('on');$('g5room').appendChild(b);});
