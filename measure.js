@@ -234,8 +234,8 @@
   /* ───── 겹창 ───── */
   var css = document.createElement('style');
   css.textContent =
-    '.mz-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}' +
-    '.mz-row .mz-btn{flex:1 1 0;min-width:0;height:auto;min-height:60px;padding:6px 4px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;line-height:1.2;text-align:center;text-decoration:none!important;border:1px solid #111!important;background:#fff!important;color:#111!important;font-size:13.5px;font-weight:700;overflow:hidden}' +
+    '.mz-row{display:flex;flex-wrap:nowrap;align-items:stretch;gap:8px;margin:14px 0 4px}' +
+    '.mz-row .mz-btn{flex:1 1 0;min-width:0;height:auto;min-height:60px;padding:6px 4px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;line-height:1.2;text-align:center;text-decoration:none!important;border:1px solid #111!important;background:#fff!important;color:#111!important;font-size:13.5px;font-weight:700;overflow:hidden;margin:0!important;align-self:stretch;position:static!important;float:none!important;transform:none!important;top:auto!important}' +
     '.mz-row .mz-btn i{font-style:normal;font-size:18px;line-height:1}.mz-row .mz-btn span{display:block;max-width:100%;word-break:keep-all;overflow-wrap:anywhere}'+
     '.mz-row{flex-wrap:nowrap}@media (max-width:480px){.mz-row{gap:6px}.mz-row .mz-btn{font-size:13px!important}}' +
     '.mz-row .mz-btn:hover,.mz-row .mz-btn:focus-visible{background:#111!important;color:#fff!important}' +
