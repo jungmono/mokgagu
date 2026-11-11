@@ -14,7 +14,7 @@
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
   if (!cur) return;
   /* 통계에서 들어왔으면 「통계로」, 아니면 「홈」 */
-  var back = { href: 'index.html', t: '<svg viewBox="0 0 32 32" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px"><path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/></svg>홈' };
+  var back = { href: 'index.html', t: '<svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/></svg>', home: 1 };
   try { if (/\/stats\.html/.test(document.referrer) || /[?&]from=stats/.test(location.search)) back = { href: 'stats.html', t: '← 통계로' }; } catch (e) {}
   var css = document.createElement('style');
   css.textContent = [
@@ -25,6 +25,7 @@
     '.th-row .tt{font-weight:900;font-size:clamp(26px,3.8vw,42px);letter-spacing:-.04em;line-height:1.15}',
     '.th-nav{display:flex;align-items:center;gap:8px;margin:0 0 12px;flex-wrap:wrap}',
     '.th-back{flex:none;border:1.5px solid #111;border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;background:#fff;color:#111;text-decoration:none;min-height:36px;display:inline-flex;align-items:center}',
+    '.th-home{width:46px;height:46px;padding:0;justify-content:center}',
     '.th-tools{display:flex;gap:6px;margin-left:auto;overflow-x:auto;scrollbar-width:none;max-width:100%}.th-tools::-webkit-scrollbar{display:none}',
     '.th-tools a{flex:none;border:1px solid #d8c9a3;border-radius:999px;padding:7px 13px;font-size:14px;font-weight:700;background:#fff;color:#2b2418;text-decoration:none;min-height:36px;display:inline-flex;align-items:center;white-space:nowrap}',
     '.th-tools a.on{background:#111;color:#fff;border-color:#111}',
@@ -39,7 +40,7 @@
   document.head.appendChild(css);
   var d = document.createElement('div'); d.className = 'th';
   d.innerHTML = '<div class="th-row"><a class="m a" href="index.html" aria-label="처음 화면으로"><img src="mark_angwe.png" alt="안궤" width="328" height="200"></a><a class="tt" href="index.html">조선의 목가구</a><a class="m" href="index.html" aria-label="처음 화면으로"><img src="mark_eonyang_white.png" alt="언양반닫이" width="400" height="243"></a></div>' +
-    '<nav class="th-nav" aria-label="탐색 도구"><a class="th-back" href="' + back.href + '">' + back.t + '</a><div class="th-tools">' +
+    '<nav class="th-nav" aria-label="탐색 도구"><a class="th-back' + (back.home ? ' th-home' : '') + '" href="' + back.href + '"' + (back.home ? ' aria-label="홈" title="홈"' : '') + '>' + back.t + '</a><div class="th-tools">' +
     TOOLS.map(function (x) { return '<a href="' + x.href + '"' + (x.k === key ? ' class="on" aria-current="page"' : '') + '>' + x.t + '</a>'; }).join('') + '</div></nav>' +
     '<div class="th-hero"><div class="th-h" role="heading" aria-level="1"><span>' + cur.title + '</span>' + (cur.ico || '') + '</div>' + (cur.sub ? '<p class="th-s">' + cur.sub + '</p>' : '') + '</div>';
   me.parentNode.insertBefore(d, me);
