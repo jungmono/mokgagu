@@ -63,11 +63,11 @@
   /* ───── 정면 선화: 단위 cm, y 는 바닥에서 위로. R=사각형[x,y,w,h], L=선[x1,y1,x2,y2] ───── */
   function front(k, W, H, n) {
     var R = [], L = [], t, foot, post, i;
-    if (k === 'bandaji') {
-      t = Math.min(2.8, H * .06); foot = Math.min(7, H * .13); post = Math.min(6, W * .07);
-      R.push([0, foot, W, H - foot]); R.push([0, H - t, W, t]); R.push([0, 0, post, foot]); R.push([W - post, 0, post, foot]);
-      L.push([post, foot, post, H - t], [W - post, foot, W - post, H - t]);
-      var mid = foot + (H - foot - t) * .48; L.push([post, mid, W - post, mid]); L.push([post, foot + 3, W - post, foot + 3]);
+    if (k === 'bandaji') {   /* 앞닫이: 기둥 없이 판재 앞면, 위쪽 문판이 아래로 열린다. 천판 + 판재 몸 + 귀틀 + 짧은 발 두 개 */
+      t = Math.min(3.6, H * .07); foot = Math.min(7, H * .12); var gt = Math.min(4.5, H * .08), bd = H - foot - t, fx = W * .05, fw = Math.min(8, W * .09);
+      R.push([-.8, H - t, W + 1.6, t]); R.push([0, foot, W, bd]); R.push([fx, 0, fw, foot]); R.push([W - fx - fw, 0, fw, foot]);
+      L.push([0, foot + bd * .46, W, foot + bd * .46]);   /* 문판 이음 */
+      L.push([0, foot + gt, W, foot + gt]);                 /* 귀틀 윗선 */
     } else if (k === 'angwe') {   /* 정대영 선생님 메모 치수 */
       var sd = 1.5, inn = 55, ow = inn + 2 * sd, ox = (W - ow) / 2, top = 1.5;
       R.push([0, H - top, W, top]); R.push([ox, 0, sd, H - top]); R.push([ox + ow - sd, 0, sd, H - top]);
@@ -102,11 +102,11 @@
       R.push([0, H - t, W, t]); R.push([W * .06, H - t - ap, W * .88, ap]);
       L.push([W * .1, H - t - ap, W * .1, 0], [W * .9, H - t - ap, W * .9, 0], [W * .14, H - t - ap, W * .14, 0], [W * .86, H - t - ap, W * .86, 0]);
       L.push([W * .1, H * .2, W * .9, H * .2]);
-    } else if (k === 'gyeong') {
-      t = Math.min(3, H * .08);
-      R.push([0, H - t, W, t]); R.push([-3, H - t + .2, 5, 3.5]); R.push([W - 2, H - t + .2, 5, 3.5]);
-      R.push([W * .08, Math.min(6, H * .2), W * .84, H - t - Math.min(6, H * .2)]); L.push([W * .5, Math.min(6, H * .2), W * .5, H - t]);
-      R.push([W * .08, 0, 4, Math.min(6, H * .2)]); R.push([W * .92 - 4, 0, 4, Math.min(6, H * .2)]);
+    } else if (k === 'gyeong') {   /* 경상: 판 + 양쪽 귀(말림) + 판다리 두 개 */
+      t = Math.min(3, H * .08); var lw = Math.min(5, W * .08);
+      R.push([0, H - t, W, t]); R.push([-2.5, H - t - .4, 3, t + 2.4]); R.push([W - .5, H - t - .4, 3, t + 2.4]);
+      R.push([W * .1, 0, lw, H - t]); R.push([W - W * .1 - lw, 0, lw, H - t]);
+      L.push([W * .1 + lw, H - t - Math.min(4, H * .1), W - W * .1 - lw, H - t - Math.min(4, H * .1)]);
     } else if (k === 'seoan') {
       t = Math.min(2.5, H * .06); var sw = Math.min(3, W * .06);
       R.push([-1.5, H - t, W + 3, t]); R.push([W * .08, 0, sw, H - t]); R.push([W - W * .08 - sw, 0, sw, H - t]);
@@ -123,6 +123,7 @@
     if (k === 'angwe' || k === 'seoan') { var sd = Math.min(31.2, D * .94); R.push([0, H - 1.5, D, 1.5]); R.push([(D - sd) / 2, 0, sd, H - 1.5]); }
     else if (k === 'soban' || k === 'gyeong') { R.push([0, 0, D, H]); L.push([0, H * .86, D, H * .86]); }
     else if (k === 'shelf') { R.push([0, 0, D, H]); }
+    else if (k === 'bandaji') { var tt = Math.min(3.6, H * .07), ft = Math.min(7, H * .12), fd = Math.min(7, D * .12); R.push([-.8, H - tt, D + 1.6, tt]); R.push([0, ft, D, H - ft - tt]); R.push([D * .05, 0, fd, ft]); R.push([D - D * .05 - fd, 0, fd, ft]); }
     else { var foot = (k === 'box' || k === 'generic') ? 0 : Math.min(8, H * .12); R.push([0, foot, D, H - foot]); if (foot) { R.push([0, 0, Math.min(5, D * .12), foot]); R.push([D - Math.min(5, D * .12), 0, Math.min(5, D * .12), foot]); } }
     return { R: R, L: L };
   }
