@@ -154,10 +154,10 @@
   function drawPlan(o, kd, withRef, VW, maxPx) {
     var ref = withRef && kd.ref ? REF[kd.ref] : null, red = '#c0392b';
     var fw = Math.max(o.w, ref ? ref.w : 0), sw = Math.max(o.d, ref ? ref.d : 0), hh = Math.max(o.h, ref ? ref.h : 0);
-    var L = 46, Rm = 14, T = 26, B = 62, gapPx = 34;
+    var L = 46, Rm = 14, T = 26, B = 62, gapPx = 34, TV = 40;
     var s = Math.min((VW - L - Rm - gapPx) / (fw + sw), (maxPx - T - B) / hh);
-    var gap = gapPx / s, VH = Math.round(hh * s + T + B), Y0 = VH - B, X = function (x) { return L + x * s; }, Y = function (y) { return Y0 - y * s; };
-    var sx = fw + gap, f = front(kd.k, o.w, o.h, kd.n), sd = sideView(kd.k, o.d, o.h), g = '';
+    var gap = gapPx / s, VH0 = Math.round(hh * s + T + B), Y0 = VH0 - B, X = function (x) { return L + x * s; }, Y = function (y) { return Y0 - y * s; };
+    var sx = fw + gap, f = front(kd.k, o.w, o.h, kd.n), sd = sideView(kd.k, o.d, o.h), g = '', td = Math.max(o.d, ref ? ref.d : 0), VH = Math.round(VH0 + TV + td * s + 34), YT = VH0 + 4 + TV - 14;
     g += '<svg xmlns="http://www.w3.org/2000/svg" width="' + VW + '" height="' + VH + '" viewBox="0 0 ' + VW + ' ' + VH + '" font-family="Noto Sans KR,sans-serif" role="img" aria-label="' + esc(o.name) + ' 실측도">' + AR;
     g += '<line x1="' + X(-6) + '" y1="' + Y0 + '" x2="' + X(sx + sw + 6) + '" y2="' + Y0 + '" stroke="#bbb" stroke-dasharray="3 3"/>';
     g += rects(f.R, X, Y, s, 0, '#111', 1.3) + lines(f.L, X, Y, 0, '#111', 1);
@@ -165,14 +165,25 @@
     if (ref) {
       g += '<rect x="' + X(0) + '" y="' + Y(ref.h) + '" width="' + ref.w * s + '" height="' + ref.h * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
       g += '<rect x="' + X(sx) + '" y="' + Y(ref.h) + '" width="' + ref.d * s + '" height="' + ref.h * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
-      g += '<text x="' + X(0) + '" y="' + (VH - 8) + '" font-size="11.5" fill="' + red + '" font-weight="700">빨강 점선 = ' + ref.name + ' ' + fmt(ref.w) + '×' + fmt(ref.d) + '×' + fmt(ref.h) + '</text>';
+      g += '<text x="' + X(0) + '" y="' + (VH0 - 8) + '" font-size="11.5" fill="' + red + '" font-weight="700">빨강 점선 = ' + ref.name + ' ' + fmt(ref.w) + '×' + fmt(ref.d) + '×' + fmt(ref.h) + '</text>';
     }
     g += dimLine(X(0), Y0 + 12, X(o.w), Y0 + 12, '가로 ' + fmt(o.w));
     g += dimLine(X(sx), Y0 + 12, X(sx + o.d), Y0 + 12, '세로 ' + fmt(o.d));
     g += dimLine(X(0) - 24, Y(o.h), X(0) - 24, Y0, '높이 ' + fmt(o.h), true);
     g += '<text x="' + X(fw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">정면도</text><text x="' + X(sx + sw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">측면도</text>';
+    /* 윗면(상판) */
+    g += '<line x1="' + X(-6) + '" y1="' + (VH0 + 2) + '" x2="' + X(sx + sw + 6) + '" y2="' + (VH0 + 2) + '" stroke="#ddd"/><text x="' + X(fw / 2) + '" y="' + (VH0 + 22) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>';
+    if (ref) g += ref.round ? '' : '<rect x="' + X(0) + '" y="' + YT + '" width="' + ref.w * s + '" height="' + ref.d * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
+    if (o.round) g += '<ellipse cx="' + X(o.w / 2) + '" cy="' + (YT + o.d * s / 2) + '" rx="' + o.w * s / 2 + '" ry="' + o.d * s / 2 + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
+    else {
+      g += '<rect x="' + X(0) + '" y="' + YT + '" width="' + o.w * s + '" height="' + o.d * s + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
+      var ins = Math.min(1.8, o.w * .06, o.d * .1) * s;
+      g += '<rect x="' + (X(0) + ins) + '" y="' + (YT + ins) + '" width="' + Math.max(0, o.w * s - 2 * ins) + '" height="' + Math.max(0, o.d * s - 2 * ins) + '" fill="none" stroke="#111" stroke-width=".8"/>';
+    }
+    g += dimLine(X(0), YT + td * s + 14, X(o.w), YT + td * s + 14, '가로 ' + fmt(o.w));
+    g += dimLine(X(0) - 24, YT, X(0) - 24, YT + o.d * s, '세로 ' + fmt(o.d), true);
     var bar = 10 * s;
-    g += '<g transform="translate(' + (VW - Rm - bar) + ',' + (VH - 24) + ')"><rect width="' + bar + '" height="4" fill="#111"/><text x="' + bar / 2 + '" y="16" font-size="10.5" text-anchor="middle" fill="#555">10cm</text></g>';
+    g += '<g transform="translate(' + (VW - Rm - bar) + ',' + (VH0 - 24) + ')"><rect width="' + bar + '" height="4" fill="#111"/><text x="' + bar / 2 + '" y="16" font-size="10.5" text-anchor="middle" fill="#555">10cm</text></g>';
     return g + '</svg>';
   }
 
