@@ -6,7 +6,7 @@
    comments.js 가 불러온다(zoom.js 와 같은 방식). 사진 창 모양이 두 가지(#dlg-dim 형 / #d-info 형)라 둘 다 지켜본다. */
 (function () {
   if (window.MOKGAGU_MEASURE) return; window.MOKGAGU_MEASURE = 1;
-  if (!window.MOKGAGU_PERSON && !document.querySelector('script[src^="person.js"]')) { var ps = document.createElement('script'); ps.src = 'person.js?v=20261111'; document.head.appendChild(ps); }   /* 한복 사람 그림 */
+  if (!window.MOKGAGU_PERSON && !document.querySelector('script[src^="person.js"]')) { var ps = document.createElement('script'); ps.src = 'person.js?v=20261111b'; document.head.appendChild(ps); }   /* 한복 사람 그림 */
 
   /* ───── 치수 읽기 (compare.html 의 dims0 와 같은 규칙) ───── */
   function parse(text) {
