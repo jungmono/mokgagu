@@ -66,7 +66,8 @@ s = s[:a] + ("<dt>크기</dt><dd>${esc(i.size ? i.size + ' cm' : '— (책에 �
 rep("${i.kr ? `<div class=\"d-desc\">${esc(i.kr)}</div>` : ''}", '')
 open('joseongwe.html', 'w', encoding='utf-8').write(s)
 # 표지: 첫 도판
-im = Image.open('thumbs/joseongwe/1.jpg').convert('RGB'); im.save('covers/joseongwe.jpg', quality=85)
+im = Image.open('thumbs/joseongwe/1.jpg').convert('RGB') if not os.path.exists('covers/joseongwe.jpg') else None
+if im: im.save('covers/joseongwe.jpg', quality=85)   # 표지는 책 표지 사진(2026-11-11)을 그대로 둔다
 # 검색 색인
 rows = json.loads(subprocess.run(['node', '-e', "global.window={};new Function('window',require('fs').readFileSync('search.js','utf8'))(window);process.stdout.write(JSON.stringify(window.SEARCH))"], capture_output=True, text=True, check=True).stdout)
 rows = [r for r in rows if r['b'] != SLUG]
