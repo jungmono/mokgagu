@@ -1,6 +1,6 @@
 /* 실측도 · 사람 옆에 — 기물 사진 창(dialog)에 단추 두 개를 붙인다.
    - 「실측도」  도록 치수(가로·세로·높이)로 정면도·측면도를 그린다. 소장 기물(기준)을 빨간 점선으로 겹쳐 볼 수 있다.
-   - 「사람 옆에」 같은 눈금에 사람(서 있는·앉은)과 기물을 나란히 세워 실물 크기를 느끼게 한다.
+   - 「사람 옆에」 같은 눈금에 사람과 기물을 나란히 세워 실물 크기를 느끼게 한다.
    - 치수를 읽을 수 없으면(없음·순서 미확인·여러 부재) 단추를 붙이지 않는다. 비교하기·비례 자와 같은 읽기(긴 쪽=가로)를 쓴다.
    - 안쪽 문·서랍 선은 종류별 일반형이다. 바깥 치수만 도록 값 그대로.
    comments.js 가 불러온다(zoom.js 와 같은 방식). 사진 창 모양이 두 가지(#dlg-dim 형 / #d-info 형)라 둘 다 지켜본다. */
@@ -256,7 +256,7 @@
     dlg.querySelectorAll('.mz-tabs button').forEach(function (b) { b.onclick = function () { state.tab = b.getAttribute('data-t'); paint(); }; });
     var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { if (dlg.open) paint(); }, 150); });
   }
-  function getH() { try { var v = +localStorage.getItem('mokgagu_mz_h'); return v >= 120 && v <= 200 ? v : 165; } catch (e) { return 165; } }
+  function getH() { try { var v = +localStorage.getItem('mokgagu_mz_h'); return v >= 140 && v <= 190 ? v : 170; } catch (e) { return 170; } }
   function saveH(v) { try { localStorage.setItem('mokgagu_mz_h', String(v)); } catch (e) {} }
 
   function paint() {
@@ -267,18 +267,16 @@
       var t = b.getAttribute('data-t'); b.classList.toggle('on', t === state.tab); b.style.display = (t === 'plan' && !canPlan) ? 'none' : '';
     });
     var vw = Math.max(280, Math.min(840, (host.clientWidth || 340) - 2)), maxPx = Math.max(260, Math.min(560, window.innerHeight * .56));
-    var ref = kd.ref ? REF[kd.ref] : null, refTxt = ref ? '<label><input type="checkbox" class="mz-ref"' + (state.ref ? ' checked' : '') + '> ' + ref.name + ' ' + (state.tab === 'plan' ? '과 겹쳐 보기' : '도 옆에') + ' (빨강)</label>' : '';
+    var ref = kd.ref ? REF[kd.ref] : null, refTxt = ref ? '<label><input type="checkbox" class="mz-ref"' + (state.ref ? ' checked' : '') + '> ' + ref.name + '</label>' : '';
     if (state.tab === 'plan') {
       opts.innerHTML = refTxt;
       host.innerHTML = drawPlan(o, kd, state.ref, vw, maxPx);
       note.textContent = '바깥 치수(가로·세로·높이)는 도록 값입니다. 가로·세로 가운데 긴 쪽을 가로로 놓았습니다. 안쪽 문·서랍 선은 ' + kd.label + ' 일반형으로 그린 것이라 실제 기물과 다를 수 있습니다.';
     } else {
       var H = state.H;
-      opts.innerHTML = '<span class="mz-seg"><button type="button" data-p="stand"' + (!state.sit ? ' class="on"' : '') + '>서 있는 사람</button><button type="button" data-p="sit"' + (state.sit ? ' class="on"' : '') + '>앉은 사람</button></span>' +
-        '<label>키 <input type="range" class="mz-h" min="140" max="190" step="5" value="' + H + '"> <b class="mz-hv">' + H + '</b>cm</label>' + refTxt;
+      opts.innerHTML = '<label>키 <input type="range" class="mz-h" min="140" max="190" step="5" value="' + H + '"> <b class="mz-hv">' + H + '</b>cm</label>' + refTxt;
       host.innerHTML = drawPerson(o, kd, state.ref, H, state.sit, vw, maxPx);
-      note.textContent = '사람은 단순한 그림이고 기물은 도록 치수의 정면 모양입니다.' + (kd.k === 'generic' ? ' 이 기물은 모양을 알 수 없어 상자로 그렸습니다.' : '') + (state.sit ? ' 앉은 사람은 바닥에 책상다리로 앉은 높이(키의 약 52%)입니다.' : '');
-      opts.querySelectorAll('.mz-seg button').forEach(function (b) { b.onclick = function () { state.sit = b.getAttribute('data-p') === 'sit'; paint(); }; });
+      note.textContent = '사람은 단순한 그림이고 기물은 도록 치수의 정면 모양입니다.' + (kd.k === 'generic' ? ' 이 기물은 모양을 알 수 없어 상자로 그렸습니다.' : '');
       var rg = opts.querySelector('.mz-h'); rg.oninput = function () { state.H = +rg.value; saveH(state.H); opts.querySelector('.mz-hv').textContent = state.H; host.innerHTML = drawPerson(o, kd, state.ref, state.H, state.sit, vw, maxPx); };
     }
     var cb = opts.querySelector('.mz-ref'); if (cb) cb.onchange = function () { state.ref = cb.checked; paint(); };
@@ -286,7 +284,7 @@
 
   function open(ctx, tab) {
     build();
-    state = { o: ctx.o, kd: ctx.kd, tab: tab, ref: false, H: getH(), sit: /^(seoan|soban|gyeong)$/.test(ctx.kd.k) };
+    state = { o: ctx.o, kd: ctx.kd, tab: tab, ref: false, H: getH(), sit: false };
     dlg.querySelector('.mz-t').innerHTML = esc(ctx.o.name) + '<small>가로 ' + fmt(ctx.o.w) + (ctx.o.d ? ' × 세로 ' + fmt(ctx.o.d) : '') + ' × 높이 ' + fmt(ctx.o.h) + ' cm' + (ctx.o.round ? ' (지름)' : '') + '</small>';
     if (!dlg.open) dlg.showModal();
     paint();
