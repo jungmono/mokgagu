@@ -137,21 +137,23 @@ function sizeBar(){const W=R;$('g5size').innerHTML=`<label>가로 <input type="r
   const on=()=>{R={w:+$('g5rw').value,d:+$('g5rd').value};$('g5rwv').textContent=R.w;$('g5rdv').textContent=R.d;place();items.forEach(clamp);draw();};
   $('g5rw').oninput=on;$('g5rd').oninput=on;}
 /* 평면도 축척 맞추기: 두 점을 누르고 실제 길이 넣기 */
-function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 줄자로 잰 거실 벽, 평면도에 적힌 치수)';}
+function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 평면도에 적힌 치수가 있는 벽)<br><small>두 점을 찍으면 길이를 묻습니다. 길이(cm)를 넣고 <b>맞추기</b>를 눌러야 평면도에 기물이 나타납니다.</small>';}
 function calAsk(){const px=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts[0].y);
   $('g5cal').innerHTML=`두 점 사이의 실제 길이는? <input id="g5len" type="number" inputmode="decimal" placeholder="예: 410"> cm <button class="rbtn" id="g5ok">맞추기</button> <button class="rbtn w" id="g5re">다시</button>`;
-  $('g5ok').onclick=()=>{const L=+$('g5len').value;if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);draw();};
-  $('g5re').onclick=()=>{calStart();draw();};}
-PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;$('g5cal').hidden=true;sel=-1;
+  $('g5ok').onclick=()=>{const L=+$('g5len').value;if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);pend.forEach(x=>putItem(x[0],x[1],x[2],x[3]));pend=[];$('g5link').hidden=true;draw();$('g5plan').scrollIntoView({block:'center',behavior:'smooth'});};
+  $('g5re').onclick=()=>{calStart();draw();};setTimeout(()=>{$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});$('g5len').focus();},50);}
+PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;pend=[];$('g5link').hidden=true;$('g5cal').hidden=true;sel=-1;
   document.querySelectorAll('#g5room button').forEach(x=>x.classList.toggle('on',x===b));sizeBar();homeSet();items.forEach(clamp);draw();};if(i===1)b.classList.add('on');$('g5room').appendChild(b);});
 $('g5file').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{bg={img,url,cmpp:0};sel=-1;calStart();document.querySelectorAll('#g5room button').forEach(x=>x.classList.remove('on'));draw();};img.src=url;};
-$('g5add').onclick=()=>{const w=+$('g5w').value,d=+$('g5d').value,h=+$('g5h').value;if(!(w>0&&d>0)){$('g5w').focus();return;}
-  if(bg&&!bg.cmpp){$('g5cal').scrollIntoView({block:'center'});return;}
-  const W=world(),o={id:++uid,n:$('g5n').value.trim()||'기물',w,d,h:h||0,r:0,cx:W.w/2,cy:W.d/2};clamp(o);
+  img.onload=()=>{bg={img,url,cmpp:0};sel=-1;pend=[];calStart();document.querySelectorAll('#g5room button').forEach(x=>x.classList.remove('on'));draw();};img.src=url;};
+function putItem(n,w,d,h){const W=world(),o={id:++uid,n:n||'기물',w,d,h:h||0,r:0,cx:W.w/2,cy:W.d/2};clamp(o);
   if(items.some(p=>overlap(o,p))){let best=null;for(let y=d/2;y<=W.d-d/2;y+=10)for(let x=w/2;x<=W.w-w/2;x+=10){const q=Object.assign({},o,{cx:x,cy:y});if(!items.some(p=>overlap(q,p))){const s=Math.hypot(x-W.w/2,y-W.d/2);if(!best||s<best.s)best={x,y,s};}}if(best){o.cx=best.x;o.cy=best.y;}}
-  items.push(o);sel=items.length-1;draw();
-  $('g5link').innerHTML=`포털에서는 이 치수가 담긴 주소가 만들어집니다: <code style="font-size:12px;word-break:break-all">…/mokgagu/room.html?n=${o.n}&w=${w}&d=${d}&h=${h||''}</code>`;};
+  items.push(o);sel=items.length-1;}
+let pend=[];
+$('g5add').onclick=()=>{const w=+$('g5w').value,d=+$('g5d').value,h=+$('g5h').value;if(!(w>0&&d>0)){$('g5w').focus();return;}
+  const n=$('g5n').value.trim()||'기물';
+  if(bg&&!bg.cmpp){pend.push([n,w,d,h]);$('g5link').hidden=false;$('g5link').innerHTML='<b style="color:#d12b2b">「'+pend.map(x=>x[0]).join('」「')+'」를 담아 두었습니다.</b> 위 빨간 상자에서 축척을 맞추면 평면도 위에 나타납니다.';$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});return;}
+  putItem(n,w,d,h);draw();};
 /* 그림으로 남기기: 캔버스로 다시 그림 → 길게 눌러 저장 */
 $('g5save').onclick=()=>{const W=world(),S=Math.min(4,1600/Math.max(W.w,W.d)),c=document.createElement('canvas');c.width=Math.round(W.w*S);c.height=Math.round(W.d*S)+40;
   const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
