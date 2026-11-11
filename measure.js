@@ -155,11 +155,14 @@
     var ref = withRef && kd.ref ? REF[kd.ref] : null, red = '#c0392b';
     var fw = Math.max(o.w, ref ? ref.w : 0), sw = Math.max(o.d, ref ? ref.d : 0), hh = Math.max(o.h, ref ? ref.h : 0);
     var L = 46, Rm = 14, T = 26, B = 62, gapPx = 34, TV = 40;
-    var s = Math.min((VW - L - Rm - gapPx) / (fw + sw), (maxPx - T - B) / hh);
+    var tw = Math.max(o.w, ref && !ref.round ? ref.w : 0), s = Math.min((VW - L - Rm - gapPx) / (fw + sw), (maxPx - T - B) / hh), inl = false;
+    /* 윗면을 옆에 한 줄로 놓을 수 있으면 그렇게 한다(너무 작아지면 아래에) */
+    if (L + Rm + 2 * gapPx + (fw + sw + tw) * s <= VW) inl = true;
+    else { var s3 = Math.min((VW - L - Rm - 2 * gapPx) / (fw + sw + tw), (maxPx - T - B) / hh); if (s3 >= s * .8) { s = s3; inl = true; } }
     var gap = gapPx / s, VH0 = Math.round(hh * s + T + B), Y0 = VH0 - B, X = function (x) { return L + x * s; }, Y = function (y) { return Y0 - y * s; };
-    var sx = fw + gap, f = front(kd.k, o.w, o.h, kd.n), sd = sideView(kd.k, o.d, o.h), g = '', td = Math.max(o.d, ref ? ref.d : 0), VH = Math.round(VH0 + TV + td * s + 34), YT = VH0 + 4 + TV - 14;
+    var sx = fw + gap, f = front(kd.k, o.w, o.h, kd.n), sd = sideView(kd.k, o.d, o.h), g = '', td = Math.max(o.d, ref ? ref.d : 0), VH = inl ? VH0 : Math.round(VH0 + TV + td * s + 34), YT = inl ? Y0 - td * s : VH0 + 4 + TV - 14;
     g += '<svg xmlns="http://www.w3.org/2000/svg" width="' + VW + '" height="' + VH + '" viewBox="0 0 ' + VW + ' ' + VH + '" font-family="Noto Sans KR,sans-serif" role="img" aria-label="' + esc(o.name) + ' 실측도">' + AR;
-    g += '<line x1="' + X(-6) + '" y1="' + Y0 + '" x2="' + X(sx + sw + 6) + '" y2="' + Y0 + '" stroke="#bbb" stroke-dasharray="3 3"/>';
+    g += '<line x1="' + X(-6) + '" y1="' + Y0 + '" x2="' + (inl ? X(sx + sw + gap) + tw * s + 6 : X(sx + sw + 6)) + '" y2="' + Y0 + '" stroke="#bbb" stroke-dasharray="3 3"/>';
     g += rects(f.R, X, Y, s, 0, '#111', 1.3) + lines(f.L, X, Y, 0, '#111', 1);
     g += rects(sd.R, X, Y, s, sx, '#111', 1.3) + lines(sd.L, X, Y, sx, '#111', 1);
     if (ref) {
@@ -172,8 +175,9 @@
     g += dimLine(X(0) - 24, Y(o.h), X(0) - 24, Y0, '높이 ' + fmt(o.h), true);
     g += '<text x="' + X(fw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">정면도</text><text x="' + X(sx + sw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">측면도</text>';
     /* 윗면(상판): 가운데 정렬 */
-    var xc = (X(0) + X(sx + sw)) / 2, TX = xc - Math.max(o.w, ref && !ref.round ? ref.w : 0) * s / 2;
-    g += '<line x1="' + X(-6) + '" y1="' + (VH0 + 2) + '" x2="' + X(sx + sw + 6) + '" y2="' + (VH0 + 2) + '" stroke="#ddd"/><text x="' + xc + '" y="' + (VH0 + 22) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>';
+    var xc = (X(0) + X(sx + sw)) / 2, TX = xc - tw * s / 2;
+    if (inl) { TX = X(sx + sw + gap); xc = TX + tw * s / 2; g += '<text x="' + xc + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>'; }
+    else g += '<line x1="' + X(-6) + '" y1="' + (VH0 + 2) + '" x2="' + X(sx + sw + 6) + '" y2="' + (VH0 + 2) + '" stroke="#ddd"/><text x="' + xc + '" y="' + (VH0 + 22) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>';
     if (ref) g += ref.round ? '' : '<rect x="' + TX + '" y="' + YT + '" width="' + ref.w * s + '" height="' + ref.d * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
     if (o.round) g += '<ellipse cx="' + (TX + o.w * s / 2) + '" cy="' + (YT + o.d * s / 2) + '" rx="' + o.w * s / 2 + '" ry="' + o.d * s / 2 + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
     else {
@@ -181,7 +185,7 @@
       var ins = Math.min(1.8, o.w * .06, o.d * .1) * s;
       g += '<rect x="' + (TX + ins) + '" y="' + (YT + ins) + '" width="' + Math.max(0, o.w * s - 2 * ins) + '" height="' + Math.max(0, o.d * s - 2 * ins) + '" fill="none" stroke="#111" stroke-width=".8"/>';
     }
-    g += dimLine(TX, YT + td * s + 14, (TX + o.w * s), YT + td * s + 14, '가로 ' + fmt(o.w));
+    var yd = inl ? Y0 + 12 : YT + td * s + 14; g += dimLine(TX, yd, (TX + o.w * s), yd, '가로 ' + fmt(o.w));
     g += dimLine(TX - 24, YT, TX - 24, YT + o.d * s, '세로 ' + fmt(o.d), true);
     var bar = 10 * s;
     g += '<g transform="translate(' + (VW - Rm - bar) + ',' + (VH0 - 24) + ')"><rect width="' + bar + '" height="4" fill="#111"/><text x="' + bar / 2 + '" y="16" font-size="10.5" text-anchor="middle" fill="#555">10cm</text></g>';
