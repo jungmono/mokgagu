@@ -235,8 +235,9 @@
   var css = document.createElement('style');
   css.textContent =
     '.mz-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}' +
-    '.mz-row .mz-btn{flex:1 1 0;min-width:0;height:48px;min-height:48px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;box-sizing:border-box;line-height:1;text-decoration:none!important;border:1px solid #111!important;background:#fff!important;color:#111!important;font-size:14px;font-weight:700}' +
-    '@media (max-width:480px){.mz-row{flex-wrap:nowrap;gap:6px}.mz-row .mz-btn{font-size:13px!important;gap:3px}}' +
+    '.mz-row .mz-btn{flex:1 1 0;min-width:0;height:auto;min-height:60px;padding:6px 4px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;line-height:1.2;text-align:center;text-decoration:none!important;border:1px solid #111!important;background:#fff!important;color:#111!important;font-size:13.5px;font-weight:700;overflow:hidden}' +
+    '.mz-row .mz-btn i{font-style:normal;font-size:18px;line-height:1}.mz-row .mz-btn span{display:block;max-width:100%;word-break:keep-all;overflow-wrap:anywhere}'+
+    '.mz-row{flex-wrap:nowrap}@media (max-width:480px){.mz-row{gap:6px}.mz-row .mz-btn{font-size:13px!important}}' +
     '.mz-row .mz-btn:hover,.mz-row .mz-btn:focus-visible{background:#111!important;color:#fff!important}' +
     '.mz-btn{font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:0 16px;border:1px solid #111;background:#fff;color:#111;border-radius:10px;cursor:pointer}' +
     '.mz-btn:hover,.mz-btn:focus-visible{background:#111;color:#fff}' +
@@ -342,9 +343,9 @@
     if (kd.k === 'generic') return;   /* 모양을 모르면 그리지 않는다 */
     var row = document.createElement('div'); row.className = 'mz-row';
     var canPlan = !!(o.d && kd.k !== 'pot' && kd.k !== 'generic' && !o.round);
-    if (canPlan) row.innerHTML += '<button type="button" class="mz-btn" data-t="plan">📐 실측도</button>';
-    row.innerHTML += '<button type="button" class="mz-btn" data-t="person">🧍 사람 옆에</button>';
-    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn mz-room" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
+    if (canPlan) row.innerHTML += '<button type="button" class="mz-btn" data-t="plan"><i>📐</i><span>실측도</span></button>';
+    row.innerHTML += '<button type="button" class="mz-btn" data-t="person"><i>🧍</i><span>사람 옆에</span></button>';
+    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn mz-room" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '"><i>🏠</i><span>우리 집에 놓기</span></a>';
     row.addEventListener('click', function (e) { var b = e.target.closest('button.mz-btn'); if (b) open({ o: o, kd: kd }, b.getAttribute('data-t')); });
     if (c.host && c.host.parentNode) c.host.parentNode.insertBefore(row, c.host.nextSibling); else c.info.appendChild(row);
   }
