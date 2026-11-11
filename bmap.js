@@ -86,7 +86,14 @@
   /* 반닫이(궤)여지도에 넣는 것: 반닫이, 그리고 이름이 궤·장·함으로 끝나는 것(김해궤→김해, 전주장→전주) */
   const clean = (n) => String(n || '').replace(/\([^)]*\)|[^가-힣]/g, '');
   const KIND = /(반닫이|반다지|돈괴|돈궤|궤|장|함)$/;   // 반다지·돈괴는 1995 예랑방·고목당 도록의 표기, 돈궤는 표준 표기(= 반닫이·돈궤)
-  const isKind = (r) => /반닫이|반다지/.test(r.name + (r.hanja || '')) || (KIND.test(clean(r.name)) && !(r.b === 'soban' || /소반|장인|무형/.test(r.name)));
+  /* 장·함은 '지역+장/함'(전주장·김해함)만 넣는다. 이층옷장·의걸이장·책장·머릿장 같은 장 종류는 반닫이가 아니다 */
+  const isKind = (r) => {
+    if (/반닫이|반다지/.test(r.name + (r.hanja || ''))) return true;
+    const n = clean(r.name); if (!KIND.test(n) || r.b === 'soban' || /소반|장인|무형/.test(r.name)) return false;
+    if (/(돈괴|돈궤|궤)$/.test(n)) return true;
+    const keys = [].concat(...R.map((g) => g[5]), ...(typeof PROV !== 'undefined' ? PROV.map((p) => p[1]) : []).reduce((a, b) => a.concat(b), []));
+    return keys.some((k) => n === k + '장' || n === k + '함');
+  };
   const hayOf = (r) => { const q = /반닫이|반다지/.test(r.name + (r.hanja || '')) ? (r.q || '') : String(r.q || '').split(/\s+/).filter((w) => !/박물관|연구소|옥션|경매|도록|보고서/.test(w)).join(' '); return (r.name + (r.hanja || '') + q).replace(/나전/g, ''); };   // 나전주흑칠…의 '전주'는 지역이 아니다
   
   function pins() {
