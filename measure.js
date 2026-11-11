@@ -171,17 +171,18 @@
     g += dimLine(X(sx), Y0 + 12, X(sx + o.d), Y0 + 12, '세로 ' + fmt(o.d));
     g += dimLine(X(0) - 24, Y(o.h), X(0) - 24, Y0, '높이 ' + fmt(o.h), true);
     g += '<text x="' + X(fw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">정면도</text><text x="' + X(sx + sw / 2) + '" y="' + (T - 9) + '" text-anchor="middle" font-size="12" fill="#888">측면도</text>';
-    /* 윗면(상판) */
-    g += '<line x1="' + X(-6) + '" y1="' + (VH0 + 2) + '" x2="' + X(sx + sw + 6) + '" y2="' + (VH0 + 2) + '" stroke="#ddd"/><text x="' + X(fw / 2) + '" y="' + (VH0 + 22) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>';
-    if (ref) g += ref.round ? '' : '<rect x="' + X(0) + '" y="' + YT + '" width="' + ref.w * s + '" height="' + ref.d * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
-    if (o.round) g += '<ellipse cx="' + X(o.w / 2) + '" cy="' + (YT + o.d * s / 2) + '" rx="' + o.w * s / 2 + '" ry="' + o.d * s / 2 + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
+    /* 윗면(상판): 가운데 정렬 */
+    var xc = (X(0) + X(sx + sw)) / 2, TX = xc - Math.max(o.w, ref && !ref.round ? ref.w : 0) * s / 2;
+    g += '<line x1="' + X(-6) + '" y1="' + (VH0 + 2) + '" x2="' + X(sx + sw + 6) + '" y2="' + (VH0 + 2) + '" stroke="#ddd"/><text x="' + xc + '" y="' + (VH0 + 22) + '" text-anchor="middle" font-size="12" fill="#888">윗면(상판)</text>';
+    if (ref) g += ref.round ? '' : '<rect x="' + TX + '" y="' + YT + '" width="' + ref.w * s + '" height="' + ref.d * s + '" fill="none" stroke="' + red + '" stroke-width="1.6" stroke-dasharray="6 4"/>';
+    if (o.round) g += '<ellipse cx="' + (TX + o.w * s / 2) + '" cy="' + (YT + o.d * s / 2) + '" rx="' + o.w * s / 2 + '" ry="' + o.d * s / 2 + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
     else {
-      g += '<rect x="' + X(0) + '" y="' + YT + '" width="' + o.w * s + '" height="' + o.d * s + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
+      g += '<rect x="' + TX + '" y="' + YT + '" width="' + o.w * s + '" height="' + o.d * s + '" fill="#f6f3ec" stroke="#111" stroke-width="1.3"/>';
       var ins = Math.min(1.8, o.w * .06, o.d * .1) * s;
-      g += '<rect x="' + (X(0) + ins) + '" y="' + (YT + ins) + '" width="' + Math.max(0, o.w * s - 2 * ins) + '" height="' + Math.max(0, o.d * s - 2 * ins) + '" fill="none" stroke="#111" stroke-width=".8"/>';
+      g += '<rect x="' + (TX + ins) + '" y="' + (YT + ins) + '" width="' + Math.max(0, o.w * s - 2 * ins) + '" height="' + Math.max(0, o.d * s - 2 * ins) + '" fill="none" stroke="#111" stroke-width=".8"/>';
     }
-    g += dimLine(X(0), YT + td * s + 14, X(o.w), YT + td * s + 14, '가로 ' + fmt(o.w));
-    g += dimLine(X(0) - 24, YT, X(0) - 24, YT + o.d * s, '세로 ' + fmt(o.d), true);
+    g += dimLine(TX, YT + td * s + 14, (TX + o.w * s), YT + td * s + 14, '가로 ' + fmt(o.w));
+    g += dimLine(TX - 24, YT, TX - 24, YT + o.d * s, '세로 ' + fmt(o.d), true);
     var bar = 10 * s;
     g += '<g transform="translate(' + (VW - Rm - bar) + ',' + (VH0 - 24) + ')"><rect width="' + bar + '" height="4" fill="#111"/><text x="' + bar / 2 + '" y="16" font-size="10.5" text-anchor="middle" fill="#555">10cm</text></g>';
     return g + '</svg>';
