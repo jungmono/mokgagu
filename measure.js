@@ -234,6 +234,9 @@
   var css = document.createElement('style');
   css.textContent =
     '.mz-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}' +
+    '.mz-row .mz-btn{flex:1 1 0;min-width:0;height:48px;min-height:48px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;box-sizing:border-box;line-height:1;text-decoration:none!important;border:1px solid #111!important;background:#fff!important;color:#111!important;font-size:14px;font-weight:700}' +
+    '@media (max-width:480px){.mz-row{flex-wrap:nowrap;gap:6px}.mz-row .mz-btn{font-size:13px!important;gap:3px}}' +
+    '.mz-row .mz-btn:hover,.mz-row .mz-btn:focus-visible{background:#111!important;color:#fff!important}' +
     '.mz-btn{font:inherit;font-size:14px;font-weight:700;min-height:44px;padding:0 16px;border:1px solid #111;background:#fff;color:#111;border-radius:10px;cursor:pointer}' +
     '.mz-btn:hover,.mz-btn:focus-visible{background:#111;color:#fff}' +
     '#mz-dlg{border:0;padding:0;border-radius:14px;width:min(96vw,880px);max-height:94dvh;background:#fff;color:#111;font-family:"Noto Sans KR",sans-serif;overflow:auto}' +
@@ -340,7 +343,7 @@
     var canPlan = !!(o.d && kd.k !== 'pot' && kd.k !== 'generic' && !o.round);
     if (canPlan) row.innerHTML += '<button type="button" class="mz-btn" data-t="plan">📐 실측도</button>';
     row.innerHTML += '<button type="button" class="mz-btn" data-t="person">🧍 사람 옆에</button>';
-    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn mz-room" style="display:inline-flex;align-items:center;text-decoration:none" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
+    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn mz-room" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
     row.addEventListener('click', function (e) { var b = e.target.closest('button.mz-btn'); if (b) open({ o: o, kd: kd }, b.getAttribute('data-t')); });
     if (c.host && c.host.parentNode) c.host.parentNode.insertBefore(row, c.host.nextSibling); else c.info.appendChild(row);
   }
