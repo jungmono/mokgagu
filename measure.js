@@ -6,6 +6,7 @@
    comments.js 가 불러온다(zoom.js 와 같은 방식). 사진 창 모양이 두 가지(#dlg-dim 형 / #d-info 형)라 둘 다 지켜본다. */
 (function () {
   if (window.MOKGAGU_MEASURE) return; window.MOKGAGU_MEASURE = 1;
+  if (!window.MOKGAGU_PERSON && !document.querySelector('script[src^="person.js"]')) { var ps = document.createElement('script'); ps.src = 'person.js?v=20261111'; document.head.appendChild(ps); }   /* 한복 사람 그림 */
 
   /* ───── 치수 읽기 (compare.html 의 dims0 와 같은 규칙) ───── */
   function parse(text) {
@@ -211,19 +212,20 @@
   }
 
   /* 사람 옆에: 정면도들을 같은 바닥선·같은 눈금에 */
-  function drawPerson(o, kd, withRef, H, sit, VW, maxPx) {
+  function drawPerson(o, kd, withRef, H, sit, VW, maxPx, who) {
+    var PP = window.MOKGAGU_PERSON;
     var items = [{ name: o.name, w: o.w, h: o.h, k: kd.k, n: kd.n, col: '#111', round: o.round }];
     if (withRef && kd.ref) { var r = REF[kd.ref]; items.push({ name: r.name, w: r.w, h: r.h, k: r.k, col: '#c0392b' }); }
-    var pw = sit ? H * .56 : H * .36, gap = 12, pad = 14;
+    var pw = PP ? PP.width(H, who, sit) : sit ? H * .56 : H * .36, gap = 12, pad = 14;
     var tot = pw + items.reduce(function (a, it) { return a + it.w + gap; }, gap);
-    var maxH = Math.max(sit ? H * .55 : H, Math.max.apply(null, items.map(function (it) { return it.h; })));
+    var maxH = Math.max(PP ? PP.top(H, who, sit) : sit ? H * .55 : H, Math.max.apply(null, items.map(function (it) { return it.h; })));
     var T = 24, B = 40, s = Math.min((VW - 2 * pad) / tot, (maxPx - T - B) / maxH), VH = Math.round(maxH * s + T + B), Y0 = VH - B;
     var X = function (x) { return pad + x * s; }, Y = function (y) { return Y0 - y * s; }, step = s * 10 >= 16 ? 10 : s * 20 >= 16 ? 20 : 50, lab = step === 10 ? 50 : 100;
     var g = '<svg xmlns="http://www.w3.org/2000/svg" width="' + VW + '" height="' + VH + '" viewBox="0 0 ' + VW + ' ' + VH + '" font-family="Noto Sans KR,sans-serif" role="img" aria-label="사람 옆에 놓은 ' + esc(o.name) + '">';
     for (var v = step; v <= maxH + 4; v += step) g += '<line x1="' + pad + '" y1="' + Y(v) + '" x2="' + (VW - pad) + '" y2="' + Y(v) + '" stroke="' + (v % lab ? '#eee' : '#d6d6d6') + '"/>' + (v % lab ? '' : '<text x="' + (VW - pad - 2) + '" y="' + (Y(v) - 3) + '" text-anchor="end" font-size="10" fill="#999">' + v + 'cm</text>');
     g += '<line x1="' + pad + '" y1="' + Y0 + '" x2="' + (VW - pad) + '" y2="' + Y0 + '" stroke="#111" stroke-width="1.5"/>';
-    g += person(X(pw / 2), Y, s, H, sit);
-    g += '<text x="' + X(pw / 2) + '" y="' + (Y0 + 16) + '" text-anchor="middle" font-size="12" fill="#555">' + (sit ? '앉은 사람' : '사람') + ' ' + H + '</text>';
+    g += PP ? PP.svg(X(pw / 2), Y0, s, H, who, sit) : person(X(pw / 2), Y, s, H, sit);
+    g += '<text x="' + X(pw / 2) + '" y="' + (Y0 + 16) + '" text-anchor="middle" font-size="12" fill="#555">' + (sit ? '앉은 ' : '') + (PP ? (who === 'w' ? '여인' : '선비') : '사람') + ' ' + H + '</text>';
     var x = pw + gap;
     items.forEach(function (it) {
       if (it.round || kd.k === 'pot') g += '<g transform="translate(' + X(x) + ',' + Y0 + ') scale(' + s + ',' + -s + ')"><path d="' + potPath(it.w, it.h) + '" fill="rgba(255,255,255,.9)" stroke="' + it.col + '" stroke-width="' + 1.3 / s + '"/></g>';
@@ -283,6 +285,8 @@
   }
   function getH() { try { var v = +localStorage.getItem('mokgagu_mz_h'); return v >= 140 && v <= 190 ? v : 170; } catch (e) { return 170; } }
   function saveH(v) { try { localStorage.setItem('mokgagu_mz_h', String(v)); } catch (e) {} }
+  function getP() { try { var v = localStorage.getItem('mokgagu_mz_p') || ''; return { who: v.charAt(0) === 'w' ? 'w' : 'm', sit: v.charAt(1) === '1' }; } catch (e) { return { who: 'm', sit: false }; } }
+  function saveP() { try { localStorage.setItem('mokgagu_mz_p', state.who + (state.sit ? '1' : '0')); } catch (e) {} }
 
   function paint() {
     var o = state.o, kd = state.kd, host = dlg.querySelector('.mz-svg'), opts = dlg.querySelector('.mz-opts'), note = dlg.querySelector('.mz-note');
@@ -299,17 +303,21 @@
       note.textContent = '바깥 치수(가로·세로·높이)는 도록 값입니다. 가로·세로 가운데 긴 쪽을 가로로 놓았습니다. 안쪽 문·서랍 선은 ' + kd.label + ' 일반형으로 그린 것이라 실제 기물과 다를 수 있습니다.';
     } else {
       var H = state.H;
-      opts.innerHTML = '<label>키 <input type="range" class="mz-h" min="140" max="190" step="5" value="' + H + '"> <b class="mz-hv">' + H + '</b>cm</label>' + refTxt;
-      host.innerHTML = drawPerson(o, kd, state.ref, H, state.sit, vw, maxPx);
-      note.textContent = '사람은 단순한 그림이고 기물은 도록 치수의 정면 모양입니다.' + (kd.k === 'generic' ? ' 이 기물은 모양을 알 수 없어 상자로 그렸습니다.' : '');
-      var rg = opts.querySelector('.mz-h'); rg.oninput = function () { state.H = +rg.value; saveH(state.H); opts.querySelector('.mz-hv').textContent = state.H; host.innerHTML = drawPerson(o, kd, state.ref, state.H, state.sit, vw, maxPx); };
+      var seg = function (k, a) { return '<span class="mz-seg" role="group">' + a.map(function (x) { return '<button type="button" data-' + k + '="' + x[0] + '" aria-pressed="' + (String(state[k === 'w' ? 'who' : 'sit']) === x[0]) + '" class="' + (String(state[k === 'w' ? 'who' : 'sit']) === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</span>'; };
+      opts.innerHTML = seg('w', [['m', '선비'], ['w', '여인']]) + seg('s', [['false', '서기'], ['true', '앉기']]) +
+        '<label>키 <input type="range" class="mz-h" min="140" max="190" step="5" value="' + H + '"> <b class="mz-hv">' + H + '</b>cm</label>' + refTxt;
+      host.innerHTML = drawPerson(o, kd, state.ref, H, state.sit, vw, maxPx, state.who);
+      opts.querySelectorAll('[data-w]').forEach(function (b) { b.onclick = function () { state.who = b.getAttribute('data-w'); saveP(); paint(); }; });
+      opts.querySelectorAll('[data-s]').forEach(function (b) { b.onclick = function () { state.sit = b.getAttribute('data-s') === 'true'; saveP(); paint(); }; });
+      note.textContent = '사람은 정수리까지를 키로 맞춘 그림입니다' + (state.who === 'w' ? '' : '(갓은 그 위로 올라옴)') + '. 기물은 도록 치수의 정면 모양입니다.' + (kd.k === 'generic' ? ' 이 기물은 모양을 알 수 없어 상자로 그렸습니다.' : '');
+      var rg = opts.querySelector('.mz-h'); rg.oninput = function () { state.H = +rg.value; saveH(state.H); opts.querySelector('.mz-hv').textContent = state.H; host.innerHTML = drawPerson(o, kd, state.ref, state.H, state.sit, vw, maxPx, state.who); };
     }
     var cb = opts.querySelector('.mz-ref'); if (cb) cb.onchange = function () { state.ref = cb.checked; paint(); };
   }
 
   function open(ctx, tab) {
     build();
-    state = { o: ctx.o, kd: ctx.kd, tab: tab, ref: false, H: getH(), sit: false };
+    var pp = getP(); state = { o: ctx.o, kd: ctx.kd, tab: tab, ref: false, H: getH(), sit: pp.sit, who: pp.who };
     dlg.querySelector('.mz-t').innerHTML = esc(ctx.o.name) + '<small>가로 ' + fmt(ctx.o.w) + (ctx.o.d ? ' × 세로 ' + fmt(ctx.o.d) : '') + ' × 높이 ' + fmt(ctx.o.h) + ' cm' + (ctx.o.round ? ' (지름)' : '') + '</small>';
     if (!dlg.open) dlg.showModal();
     paint();

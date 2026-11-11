@@ -32,6 +32,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 .msg a{color:#111;font-weight:700}.msg[hidden]{display:none}
 .eopt{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 8px;font-size:14px}
 .eopt input{font:inherit;font-size:16px;width:80px;padding:6px 8px;border:1.5px solid #ccc;border-radius:8px}
+.eopt select{font:inherit;font-size:16px;padding:6px 8px;border:1.5px solid #ccc;border-radius:8px;background:#fff}
 #g5elev svg{display:block;width:100%;height:auto}
 </style></head><body><main>
 <script src="tools-head.js?v=20261117" data-k="room"></script>
@@ -51,14 +52,14 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 <div class="selbar" id="g5sel"></div>
 <div class="step"><span class="no">4</span><b>벽에 세워 보기</b> <small style="color:#888;font-weight:400">빨간 선 벽 앞에 놓인 기물을 높이까지 봅니다</small></div>
 <div class="pick" id="g5wall"></div>
-<div class="eopt"><label>천장 높이 <input id="g5ceil" type="number" inputmode="decimal" min="200" max="400" value="230"> cm</label><label>사람 키 <input id="g5man" type="number" inputmode="decimal" min="100" max="200" value="170"> cm</label></div>
+<div class="eopt"><label>천장 높이 <input id="g5ceil" type="number" inputmode="decimal" min="200" max="400" value="230"> cm</label><label>사람 키 <input id="g5man" type="number" inputmode="decimal" min="100" max="200" value="170"> cm</label><label>사람 <select id="g5who"><option value="m0">선비</option><option value="w0">여인</option><option value="m1">앉은 선비</option><option value="w1">앉은 여인</option></select></label></div>
 <div class="sheet" id="g5elev"></div>
 <div class="note" id="g5enote"></div>
 <div class="ctl" style="margin-top:14px"><button class="rbtn big" id="g5save">🖼 그림으로 남기기</button><button class="rbtn w big" id="g5qr">🔗 이 배치 QR·링크</button><button class="rbtn w big" id="g5reset">처음부터</button></div>
 <div class="note" id="g5keep">놓은 배치는 이 기기에 저절로 남아 다음에 열어도 그대로입니다. 평면도 사진 위의 배치는 남지 않습니다.</div>
 <div id="g5out"></div>
 </div></main>
-<script src="qrcode.min.js"></script>
+<script src="qrcode.min.js"></script><script src="person.js?v=20261111"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -165,7 +166,7 @@ function elev(){
   const ceil=Math.max(200,Math.min(400,+$('g5ceil').value||230)),man=Math.max(100,Math.min(200,+$('g5man').value||170));
   const list=[],noH=[];items.forEach(o=>{const n=near(o)[wl];if(n[0]>60)return;if(!o.h){noH.push(o.n);return;}list.push({o,dist:n[0],a:n[1],b:n[2]});});
   list.sort((p,q)=>q.dist-p.dist);
-  const cw=Math.max(280,host.clientWidth||600),pw=man*.36,gap=30,tot=len+gap+pw+30,s=cw/(tot+12*tot/cw),L=12/s,T=26/s,B=34/s,VW=tot,VH=ceil+T+B,Y=v=>T+ceil-v,fs=12.5/s;
+  const PP=window.MOKGAGU_PERSON,pv=$('g5who').value,who=pv[0],sit=pv[1]==='1',cw=Math.max(280,host.clientWidth||600),pw=PP?PP.width(man,who,sit):man*.36,gap=30,tot=len+gap+pw+30,s=cw/(tot+12*tot/cw),L=12/s,T=26/s,B=34/s,VW=tot,VH=ceil+T+B,Y=v=>T+ceil-v,fs=12.5/s;
   let g=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-L} 0 ${VW+L} ${VH}" font-family="Noto Sans KR" role="img" aria-label="벽 정면 그림">`;
   g+=`<rect x="0" y="${T}" width="${len}" height="${ceil}" fill="#fff" stroke="#bbb" stroke-width="${1/s}"/>`;
   for(let v=50;v<ceil;v+=50)g+=`<line x1="0" y1="${Y(v)}" x2="${len}" y2="${Y(v)}" stroke="${v%100?'#f2efe9':'#e4e0d7'}" stroke-width="${1/s}"/><text x="${len-3/s}" y="${Y(v)-3/s}" text-anchor="end" font-size="${fs*.8}" fill="#aaa">${v}</text>`;
@@ -177,12 +178,14 @@ function elev(){
   g+=`<line x1="${-L}" y1="${Y(0)}" x2="${len}" y2="${Y(0)}" stroke="#111" stroke-width="${2/s}"/>`;
   /* 사람: 벽 오른쪽 바깥에 같은 눈금으로 */
   const px=len+gap+pw/2,hr=man*.062,w=man*.13,c='#9a9488';
-  g+=`<g fill="${c}"><circle cx="${px}" cy="${Y(man-hr)}" r="${hr}"/><path d="M${px-w} ${Y(man*.82)} L${px+w} ${Y(man*.82)} L${px+w*.8} ${Y(man*.5)} L${px-w*.8} ${Y(man*.5)}Z"/><rect x="${px-w*.75}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/><rect x="${px+w*.1}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/></g>`;
-  g+=`<line x1="${len}" y1="${Y(0)}" x2="${len+gap+pw+10}" y2="${Y(0)}" stroke="#111" stroke-width="${2/s}"/><text x="${px}" y="${Y(0)+16/s}" text-anchor="middle" font-size="${fs}" fill="#555">사람 ${man}</text>`;
+  if(PP)g+=PP.svg(px,Y(0),1,man,who,sit);else g+=`<g fill="${c}"><circle cx="${px}" cy="${Y(man-hr)}" r="${hr}"/><path d="M${px-w} ${Y(man*.82)} L${px+w} ${Y(man*.82)} L${px+w*.8} ${Y(man*.5)} L${px-w*.8} ${Y(man*.5)}Z"/><rect x="${px-w*.75}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/><rect x="${px+w*.1}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/></g>`;
+  g+=`<line x1="${len}" y1="${Y(0)}" x2="${len+gap+pw+10}" y2="${Y(0)}" stroke="#111" stroke-width="${2/s}"/><text x="${px}" y="${Y(0)+16/s}" text-anchor="middle" font-size="${fs}" fill="#555">${sit?'앉은 ':''}${PP?(who==='w'?'여인':'선비'):'사람'} ${man}</text>`;
   host.innerHTML=g+'</svg>';
   $('g5enote').textContent=(list.length?'벽에서 60cm 안쪽에 놓인 기물만 보입니다. 벽에서 떨어진 기물은 점선·옅은 색입니다.':'이 벽 앞(60cm 안쪽)에 놓인 기물이 없습니다. 평면도에서 기물을 빨간 벽 쪽으로 옮겨 보세요.')+(noH.length?' 높이를 모르는 기물('+noH.join('·')+')은 빠졌습니다.':'');
 }
 WALLS.forEach(([k,t])=>{const b=document.createElement('button');b.textContent=t;b.dataset.w=k;b.onclick=()=>{wall=k;draw();};$('g5wall').appendChild(b);});
+try{const v=localStorage.getItem('mokgagu_mz_p')||'';if(/^[mw][01]$/.test(v))$('g5who').value=v;}catch(e){}
+$('g5who').onchange=()=>{try{localStorage.setItem('mokgagu_mz_p',$('g5who').value);}catch(e){}elev();};
 $('g5ceil').oninput=$('g5man').oninput=()=>elev();
 
 const pt=e=>{const m=sv.getScreenCTM().inverse(),q=sv.createSVGPoint();q.x=e.clientX;q.y=e.clientY;return q.matrixTransform(m);};
