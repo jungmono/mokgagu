@@ -28,10 +28,15 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 .sz{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;font-size:15px}.sz label{display:flex;align-items:center;gap:10px;min-height:40px}.sz input[type=range]{flex:1;max-width:340px;accent-color:#111;height:28px}
 .cal{border:1.5px solid #d12b2b;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px;background:#fff}.cal input{font:inherit;font-size:16px;width:90px;padding:8px;border:1.5px solid #ccc;border-radius:8px}
 #g5plan svg{overflow:hidden}#g5out img{max-width:100%;border:1px solid #ddd;border-radius:10px;margin-top:10px}
+.msg{border:1.5px solid #111;background:#fff;border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.msg a{color:#111;font-weight:700}.msg[hidden]{display:none}
+.eopt{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 8px;font-size:14px}
+.eopt input{font:inherit;font-size:16px;width:80px;padding:6px 8px;border:1.5px solid #ccc;border-radius:8px}
+#g5elev svg{display:block;width:100%;height:auto}
 </style></head><body><main>
 <script src="tools-head.js?v=20261117" data-k="room"></script>
 <div class="g5">
-<div class="step"><span class="no">1</span><b>방 정하기</b> <small style="color:#888;font-weight:400">방 가장자리의 ● 를 끌면 크기가 바뀝니다</small></div>
+<div class="step" id="g5s1"><span class="no">1</span><b>방 정하기</b> <small style="color:#888;font-weight:400">방 가장자리의 ● 를 끌면 크기가 바뀝니다</small></div>
 <div class="pick" id="g5room"></div>
 <div class="sz" id="g5size" hidden></div>
 <div class="up"><label class="rbtn w big" for="g5file">📷 평면도 사진 올리기</label><input type="file" id="g5file" accept="image/*" hidden>
@@ -40,19 +45,28 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 <div class="step"><span class="no">2</span><b>기물 넣기</b></div>
 <div class="ctl g5in"><input id="g5n" placeholder="이름 (예: 반닫이)"><input id="g5w" type="number" inputmode="decimal" placeholder="가로 cm"><input id="g5d" type="number" inputmode="decimal" placeholder="세로(깊이) cm"><input id="g5h" type="number" inputmode="decimal" placeholder="높이 cm"><button class="rbtn big" id="g5add">넣기</button></div>
 <div class="note" id="g5link" hidden></div>
-<div class="step"><span class="no">3</span><b>끌어서 놓기</b> <small style="color:#888;font-weight:400">기물을 누르면 손잡이로 돌리기 · − 빼기</small></div>
+<div class="step" id="g5s3"><span class="no">3</span><b>끌어서 놓기</b> <small style="color:#888;font-weight:400">기물을 누르면 손잡이로 돌리기 · − 빼기</small></div>
+<div class="msg" id="g5msg" hidden></div>
 <div class="sheet" id="g5plan" style="touch-action:none"></div>
 <div class="selbar" id="g5sel"></div>
-<div class="ctl" style="margin-top:10px"><button class="rbtn big" id="g5save">🖼 그림으로 남기기</button><button class="rbtn w big" id="g5qr">🔗 손님에게 줄 QR 만들기</button></div>
+<div class="step"><span class="no">4</span><b>벽에 세워 보기</b> <small style="color:#888;font-weight:400">빨간 선 벽 앞에 놓인 기물을 높이까지 봅니다</small></div>
+<div class="pick" id="g5wall"></div>
+<div class="eopt"><label>천장 높이 <input id="g5ceil" type="number" inputmode="decimal" min="200" max="400" value="230"> cm</label><label>사람 키 <input id="g5man" type="number" inputmode="decimal" min="100" max="200" value="170"> cm</label></div>
+<div class="sheet" id="g5elev"></div>
+<div class="note" id="g5enote"></div>
+<div class="ctl" style="margin-top:14px"><button class="rbtn big" id="g5save">🖼 그림으로 남기기</button><button class="rbtn w big" id="g5qr">🔗 이 배치 QR·링크</button><button class="rbtn w big" id="g5reset">처음부터</button></div>
+<div class="note" id="g5keep">놓은 배치는 이 기기에 저절로 남아 다음에 열어도 그대로입니다. 평면도 사진 위의 배치는 남지 않습니다.</div>
 <div id="g5out"></div>
 </div></main>
 <script src="qrcode.min.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PRE=[{n:'24평 거실',w:340,d:460,t:'living'},{n:'33평 거실',w:410,d:560,t:'living'},{n:'44평 거실',w:480,d:650,t:'living'},{n:'안방(보통)',w:340,d:380,t:'bed'},{n:'작은방(보통)',w:280,d:300,t:'small'}];
 const HOME={sofa:{n:'3인용 소파',kind:'sofa',w:210,d:90,h:85},tv:{n:'TV·거실장',kind:'tv',w:180,d:45,h:50},bed:{n:'퀸 침대',kind:'bed',w:150,d:200,h:45},bed1:{n:'슈퍼싱글 침대',kind:'bed',w:110,d:200,h:45}};
-let R={w:410,d:560}, rt='living', bg=null, items=[], sel=-1, uid=0, K=1, act=null, calPts=[];
+const KEY='mokgagu_room_v1';
+let R={w:410,d:560}, rt='living', bg=null, items=[], sel=-1, uid=0, K=1, act=null, calPts=[], wall='', shared=false;
 const plan=$('g5plan');
 plan.innerHTML='<svg id="g5svg" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR" style="width:100%;height:auto;max-height:70vh;display:block;touch-action:none"><g id="g5bg"></g><g id="g5lay"></g></svg>';
 const sv=$('g5svg'), rad=a=>a*Math.PI/180;
@@ -65,10 +79,22 @@ function corners(o){return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>{const v=r
 function overlap(a,b){const A=corners(a),B=corners(b);for(const P of [A,B])for(let i=0;i<4;i++){const p=P[i],q=P[(i+1)%4],nx=q[1]-p[1],ny=p[0]-q[0];
   const pa=A.map(v=>v[0]*nx+v[1]*ny),pb=B.map(v=>v[0]*nx+v[1]*ny);if(Math.max(...pa)<=Math.min(...pb)+.01||Math.max(...pb)<=Math.min(...pa)+.01)return false;}return true;}
 /* 기본 가구: 거실은 소파·TV, 방은 퀸 침대. 손대지 않은 것은 방 크기를 바꾸면 벽에 다시 붙는다 */
-function homeSet(){items=items.filter(o=>!o.home);const add=(k,r)=>items.unshift(Object.assign({id:++uid,home:1,r,cx:0,cy:0},HOME[k]));
+function homeSet(){items=items.filter(o=>!o.home);const add=(k,r)=>items.unshift(Object.assign({id:++uid,home:1,hk:k,r,cx:0,cy:0},HOME[k]));
   if(rt==='living'){add('tv',90);add('sofa',270);} else add(rt==='small'?'bed1':'bed',0); place();}
 function place(){const W=world();items.forEach(o=>{if(!o.home||o.moved)return;const f=fp(o);
   if(o.kind==='sofa'){o.cx=f.w/2;o.cy=W.d/2;} else if(o.kind==='tv'){o.cx=W.w-f.w/2;o.cy=W.d/2;} else {o.cx=W.w/2;o.cy=f.d/2;} clamp(o);});}
+
+/* ───── 이 기기에 배치 남기기 ───── */
+function pack(){return {r:[R.w,R.d,rt],i:items.map(o=>[o.n,o.w,o.d,o.h||0,o.r,Math.round(o.cx),Math.round(o.cy),o.home?o.hk:'',o.moved?1:0])};}
+function unpack(s){if(!s||!Array.isArray(s.r)||!Array.isArray(s.i))return false;
+  const w=+s.r[0],d=+s.r[1];if(!(w>=200&&w<=800&&d>=200&&d<=800))return false;
+  R={w,d};rt=['living','bed','small'].includes(s.r[2])?s.r[2]:'living';items=[];
+  s.i.slice(0,40).forEach(a=>{const hk=HOME[a[7]]?a[7]:'',o={id:++uid,n:String(a[0]||'기물').slice(0,30),w:+a[1],d:+a[2],h:+a[3]||0,r:((+a[4]||0)%360+360)%360,cx:+a[5]||0,cy:+a[6]||0};
+    if(!(o.w>0&&o.d>0&&o.w<=800&&o.d<=800))return; if(hk){o.home=1;o.hk=hk;o.kind=HOME[hk].kind;o.moved=a[8]?1:0;} items.push(o);});
+  items.forEach(clamp);return true;}
+function keep(){if(bg||shared)return;try{localStorage.setItem(KEY,JSON.stringify(pack()));}catch(e){}}
+function roomOn(){document.querySelectorAll('#g5room button').forEach((x,i)=>x.classList.toggle('on',!bg&&PRE[i].w===R.w&&PRE[i].d===R.d&&PRE[i].t===rt));}
+
 /* 한 기물의 모양(가운데 기준, 앞=아래쪽). 사람이 넣은 기물은 앞면을 굵은 선으로 */
 function shape(o){const w=o.w,d=o.d,x0=-w/2,y0=-d/2,sw=1.6*K;let s='';
   const box=(x,y,a,b,fill,st)=>`<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="${fill}" stroke="${st||'#111'}" stroke-width="${sw}"/>`;
@@ -80,6 +106,13 @@ function shape(o){const w=o.w,d=o.d,x0=-w/2,y0=-d/2,sw=1.6*K;let s='';
     s+=`<line x1="${x0}" y1="${y0+52}" x2="${w/2}" y2="${y0+52}" stroke="#999" stroke-width="${sw}"/>`;}
   else {s+=box(x0,y0,w,d,'rgba(255,255,255,.92)');s+=`<line x1="${x0}" y1="${d/2}" x2="${w/2}" y2="${d/2}" stroke="#111" stroke-width="${4.5*K}"/>`;}
   return s;}
+/* 이름 글자: 기물 겉 상자 안에 들어가게 — 가로로 안 들어가면 세로로 세우고, 그래도 크면 줄인다 */
+function label(o){const f=fp(o),n=o.n,len=[...n].reduce((a,c)=>a+(/[\x00-\x7f]/.test(c)?.58:1),0)||1;
+  let fs=Math.max(11*K,Math.min(14*K,Math.max(o.w,o.d)/5)),vert=false;
+  if(len*fs>f.w*.9){ if(f.d>f.w*1.15&&len*fs<=f.d*.9) vert=true;
+    else { vert=f.d>f.w*1.15; fs=Math.max(7*K,Math.min(fs,(vert?f.d:f.w)*.9/len)); } }
+  const t=len*fs>(vert?f.d:f.w)*1.05?[...n].slice(0,Math.max(2,Math.floor((vert?f.d:f.w)*.9/fs)-1)).join('')+'…':n;
+  return `<text x="0" y="${fs*.36}" font-size="${fs}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none" paint-order="stroke" stroke="rgba(255,255,255,.85)" stroke-width="${fs*.22}"${vert?' transform="rotate(-90)"':''}>${esc(t)}</text>`;}
 function grp(o,i,on){const bad=items.some(p=>p!==o&&overlap(o,p));
   let g=`<g class="it" data-i="${i}" transform="translate(${o.cx} ${o.cy})"><g transform="rotate(${o.r})">${shape(o)}`;
   if(bad||on) g+=`<rect x="${-o.w/2}" y="${-o.d/2}" width="${o.w}" height="${o.d}" fill="none" stroke="${bad?'#d12b2b':'#111'}" stroke-width="${2.6*K}" ${bad?`stroke-dasharray="${6*K} ${4*K}"`:''}/>`;
@@ -91,42 +124,79 @@ function grp(o,i,on){const bad=items.some(p=>p!==o&&overlap(o,p));
        `<path d="M${hr*.18} ${-hr*.62} L${hr*.72} ${-hr*.62} L${hr*.58} ${-hr*.05}Z" fill="#111"/></g>`;
     g+=`<g data-act="del" transform="translate(${-o.w/2-16*K} ${-o.d/2-16*K}) rotate(${-o.r})" style="cursor:pointer"><circle r="${13*K}" fill="#fff" stroke="#111" stroke-width="${2*K}"/><line x1="${-6*K}" y1="0" x2="${6*K}" y2="0" stroke="#111" stroke-width="${3*K}"/></g>`;
     if(o.home) [[1,-1],[1,1],[-1,1],[-1,-1]].forEach(([sx,sy])=>{const a=12*K;g+=`<rect data-act="rs" data-sx="${sx}" data-sy="${sy}" x="${sx*o.w/2-a/2}" y="${sy*o.d/2-a/2}" width="${a}" height="${a}" fill="#fff" stroke="#111" stroke-width="${2*K}" style="cursor:nwse-resize"/>`;});}
-  g+=`</g><text x="0" y="${4*K}" font-size="${Math.max(11*K,Math.min(14*K,Math.max(o.w,o.d)/5))}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">${o.n}</text></g>`;
+  g+=`</g>${label(o)}</g>`;
   return g;}
 function draw(){
   const W=world(), cw=Math.max(280,plan.clientWidth||600), chMax=window.innerHeight*.7;
   const K0=Math.max(W.w*1.2/cw,W.d*1.2/chMax), pad=Math.max(Math.max(W.w,W.d)*.04,56*K0);
   let vb=[-pad,-pad,W.w+2*pad,W.d+2*pad]; if(act&&act.t==='room')vb=[act.vb0[0],act.vb0[1],act.vb0[2]*act.f,act.vb0[3]*act.f]; K=Math.max(vb[2]/cw,vb[3]/chMax);
-  
+
   if(bg&&!bg.cmpp){sv.setAttribute('viewBox',[0,0,bg.img.width,bg.img.height].join(' '));
     $('g5bg').innerHTML=`<image href="${bg.url}" x="0" y="0" width="${bg.img.width}" height="${bg.img.height}"/>`;
     const r=bg.img.width/120;$('g5lay').innerHTML=calPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="#d12b2b"/>`).join('')+(calPts.length===2?`<line x1="${calPts[0].x}" y1="${calPts[0].y}" x2="${calPts[1].x}" y2="${calPts[1].y}" stroke="#d12b2b" stroke-width="${r*.6}"/>`:'');
-    sv.style.cursor='crosshair';return;}
+    sv.style.cursor='crosshair';$('g5elev').innerHTML='';$('g5enote').textContent='평면도 축척을 맞추면 벽 그림이 나옵니다.';return;}
   sv.style.cursor='';sv.setAttribute('viewBox',vb.join(' '));
   let b='';
   if(bg) b+=`<image href="${bg.url}" x="0" y="0" width="${W.w}" height="${W.d}" opacity=".85"/>`;
   else { for(let v=0;v<=W.w;v+=50) b+=`<line x1="${v}" y1="0" x2="${v}" y2="${W.d}" stroke="${v%100?'#f0ede7':'#e4e0d7'}" stroke-width="${K}"/>`;
     for(let v=0;v<=W.d;v+=50) b+=`<line x1="0" y1="${v}" x2="${W.w}" y2="${v}" stroke="${v%100?'#f0ede7':'#e4e0d7'}" stroke-width="${K}"/>`;
     b+=`<rect x="0" y="0" width="${W.w}" height="${W.d}" fill="none" stroke="#111" stroke-width="${4*K}"/>`; }
+  /* 벽에 세워 보기에서 고른 벽 */
+  const wl=curWall(),WL={top:[0,0,W.w,0],right:[W.w,0,W.w,W.d],bottom:[0,W.d,W.w,W.d],left:[0,0,0,W.d]}[wl];
+  b+=`<line x1="${WL[0]}" y1="${WL[1]}" x2="${WL[2]}" y2="${WL[3]}" stroke="#d12b2b" stroke-width="${7*K}" stroke-linecap="round" opacity=".85"/>`;
   $('g5bg').innerHTML=b;
   let g='';items.forEach((o,i)=>{if(i!==sel)g+=grp(o,i,false);}); if(items[sel])g+=grp(items[sel],sel,true);
-  if(!bg){const hr=11*K,fs=14*K,w=W.w,d=W.d,hd=(ax,ay,x,y,cur)=>`<g data-act="room" data-ax="${ax}" data-ay="${ay}" style="cursor:${cur}"><circle cx="${x}" cy="${y}" r="${hr*2.2}" fill="transparent"/><circle cx="${x}" cy="${y}" r="${hr}" fill="#111" stroke="#fff" stroke-width="${2*K}"/></g>`;
+  if(!bg){const hr=11*K,fs=14*K,w=W.w,d=W.d,off=20*K,hd=(ax,ay,x,y,cur)=>`<g data-act="room" data-ax="${ax}" data-ay="${ay}" style="cursor:${cur}"><circle cx="${x}" cy="${y}" r="${hr*2.2}" fill="transparent"/><circle cx="${x}" cy="${y}" r="${hr}" fill="#111" stroke="#fff" stroke-width="${2*K}"/></g>`;
     g+=`<text x="${w/2}" y="${-14*K}" font-size="${fs}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">가로 ${w}cm</text><text transform="translate(${-14*K} ${d/2}) rotate(-90)" font-size="${fs}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">세로 ${d}cm</text>`;
-    g+=hd(1,0,w,d/2,'ew-resize')+hd(0,1,w/2,d,'ns-resize')+hd(1,1,w,d,'nwse-resize');}
-  $('g5lay').innerHTML=g; selbar();
+    /* 방 조절점은 벽 바깥에 두어 벽에 붙은 기물 이름을 가리지 않게 */
+    g+=hd(1,0,w+off,d/2,'ew-resize')+hd(0,1,w/2,d+off,'ns-resize')+hd(1,1,w+off,d+off,'nwse-resize');}
+  $('g5lay').innerHTML=g; selbar(); elev();
 }
+
+/* ───── 벽에 세워 보기: 고른 벽 앞 기물의 정면 높이 ───── */
+const WALLS=[['top','위쪽 벽'],['right','오른쪽 벽'],['bottom','아래쪽 벽'],['left','왼쪽 벽']];
+function near(o){const W=world(),c=corners(o),xs=c.map(v=>v[0]),ys=c.map(v=>v[1]),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  return {top:[y0,x0,x1],right:[W.w-x1,y0,y1],bottom:[W.d-y1,W.w-x1,W.w-x0],left:[x0,W.d-y1,W.d-y0]};}
+function curWall(){if(wall)return wall;const o=items[sel]&&!items[sel].home?items[sel]:items.filter(x=>!x.home).pop();
+  if(!o)return 'top';const n=near(o);return WALLS.map(w=>w[0]).sort((a,b)=>n[a][0]-n[b][0])[0];}
+function elev(){
+  const host=$('g5elev'),W=world(),wl=curWall(),len=(wl==='top'||wl==='bottom')?W.w:W.d;
+  document.querySelectorAll('#g5wall button').forEach(b=>b.classList.toggle('on',b.dataset.w===wl));
+  const ceil=Math.max(200,Math.min(400,+$('g5ceil').value||230)),man=Math.max(100,Math.min(200,+$('g5man').value||170));
+  const list=[],noH=[];items.forEach(o=>{const n=near(o)[wl];if(n[0]>60)return;if(!o.h){noH.push(o.n);return;}list.push({o,dist:n[0],a:n[1],b:n[2]});});
+  list.sort((p,q)=>q.dist-p.dist);
+  const cw=Math.max(280,host.clientWidth||600),pw=man*.36,gap=30,tot=len+gap+pw+30,s=cw/(tot+12*tot/cw),L=12/s,T=26/s,B=34/s,VW=tot,VH=ceil+T+B,Y=v=>T+ceil-v,fs=12.5/s;
+  let g=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-L} 0 ${VW+L} ${VH}" font-family="Noto Sans KR" role="img" aria-label="벽 정면 그림">`;
+  g+=`<rect x="0" y="${T}" width="${len}" height="${ceil}" fill="#fff" stroke="#bbb" stroke-width="${1/s}"/>`;
+  for(let v=50;v<ceil;v+=50)g+=`<line x1="0" y1="${Y(v)}" x2="${len}" y2="${Y(v)}" stroke="${v%100?'#f2efe9':'#e4e0d7'}" stroke-width="${1/s}"/><text x="${len-3/s}" y="${Y(v)-3/s}" text-anchor="end" font-size="${fs*.8}" fill="#aaa">${v}</text>`;
+  g+=`<text x="${len/2}" y="${T-8/s}" text-anchor="middle" font-size="${fs}" fill="#888">천장 ${ceil}cm · ${WALLS.find(w=>w[0]===wl)[1]} ${Math.round(len)}cm</text>`;
+  list.forEach(({o,dist,a,b})=>{const f=Math.max(.35,1-dist/90),h=Math.min(o.h,ceil),col=o.home?'#8a857a':'#111';
+    g+=`<rect x="${a}" y="${Y(h)}" width="${b-a}" height="${h}" fill="${o.home?'#ece9e2':'#fbf7ee'}" fill-opacity="${f}" stroke="${col}" stroke-width="${(o.home?1.2:1.8)/s}"${dist>15?` stroke-dasharray="${5/s} ${3/s}"`:''}/>`;
+    const nm=o.n.length>8?o.n.slice(0,7)+'…':o.n;
+    g+=`<text x="${(a+b)/2}" y="${Y(h)-5/s}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="${col}">${esc(nm)} ${Math.round(o.h)}</text>`;});
+  g+=`<line x1="${-L}" y1="${Y(0)}" x2="${len}" y2="${Y(0)}" stroke="#111" stroke-width="${2/s}"/>`;
+  /* 사람: 벽 오른쪽 바깥에 같은 눈금으로 */
+  const px=len+gap+pw/2,hr=man*.062,w=man*.13,c='#9a9488';
+  g+=`<g fill="${c}"><circle cx="${px}" cy="${Y(man-hr)}" r="${hr}"/><path d="M${px-w} ${Y(man*.82)} L${px+w} ${Y(man*.82)} L${px+w*.8} ${Y(man*.5)} L${px-w*.8} ${Y(man*.5)}Z"/><rect x="${px-w*.75}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/><rect x="${px+w*.1}" y="${Y(man*.5)}" width="${w*.65}" height="${man*.5}"/></g>`;
+  g+=`<line x1="${len}" y1="${Y(0)}" x2="${len+gap+pw+10}" y2="${Y(0)}" stroke="#111" stroke-width="${2/s}"/><text x="${px}" y="${Y(0)+16/s}" text-anchor="middle" font-size="${fs}" fill="#555">사람 ${man}</text>`;
+  host.innerHTML=g+'</svg>';
+  $('g5enote').textContent=(list.length?'벽에서 60cm 안쪽에 놓인 기물만 보입니다. 벽에서 떨어진 기물은 점선·옅은 색입니다.':'이 벽 앞(60cm 안쪽)에 놓인 기물이 없습니다. 평면도에서 기물을 빨간 벽 쪽으로 옮겨 보세요.')+(noH.length?' 높이를 모르는 기물('+noH.join('·')+')은 빠졌습니다.':'');
+}
+WALLS.forEach(([k,t])=>{const b=document.createElement('button');b.textContent=t;b.dataset.w=k;b.onclick=()=>{wall=k;draw();};$('g5wall').appendChild(b);});
+$('g5ceil').oninput=$('g5man').oninput=()=>elev();
+
 const pt=e=>{const m=sv.getScreenCTM().inverse(),q=sv.createSVGPoint();q.x=e.clientX;q.y=e.clientY;return q.matrixTransform(m);};
 sv.addEventListener('pointerdown',e=>{const p=pt(e);
   if(bg&&!bg.cmpp){ if(calPts.length<2){calPts.push(p);draw();} if(calPts.length===2)calAsk(); return; }
   const a=e.target.closest('[data-act]'), o=items[sel];
   if(a&&a.dataset.act==='room'){e.preventDefault();const v=sv.viewBox.baseVal;act={t:'room',ax:+a.dataset.ax,ay:+a.dataset.ay,vb0:[v.x,v.y,v.width,v.height],f:1,x0:e.clientX,y0:e.clientY,w0:R.w,d0:R.d,u:v.width/sv.getBoundingClientRect().width};sv.setPointerCapture(e.pointerId);return;}
   if(a&&o){e.preventDefault();
-    if(a.dataset.act==='del'){items.splice(sel,1);sel=-1;draw();return;}
+    if(a.dataset.act==='del'){items.splice(sel,1);sel=-1;draw();keep();return;}
     if(a.dataset.act==='rot') act={t:'rot',o,a0:Math.atan2(p.y-o.cy,p.x-o.cx)*180/Math.PI-o.r};
     else {const sx=+a.dataset.sx,sy=+a.dataset.sy,v=rot(-sx*o.w/2,-sy*o.d/2,o.r);act={t:'rs',o,sx,sy,fx:o.cx+v[0],fy:o.cy+v[1]};}
     sv.setPointerCapture(e.pointerId);return;}
   const t=e.target.closest('.it'); if(!t){if(sel>=0){sel=-1;draw();}return;}
-  const i=+t.dataset.i; if(sel!==i){sel=i;draw();}
+  const i=+t.dataset.i; if(sel!==i){sel=i;if(!items[i].home)wall='';draw();}
   act={t:'mv',o:items[i],dx:p.x-items[i].cx,dy:p.y-items[i].cy}; sv.setPointerCapture(e.pointerId); e.preventDefault();});
 sv.addEventListener('pointermove',e=>{if(!act)return;const p=pt(e);
   if(act.t==='room'){const sn=v=>Math.round(v/10)*10,u=act.u,b=act.vb0,pad=-b[0];if(act.ax)R.w=Math.max(200,Math.min(800,sn(act.w0+(e.clientX-act.x0)*u)));if(act.ay)R.d=Math.max(200,Math.min(800,sn(act.d0+(e.clientY-act.y0)*u)));
@@ -137,9 +207,9 @@ sv.addEventListener('pointermove',e=>{if(!act)return;const p=pt(e);
   else {const vx=p.x-act.fx,vy=p.y-act.fy,u=rot(vx,vy,-o.r);o.w=Math.round(Math.max(30,Math.min(400,u[0]*act.sx)));o.d=Math.round(Math.max(20,Math.min(300,u[1]*act.sy)));
     const v=rot(act.sx*o.w/2,act.sy*o.d/2,o.r);o.cx=act.fx+v[0];o.cy=act.fy+v[1];}
   clamp(o);draw();});
-const end=()=>{if(act){act=null;draw();}};sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
+const end=()=>{if(act){const wasRoom=act.t==='room';act=null;if(wasRoom)roomOn();draw();keep();}};sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
 function selbar(){const b=$('g5sel'),o=items[sel];
-  b.innerHTML=o?`<b>${o.n}</b><span>${o.w}×${o.d}${o.h?'×'+o.h:''}cm${o.r?' · '+o.r+'°':''}</span><span style="color:#888">${o.home?'□ 모서리를 끌면 크기 · ':''}모서리 ↻를 끌면 돌리기 · − 빼기</span>`:'';}
+  b.innerHTML=o?`<b>${esc(o.n)}</b><span>${o.w}×${o.d}${o.h?'×'+o.h:''}cm${o.r?' · '+o.r+'°':''}</span><span style="color:#888">${o.home?'□ 모서리를 끌면 크기 · ':''}모서리 ↻를 끌면 돌리기 · − 빼기</span>`:'';}
 /* 방 크기 막대 */
 function sizeBar(){}
 /* 평면도 축척 맞추기: 두 점을 누르고 실제 길이 넣기 */
@@ -148,18 +218,18 @@ function calAsk(){const px=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts
   $('g5cal').innerHTML=`두 점 사이의 실제 길이는? <small>(평면도 숫자 그대로, 보통 mm)</small><br> <input id="g5len" type="number" inputmode="decimal" placeholder="예: 4996"> <select id="g5u" style="font:inherit;font-size:16px;padding:8px;border:1.5px solid #ccc;border-radius:8px"><option value="10">mm</option><option value="1">cm</option></select> <button class="rbtn" id="g5ok">맞추기</button> <button class="rbtn w" id="g5re">다시</button>`;
   $('g5ok').onclick=()=>{const L=+$('g5len').value/(+$('g5u').value);if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);pend.forEach(x=>putItem(x[0],x[1],x[2],x[3]));pend=[];$('g5link').hidden=true;draw();$('g5plan').scrollIntoView({block:'center',behavior:'smooth'});};
   $('g5re').onclick=()=>{calStart();draw();};setTimeout(()=>{$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});$('g5len').focus();},50);}
-PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;pend=[];$('g5link').hidden=true;$('g5cal').hidden=true;sel=-1;
-  document.querySelectorAll('#g5room button').forEach(x=>x.classList.toggle('on',x===b));sizeBar();homeSet();items.forEach(clamp);draw();};if(i===1)b.classList.add('on');$('g5room').appendChild(b);});
+PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;pend=[];shared=false;$('g5link').hidden=true;$('g5cal').hidden=true;sel=-1;
+  sizeBar();homeSet();items.forEach(clamp);roomOn();draw();keep();};$('g5room').appendChild(b);});
 $('g5file').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{bg={img,url,cmpp:0};sel=-1;pend=[];calStart();document.querySelectorAll('#g5room button').forEach(x=>x.classList.remove('on'));draw();};img.src=url;};
+  img.onload=()=>{bg={img,url,cmpp:0};sel=-1;pend=[];calStart();roomOn();draw();};img.src=url;};
 function putItem(n,w,d,h){const W=world(),o={id:++uid,n:n||'기물',w,d,h:h||0,r:0,cx:W.w/2,cy:W.d/2};clamp(o);
   if(items.some(p=>overlap(o,p))){let best=null;for(let y=d/2;y<=W.d-d/2;y+=10)for(let x=w/2;x<=W.w-w/2;x+=10){const q=Object.assign({},o,{cx:x,cy:y});if(!items.some(p=>overlap(q,p))){const s=Math.hypot(x-W.w/2,y-W.d/2);if(!best||s<best.s)best={x,y,s};}}if(best){o.cx=best.x;o.cy=best.y;}}
-  items.push(o);sel=items.length-1;}
+  items.push(o);sel=items.length-1;wall='';}
 let pend=[];
 $('g5add').onclick=()=>{const w=+$('g5w').value,d=+$('g5d').value,h=+$('g5h').value;if(!(w>0&&d>0)){$('g5w').focus();return;}
-  const n=$('g5n').value.trim()||'기물';
-  if(bg&&!bg.cmpp){pend.push([n,w,d,h]);$('g5link').hidden=false;$('g5link').innerHTML='<b style="color:#d12b2b">「'+pend.map(x=>x[0]).join('」「')+'」를 담아 두었습니다.</b> 위 빨간 상자에서 축척을 맞추면 평면도 위에 나타납니다.';$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});return;}
-  putItem(n,w,d,h);draw();};
+  const n=$('g5n').value.trim().slice(0,30)||'기물';
+  if(bg&&!bg.cmpp){pend.push([n,w,d,h]);$('g5link').hidden=false;$('g5link').innerHTML='<b style="color:#d12b2b">「'+pend.map(x=>esc(x[0])).join('」「')+'」를 담아 두었습니다.</b> 위 빨간 상자에서 축척을 맞추면 평면도 위에 나타납니다.';$('g5cal').scrollIntoView({block:'center',behavior:'smooth'});return;}
+  putItem(n,w,d,h);draw();keep();};
 /* 그림으로 남기기: 캔버스로 다시 그림 → 길게 눌러 저장 */
 $('g5save').onclick=()=>{const W=world(),S=Math.min(4,1600/Math.max(W.w,W.d)),c=document.createElement('canvas');c.width=Math.round(W.w*S);c.height=Math.round(W.d*S)+40;
   const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
@@ -170,13 +240,33 @@ $('g5save').onclick=()=>{const W=world(),S=Math.min(4,1600/Math.max(W.w,W.d)),c=
     x.fillStyle='#111';x.font=`700 ${Math.max(12,Math.min(18,Math.max(o.w,o.d)*S/6))}px "Noto Sans KR",sans-serif`;x.textAlign='center';x.fillText(o.n,o.cx*S,o.cy*S+5);});
   x.fillStyle='#555';x.font='14px "Noto Sans KR",sans-serif';x.textAlign='left';x.fillText('조선의 목가구 · 우리 집에 놓아 보기 · 가로 '+Math.round(W.w)+'cm × 세로 '+Math.round(W.d)+'cm',8,c.height-14);
   $('g5out').innerHTML='<img alt="배치 그림" src="'+c.toDataURL('image/png')+'"><div class="note">휴대폰에서는 그림을 길게 눌러 저장하거나 카톡으로 보내면 됩니다.</div>';};
-/* 동인방 QR — 기물 치수를 담은 주소 */
-$('g5qr').onclick=()=>{const us=items.filter(o=>!o.home),o=(items[sel]&&!items[sel].home)?items[sel]:us[us.length-1];if(!o){$('g5out').innerHTML='<p class="note">먼저 기물을 넣어 주세요.</p>';return;}
-  const url='https://jungmono.github.io/mokgagu/room.html?n='+encodeURIComponent(o.n)+'&w='+o.w+'&d='+o.d+'&h='+o.h;
-  $('g5out').innerHTML='<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;border:1.5px solid #111;border-radius:12px;padding:12px;max-width:440px"><div id="g5qrc"></div><div><b style="font-size:17px">'+o.n+'</b><br>'+o.w+' × '+o.d+' × '+o.h+' cm<br><small style="color:#888">휴대폰으로 찍으면 이 기물이 담긴 채로 「우리 집에 놓아 보기」가 열립니다.<br></small></div></div>';
-  try{new QRCode($('g5qrc'),{text:url,width:120,height:120,colorDark:'#111',colorLight:'#fff'});}catch(e){$('g5qrc').textContent='(QR 만들기 실패)';}};
-sizeBar(); homeSet(); draw();
-(function(){try{const q=new URLSearchParams(location.search),w=+q.get('w'),d=+q.get('d');if(w>0&&d>0){$('g5n').value=(q.get('n')||'기물').slice(0,30);$('g5w').value=w;$('g5d').value=d;$('g5h').value=+q.get('h')||'';$('g5add').onclick();}}catch(e){}})();
+/* 이 배치 QR·링크 — 방 크기와 놓은 기물 전부를 주소에 담는다 */
+$('g5qr').onclick=()=>{if(bg){$('g5out').innerHTML='<p class="note">평면도 사진 위의 배치는 링크로 보낼 수 없습니다. 「그림으로 남기기」를 써 주세요.</p>';return;}
+  if(!items.some(o=>!o.home)){$('g5out').innerHTML='<p class="note">먼저 기물을 넣어 주세요.</p>';return;}
+  const url='https://jungmono.github.io/mokgagu/room.html?L='+encodeURIComponent(JSON.stringify(pack())),us=items.filter(o=>!o.home);
+  $('g5out').innerHTML='<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;border:1.5px solid #111;border-radius:12px;padding:12px;max-width:520px;background:#fff"><div id="g5qrc"></div><div style="flex:1;min-width:180px"><b style="font-size:16px">'+us.map(o=>esc(o.n)).join(' · ')+'</b><br><small style="color:#666">방 '+R.w+'×'+R.d+'cm에 놓은 그대로 열립니다.</small><br><button class="rbtn w" id="g5cp" style="margin-top:8px">링크 복사</button> <span id="g5cpm" class="note"></span></div></div>';
+  $('g5cp').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>{$('g5cpm').textContent='복사했습니다';},()=>{prompt('아래 주소를 복사하세요',url);});};
+  try{new QRCode($('g5qrc'),{text:url,width:150,height:150,colorDark:'#111',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.L});}catch(e){$('g5qrc').innerHTML='<small class="note">기물이 많아 QR로는 담지 못했습니다.<br>링크 복사를 써 주세요.</small>';}};
+$('g5reset').onclick=()=>{if(!confirm('놓은 기물을 모두 지우고 처음 방으로 돌아갈까요?'))return;try{localStorage.removeItem(KEY);}catch(e){}
+  R={w:410,d:560};rt='living';bg=null;shared=false;items=[];sel=-1;wall='';pend=[];$('g5msg').hidden=true;$('g5out').innerHTML='';$('g5cal').hidden=true;homeSet();roomOn();draw();};
+
+/* ───── 처음 열 때: 받은 배치(?L) → 이 기기 배치 → 사진 창에서 넘어온 기물(?n&w&d&h) ───── */
+(function(){let q;try{q=new URLSearchParams(location.search);}catch(e){q=new URLSearchParams('');}
+  let ok=false;
+  if(q.get('L')){try{ok=unpack(JSON.parse(q.get('L')));}catch(e){}
+    if(ok){shared=true;$('g5msg').hidden=false;$('g5msg').innerHTML='<span>받은 배치를 보고 있습니다. 이 기기의 배치는 그대로 남아 있습니다.</span><a href="room.html">내 배치로 가기</a>';}}
+  if(!ok){try{ok=unpack(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){ok=false;}}
+  if(!ok){items=[];homeSet();}
+  const w=+q.get('w'),d=+q.get('d');
+  if(!shared&&w>0&&d>0&&w<=800&&d<=800){const n=(q.get('n')||'기물').slice(0,30),h=+q.get('h')||0;
+    $('g5n').value=n;$('g5w').value=w;$('g5d').value=d;$('g5h').value=h||'';
+    let o=items.find(x=>!x.home&&x.n===n&&x.w===w&&x.d===d);
+    if(!o){putItem(n,w,d,h);o=items[items.length-1];} else sel=items.indexOf(o);
+    keep();
+    $('g5msg').hidden=false;$('g5msg').innerHTML='<span><b>「'+esc(n)+'」</b>을(를) 놓았습니다. 끌어서 옮기고 아래에서 벽에 세운 모습도 볼 수 있습니다.</span><a href="#g5s1" id="g5up">방 바꾸기 ↑</a>';
+    $('g5up').onclick=e=>{e.preventDefault();$('g5s1').scrollIntoView({behavior:'smooth'});};
+    requestAnimationFrame(()=>setTimeout(()=>$('g5s3').scrollIntoView({block:'start'}),60));}
+  roomOn();draw();})();
 window.addEventListener('resize',()=>{clearTimeout(window.__g5r);window.__g5r=setTimeout(draw,150);});
 })();
 
