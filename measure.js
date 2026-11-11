@@ -325,7 +325,8 @@
     var canPlan = !!(o.d && kd.k !== 'pot' && kd.k !== 'generic' && !o.round);
     if (canPlan) row.innerHTML += '<button type="button" class="mz-btn" data-t="plan">📐 실측도</button>';
     row.innerHTML += '<button type="button" class="mz-btn" data-t="person">🧍 사람 옆에</button>';
-    row.addEventListener('click', function (e) { var b = e.target.closest('.mz-btn'); if (b) open({ o: o, kd: kd }, b.getAttribute('data-t')); });
+    if (o.w && o.d && !o.round) row.innerHTML += '<a class="mz-btn" style="display:inline-flex;align-items:center;text-decoration:none" href="room.html?n=' + encodeURIComponent(o.name) + '&w=' + o.w + '&d=' + o.d + '&h=' + (o.h || '') + '">🏠 우리 집에 놓기</a>';
+    row.addEventListener('click', function (e) { var b = e.target.closest('button.mz-btn'); if (b) open({ o: o, kd: kd }, b.getAttribute('data-t')); });
     if (c.host && c.host.parentNode) c.host.parentNode.insertBefore(row, c.host.nextSibling); else c.info.appendChild(row);
   }
 

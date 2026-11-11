@@ -1,0 +1,175 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>우리 집에 놓아 보기 · 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#111111"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--ink:#111;--fg:#1f2433;--muted:#6b7183;--line:#e6e2da;--soft:#f6f4f0;--red:#d12b2b}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--fg);font:15px/1.65 "Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
+main{max-width:760px;margin:0 auto;padding:16px 16px 60px}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacing:-.04em;text-align:center}
+.lead{color:var(--muted);margin:0 0 14px;font-size:14px;text-align:center}
+.back{display:inline-flex;align-items:center;border:1.5px solid #111;border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;color:#111;text-decoration:none;min-height:36px;margin-bottom:8px}
+.pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pick button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:8px 12px;min-height:44px;cursor:pointer;color:var(--fg)}
+.pick button.on{border-color:var(--ink);background:#fff;box-shadow:inset 0 0 0 1px var(--ink)}
+.sheet{background:#fbfaf7;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.note{font-size:13px;color:var(--muted);margin:8px 2px 0}
+.ctl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 10px;font-size:14px}
+.rbtn{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:10px;padding:8px 14px;min-height:40px;cursor:pointer}
+.rbtn.w{background:#fff;color:var(--ink)}
+.selbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-height:48px;margin-top:8px;font-size:14px}
+.step{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:16px}.step:first-child{margin-top:0}
+.no{width:28px;height:28px;border-radius:50%;background:#111;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.rbtn.big{font-size:15px;min-height:48px;padding:10px 18px;display:inline-flex;align-items:center}
+.up{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.g5in input{font:inherit;font-size:16px;padding:10px;border:1.5px solid #ccc;border-radius:10px;width:130px;min-height:48px}.g5in #g5n{width:170px}
+.sz{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;font-size:15px}.sz label{display:flex;align-items:center;gap:10px;min-height:40px}.sz input[type=range]{flex:1;max-width:340px;accent-color:#111;height:28px}
+.cal{border:1.5px solid #d12b2b;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px;background:#fff}.cal input{font:inherit;font-size:16px;width:90px;padding:8px;border:1.5px solid #ccc;border-radius:8px}
+#g5plan svg{overflow:hidden}#g5out img{max-width:100%;border:1px solid #ddd;border-radius:10px;margin-top:10px}
+</style></head><body><main>
+<a class="back" href="index.html">← 홈</a>
+<h1>우리 집에 놓아 보기</h1><p class="lead">암호 없이 누구나 씁니다. 방 크기와 기물 치수만 넣으면 됩니다.</p>
+<div class="g5">
+<div class="step"><span class="no">1</span><b>방 정하기</b></div>
+<div class="pick" id="g5room"></div>
+<div class="sz" id="g5size"></div>
+<div class="up"><label class="rbtn w big" for="g5file">📷 평면도 사진 올리기</label><input type="file" id="g5file" accept="image/*" hidden>
+<span class="note">네이버 부동산 평면도를 저장하거나 화면을 찍어 올리면 됩니다. 사진은 이 휴대폰 안에서만 쓰이고 어디에도 올라가지 않습니다.</span></div>
+<div id="g5cal" class="cal" hidden></div>
+<div class="step"><span class="no">2</span><b>기물 넣기</b></div>
+<div class="ctl g5in"><input id="g5n" placeholder="이름 (예: 반닫이)"><input id="g5w" type="number" inputmode="decimal" placeholder="가로 cm"><input id="g5d" type="number" inputmode="decimal" placeholder="세로(깊이) cm"><input id="g5h" type="number" inputmode="decimal" placeholder="높이 cm"><button class="rbtn big" id="g5add">넣기</button></div>
+<div class="note" id="g5link" hidden></div>
+<div class="step"><span class="no">3</span><b>끌어서 놓기</b> <small style="color:#888;font-weight:400">기물을 누르면 손잡이로 돌리기 · − 빼기</small></div>
+<div class="sheet" id="g5plan" style="touch-action:none"></div>
+<div class="selbar" id="g5sel"></div>
+<div class="ctl" style="margin-top:10px"><button class="rbtn big" id="g5save">🖼 그림으로 남기기</button><button class="rbtn w big" id="g5qr">🔗 손님에게 줄 QR 만들기</button></div>
+<div id="g5out"></div>
+</div></main>
+<script src="qrcode.min.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const PRE=[{n:'24평 거실',w:340,d:460,t:'living'},{n:'33평 거실',w:410,d:560,t:'living'},{n:'안방(보통)',w:340,d:380,t:'bed'},{n:'작은방(보통)',w:280,d:300,t:'small'}];
+const HOME={sofa:{n:'3인용 소파',kind:'sofa',w:210,d:90,h:85},tv:{n:'TV·거실장',kind:'tv',w:180,d:45,h:50},bed:{n:'퀸 침대',kind:'bed',w:150,d:200,h:45},bed1:{n:'슈퍼싱글 침대',kind:'bed',w:110,d:200,h:45}};
+let R={w:410,d:560}, rt='living', bg=null, items=[], sel=-1, uid=0, K=1, act=null, calPts=[];
+const plan=$('g5plan');
+plan.innerHTML='<svg id="g5svg" xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR" style="width:100%;height:auto;max-height:70vh;display:block;touch-action:none"><g id="g5bg"></g><g id="g5lay"></g></svg>';
+const sv=$('g5svg'), rad=a=>a*Math.PI/180;
+function world(){ return bg&&bg.cmpp? {w:bg.img.width*bg.cmpp,d:bg.img.height*bg.cmpp}:R; }
+/* 돌린 기물이 차지하는 바닥(겉 상자) */
+function fp(o){const c=Math.abs(Math.cos(rad(o.r))),s=Math.abs(Math.sin(rad(o.r)));return {w:o.w*c+o.d*s,d:o.w*s+o.d*c};}
+function clamp(o){const W=world(),f=fp(o);o.cx=Math.max(f.w/2,Math.min(W.w-f.w/2,o.cx));o.cy=Math.max(f.d/2,Math.min(W.d-f.d/2,o.cy));}
+function rot(x,y,r){const c=Math.cos(rad(r)),s=Math.sin(rad(r));return [x*c-y*s,x*s+y*c];}
+function corners(o){return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([a,b])=>{const v=rot(a*o.w/2,b*o.d/2,o.r);return [o.cx+v[0],o.cy+v[1]];});}
+function overlap(a,b){const A=corners(a),B=corners(b);for(const P of [A,B])for(let i=0;i<4;i++){const p=P[i],q=P[(i+1)%4],nx=q[1]-p[1],ny=p[0]-q[0];
+  const pa=A.map(v=>v[0]*nx+v[1]*ny),pb=B.map(v=>v[0]*nx+v[1]*ny);if(Math.max(...pa)<=Math.min(...pb)+.01||Math.max(...pb)<=Math.min(...pa)+.01)return false;}return true;}
+/* 기본 가구: 거실은 소파·TV, 방은 퀸 침대. 손대지 않은 것은 방 크기를 바꾸면 벽에 다시 붙는다 */
+function homeSet(){items=items.filter(o=>!o.home);const add=(k,r)=>items.unshift(Object.assign({id:++uid,home:1,r,cx:0,cy:0},HOME[k]));
+  if(rt==='living'){add('tv',90);add('sofa',270);} else add(rt==='small'?'bed1':'bed',0); place();}
+function place(){const W=world();items.forEach(o=>{if(!o.home||o.moved)return;const f=fp(o);
+  if(o.kind==='sofa'){o.cx=f.w/2;o.cy=W.d/2;} else if(o.kind==='tv'){o.cx=W.w-f.w/2;o.cy=W.d/2;} else {o.cx=W.w/2;o.cy=f.d/2;} clamp(o);});}
+/* 한 기물의 모양(가운데 기준, 앞=아래쪽). 사람이 넣은 기물은 앞면을 굵은 선으로 */
+function shape(o){const w=o.w,d=o.d,x0=-w/2,y0=-d/2,sw=1.6*K;let s='';
+  const box=(x,y,a,b,fill,st)=>`<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="${fill}" stroke="${st||'#111'}" stroke-width="${sw}"/>`;
+  if(o.kind==='sofa'){const bk=Math.min(20,d*.25),am=Math.min(18,w*.1);s+=box(x0,y0,w,d,'#e9e6df','#777');s+=box(x0,y0,w,bk,'#d9d5cc','#777');s+=box(x0,y0+bk,am,d-bk,'#d9d5cc','#777');s+=box(w/2-am,y0+bk,am,d-bk,'#d9d5cc','#777');
+    const n=Math.max(1,Math.round((w-2*am)/65));for(let i=1;i<n;i++){const x=x0+am+(w-2*am)*i/n;s+=`<line x1="${x}" y1="${y0+bk}" x2="${x}" y2="${d/2}" stroke="#999" stroke-width="${sw}"/>`;}}
+  else if(o.kind==='tv'){s+=box(x0,y0,w,d,'#e9e6df','#777');s+=box(x0+w*.1,y0+4,w*.8,Math.min(7,d*.2),'#444','#444');}
+  else if(o.kind==='bed'&&w<130){s+=box(x0,y0,w,d,'#f3f1ec','#777');s+=box(x0+8,y0+8,w-16,30,'#fff','#999');s+=`<line x1="${x0}" y1="${y0+52}" x2="${w/2}" y2="${y0+52}" stroke="#999" stroke-width="${sw}"/>`;}
+  else if(o.kind==='bed'){const pw=w/2-12;s+=box(x0,y0,w,d,'#f3f1ec','#777');s+=box(x0+8,y0+8,pw,30,'#fff','#999');s+=box(4,y0+8,pw,30,'#fff','#999');
+    s+=`<line x1="${x0}" y1="${y0+52}" x2="${w/2}" y2="${y0+52}" stroke="#999" stroke-width="${sw}"/>`;}
+  else {s+=box(x0,y0,w,d,'rgba(255,255,255,.92)');s+=`<line x1="${x0}" y1="${d/2}" x2="${w/2}" y2="${d/2}" stroke="#111" stroke-width="${4.5*K}"/>`;}
+  return s;}
+function grp(o,i,on){const bad=items.some(p=>p!==o&&overlap(o,p));
+  let g=`<g class="it" data-i="${i}" transform="translate(${o.cx} ${o.cy})"><g transform="rotate(${o.r})">${shape(o)}`;
+  if(bad||on) g+=`<rect x="${-o.w/2}" y="${-o.d/2}" width="${o.w}" height="${o.d}" fill="none" stroke="${bad?'#d12b2b':'#111'}" stroke-width="${2.6*K}" ${bad?`stroke-dasharray="${6*K} ${4*K}"`:''}/>`;
+  if(on){
+    /* 돌리기 손잡이: 오른쪽 아래 모서리 바깥 한 곳 — 잡고 끌면 부드럽게 돈다 */
+    const hr=14*K,hx=o.w/2+17*K,hy=o.d/2+17*K;
+    g+=`<g data-act="rot" transform="translate(${hx} ${hy}) rotate(${-o.r})" style="cursor:grab"><circle r="${hr}" fill="#fff" stroke="#111" stroke-width="${2*K}"/>`+
+       `<path d="M${hr*.5} ${-hr*.35} A${hr*.55} ${hr*.55} 0 1 0 ${hr*.55} ${hr*.2}" fill="none" stroke="#111" stroke-width="${2.2*K}"/>`+
+       `<path d="M${hr*.18} ${-hr*.62} L${hr*.72} ${-hr*.62} L${hr*.58} ${-hr*.05}Z" fill="#111"/></g>`;
+    g+=`<g data-act="del" transform="translate(${-o.w/2-16*K} ${-o.d/2-16*K}) rotate(${-o.r})" style="cursor:pointer"><circle r="${13*K}" fill="#fff" stroke="#111" stroke-width="${2*K}"/><line x1="${-6*K}" y1="0" x2="${6*K}" y2="0" stroke="#111" stroke-width="${3*K}"/></g>`;
+    if(o.home) [[1,-1],[1,1],[-1,1],[-1,-1]].forEach(([sx,sy])=>{const a=12*K;g+=`<rect data-act="rs" data-sx="${sx}" data-sy="${sy}" x="${sx*o.w/2-a/2}" y="${sy*o.d/2-a/2}" width="${a}" height="${a}" fill="#fff" stroke="#111" stroke-width="${2*K}" style="cursor:nwse-resize"/>`;});}
+  g+=`</g><text x="0" y="${4*K}" font-size="${Math.max(11*K,Math.min(14*K,Math.max(o.w,o.d)/5))}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">${o.n}</text></g>`;
+  return g;}
+function draw(){
+  const W=world(), cw=Math.max(280,plan.clientWidth||600), chMax=window.innerHeight*.7;
+  const K0=Math.max(W.w*1.2/cw,W.d*1.2/chMax), pad=Math.max(Math.max(W.w,W.d)*.04,56*K0);
+  const vb=[-pad,-pad,W.w+2*pad,W.d+2*pad]; K=Math.max(vb[2]/cw,vb[3]/chMax);
+  $('g5size').hidden=!!bg;
+  if(bg&&!bg.cmpp){sv.setAttribute('viewBox',[0,0,bg.img.width,bg.img.height].join(' '));
+    $('g5bg').innerHTML=`<image href="${bg.url}" x="0" y="0" width="${bg.img.width}" height="${bg.img.height}"/>`;
+    const r=bg.img.width/120;$('g5lay').innerHTML=calPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="#d12b2b"/>`).join('')+(calPts.length===2?`<line x1="${calPts[0].x}" y1="${calPts[0].y}" x2="${calPts[1].x}" y2="${calPts[1].y}" stroke="#d12b2b" stroke-width="${r*.6}"/>`:'');
+    sv.style.cursor='crosshair';return;}
+  sv.style.cursor='';sv.setAttribute('viewBox',vb.join(' '));
+  let b='';
+  if(bg) b+=`<image href="${bg.url}" x="0" y="0" width="${W.w}" height="${W.d}" opacity=".85"/>`;
+  else { for(let v=0;v<=W.w;v+=50) b+=`<line x1="${v}" y1="0" x2="${v}" y2="${W.d}" stroke="${v%100?'#f0ede7':'#e4e0d7'}" stroke-width="${K}"/>`;
+    for(let v=0;v<=W.d;v+=50) b+=`<line x1="0" y1="${v}" x2="${W.w}" y2="${v}" stroke="${v%100?'#f0ede7':'#e4e0d7'}" stroke-width="${K}"/>`;
+    b+=`<rect x="0" y="0" width="${W.w}" height="${W.d}" fill="none" stroke="#111" stroke-width="${4*K}"/>`; }
+  $('g5bg').innerHTML=b;
+  let g='';items.forEach((o,i)=>{if(i!==sel)g+=grp(o,i,false);}); if(items[sel])g+=grp(items[sel],sel,true);
+  $('g5lay').innerHTML=g; selbar();
+}
+const pt=e=>{const m=sv.getScreenCTM().inverse(),q=sv.createSVGPoint();q.x=e.clientX;q.y=e.clientY;return q.matrixTransform(m);};
+sv.addEventListener('pointerdown',e=>{const p=pt(e);
+  if(bg&&!bg.cmpp){ if(calPts.length<2){calPts.push(p);draw();} if(calPts.length===2)calAsk(); return; }
+  const a=e.target.closest('[data-act]'), o=items[sel];
+  if(a&&o){e.preventDefault();
+    if(a.dataset.act==='del'){items.splice(sel,1);sel=-1;draw();return;}
+    if(a.dataset.act==='rot') act={t:'rot',o,a0:Math.atan2(p.y-o.cy,p.x-o.cx)*180/Math.PI-o.r};
+    else {const sx=+a.dataset.sx,sy=+a.dataset.sy,v=rot(-sx*o.w/2,-sy*o.d/2,o.r);act={t:'rs',o,sx,sy,fx:o.cx+v[0],fy:o.cy+v[1]};}
+    sv.setPointerCapture(e.pointerId);return;}
+  const t=e.target.closest('.it'); if(!t){if(sel>=0){sel=-1;draw();}return;}
+  const i=+t.dataset.i; if(sel!==i){sel=i;draw();}
+  act={t:'mv',o:items[i],dx:p.x-items[i].cx,dy:p.y-items[i].cy}; sv.setPointerCapture(e.pointerId); e.preventDefault();});
+sv.addEventListener('pointermove',e=>{if(!act)return;const p=pt(e),o=act.o;o.moved=1;
+  if(act.t==='mv'){o.cx=p.x-act.dx;o.cy=p.y-act.dy;}
+  else if(act.t==='rot'){let a=((Math.atan2(p.y-o.cy,p.x-o.cx)*180/Math.PI-act.a0)%360+360)%360;const n=Math.round(a/90)*90;if(Math.abs(a-n)<4)a=n%360;o.r=Math.round(a);}
+  else {const vx=p.x-act.fx,vy=p.y-act.fy,u=rot(vx,vy,-o.r);o.w=Math.round(Math.max(30,Math.min(400,u[0]*act.sx)));o.d=Math.round(Math.max(20,Math.min(300,u[1]*act.sy)));
+    const v=rot(act.sx*o.w/2,act.sy*o.d/2,o.r);o.cx=act.fx+v[0];o.cy=act.fy+v[1];}
+  clamp(o);draw();});
+const end=()=>{if(act){act=null;draw();}};sv.addEventListener('pointerup',end);sv.addEventListener('pointercancel',end);
+function selbar(){const b=$('g5sel'),o=items[sel];
+  b.innerHTML=o?`<b>${o.n}</b><span>${o.w}×${o.d}${o.h?'×'+o.h:''}cm${o.r?' · '+o.r+'°':''}</span><span style="color:#888">${o.home?'□ 모서리를 끌면 크기 · ':''}모서리 ↻를 끌면 돌리기 · − 빼기</span>`:'';}
+/* 방 크기 막대 */
+function sizeBar(){const W=R;$('g5size').innerHTML=`<label>가로 <input type="range" id="g5rw" min="200" max="800" step="10" value="${W.w}"> <b id="g5rwv">${W.w}</b>cm</label><label>세로 <input type="range" id="g5rd" min="200" max="800" step="10" value="${W.d}"> <b id="g5rdv">${W.d}</b>cm</label>`;
+  const on=()=>{R={w:+$('g5rw').value,d:+$('g5rd').value};$('g5rwv').textContent=R.w;$('g5rdv').textContent=R.d;place();items.forEach(clamp);draw();};
+  $('g5rw').oninput=on;$('g5rd').oninput=on;}
+/* 평면도 축척 맞추기: 두 점을 누르고 실제 길이 넣기 */
+function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 줄자로 잰 거실 벽, 평면도에 적힌 치수)';}
+function calAsk(){const px=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts[0].y);
+  $('g5cal').innerHTML=`두 점 사이의 실제 길이는? <input id="g5len" type="number" inputmode="decimal" placeholder="예: 410"> cm <button class="rbtn" id="g5ok">맞추기</button> <button class="rbtn w" id="g5re">다시</button>`;
+  $('g5ok').onclick=()=>{const L=+$('g5len').value;if(!(L>0))return;bg.cmpp=L/px;$('g5cal').hidden=true;items=items.filter(o=>!o.home);items.forEach(clamp);draw();};
+  $('g5re').onclick=()=>{calStart();draw();};}
+PRE.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p.n;b.onclick=()=>{R={w:p.w,d:p.d};rt=p.t;bg=null;$('g5cal').hidden=true;sel=-1;
+  document.querySelectorAll('#g5room button').forEach(x=>x.classList.toggle('on',x===b));sizeBar();homeSet();items.forEach(clamp);draw();};if(i===1)b.classList.add('on');$('g5room').appendChild(b);});
+$('g5file').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();
+  img.onload=()=>{bg={img,url,cmpp:0};sel=-1;calStart();document.querySelectorAll('#g5room button').forEach(x=>x.classList.remove('on'));draw();};img.src=url;};
+$('g5add').onclick=()=>{const w=+$('g5w').value,d=+$('g5d').value,h=+$('g5h').value;if(!(w>0&&d>0)){$('g5w').focus();return;}
+  if(bg&&!bg.cmpp){$('g5cal').scrollIntoView({block:'center'});return;}
+  const W=world(),o={id:++uid,n:$('g5n').value.trim()||'기물',w,d,h:h||0,r:0,cx:W.w/2,cy:W.d/2};clamp(o);
+  if(items.some(p=>overlap(o,p))){let best=null;for(let y=d/2;y<=W.d-d/2;y+=10)for(let x=w/2;x<=W.w-w/2;x+=10){const q=Object.assign({},o,{cx:x,cy:y});if(!items.some(p=>overlap(q,p))){const s=Math.hypot(x-W.w/2,y-W.d/2);if(!best||s<best.s)best={x,y,s};}}if(best){o.cx=best.x;o.cy=best.y;}}
+  items.push(o);sel=items.length-1;draw();
+  $('g5link').innerHTML=`포털에서는 이 치수가 담긴 주소가 만들어집니다: <code style="font-size:12px;word-break:break-all">…/mokgagu/room.html?n=${o.n}&w=${w}&d=${d}&h=${h||''}</code>`;};
+/* 그림으로 남기기: 캔버스로 다시 그림 → 길게 눌러 저장 */
+$('g5save').onclick=()=>{const W=world(),S=Math.min(4,1600/Math.max(W.w,W.d)),c=document.createElement('canvas');c.width=Math.round(W.w*S);c.height=Math.round(W.d*S)+40;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+  if(bg&&bg.cmpp)x.drawImage(bg.img,0,0,W.w*S,W.d*S);else{x.strokeStyle='#111';x.lineWidth=4;x.strokeRect(2,2,W.w*S-4,W.d*S-4);}
+  items.forEach(o=>{x.save();x.translate(o.cx*S,o.cy*S);x.rotate(rad(o.r));
+    x.fillStyle=o.home?'#e9e6df':'rgba(255,255,255,.92)';x.fillRect(-o.w/2*S,-o.d/2*S,o.w*S,o.d*S);x.strokeStyle=o.home?'#777':'#111';x.lineWidth=2;x.strokeRect(-o.w/2*S,-o.d/2*S,o.w*S,o.d*S);
+    if(!o.home){x.lineWidth=5;x.beginPath();x.moveTo(-o.w/2*S,o.d/2*S);x.lineTo(o.w/2*S,o.d/2*S);x.stroke();}x.restore();
+    x.fillStyle='#111';x.font=`700 ${Math.max(12,Math.min(18,Math.max(o.w,o.d)*S/6))}px "Noto Sans KR",sans-serif`;x.textAlign='center';x.fillText(o.n,o.cx*S,o.cy*S+5);});
+  x.fillStyle='#555';x.font='14px "Noto Sans KR",sans-serif';x.textAlign='left';x.fillText('조선의 목가구 · 우리 집에 놓아 보기 · 가로 '+Math.round(W.w)+'cm × 세로 '+Math.round(W.d)+'cm',8,c.height-14);
+  $('g5out').innerHTML='<img alt="배치 그림" src="'+c.toDataURL('image/png')+'"><div class="note">휴대폰에서는 그림을 길게 눌러 저장하거나 카톡으로 보내면 됩니다.</div>';};
+/* 동인방 QR — 기물 치수를 담은 주소 */
+$('g5qr').onclick=()=>{const us=items.filter(o=>!o.home),o=(items[sel]&&!items[sel].home)?items[sel]:us[us.length-1];if(!o){$('g5out').innerHTML='<p class="note">먼저 기물을 넣어 주세요.</p>';return;}
+  const url='https://jungmono.github.io/mokgagu/room.html?n='+encodeURIComponent(o.n)+'&w='+o.w+'&d='+o.d+'&h='+o.h;
+  $('g5out').innerHTML='<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;border:1.5px solid #111;border-radius:12px;padding:12px;max-width:440px"><div id="g5qrc"></div><div><b style="font-size:17px">'+o.n+'</b><br>'+o.w+' × '+o.d+' × '+o.h+' cm<br><small style="color:#888">휴대폰으로 찍으면 이 기물이 담긴 채로 「우리 집에 놓아 보기」가 열립니다.<br></small></div></div>';
+  try{new QRCode($('g5qrc'),{text:url,width:120,height:120,colorDark:'#111',colorLight:'#fff'});}catch(e){$('g5qrc').textContent='(QR 만들기 실패)';}};
+sizeBar(); homeSet(); draw();
+(function(){try{const q=new URLSearchParams(location.search),w=+q.get('w'),d=+q.get('d');if(w>0&&d>0){$('g5n').value=(q.get('n')||'기물').slice(0,30);$('g5w').value=w;$('g5d').value=d;$('g5h').value=+q.get('h')||'';$('g5add').onclick();}}catch(e){}})();
+window.addEventListener('resize',()=>{clearTimeout(window.__g5r);window.__g5r=setTimeout(draw,150);});
+})();
+
+</script><script src="homebtn.js" defer></script></body></html>

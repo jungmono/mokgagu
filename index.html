@@ -378,11 +378,12 @@ document.getElementById('bk-all').addEventListener('click', (e) => { const box =
 const TOOL_ICO = {
   /* 반닫이 퀴즈: 언양 반닫이 앞바탕 장석(2026-10-31, symbols/eonyang_apbatang_icon.svg) */
   quiz: T32('<g stroke-width="1.6"><path d="M7 2.8H25Q28 2.8 28 5.8V22.4A2.38 2.38 0 0 1 25.00 24.00A2.38 2.38 0 0 1 22.00 25.60A2.41 2.41 0 0 1 19.00 27.30L16 29.0L13.00 27.30A2.41 2.41 0 0 1 10.00 25.60A2.38 2.38 0 0 1 7.00 24.00A2.38 2.38 0 0 1 4.00 22.40V5.8Q4 2.8 7 2.8Z"/><circle cx="7.4" cy="6.2" r=".7" stroke-width=".85"/><circle cx="7.4" cy="9.6" r=".7" stroke-width=".85"/><circle cx="24.6" cy="6.2" r=".7" stroke-width=".85"/><circle cx="24.6" cy="9.6" r=".7" stroke-width=".85"/><circle cx="16" cy="12.2" r="3.2" stroke-width="1.2"/><path stroke-width="1.1" d="M16 10.6V13.799999999999999M14.4 12.2H17.6M16 10.6H17.2M17.6 12.2V13.399999999999999M16 13.799999999999999H14.8M14.4 12.2V11.0"/><circle cx="25.82" cy="21.92" r=".58" stroke-width=".8"/><circle cx="22.82" cy="23.52" r=".58" stroke-width=".8"/><circle cx="19.79" cy="25.19" r=".58" stroke-width=".8"/><circle cx="12.21" cy="25.19" r=".58" stroke-width=".8"/><circle cx="9.18" cy="23.52" r=".58" stroke-width=".8"/><circle cx="6.18" cy="21.92" r=".58" stroke-width=".8"/><circle cx="26.54" cy="19.66" r=".9" fill="currentColor" stroke="none"/><circle cx="20.65" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="16.00" cy="26.00" r=".9" fill="currentColor" stroke="none"/><circle cx="11.35" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="5.46" cy="19.66" r=".9" fill="currentColor" stroke="none"/></g>'),
+  room: T32('<path d="M3 15 16 4l13 11"/><path d="M6 13v14h20V13"/><path d="M11 27v-7h10v7"/><path d="M13 20v-3h6v3"/>'),
   ruler: T32('<path d="M5 26 26 5"/><path d="M5 26V9M5 26h17"/><path d="M5 13h3M5 17h4M5 21h3M9 26v-3M13 26v-4M17 26v-3"/>'),
   stats: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
 };
 function buildTools() {
-  const T = [['bandaji-map.html', 'map', '반닫이여지도', '지역별 반닫이(궤)'], ['region-ruler.html', 'ruler', '비례로 보는 반닫이', '가로 세로 비율로 보는 반닫이'], ['region-quiz.html', 'quiz', '반닫이 퀴즈', '사진으로 반닫이 지역 맞추기'], ['auction-stats.html', 'stats', '경매 시세', '종류별 낙찰가 흐름']];
+  const T = [['room.html', 'room', '우리 집에 놓아 보기', '내 방에 기물을 놓아 봅니다'], ['bandaji-map.html', 'map', '반닫이여지도', '지역별 반닫이(궤)'], ['region-ruler.html', 'ruler', '비례로 보는 반닫이', '가로 세로 비율로 보는 반닫이'], ['region-quiz.html', 'quiz', '반닫이 퀴즈', '사진으로 반닫이 지역 맞추기'], ['auction-stats.html', 'stats', '경매 시세', '종류별 낙찰가 흐름']];
   document.getElementById('hm-tiles').innerHTML = T.map(([h, k, n, d]) => `<a class="hm-tile" href="${h}"><span class="i">${k === 'map' ? `<span class="mp">${MAPICO}</span>` : TOOL_ICO[k]}</span><b>${n}</b><small>${d}</small></a>`).join('');
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
@@ -716,7 +717,7 @@ d.addEventListener('close',reset);
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
 <script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
 <script src="recent.js" defer></script>
-<script src="comments.js?v=20261111" defer></script>
+<script src="comments.js?v=20261112" defer></script>
 <script src="share.js" defer></script><script src="mklink.js?v=5" defer></script><script>/* 휴대폰 뒤로가기: 사진 창만 닫고 보던 화면(검색 결과)에 그대로 남긴다 */
 (function () {
   window.__dlgback = 1;
