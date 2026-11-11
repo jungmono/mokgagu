@@ -29,9 +29,9 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacin
 </style></head><body><main>
 <script src="tools-head.js?v=20261112" data-k="room"></script>
 <div class="g5">
-<div class="step"><span class="no">1</span><b>방 정하기</b></div>
+<div class="step"><span class="no">1</span><b>방 정하기</b> <small style="color:#888;font-weight:400">방 가장자리의 ● 를 끌면 크기가 바뀝니다</small></div>
 <div class="pick" id="g5room"></div>
-<div class="sz" id="g5size"></div>
+<div class="sz" id="g5size" hidden></div>
 <div class="up"><label class="rbtn w big" for="g5file">📷 평면도 사진 올리기</label><input type="file" id="g5file" accept="image/*" hidden>
 <span class="note">네이버 부동산 평면도를 저장하거나 화면을 찍어 올리면 됩니다. 사진은 이 휴대폰 안에서만 쓰이고 어디에도 올라가지 않습니다.</span></div>
 <div id="g5cal" class="cal" hidden></div>
@@ -94,8 +94,8 @@ function grp(o,i,on){const bad=items.some(p=>p!==o&&overlap(o,p));
 function draw(){
   const W=world(), cw=Math.max(280,plan.clientWidth||600), chMax=window.innerHeight*.7;
   const K0=Math.max(W.w*1.2/cw,W.d*1.2/chMax), pad=Math.max(Math.max(W.w,W.d)*.04,56*K0);
-  const vb=[-pad,-pad,W.w+2*pad,W.d+2*pad]; K=Math.max(vb[2]/cw,vb[3]/chMax);
-  $('g5size').hidden=!!bg;
+  let vb=[-pad,-pad,W.w+2*pad,W.d+2*pad]; if(act&&act.t==='room')vb=act.vb; K=Math.max(vb[2]/cw,vb[3]/chMax);
+  
   if(bg&&!bg.cmpp){sv.setAttribute('viewBox',[0,0,bg.img.width,bg.img.height].join(' '));
     $('g5bg').innerHTML=`<image href="${bg.url}" x="0" y="0" width="${bg.img.width}" height="${bg.img.height}"/>`;
     const r=bg.img.width/120;$('g5lay').innerHTML=calPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="#d12b2b"/>`).join('')+(calPts.length===2?`<line x1="${calPts[0].x}" y1="${calPts[0].y}" x2="${calPts[1].x}" y2="${calPts[1].y}" stroke="#d12b2b" stroke-width="${r*.6}"/>`:'');
@@ -108,12 +108,16 @@ function draw(){
     b+=`<rect x="0" y="0" width="${W.w}" height="${W.d}" fill="none" stroke="#111" stroke-width="${4*K}"/>`; }
   $('g5bg').innerHTML=b;
   let g='';items.forEach((o,i)=>{if(i!==sel)g+=grp(o,i,false);}); if(items[sel])g+=grp(items[sel],sel,true);
+  if(!bg){const hr=11*K,fs=14*K,w=W.w,d=W.d,hd=(ax,ay,x,y,cur)=>`<g data-act="room" data-ax="${ax}" data-ay="${ay}" style="cursor:${cur}"><circle cx="${x}" cy="${y}" r="${hr*2.2}" fill="transparent"/><circle cx="${x}" cy="${y}" r="${hr}" fill="#111" stroke="#fff" stroke-width="${2*K}"/></g>`;
+    g+=`<text x="${w/2}" y="${-14*K}" font-size="${fs}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">가로 ${w}cm</text><text transform="translate(${-14*K} ${d/2}) rotate(-90)" font-size="${fs}" text-anchor="middle" font-weight="700" fill="#111" pointer-events="none">세로 ${d}cm</text>`;
+    g+=hd(1,0,w,d/2,'ew-resize')+hd(0,1,w/2,d,'ns-resize')+hd(1,1,w,d,'nwse-resize');}
   $('g5lay').innerHTML=g; selbar();
 }
 const pt=e=>{const m=sv.getScreenCTM().inverse(),q=sv.createSVGPoint();q.x=e.clientX;q.y=e.clientY;return q.matrixTransform(m);};
 sv.addEventListener('pointerdown',e=>{const p=pt(e);
   if(bg&&!bg.cmpp){ if(calPts.length<2){calPts.push(p);draw();} if(calPts.length===2)calAsk(); return; }
   const a=e.target.closest('[data-act]'), o=items[sel];
+  if(a&&a.dataset.act==='room'){e.preventDefault();const v=sv.viewBox.baseVal,sc=1.4;act={t:'room',ax:+a.dataset.ax,ay:+a.dataset.ay,vb:[p.x-(p.x-v.x)*sc,p.y-(p.y-v.y)*sc,v.width*sc,v.height*sc]};sv.setPointerCapture(e.pointerId);draw();return;}
   if(a&&o){e.preventDefault();
     if(a.dataset.act==='del'){items.splice(sel,1);sel=-1;draw();return;}
     if(a.dataset.act==='rot') act={t:'rot',o,a0:Math.atan2(p.y-o.cy,p.x-o.cx)*180/Math.PI-o.r};
@@ -122,7 +126,9 @@ sv.addEventListener('pointerdown',e=>{const p=pt(e);
   const t=e.target.closest('.it'); if(!t){if(sel>=0){sel=-1;draw();}return;}
   const i=+t.dataset.i; if(sel!==i){sel=i;draw();}
   act={t:'mv',o:items[i],dx:p.x-items[i].cx,dy:p.y-items[i].cy}; sv.setPointerCapture(e.pointerId); e.preventDefault();});
-sv.addEventListener('pointermove',e=>{if(!act)return;const p=pt(e),o=act.o;o.moved=1;
+sv.addEventListener('pointermove',e=>{if(!act)return;const p=pt(e);
+  if(act.t==='room'){const sn=v=>Math.round(v/10)*10;if(act.ax)R.w=Math.max(200,Math.min(800,sn(p.x),sn(act.vb[0]+act.vb[2]-30*K)));if(act.ay)R.d=Math.max(200,Math.min(800,sn(p.y),sn(act.vb[1]+act.vb[3]-30*K)));place();items.forEach(clamp);draw();return;}
+  const o=act.o;o.moved=1;
   if(act.t==='mv'){o.cx=p.x-act.dx;o.cy=p.y-act.dy;}
   else if(act.t==='rot'){let a=((Math.atan2(p.y-o.cy,p.x-o.cx)*180/Math.PI-act.a0)%360+360)%360;const n=Math.round(a/90)*90;if(Math.abs(a-n)<4)a=n%360;o.r=Math.round(a);}
   else {const vx=p.x-act.fx,vy=p.y-act.fy,u=rot(vx,vy,-o.r);o.w=Math.round(Math.max(30,Math.min(400,u[0]*act.sx)));o.d=Math.round(Math.max(20,Math.min(300,u[1]*act.sy)));
@@ -132,9 +138,7 @@ const end=()=>{if(act){act=null;draw();}};sv.addEventListener('pointerup',end);s
 function selbar(){const b=$('g5sel'),o=items[sel];
   b.innerHTML=o?`<b>${o.n}</b><span>${o.w}×${o.d}${o.h?'×'+o.h:''}cm${o.r?' · '+o.r+'°':''}</span><span style="color:#888">${o.home?'□ 모서리를 끌면 크기 · ':''}모서리 ↻를 끌면 돌리기 · − 빼기</span>`:'';}
 /* 방 크기 막대 */
-function sizeBar(){const W=R;$('g5size').innerHTML=`<label>가로 <input type="range" id="g5rw" min="200" max="800" step="10" value="${W.w}"> <b id="g5rwv">${W.w}</b>cm</label><label>세로 <input type="range" id="g5rd" min="200" max="800" step="10" value="${W.d}"> <b id="g5rdv">${W.d}</b>cm</label>`;
-  const on=()=>{R={w:+$('g5rw').value,d:+$('g5rd').value};$('g5rwv').textContent=R.w;$('g5rdv').textContent=R.d;place();items.forEach(clamp);draw();};
-  $('g5rw').oninput=on;$('g5rd').oninput=on;}
+function sizeBar(){}
 /* 평면도 축척 맞추기: 두 점을 누르고 실제 길이 넣기 */
 function calStart(){calPts=[];$('g5cal').hidden=false;$('g5cal').innerHTML='<b>축척 맞추기</b><br>평면도에서 길이를 아는 곳의 <b>양 끝 두 점</b>을 차례로 누르세요.<br>(예: 평면도에 적힌 치수가 있는 벽)<br><small>두 점을 찍으면 길이를 묻습니다. 평면도에 적힌 숫자(예: 4996mm)를 넣고 <b>맞추기</b>를 눌러야 평면도에 기물이 나타납니다.</small>';}
 function calAsk(){const px=Math.hypot(calPts[1].x-calPts[0].x,calPts[1].y-calPts[0].y);
