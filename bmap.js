@@ -221,7 +221,7 @@ ${base()}
       return TYPES.filter(([k]) => on[k] && o[k] && o[k].length).map(([k, n, c]) => o[k].map((r) => {
         list.push(r); const i = list.length - 1;
         return r.own ? `<button type="button" data-i="${i}">${r.t ? `<img class="ow" alt="" data-th="1" data-pid="${esc(r.t)}">` : ''}<span><i style="background:${c}"></i>우리 소장품<br>${esc((r.name || '') + ' ' + (r.era || ''))}<br>${esc((r.size || '').slice(0, 18))}</span></button>` :
-          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="${r.thumb || `thumbs/${r.b}/${r.n}.jpg`}" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.gj ? r.name : (r.owner || r.cat || n)).slice(0, 12))}${/반닫이|반다지/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
+          `<button type="button" data-i="${i}"><img loading="lazy" alt="" src="${r.thumb || (r.b === 'seoulauction' && r.pid ? `thumbs/seoul/${r.pid}.jpg` : `thumbs/${r.b}/${r.n}.jpg`)}" onerror="this.style.visibility='hidden'"><span><i style="background:${c}"></i>${esc((r.gj ? r.name : (r.owner || r.cat || n)).slice(0, 12))}${/반닫이|반다지/.test(r.name || '') ? '' : ' · ' + esc(clean(r.name).slice(0, 8))}<br>${esc((r.era || '') + ' ' + (r.size || '').slice(0, 14))}</span></button>`;
       }).join('')).join('');
     }
     /* 기물 창: 도록과 같은 사진 창(#dlg) — 이 지도 화면 위에서 열고, 닫으면 지도로 돌아온다. 크게 보기·확대·밀어 넘기기는 도록과 같다 */
@@ -242,7 +242,7 @@ ${base()}
         dlg.dataset.cid = r.b + '/' + (r.pid || r.n);
         const pc = r.pics && r.pics[vp] ? r.pics[vp] : r;
         if (r.pics) { img.src = pc.full; img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = pc.thumb; }; } else
-        img.src = r.full || (r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : ''));
+        img.src = r.full || (r.b === 'seoulauction' && r.pid ? `photos/seoul/${encodeURIComponent(r.pid)}.jpg` : r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : ''));
         img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
         img.alt = r.name;
         $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}${r.pics && r.pics.length > 1 ? dRow('사진', (vp + 1) + ' / ' + r.pics.length + '장') : ''}</dl>${r.pics && r.pics.length > 1 ? `<div class="bm-st">${r.pics.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" src="${p.thumb}"></button>`).join('')}</div>` : ''}${r.b === 'gijun' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">장석 감정실에 올린 기준 도판</p>' : r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
