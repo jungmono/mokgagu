@@ -337,7 +337,7 @@ document.getElementById('n-refs').innerHTML = (MUSE.length ? ` · 박물관자�
 /* 『조선의 궤』 도판 161점은 가족(가족 암호 + 거믄·힌)에게만 기물 수에 더한다 — 반닫이여지도의 '조선의 궤' 메뉴와 같은 기준 */
 document.getElementById('n-items').textContent = DASHBOARDS.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR');
 /* 사이트를 고칠 때마다 이 날짜를 그날로 바꿉니다(소스 수정도 포함) */
-const SITE_UPDATED = '2026-11-10';
+const SITE_UPDATED = '2026-11-13';
 document.getElementById('updated').textContent = fmt(SITE_UPDATED > latest.added ? SITE_UPDATED : latest.added) + '.';
 
 const grid = document.getElementById('grid');
@@ -386,7 +386,7 @@ function buildTools() {
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
-const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
+const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', hoam: '호암미술관', hoam: '호암미술관', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
 document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}<button type="button" class="all" data-all="${k}">전체 ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 보기 →</button></div></div>`).join('');
 document.getElementById('hm-folds').addEventListener('click', (e) => { const b = e.target.closest('[data-all]'); if (!b) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(b.dataset.all); });

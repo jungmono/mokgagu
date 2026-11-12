@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet"><title>조선목가구대전 — 나뭇결에 스민 지혜(호암미술관) — 조선의 목가구</title>
+<meta name="color-scheme" content="light">
+<style>
+:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--accent:#8a2f22;
+  --sans:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--serif:"Noto Serif KR","AppleMyungjo","Nanum Myeongjo","Batang",serif}
+*{box-sizing:border-box}
+html{background:#fff}
+body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:24px 16px 48px;word-break:keep-all}
+.wrap{max-width:1200px;margin:0 auto}
+.sa-top{max-width:1200px;margin:0 auto 18px}
+.sa-home{display:inline-flex;align-items:center;gap:10px;color:#111;background:#fff;border:2px solid #111;border-radius:999px;padding:8px 18px;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .15s,background .15s}
+.sa-home:hover{background:#f2f0ec;transform:translateY(-1px)}
+.sa-home img{height:34px;width:auto;display:block}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);margin:4px 0 8px}
+ul.lead{margin:0 0 20px;padding-left:20px;color:#3b3833;line-height:1.75;font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0 0 22px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.tile .k{font-size:13px;color:var(--muted)}.tile .v{font-family:var(--serif);font-size:28px;margin-top:4px}.tile .v small{font-size:14px;color:var(--muted);margin-left:2px}
+.tile .s{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+button.tile{font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s}button.tile:hover{border-color:#bdb6aa}button.tile.on{border-color:#1d1b18;box-shadow:inset 0 0 0 1px #1d1b18}
+.zbar{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;z-index:3}.zbar button{width:34px;height:34px;border-radius:8px;border:0;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:17px;line-height:1}
+.zhint{position:absolute;left:10px;bottom:12px;font-size:11.5px;color:#6b665e;background:rgba(255,255,255,.85);border-radius:6px;padding:2px 7px;z-index:3}
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 16px}
+.filters .lab{font-size:13px;color:var(--muted);min-width:44px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;cursor:pointer;color:var(--fg);font-family:inherit}
+.chip:hover{border-color:#bdb6aa}.chip.on{background:#1d1b18;color:#fff;border-color:#1d1b18}.chip .n{opacity:.6;margin-left:4px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;padding:0;font:inherit;color:inherit;transition:box-shadow .15s,transform .15s}
+.card:hover{box-shadow:0 8px 22px rgba(0,0,0,.09);transform:translateY(-2px)}
+.card .ph{aspect-ratio:4/3;background:#f6f4f0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .ph img{width:100%;height:100%;object-fit:contain}
+.card .ph .no{font-size:13px;color:var(--muted)}
+.card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.badge{display:inline-block;width:max-content;font-size:11.5px;font-weight:700;color:var(--accent);border:1px solid #e8cfc8;background:#fbf4f2;border-radius:6px;padding:2px 7px}
+.nm{font-family:var(--serif);font-size:18px;line-height:1.35}
+.hj{font-size:13px;color:var(--muted)}
+.mt{font-size:12.5px;color:var(--muted);line-height:1.5}
+.pc{font-size:11.5px;color:var(--muted)}
+p.note{font-size:13px;color:var(--muted);line-height:1.7;margin-top:28px}
+dialog{border:0;border-radius:14px;padding:0;width:min(1180px,96vw);max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(20,18,15,.55)}
+.d-body{display:flex;gap:22px;padding:20px;max-height:calc(94vh - 60px);overflow:auto}
+.d-img{flex:1.35;min-width:0;display:flex;flex-direction:column;gap:10px}
+.d-main{position:relative;background:#f6f4f0;border-radius:10px;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;overscroll-behavior:contain}
+.d-main img{max-width:100%;max-height:66vh;object-fit:contain;display:block;transform-origin:0 0;user-select:none;-webkit-user-drag:none;cursor:zoom-in}.d-main.zoomed img{cursor:grab}.d-main.zoomed.drag img{cursor:grabbing}
+.d-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:18px}
+.d-arrow.l{left:10px}.d-arrow.r{right:10px}
+.d-cap{font-size:12.5px;color:var(--muted)}
+.d-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.d-strip button{flex:0 0 auto;width:64px;height:52px;border:2px solid transparent;border-radius:6px;padding:0;background:#f6f4f0;cursor:pointer;overflow:hidden}
+.d-strip button.on{border-color:#1d1b18}.d-strip img{width:100%;height:100%;object-fit:cover}
+.d-info{flex:1;min-width:0}
+.d-info h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:6px 0 2px}
+.d-info .hj{margin-bottom:12px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;margin:0 0 14px}
+.d-info dt{color:var(--muted)}.d-info dd{margin:0}
+.d-desc{font-size:14.5px;line-height:1.85;white-space:pre-line;color:#2e2b27}
+.d-en{font-size:13px;line-height:1.7;color:var(--muted);margin-top:12px}
+.d-en summary{cursor:pointer}
+.d-src{display:inline-block;margin-top:14px;font-size:13.5px;color:var(--accent)}
+.d-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line)}
+.d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
+@media (max-width:760px){.d-body{flex-direction:column;padding:14px}.d-main{min-height:220px}.d-main img{max-height:46vh}}
+.sa-foot{max-width:1200px;margin:40px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}
+.sa-foot .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}
+.sa-foot .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center}
+.sa-foot .ew-blk{background:#fff;color:#111}.sa-foot .ew-wht{background:#111;color:#fff}
+.sa-foot .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}
+</style><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<script src="photozoom.js?v=20261113"></script>
+<script src="common.js?v=18" defer></script>
+</head>
+<body>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="wrap">
+  <h1>조선목가구대전 — 나뭇결에 스민 지혜 — 호암미술관(2002)</h1>
+  <ul class="lead" id="lead"></ul>
+  <div class="tiles" id="tiles"></div>
+  <div class="filters" id="f-grp"><span class="lab">기종</span></div>
+  <div class="filters"><span class="lab">찾기</span><input type="search" id="q" placeholder="이름에서 찾기 — 예: 서안, 경상, 연상, 문갑, 사방탁자" style="font:inherit;font-size:14px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(360px,100%)"><span id="cnt" style="font-size:13px;color:var(--muted);margin-left:6px"></span></div>
+  <div class="grid" id="grid"></div>
+
+</div>
+<div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
+
+<dialog id="dlg" aria-label="자세히 보기">
+  <div class="d-body">
+    <div class="d-img">
+      <div class="d-main" id="d-main"><img id="d-img" alt="" draggable="false"><button class="d-arrow l" id="p-prev" aria-label="이전 사진">‹</button><button class="d-arrow r" id="p-next" aria-label="다음 사진">›</button><span class="zhint" id="zhint">휠·두 손가락으로 사진만 확대 · 옆으로 밀면 이전·다음</span></div>
+      <div class="d-cap" id="d-cap"></div>
+      <div class="d-strip" id="d-strip"></div>
+    </div>
+    <div class="d-info" id="d-info"></div>
+  </div>
+  <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos" style="font-size:13px;color:var(--muted)"></span><span><button id="d-next">다음 →</button> <button id="d-close">닫기</button></span></div>
+</dialog>
+<script type="application/json" id="ds-items">[{"portal": "서안", "id": "H01", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "64×29.6×26.5", "era": "19세기", "owner": "개인 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H02", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "65×26.8×29", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H03", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "64×29.6×28", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H04", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "48×26×27.5", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H05", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "57.5×27.8×25.7", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H06", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "65.6×28.6×28.6", "era": "19세기", "owner": "이희숙 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H07", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "62×26×27", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H08", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "73.5×33×29", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H09", "name": "서안", "hanja": "書案", "kind": "서안·경상", "type": "", "size_raw": "59×32.7×31.2", "era": "19세기", "owner": "개인 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H10", "name": "경상", "hanja": "經床", "kind": "서안·경상", "type": "", "size_raw": "76.3×32×34.7", "era": "19세기", "owner": "국립중앙박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H11", "name": "경상", "hanja": "經床", "kind": "서안·경상", "type": "", "size_raw": "65.3×30×31", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "서안", "id": "H12", "name": "경상", "hanja": "經床", "kind": "서안·경상", "type": "", "size_raw": "62×27×34.5", "era": "18세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H13", "name": "연상", "hanja": "硯床", "kind": "연상", "type": "", "size_raw": "35.8×22.8×29", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H14", "name": "연상", "hanja": "硯床", "kind": "연상", "type": "", "size_raw": "33.3×20.2×26.5", "era": "19세기", "owner": "국립중앙박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H15", "name": "연상", "hanja": "硯床", "kind": "연상", "type": "", "size_raw": "33×22×18.5", "era": "19세기", "owner": "서울대학교박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H16", "name": "연상", "hanja": "硯床", "kind": "연상", "type": "", "size_raw": "19×32×20.5", "era": "19세기", "owner": "서울대학교박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H17", "name": "죽장연상", "hanja": "竹張硯床", "kind": "연상", "type": "", "size_raw": "45.8×28.3×29.3", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H18", "name": "죽장연상", "hanja": "竹張硯床", "kind": "연상", "type": "", "size_raw": "19.3×32.6×25.9", "era": "19세기", "owner": "정민자 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H19", "name": "연상", "hanja": "硯床", "kind": "연상", "type": "", "size_raw": "40.4×29.8×26", "era": "19세기", "owner": "국립중앙박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H20", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "108×21.2×28.4", "era": "19세기", "owner": "국립중앙박물관(김종학 기증품) · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H21", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "165×34.6×38.5", "era": "19세기", "owner": "호암미술관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H22", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "83×20×53.5", "era": "19세기", "owner": "국립중앙박물관(김종학 기증품) · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H23", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "58.6×24.5×30.4", "era": "19세기", "owner": "박옥경 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H24", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "53×10.5×19.3", "era": "19세기", "owner": "서울대학교박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "", "id": "H25", "name": "문갑", "hanja": "文匣", "kind": "문갑", "type": "", "size_raw": "46.5×21.5×30", "era": "19세기", "owner": "개인 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "사방탁자", "id": "H26", "name": "사층사방탁자", "hanja": "四層四方卓子", "kind": "탁자·책장", "type": "", "size_raw": "41.5×34×162.3", "era": "19세기", "owner": "국립중앙박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "사방탁자", "id": "H27", "name": "사층사방탁자", "hanja": "四層四方卓子", "kind": "탁자·책장", "type": "", "size_raw": "47×33.8×168.5", "era": "19세기", "owner": "서울대학교박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "사방탁자", "id": "H28", "name": "삼층탁자", "hanja": "三層卓子", "kind": "탁자·책장", "type": "", "size_raw": "36.4×34×132.8", "era": "19세기", "owner": "국립중앙박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "사방탁자", "id": "H29", "name": "사층탁자", "hanja": "四層卓子", "kind": "탁자·책장", "type": "", "size_raw": "38.2×38.2×158.6", "era": "19세기", "owner": "개인 · 조선목가구대전(호암미술관 2002)", "page": ""}, {"portal": "사방탁자", "id": "H30", "name": "사층탁자", "hanja": "四層卓子", "kind": "탁자·책장", "type": "", "size_raw": "54.8×18×117.5", "era": "19세기", "owner": "이화여자대학교박물관 · 조선목가구대전(호암미술관 2002)", "page": ""}]</script>
+<script type="application/json" id="ds-photos">[{"id": "H01", "img": "thumbs/hoam/1.jpg?v=20261113"}, {"id": "H02", "img": "thumbs/hoam/2.jpg?v=20261113"}, {"id": "H03", "img": "thumbs/hoam/3.jpg?v=20261113"}, {"id": "H04", "img": "thumbs/hoam/4.jpg?v=20261113"}, {"id": "H05", "img": "thumbs/hoam/5.jpg?v=20261113"}, {"id": "H06", "img": "thumbs/hoam/6.jpg?v=20261113"}, {"id": "H07", "img": "thumbs/hoam/7.jpg?v=20261113"}, {"id": "H08", "img": "thumbs/hoam/8.jpg?v=20261113"}, {"id": "H09", "img": "thumbs/hoam/9.jpg?v=20261113"}, {"id": "H10", "img": "thumbs/hoam/10.jpg?v=20261113"}, {"id": "H11", "img": "thumbs/hoam/11.jpg?v=20261113"}, {"id": "H12", "img": "thumbs/hoam/12.jpg?v=20261113"}, {"id": "H13", "img": "thumbs/hoam/13.jpg?v=20261113"}, {"id": "H14", "img": "thumbs/hoam/14.jpg?v=20261113"}, {"id": "H15", "img": "thumbs/hoam/15.jpg?v=20261113"}, {"id": "H16", "img": "thumbs/hoam/16.jpg?v=20261113"}, {"id": "H17", "img": "thumbs/hoam/17.jpg?v=20261113"}, {"id": "H18", "img": "thumbs/hoam/18.jpg?v=20261113"}, {"id": "H19", "img": "thumbs/hoam/19.jpg?v=20261113"}, {"id": "H20", "img": "thumbs/hoam/20.jpg?v=20261113"}, {"id": "H21", "img": "thumbs/hoam/21.jpg?v=20261113"}, {"id": "H22", "img": "thumbs/hoam/22.jpg?v=20261113"}, {"id": "H23", "img": "thumbs/hoam/23.jpg?v=20261113"}, {"id": "H24", "img": "thumbs/hoam/24.jpg?v=20261113"}, {"id": "H25", "img": "thumbs/hoam/25.jpg?v=20261113"}, {"id": "H26", "img": "thumbs/hoam/26.jpg?v=20261113"}, {"id": "H27", "img": "thumbs/hoam/27.jpg?v=20261113"}, {"id": "H28", "img": "thumbs/hoam/28.jpg?v=20261113"}, {"id": "H29", "img": "thumbs/hoam/29.jpg?v=20261113"}, {"id": "H30", "img": "thumbs/hoam/30.jpg?v=20261113"}]</script>
+<script>
+const ITEMS = [{"id": "H01", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "64×29.6×26.5", "owner": "개인", "memo": "", "no": 1, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H01.jpg?v=20261113", "w": 1314, "h": 986}]}, {"id": "H02", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "65×26.8×29", "owner": "호암미술관", "memo": "", "no": 2, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H02.jpg?v=20261113", "w": 1519, "h": 1139}]}, {"id": "H03", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "64×29.6×28", "owner": "호암미술관", "memo": "", "no": 3, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H03.jpg?v=20261113", "w": 1663, "h": 1247}]}, {"id": "H04", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "48×26×27.5", "owner": "호암미술관", "memo": "", "no": 4, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H04.jpg?v=20261113", "w": 1405, "h": 1054}]}, {"id": "H05", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "57.5×27.8×25.7", "owner": "호암미술관", "memo": "", "no": 5, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H05.jpg?v=20261113", "w": 1438, "h": 1078}]}, {"id": "H06", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "65.6×28.6×28.6", "owner": "이희숙", "memo": "스캔이 흑백(2진)으로 되어 사진이 거칩니다. 다시 스캔하면 바꿉니다.", "no": 6, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H06.jpg?v=20261113", "w": 1195, "h": 896}]}, {"id": "H07", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "62×26×27", "owner": "호암미술관", "memo": "", "no": 7, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H07.jpg?v=20261113", "w": 1368, "h": 1026}]}, {"id": "H08", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "73.5×33×29", "owner": "호암미술관", "memo": "", "no": 8, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H08.jpg?v=20261113", "w": 1525, "h": 1144}]}, {"id": "H09", "kind": "서안·경상", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "59×32.7×31.2", "owner": "개인", "memo": "도록 9-1·9-2, 같은 기물을 두 방향에서 찍은 사진 2장.", "no": 9, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H09.jpg?v=20261113", "w": 1073, "h": 805}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H09b.jpg?v=20261113", "w": 935, "h": 701}]}, {"id": "H10", "kind": "서안·경상", "name": "경상", "hanja": "經床", "cat": "Writing Desk", "era": "19세기", "size": "76.3×32×34.7", "owner": "국립중앙박물관", "memo": "", "no": 10, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H10.jpg?v=20261113", "w": 1348, "h": 1011}]}, {"id": "H11", "kind": "서안·경상", "name": "경상", "hanja": "經床", "cat": "Writing Desk", "era": "19세기", "size": "65.3×30×31", "owner": "호암미술관", "memo": "", "no": 11, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H11.jpg?v=20261113", "w": 1459, "h": 1094}]}, {"id": "H12", "kind": "서안·경상", "name": "경상", "hanja": "經床", "cat": "Writing Desk", "era": "18세기", "size": "62×27×34.5", "owner": "호암미술관", "memo": "", "no": 12, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H12.jpg?v=20261113", "w": 1462, "h": 1096}]}, {"id": "H13", "kind": "연상", "name": "연상", "hanja": "硯床", "cat": "Inkstone Table", "era": "19세기", "size": "35.8×22.8×29", "owner": "호암미술관", "memo": "", "no": 13, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H13.jpg?v=20261113", "w": 1039, "h": 779}]}, {"id": "H14", "kind": "연상", "name": "연상", "hanja": "硯床", "cat": "Inkstone Table", "era": "19세기", "size": "33.3×20.2×26.5", "owner": "국립중앙박물관", "memo": "", "no": 14, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H14.jpg?v=20261113", "w": 1327, "h": 995}]}, {"id": "H15", "kind": "연상", "name": "연상", "hanja": "硯床", "cat": "Inkstone Table", "era": "19세기", "size": "33×22×18.5", "owner": "서울대학교박물관", "memo": "", "no": 15, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H15.jpg?v=20261113", "w": 1425, "h": 1069}]}, {"id": "H16", "kind": "연상", "name": "연상", "hanja": "硯床", "cat": "Inkstone Table", "era": "19세기", "size": "19×32×20.5", "owner": "서울대학교박물관", "memo": "도록 표기 순서 그대로(幅 19×32).", "no": 16, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H16.jpg?v=20261113", "w": 1102, "h": 826}]}, {"id": "H17", "kind": "연상", "name": "죽장연상", "hanja": "竹張硯床", "cat": "Bamboo Plated Inkstone Table", "era": "19세기", "size": "45.8×28.3×29.3", "owner": "호암미술관", "memo": "", "no": 17, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H17.jpg?v=20261113", "w": 1435, "h": 1076}]}, {"id": "H18", "kind": "연상", "name": "죽장연상", "hanja": "竹張硯床", "cat": "Bamboo Plated Inkstone Table", "era": "19세기", "size": "19.3×32.6×25.9", "owner": "정민자", "memo": "도록 표기 순서 그대로(幅 19.3×32.6).", "no": 18, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H18.jpg?v=20261113", "w": 1297, "h": 973}]}, {"id": "H19", "kind": "연상", "name": "연상", "hanja": "硯床", "cat": "Inkstone Table", "era": "19세기", "size": "40.4×29.8×26", "owner": "국립중앙박물관", "memo": "", "no": 19, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H19.jpg?v=20261113", "w": 1417, "h": 1063}]}, {"id": "H20", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "108×21.2×28.4", "owner": "국립중앙박물관(김종학 기증품)", "memo": "도록 펼침면(36~37쪽)에 걸친 사진을 이어 붙였습니다.", "no": 20, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H20.jpg?v=20261113", "w": 2239, "h": 1679}]}, {"id": "H21", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "165×34.6×38.5", "owner": "호암미술관", "memo": "도록 펼침면(38~39쪽)에 걸친 사진을 이어 붙였습니다.", "no": 21, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H21.jpg?v=20261113", "w": 2230, "h": 1672}]}, {"id": "H22", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "83×20×53.5", "owner": "국립중앙박물관(김종학 기증품)", "memo": "", "no": 22, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H22.jpg?v=20261113", "w": 1460, "h": 1095}]}, {"id": "H23", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "58.6×24.5×30.4", "owner": "박옥경", "memo": "", "no": 23, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H23.jpg?v=20261113", "w": 1365, "h": 1024}]}, {"id": "H24", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "53×10.5×19.3", "owner": "서울대학교박물관", "memo": "", "no": 24, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H24.jpg?v=20261113", "w": 1492, "h": 1119}]}, {"id": "H25", "kind": "문갑", "name": "문갑", "hanja": "文匣", "cat": "Document Chest", "era": "19세기", "size": "46.5×21.5×30", "owner": "개인", "memo": "", "no": 25, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H25.jpg?v=20261113", "w": 1346, "h": 1010}]}, {"id": "H26", "kind": "탁자·책장", "name": "사층사방탁자", "hanja": "四層四方卓子", "cat": "Book Shelf", "era": "19세기", "size": "41.5×34×162.3", "owner": "국립중앙박물관", "memo": "", "no": 26, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H26.jpg?v=20261113", "w": 1403, "h": 1871}]}, {"id": "H27", "kind": "탁자·책장", "name": "사층사방탁자", "hanja": "四層四方卓子", "cat": "Book Shelf", "era": "19세기", "size": "47×33.8×168.5", "owner": "서울대학교박물관", "memo": "", "no": 27, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H27.jpg?v=20261113", "w": 1403, "h": 1871}]}, {"id": "H28", "kind": "탁자·책장", "name": "삼층탁자", "hanja": "三層卓子", "cat": "Book Shelf", "era": "19세기", "size": "36.4×34×132.8", "owner": "국립중앙박물관", "memo": "", "no": 28, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H28.jpg?v=20261113", "w": 1169, "h": 1559}]}, {"id": "H29", "kind": "탁자·책장", "name": "사층탁자", "hanja": "四層卓子", "cat": "Book Shelf", "era": "19세기", "size": "38.2×38.2×158.6", "owner": "개인", "memo": "", "no": 29, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H29.jpg?v=20261113", "w": 1364, "h": 1818}]}, {"id": "H30", "kind": "탁자·책장", "name": "사층탁자", "hanja": "四層卓子", "cat": "Book Shelf", "era": "19세기", "size": "54.8×18×117.5", "owner": "이화여자대학교박물관", "memo": "", "no": 30, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/hoam/H30.jpg?v=20261113", "w": 1242, "h": 1656}]}];
+const THUMB = Object.fromEntries(JSON.parse(document.getElementById('ds-photos').textContent).map((p) => [p.id, p.img]));
+const GRPS = ["서안·경상", "연상", "문갑", "탁자·책장"];
+const ERAS = [];
+const gOf = (i) => i.kind;
+const eOf = (i) => '';
+const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const nPics = ITEMS.reduce((s, i) => s + i.pics.length, 0);
+const cnt = (g) => ITEMS.filter((i) => gOf(i) === g).length;
+document.getElementById('lead').innerHTML = [
+  `호암미술관 『조선목가구대전 — 나뭇결에 스민 지혜』(2002.5.31~9.1) 도록의 <b>사랑방 가구</b> ${ITEMS.length}점, 사진 ${nPics}장 — 도록을 이어서 스캔하는 대로 보탭니다.`,
+  `서안·경상·연상·문갑·탁자를 골라 보거나 이름으로 찾을 수 있습니다. 크기는 가로×옆너비×높이(cm)로 적었습니다(도록은 高·幅 순서).`,
+  `스캔한 쪽이 뒤집혀 있어 바로 돌렸고, 사진은 인쇄된 사진 부분만 잘랐습니다. 펼침면에 걸친 사진은 이어 붙였습니다.`,
+].map((s) => `<li>${s}</li>`).join('');
+const TILES = [['', '기물 전체', ITEMS.length, '전체 보기'], ['서안·경상', '서안·경상', cnt('서안·경상'), '서안과 경상'], ['연상', '연상', cnt('연상'), '연상·죽장연상'], ['문갑', '문갑', cnt('문갑'), '문갑'], ['탁자·책장', '탁자·책장', cnt('탁자·책장'), '삼층·사층 탁자']];
+
+
+
+
+
+
+
+function tiles() {
+  document.getElementById('tiles').innerHTML = TILES.map(([g, k, n, s]) => `<button type="button" class="tile${grp === g ? ' on' : ''}" data-g="${g}"><div class="k">${k}</div><div class="v">${n}<small>점</small></div><div class="s">${s}</div></button>`).join('');
+}
+document.getElementById('tiles').addEventListener('click', (e) => { const b = e.target.closest('.tile'); if (!b) return; grp = b.dataset.g; era = ''; render(); document.getElementById('f-grp').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+let grp = '', era = '', q = '', view = [];
+function chipRow(id, list, cur, ofn, set) {
+  const el = document.getElementById(id); el.querySelectorAll('.chip').forEach((c) => c.remove());
+  [['', '전체', ITEMS.length], ...list.map((g) => [g, g, ITEMS.filter((i) => ofn(i) === g).length]).filter((x) => x[2])].forEach(([v, t, n]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (cur === v ? ' on' : '');
+    b.innerHTML = `${t}<span class="n">${n}</span>`; b.onclick = () => { set(v); render(); }; el.appendChild(b);
+  });
+}
+function chips() { chipRow('f-grp', GRPS, grp, gOf, (v) => { grp = v; }); }
+document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim(); render(); });
+function render() {
+  chips(); tiles();
+  view = ITEMS.filter((i) => (!grp || gOf(i) === grp) && (!q || (i.name + ' ' + (i.hanja || '') + ' ' + (i.cat || '') + ' ' + (i.memo || '')).includes(q)));
+  document.getElementById('cnt').textContent = view.length + '점';
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}" data-cid="hoam/${i.id}"><div class="ph">${THUMB[i.id] ? `<img loading="lazy" src="${THUMB[i.id]}" alt="${esc(i.name)}">` : '<span class="no">사진 없음</span>'}</div><div class="bd"><span class="badge">${esc(i.kind)}</span><span class="nm">${esc(i.name)}</span>${i.hanja ? `<span class="hj">${esc(i.hanja)}</span>` : ''}<span class="mt">${i.size ? esc(i.size) + ' cm' : ''}</span><span class="pc">${i.pics.length ? '사진 ' + i.pics.length + '장' : ''}</span></div></button>`).join('');
+}
+document.getElementById('grid').addEventListener('click', (e) => { const c = e.target.closest('.card'); if (c) open_(+c.dataset.n); });
+const dlg = document.getElementById('dlg'); let cur = 0, pi = 0;
+function showPic() {
+  const i = view[cur], im = document.getElementById('d-img'), p = i.pics[pi];
+  if (p) { im.src = THUMB[i.id] && pi === 0 ? THUMB[i.id] : p.src; if (pi === 0) { const hi = new Image(); hi.onload = () => { if (view[cur] === i && pi === 0) im.src = hi.src; }; hi.src = p.src; } im.alt = i.name; im.hidden = false; }
+  else { im.removeAttribute('src'); im.hidden = true; }
+  document.getElementById('d-cap').textContent = p ? `${pi + 1} / ${i.pics.length}` : '사진이 없습니다.';
+  const multi = i.pics.length > 1;
+  document.getElementById('p-prev').hidden = document.getElementById('p-next').hidden = !multi;
+  document.querySelectorAll('#d-strip button').forEach((b, k) => b.classList.toggle('on', k === pi));
+}
+function open_(n) {
+  cur = (n + view.length) % view.length; pi = 0; const i = view[cur]; dlg.dataset.cid = 'hoam/' + i.id;
+  document.getElementById('d-strip').innerHTML = i.pics.length > 1 ? i.pics.map((p, k) => `<button type="button" data-k="${k}" aria-label="${k + 1}번째 사진"><img loading="lazy" src="${p.src}" alt=""></button>`).join('') : '';
+  showPic();
+  document.getElementById('d-info').innerHTML = `<span class="badge">${esc(i.kind)}</span>${i.imp ? ' <span class="badge" style="background:#8a2f22">중요</span>' : ''}<h3>${esc(i.name)}</h3><div class="hj">${esc(i.hanja)}</div><dl>
+    <dt>크기</dt><dd>${esc(i.size ? i.size + ' cm' : '—')}</dd>${i.era ? `<dt>시대</dt><dd>조선 ${esc(i.era)}</dd>` : ''}${i.owner ? `<dt>소장처</dt><dd>${esc(i.owner)}</dd>` : ''}${i.cat ? `<dt>영문 표기</dt><dd>${esc(i.cat)}</dd>` : ''}${i.memo ? `<dt>메모</dt><dd>${esc(i.memo)}</dd>` : ''}<dt>도록 번호</dt><dd>${i.no}</dd><dt>출처</dt><dd>『조선목가구대전 — 나뭇결에 스민 지혜』 — 호암미술관, 2002 (사랑방 가구)</dd></dl>
+    
+    `;
+  document.getElementById('d-pos').textContent = `${cur + 1} / ${view.length}`;
+  if (!dlg.open) dlg.showModal();
+}
+
+/* 사진 확대·끌기·좌우로 밀어 넘기기 — 다른 도록과 같은 공용 photozoom.js */
+if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: document.getElementById('d-main'),
+  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1 });
+document.getElementById('d-strip').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; pi = +b.dataset.k; showPic(); });
+document.getElementById('p-prev').onclick = () => { const i = view[cur]; pi = (pi - 1 + i.pics.length) % i.pics.length; showPic(); };
+document.getElementById('p-next').onclick = () => { const i = view[cur]; pi = (pi + 1) % i.pics.length; showPic(); };
+document.getElementById('d-prev').onclick = () => open_(cur - 1);
+document.getElementById('d-next').onclick = () => open_(cur + 1);
+document.getElementById('d-close').onclick = () => dlg.close();
+dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+document.addEventListener('keydown', (e) => { if (!dlg.open) return; if (e.key === 'ArrowRight') document.getElementById('p-next').click(); if (e.key === 'ArrowLeft') document.getElementById('p-prev').click(); });
+(function () { const m = location.hash.match(/^#(H\d+)$/); if (m) { const n = ITEMS.findIndex((i) => i.id === m[1]); if (n >= 0) { view = ITEMS; open_(n); } } })();
+render();
+</script>
+<script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
+<script src="recent.js" defer></script><script src="glossary.js?v=20261024" defer></script><script src="share.js" defer></script>
+<script src="books.js?v=1" defer></script><script src="site.js" defer></script><script src="comments.js?v=20261120" defer></script>
+<script src="homebtn.js" defer></script><script src="dlgback.js" defer></script>
+</body></html>
