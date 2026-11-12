@@ -311,4 +311,4 @@
 (function () { if (document.querySelector('script[src^="zoom.js"]')) return; var s = document.createElement('script'); s.src = 'zoom.js?v=20261024'; s.defer = true; document.head.appendChild(s); })();
 
 /* 기물 사진 창의 「실측도」「사람 옆에」 단추는 measure.js */
-(function () { if (document.querySelector('script[src^="measure.js"]')) return; var s = document.createElement('script'); s.src = 'measure.js?v=20261122'; s.defer = true; document.head.appendChild(s); })();
+(function () { if (document.querySelector('script[src^="measure.js"]')) return; var s = document.createElement('script'); s.src = 'measure.js?v=20261123'; s.defer = true; document.head.appendChild(s); })();

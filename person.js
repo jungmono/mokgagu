@@ -14,12 +14,35 @@ const G=(dy,s,dx=0)=>`<g transform="translate(${dx},${dy})">${s}</g>`;
 const FL=(s)=>`<g transform="scale(-1,1)">${s}</g>`;
 /* 머리 */
 function gat(x=0){return `<g transform="translate(${x},0)"><path d="M-6.6,3.2 L-5.4,-9.6 C-3,-11.2 3,-11.2 5.4,-9.6 L6.6,3.2Z" ${S(M.gat)} fill-opacity=".9"/><ellipse cx="0" cy="3.6" rx="24.5" ry="3.3" ${S(M.gat)} fill-opacity=".55"/>${L('M-6.6,2.2 Q0,3.6 6.6,2.2',.6,'#222')}</g>`}
-function mHead(){return P('M-4.2,17 L-4.6,27 L4.6,27 L4.2,17Z',M.sk)+`<ellipse cx="0" cy="11.2" rx="8.6" ry="10.6" ${S(M.sk)}/>`+
-  P('M-8.5,9 C-8.9,-2.5 8.9,-2.5 8.5,9 C5,6.2 -5,6.2 -8.5,9Z',M.hair)+L('M-8.2,11 C-8.4,17 -5,21.5 -0.5,23.4 M8.2,11 C8.4,17 5,21.5 0.5,23.4',.75,'#3a3835',.9)+L('M-0.6,23.4 L-1.6,33 M0.6,23.4 L1.8,34',.75,'#3a3835',.9)+gat()}
-function wHead(){return P('M-3.8,17 L-4.2,27 L4.2,27 L3.8,17Z',W.sk)+`<ellipse cx="0" cy="11.2" rx="8.4" ry="10.4" ${S(W.sk)}/>`+
+function mHead(){return `<ellipse cx="0" cy="11.2" rx="8.6" ry="10.6" ${S(M.sk)}/>`+
+  P('M-8.5,9 C-8.9,-2.5 8.9,-2.5 8.5,9 C5,6.2 -5,6.2 -8.5,9Z',M.hair)+gat()}
+function wHead(){return `<ellipse cx="0" cy="11.2" rx="8.4" ry="10.4" ${S(W.sk)}/>`+
   P('M-9,13 C-10.6,2 -6,-1.2 0,-1.2 C6,-1.2 10.6,2 9,13 C8.2,7.4 4.4,4.6 0.4,3.6 L0,2.2 L-0.4,3.6 C-4.4,4.6 -8.2,7.4 -9,13Z',W.hair)}
 /* 깃·동정 */
-function git(col,dx=0){return G(0,P('M-5,23.6 L5,23.6 L0.4,34Z',M.sk)+P('M-5,23.2 L-7.4,24.6 L-1.2,36.4 L1,33.6Z',M.wh)+P('M5,23.2 L7.6,24.6 L-6.4,47 L-9.2,44.6Z',M.wh),dx)}
+function bz(p,t){const u=1-t;return [0,1].map(i=>u*u*u*p[0][i]+3*u*u*t*p[1][i]+3*u*t*t*p[2][i]+t*t*t*p[3][i]);}
+function cband(p,w,off=0,t0=0,t1=1){const A=[],B=[];const N=28;for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N,q=bz(p,t),e=.001,q2=bz(p,Math.min(1,t+e)),q1=bz(p,Math.max(0,t-e));let dx=q2[0]-q1[0],dy=q2[1]-q1[1];const L=Math.hypot(dx,dy);const nx=-dy/L,ny=dx/L;A.push([q[0]+nx*(off+w/2),q[1]+ny*(off+w/2)]);B.push([q[0]+nx*(off-w/2),q[1]+ny*(off-w/2)]);}
+  return 'M'+A.concat(B.reverse()).map(q=>q.map(v=>v.toFixed(2)).join(',')).join(' L')+'Z';}
+let CLIPN=0;
+function edge(p,off,t0,t1,N){const r=[];for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N,q=bz(p,t),e=.001,q2=bz(p,Math.min(1,t+e)),q1=bz(p,Math.max(0,t-e));const dx=q2[0]-q1[0],dy=q2[1]-q1[1],L=Math.hypot(dx,dy);r.push([q[0]-dy/L*off,q[1]+dx/L*off]);}return r;}
+function inpoly(pt,poly){let c=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const [xi,yi]=poly[i],[xj,yj]=poly[j];if(((yi>pt[1])!==(yj>pt[1]))&&(pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi))c=!c;}return c;}
+function git(k,dx=0){const w=k==='w',sk=w?W.sk:M.sk,ln=w?W.ln:M.ln,gc=w?'#e0cc9c':'#b9c7db',id='gc'+(CLIPN++);
+  const body=w?'M-40,80 L-40,40 L-17,30.8 C-13,28 -9,26 -6.6,24.2 C-6.4,24.2 -5.6,23 0,23 C5.6,23 6.4,24.2 6.6,24.2 C9,26 13,28 17,30.8 L40,40 L40,80Z':'M-40,80 L-40,40 L-20,31.5 C-16,28 -10,26 -6.6,24.2 C-6.4,24.2 -5.6,23 0,23 C5.6,23 6.4,24.2 6.6,24.2 C10,26 16,28 20,31.5 L40,40 L40,80Z';
+  const OV=[[5.6,22.4],[5.7,31.5],[-1,36],[-9.6,48.6]], UN=[[-5.6,22.4],[-5.7,29.4],[-4,32.2],[-0.6,34.4]];
+  let s=`<defs><clipPath id="${id}"><path d="${body}"/></clipPath></defs>`;
+  s+=`<g clip-path="url(#${id})">`+P(cband(UN,5),gc,ln)+P(cband(UN,1.8,-1.6,0,.97),M.wh,ln)+P(cband(OV,5),gc,ln)+P(cband(OV,1.8,1.6,0,.97),M.wh,ln)+'</g>';
+  // 목: 턱 아래에서 내려와 동정 안쪽 선으로 그대로 이어짐
+  const ovPoly=edge(OV,2.5,0,1,40).concat(edge(OV,-2.5,0,1,40).reverse());
+  const ue=edge(UN,-2.5,0,1,40), oe=edge(OV,2.5,0,1,60);
+  const uk=[];for(const q of ue){if(inpoly(q,ovPoly))break;uk.push(q);}
+  const ylast=uk[uk.length-1][1]; const ok=oe.filter(q=>q[1]<=ylast+0.6);
+  const f=q=>q.map(v=>v.toFixed(2)).join(',');
+  const u0=uk[0],o0=ok[0];
+  const left=`M${(u0[0]-0.25).toFixed(2)},11 C${(u0[0]-0.25).toFixed(2)},16 ${f([u0[0],u0[1]-4])} ${f(u0)} L`+uk.slice(1).map(f).join(' L');
+  const right=`M${(o0[0]+0.25).toFixed(2)},11 C${(o0[0]+0.25).toFixed(2)},16 ${f([o0[0],o0[1]-4])} ${f(o0)} L`+ok.slice(1).map(f).join(' L');
+  const fillD=`M${(u0[0]-0.25).toFixed(2)},11 C${(u0[0]-0.25).toFixed(2)},16 ${f([u0[0],u0[1]-4])} ${f(u0)} L`+uk.slice(1).map(f).join(' L')+' L'+ok.slice().reverse().map(f).join(' L')+` C${f([o0[0],o0[1]-4])} ${(o0[0]+0.25).toFixed(2)},16 ${(o0[0]+0.25).toFixed(2)},11Z`;
+  s+=`<path d="${fillD}" fill="${sk}"/>`;
+  s+=`<path d="${left} ${right}" fill="none" stroke="${ln}" stroke-width="1" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
+  return G(0,s,dx);}
 /* ───── 선비 ───── */
 const mBody='M-5,24 C-10,26 -16,28 -20,31.5 C-21.5,52 -21.5,72 -22.5,92 C-23.5,120 -26,144 -28,157.5 Q0,163 28,157.5 C26,144 23.5,120 22.5,92 C21.5,72 21.5,52 20,31.5 C16,28 10,26 5,24Z';
 function mFeet(dx=0){return G(0,P('M-13,157 L-12.4,165 L-4,165 L-3.6,158.5Z',M.wh)+P('M3.6,158.5 L4,165 L12.4,165 L13,157Z',M.wh)+
