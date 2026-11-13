@@ -134,8 +134,9 @@ import re as _re
 _a = s.index('/* 사진만 확대'); _b = s.index("dlg.addEventListener('close', zReset);") + len("dlg.addEventListener('close', zReset);")
 s = s[:_a] + """/* 사진 확대·끌기·좌우로 밀어 넘기기 — 다른 도록과 같은 공용 photozoom.js */
 if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: document.getElementById('d-main'),
-  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1 });""" + s[_b:]
-s = s.replace('<script src="common.js', '<script src="photozoom.js?v=20261110"></script>\n<script src="common.js', 1)
+  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1,
+  pics: { n: () => (view[cur] && view[cur].pics.length) || 0, i: () => pi, set: (k) => { pi = k; showPic(); } } });""" + s[_b:]
+s = s.replace('<script src="common.js', '<script src="photozoom.js?v=20261113e"></script>\n<script src="common.js', 1)
 s = s.replace("  zReset();\n", "", 1)
 s = _re.sub(r'<div class="zbar">.*?</div>', '', s, flags=_re.S)
 s = s.replace('overflow:hidden;touch-action:none;', 'overflow:hidden;', 1)

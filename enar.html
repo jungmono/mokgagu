@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="조선의 목가구">
 <script src="common.js?v=18" defer></script>
-</head>
+<script src="photozoom.js?v=20261113e"></script></head>
 <body>
 <div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
 <div class="wrap">
@@ -25,7 +25,7 @@
 <dialog id="dlg" aria-label="자세히 보기">
   <div class="d-body">
     <div class="d-img">
-      <div class="d-main" id="d-main"><img id="d-img" alt="" draggable="false"><button class="d-arrow l" id="p-prev" aria-label="이전 사진">‹</button><button class="d-arrow r" id="p-next" aria-label="다음 사진">›</button><span class="zhint" id="zhint">휠·두 손가락으로 사진만 확대 · 옆으로 밀면 이전·다음</span><div class="zbar"><button type="button" id="z-in" aria-label="사진 확대">＋</button><button type="button" id="z-out" aria-label="사진 축소">－</button><button type="button" id="z-reset" aria-label="원래 크기">⟲</button></div></div>
+      <div class="d-main" id="d-main"><img id="d-img" alt="" draggable="false"><button class="d-arrow l" id="p-prev" aria-label="이전 사진">‹</button><button class="d-arrow r" id="p-next" aria-label="다음 사진">›</button><span class="zhint" id="zhint">휠·두 손가락으로 사진만 확대 · 옆으로 밀면 이전·다음</span></div>
       <div class="d-cap" id="d-cap"></div>
       <div class="d-strip" id="d-strip"></div>
     </div>
@@ -81,7 +81,6 @@ function render() {
 document.getElementById('grid').addEventListener('click', (e) => { const c = e.target.closest('.card'); if (c) open_(+c.dataset.n); });
 const dlg = document.getElementById('dlg'); let cur = 0, pi = 0;
 function showPic() {
-  zReset();
   const i = view[cur], im = document.getElementById('d-img'), p = i.pics[pi];
   if (p) { im.src = THUMB[i.id] && pi === 0 ? THUMB[i.id] : p.src; if (pi === 0) { const hi = new Image(); hi.onload = () => { if (view[cur] === i && pi === 0) im.src = hi.src; }; hi.src = p.src; } im.alt = i.name; im.hidden = false; }
   else { im.removeAttribute('src'); im.hidden = true; }
@@ -102,47 +101,10 @@ function open_(n) {
   if (!dlg.open) dlg.showModal();
 }
 
-/* 사진만 확대·축소 — 휠(또는 Ctrl+휠)·두 손가락·두 번 누르기, 확대한 뒤에는 끌어서 옮기기 */
-const zm = document.getElementById('d-main'), zi = document.getElementById('d-img');
-let zs = 1, zx = 0, zy = 0; const ptrs = new Map(); let pinch = null, pan = null, moved = false;
-function zApply() { zi.style.transform = `translate(${zx}px,${zy}px) scale(${zs})`; zm.classList.toggle('zoomed', zs > 1.01); document.getElementById('p-prev').style.visibility = document.getElementById('p-next').style.visibility = zs > 1.01 ? 'hidden' : ''; }
-function zReset() { zs = 1; zx = 0; zy = 0; zApply(); }
-function zClamp() {
-  if (zs <= 1.01) { zs = 1; zx = 0; zy = 0; return; }
-  const w = zi.offsetWidth * zs, h = zi.offsetHeight * zs, W = zi.offsetWidth, H = zi.offsetHeight;
-  zx = Math.min(0, Math.max(W - w, zx)); zy = Math.min(0, Math.max(H - h, zy));
-  if (w < W) zx = (W - w) / 2; if (h < H) zy = (H - h) / 2;
-}
-function zAt(cx, cy, ns) {   // cx,cy: 사진 왼쪽 위를 기준으로 한 화면 좌표
-  ns = Math.min(8, Math.max(1, ns));
-  zx = cx - (cx - zx) * (ns / zs); zy = cy - (cy - zy) * (ns / zs); zs = ns; zClamp(); zApply();
-}
-const rel = (e) => { const r = zi.getBoundingClientRect(); return [e.clientX - r.left + zx, e.clientY - r.top + zy]; };
-zm.addEventListener('wheel', (e) => { if (!zi.src) return; e.preventDefault(); const [x, y] = rel(e); zAt(x, y, zs * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018))); }, { passive: false });
-zi.addEventListener('dblclick', (e) => { const [x, y] = rel(e); zAt(x, y, zs > 1.01 ? 1 : 2.5); });
-zi.addEventListener('pointerdown', (e) => {
-  zi.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); moved = false;
-  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const r = zi.getBoundingClientRect(); pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), s: zs, cx: (a[0] + b[0]) / 2 - r.left + zx, cy: (a[1] + b[1]) / 2 - r.top + zy }; pan = null; }
-  else if (ptrs.size === 1) pan = { x: e.clientX, y: e.clientY, zx, zy };
-});
-zi.addEventListener('pointermove', (e) => {
-  if (!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-  if (pinch && ptrs.size >= 2) { const [a, b] = [...ptrs.values()]; zAt(pinch.cx, pinch.cy, pinch.s * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d); moved = true; return; }
-  if (pan) { const dx = e.clientX - pan.x, dy = e.clientY - pan.y; if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
-    if (zs > 1.01) { zm.classList.add('drag'); zx = pan.zx + dx; zy = pan.zy + dy; zClamp(); zApply(); } }
-});
-function zEnd(e) {
-  const p = pan; ptrs.delete(e.pointerId); zm.classList.remove('drag');
-  if (ptrs.size < 2) pinch = null;
-  if (ptrs.size === 1) { const [v] = [...ptrs.values()]; pan = { x: v[0], y: v[1], zx, zy }; return; }
-  if (!ptrs.size && p && zs <= 1.01 && moved && e.type === 'pointerup') { const dx = e.clientX - p.x; if (Math.abs(dx) > 50) document.getElementById(dx < 0 ? 'd-next' : 'd-prev').click(); }
-  pan = null;
-}
-zi.addEventListener('pointerup', zEnd); zi.addEventListener('pointercancel', zEnd);
-document.getElementById('z-in').onclick = () => zAt(zi.offsetWidth / 2, zi.offsetHeight / 2, zs * 1.5);
-document.getElementById('z-out').onclick = () => zAt(zi.offsetWidth / 2, zi.offsetHeight / 2, zs / 1.5);
-document.getElementById('z-reset').onclick = zReset;
-dlg.addEventListener('close', zReset);
+/* 사진 확대·끌기·좌우로 밀어 넘기기 — 공용 photozoom.js (사진이 여러 장이면 사진부터 넘기고 끝에서 다음 기물) */
+if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: document.getElementById('d-main'),
+  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1,
+  pics: { n: () => (view[cur] && view[cur].pics.length) || 0, i: () => pi, set: (k) => { pi = k; showPic(); } } });
 document.getElementById('d-strip').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; pi = +b.dataset.k; showPic(); });
 document.getElementById('p-prev').onclick = () => { const i = view[cur]; pi = (pi - 1 + i.pics.length) % i.pics.length; showPic(); };
 document.getElementById('p-next').onclick = () => { const i = view[cur]; pi = (pi + 1) % i.pics.length; showPic(); };

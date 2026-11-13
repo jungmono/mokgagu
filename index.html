@@ -667,7 +667,7 @@ let tmr; $('q').addEventListener('input', (e) => { clearTimeout(tmr); tmr = setT
 <script id="dlg-swipe">(function(){var d=document.getElementById('dlg');if(!d)return;
 var img=document.getElementById('dlg-img')||document.getElementById('d-img');if(!img)return;
 var nx=function(){return document.getElementById('dlg-next')||document.getElementById('d-next');},pv=function(){return document.getElementById('dlg-prev')||document.getElementById('d-prev');};
-img.setAttribute('draggable','false');img.addEventListener('dragstart',function(e){e.preventDefault();});
+var A=img.parentElement||d;A.style.touchAction='pan-y';img.setAttribute('draggable','false');img.addEventListener('dragstart',function(e){e.preventDefault();});
 if(img.parentElement)img.parentElement.style.overflow='hidden';
 var sc=1,tx=0,ty=0,sw=0,busy=false;
 function apply(anim){img.style.transition=anim?'transform .22s ease, opacity .22s ease':'none';
@@ -691,25 +691,25 @@ function move(x,y,e){if(x0===null)return;
 function end(){if(x0===null)return;tEnd=Date.now();dxEnd=(mode===1||mode===4)?99:0;var fast=Date.now()-t0<300&&Math.abs(dx)>30;var m=mode;x0=null;mode=0;
   if(m===1&&(Math.abs(dx)>70||fast)){go(dx<0?1:-1);}else if(m===1){sw=0;apply(true);}}
 function dist(a,b){return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);}
-d.addEventListener('touchstart',function(e){
-  if(e.touches.length===2&&onImg(e.target)){x0=null;mode=3;pd0=dist(e.touches[0],e.touches[1]);ps0=sc;return;}
+A.addEventListener('touchstart',function(e){
+  if(e.touches.length===2){x0=null;mode=3;pd0=dist(e.touches[0],e.touches[1]);ps0=sc;return;}
   if(e.touches.length!==1){x0=null;return;}var p=e.touches[0];start(p.clientX,p.clientY,e.target);},{passive:true});
-d.addEventListener('touchmove',function(e){
+A.addEventListener('touchmove',function(e){
   if(mode===3&&e.touches.length===2){var a=e.touches[0],b=e.touches[1];zoomAt(ps0*dist(a,b)/pd0,(a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);apply(false);if(e.cancelable)e.preventDefault();return;}
   var p=e.touches[0];if(p)move(p.clientX,p.clientY,e);},{passive:false});
-d.addEventListener('touchend',function(e){
+A.addEventListener('touchend',function(e){
   if(mode===3){if(e.touches.length===0){mode=0;if(sc<1.05){reset();apply(true);}}tEnd=Date.now();dxEnd=99;return;}
   var tap=x0!==null&&mode===0&&Date.now()-t0<250;var tg=e.target;end();
   if(tap&&onImg(tg)){var now=Date.now();if(now-lastTap<320){var c=e.changedTouches[0];if(sc>1){sc=1;tx=0;ty=0;}else zoomAt(2.5,c.clientX,c.clientY);apply(true);lastTap=0;if(e.cancelable)e.preventDefault();}else lastTap=now;}});
-d.addEventListener('touchcancel',function(){x0=null;mode=0;sw=0;apply(true);});
+A.addEventListener('touchcancel',function(){x0=null;mode=0;sw=0;apply(true);});
 var mouse=false;
-d.addEventListener('mousedown',function(e){if(e.button!==0)return;mouse=true;start(e.clientX,e.clientY,e.target);if(mode===4)img.style.cursor='grabbing';});
+A.addEventListener('mousedown',function(e){if(e.button!==0)return;mouse=true;start(e.clientX,e.clientY,e.target);if(mode===4)img.style.cursor='grabbing';});
 window.addEventListener('mousemove',function(e){if(mouse)move(e.clientX,e.clientY,e);});
 window.addEventListener('mouseup',function(){if(mouse){mouse=false;end();apply(false);}});
 img.addEventListener('wheel',function(e){e.preventDefault();zoomAt(sc*(e.deltaY<0?1.2:1/1.2),e.clientX,e.clientY);apply(false);},{passive:false});
 img.addEventListener('dblclick',function(e){if(sc>1){sc=1;tx=0;ty=0;}else zoomAt(2.5,e.clientX,e.clientY);apply(true);});
 d.addEventListener('click',function(e){if(e.isTrusted&&Date.now()-tEnd<400&&dxEnd){e.stopPropagation();e.preventDefault();}},true);
-d.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}else if(e.key==='+'||e.key==='='){zoomAt(sc*1.3,innerWidth/2,innerHeight/2);apply(true);}else if(e.key==='-'){zoomAt(sc/1.3,innerWidth/2,innerHeight/2);apply(true);}});
+document.addEventListener('keydown',function(e){if(!d.open||document.querySelector('#zv[open]'))return;if(e.target.closest&&e.target.closest('input,textarea,select'))return;if(e.key==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();e.stopImmediatePropagation();go(-1);}else if(e.key==='+'||e.key==='='){zoomAt(sc*1.3,innerWidth/2,innerHeight/2);apply(true);}else if(e.key==='-'){zoomAt(sc/1.3,innerWidth/2,innerHeight/2);apply(true);}},true);
 d.addEventListener('close',reset);
 })();</script>
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>

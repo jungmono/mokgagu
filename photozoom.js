@@ -2,15 +2,18 @@
    - 두 손가락 벌리기 / 마우스 휠 / 두 번 톡(2.5배) 으로 확대, 확대한 채로 끌어 옮기기
    - 확대하지 않았을 때 좌우로 밀기 · ← → = 다음·이전
    새 도록을 만들 때도 이 파일을 쓴다:
-     MOKGAGU_PHOTOZOOM.attach({ dialog: 창, area: 사진 칸, next: fn, prev: fn, canNext: fn, canPrev: fn })
+     MOKGAGU_PHOTOZOOM.attach({ dialog: 창, area: 사진 칸, next: fn, prev: fn, canNext: fn, canPrev: fn,
+                                pics: { n: 사진 수, i: 지금 사진 번호, set: fn(k) } })   // pics 는 있으면: 사진부터 넘기고 끝에서 다음 기물
    사진(img)은 그때그때 area 안에서 찾으므로 사진을 바꿔 그려도 된다. */
 (function () {
   if (window.MOKGAGU_PHOTOZOOM) return;
   var css = document.createElement('style');
-  css.textContent = '.pz-area{overflow:hidden;touch-action:pan-y}.pz-area img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}';
+  css.textContent = '.pz-area .zbar{display:none!important}.pz-hint{display:block;text-align:center;font-size:12px;color:#857f75;margin:6px 0 0;line-height:1.4}.pz-area{overflow:hidden;touch-action:pan-y}.pz-area img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}';
   document.head.appendChild(css);
   function attach(o) {
     var d = o.dialog, area = o.area; area.classList.add('pz-area');
+    var zb = area.querySelector('.zbar'); if (zb) zb.remove();
+    var hint = area.querySelector('.zhint'); if (hint) { hint.className = 'pz-hint'; hint.removeAttribute('style'); hint.textContent = '두 손가락·휠로 확대 · 사진을 옆으로 밀면 넘어갑니다'; area.after(hint); }
     var sc = 1, tx = 0, ty = 0, sw = 0, busy = false, img = null;
     function cur() { return area.querySelector('img'); }
     function apply(anim) {
@@ -25,6 +28,10 @@
     function zoomAt(ns, cx, cy) { img = cur(); if (!img) return; var r = img.getBoundingClientRect(), ox = cx - (r.left + r.width / 2), oy = cy - (r.top + r.height / 2); ns = Math.max(1, Math.min(5, ns)); var k = ns / sc; tx = (tx - ox) * k + ox; ty = (ty - oy) * k + oy; sc = ns; if (sc === 1) { tx = 0; ty = 0; } clampPan(); }
     new MutationObserver(function () { if (!busy) { sc = 1; tx = 0; ty = 0; sw = 0; } }).observe(area, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
     function go(dir) {
+      if (o.pics) { var pn = o.pics.n() || 0, pk = o.pics.i() || 0;
+        if (pn > 1 && pk + dir >= 0 && pk + dir < pn) { if (busy) return; busy = true; var w0 = (area.clientWidth || 400) * 0.6; sw = -dir * w0; apply(true);
+          setTimeout(function () { sc = 1; tx = 0; ty = 0; o.pics.set(pk + dir); sw = dir * w0; apply(false);
+            requestAnimationFrame(function () { requestAnimationFrame(function () { sw = 0; apply(true); busy = false; }); }); }, 200); return; } }
       var can = dir > 0 ? o.canNext() : o.canPrev();
       if (!can) { sw = 0; apply(true); return; }
       if (busy) return; busy = true; var w = (area.clientWidth || 400) * 0.6; sw = -dir * w; apply(true);
@@ -63,9 +70,10 @@
     window.addEventListener('mouseup', function () { if (mouse) { mouse = false; end(); apply(false); } });
     area.addEventListener('wheel', function (e) { e.preventDefault(); zoomAt(sc * (e.deltaY < 0 ? 1.2 : 1 / 1.2), e.clientX, e.clientY); apply(false); }, { passive: false });
     area.addEventListener('dblclick', function (e) { if (sc > 1) { sc = 1; tx = 0; ty = 0; } else zoomAt(2.5, e.clientX, e.clientY); apply(true); });
-    d.addEventListener('keydown', function (e) {
+    document.addEventListener('keydown', function (e) {
+      if (!d.open || document.querySelector('#zv[open]')) return;
       if (e.target.closest && e.target.closest('input,textarea,select')) return;
-      if (e.key === 'ArrowRight') { e.preventDefault(); e.stopPropagation(); go(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); e.stopPropagation(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); e.stopImmediatePropagation(); go(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); e.stopImmediatePropagation(); go(-1); }
       else if (e.key === '+' || e.key === '=') { zoomAt(sc * 1.3, innerWidth / 2, innerHeight / 2); apply(true); } else if (e.key === '-') { zoomAt(sc / 1.3, innerWidth / 2, innerHeight / 2); apply(true); }
     }, true);
     d.addEventListener('close', reset);

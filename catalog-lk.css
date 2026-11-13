@@ -89,3 +89,16 @@ button{font:inherit}
 .lk-fail { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: inherit; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 .lk-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
 #to-top{position:fixed;right:22px;bottom:22px;z-index:900;width:52px;height:52px;border-radius:50%;border:2px solid #111;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s,transform .2s,visibility .2s,background .15s}#to-top.show{opacity:1;visibility:visible;transform:none}#to-top:hover{background:#fff;color:#111}#to-top:focus-visible{outline:3px solid #8a2f22;outline-offset:3px}@media (max-width:640px){#to-top{right:14px;bottom:14px;width:46px;height:46px}}@media print{#to-top{display:none}}#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}
+
+/* 2026-11-13 사진 창: 이전·다음·닫기를 창 아래에 늘 보이게, 휴대폰에서 사진 칸 높이를 사진에 맞춤 */
+.lk-dlg[open] { display: flex; flex-direction: column; overflow: hidden; }
+.lk-dlg[open] > * { flex: none; }
+.lk-dlg[open] > .lk-dbody { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.lk-dlg[open] > .lk-dbar { order: 99; background: var(--color-panel); }
+.lk-dlg .lk-dbar button { min-height: 40px; min-width: 44px; padding: 0 14px; }
+@media (max-width: 760px) {
+  .lk-dlg { width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); }
+  .lk-dlg .lk-dbody { padding: 14px; gap: 12px; }
+  .lk-dlg .lk-dimg { min-height: 0; padding: 8px 0; }
+  .lk-dlg .lk-dimg img { width: 100%; max-width: 100%; max-height: 50vh; }
+}
