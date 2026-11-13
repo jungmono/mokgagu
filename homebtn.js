@@ -59,9 +59,9 @@
     '#ub .ib{flex:none;width:42px;height:42px;border-radius:11px;border:1px solid #e4e0d8;background:#fff;display:grid;place-items:center;cursor:pointer;padding:0}',
     '#ub .ib:hover{background:#f3f0e9}#ub .ib svg{width:22px;height:22px;display:block}',
     '#ub .lg{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:18px;font-weight:900;font-size:18px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}',
-    '#ub .lg img{height:22px;width:auto;display:block}',
+    '#ub .lg img{height:26px;width:auto;display:block}',
     '@media (max-width:600px){#ub [data-ub="search"]{display:none!important}}',
-    '@media (min-width:601px){#ub .lg{font-size:24px}#ub .lg img{height:28px}}',
+    '@media (min-width:601px){#ub .lg{font-size:24px}#ub .lg img{height:36px}}',
     '@media (max-width:600px){#ub .lg[data-p="0"] img:last-child,#ub .lg[data-p="1"] img:first-child{display:none}}',   /* 휴대폰: 짝수날 안궤, 홀수날 언양반닫이 아이콘 하나만 */
     '#ub-m{position:fixed;top:62px;right:max(12px,calc((100vw - 1200px)/2 + 12px));z-index:2147482000;width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - 80px);overflow:auto;background:#fff;border:1px solid #e4e0d8;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);padding:8px;font-family:inherit;display:none}',
     '#ub-m.on{display:block}',
