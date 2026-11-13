@@ -91,7 +91,7 @@
     if (d.getElementById('ub')) return;
     var b = d.createElement('header'); b.id = 'ub';
     b.innerHTML = '<div class="in"><a class="ib" href="index.html" aria-label="홈" title="홈" data-ub="home">' + IC.home + '</a>' +
-      '<a class="lg" href="index.html" data-ub="home"><img src="mark_angwe.png" alt="" width="36" height="22">조선의 목가구</a>' +
+      '<a class="lg" href="index.html" data-ub="home"><img src="mark_angwe.png" alt="" width="36" height="22">조선의 목가구<img src="mark_eonyang_white.png" alt="" width="36" height="22"></a>' +
       '<button type="button" class="ib" aria-label="찾기" title="찾기" data-ub="search">' + IC.search + '</button>' +
       '<button type="button" class="ib" aria-label="메뉴" title="메뉴" aria-expanded="false" aria-controls="ub-m" data-ub="menu">' + IC.menu + '</button></div>';
     d.body.insertBefore(b, d.body.firstChild);
