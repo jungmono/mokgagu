@@ -7,12 +7,12 @@ a.h{color:#111;font-weight:800;text-decoration:none;border:2px solid #111;border
 h1{font-size:24px;margin:18px 0 4px}p.s{color:#666;font-size:13px;margin:0 0 12px}
 input{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;border:2px solid #111;border-radius:8px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.chips button{border:1.5px solid #111;background:#fff;border-radius:999px;padding:9px 13px;font-size:14px;cursor:pointer}
+.chips button{border:1.5px solid #111;background:#fff;border-radius:999px;padding:9px 13px;font-size:15px;cursor:pointer}
 .chips button.on{background:#111;color:#fff}
 .t{border:1px solid #ccc;border-radius:8px;padding:10px 12px;margin:8px 0}
 .t:target{border-color:#111;box-shadow:0 0 0 2px #111}
-.t b{font-size:16px}.t small{color:#666}.t .d{margin-top:4px;line-height:1.7;font-size:14.5px}
-.ln{display:inline-block;font-size:12.5px;border:1px solid #111;border-radius:4px;padding:0 5px;margin-left:6px}
+.t b{font-size:16px}.t small{color:#666}.t .d{margin-top:4px;line-height:1.7;font-size:15px}
+.ln{display:inline-block;font-size:13px;border:1px solid #111;border-radius:4px;padding:0 5px;margin-left:6px}
 </style><script src="common.js?v=18" defer></script></head><body><div class="w">
 <a class="h" href="index.html" aria-label="홈" title="홈" style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;padding:0;border:1.5px solid #111;background:#fff"><svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/></svg></a>
 <h1>목가구 용어 사전</h1><p class="s">수업에서 배운 말과 기본 용어를 모았습니다. 도록·공부방 글 속 점선 밑줄 용어를 누르면 뜻이 뜹니다.</p>
@@ -30,4 +30,4 @@ function draw(){var q=document.getElementById('q').value.trim();
 document.getElementById('chips').innerHTML=cats.map(function(c){return '<button data-c="'+(c==='전체'?'':c)+'" class="'+(c==='전체'?'on':'')+'">'+c+'</button>';}).join('');
 document.getElementById('chips').onclick=function(e){var b=e.target.closest('button');if(!b)return;cat=b.dataset.c;[].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});draw();};
 document.getElementById('q').oninput=draw;draw();
-</script></div><script src="homebtn.js" defer></script></body></html>
+</script></div><script src="homebtn.js?v=20261113" defer></script></body></html>

@@ -4,19 +4,19 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
 main{max-width:760px;margin:0 auto;padding:16px 16px 60px}
-h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,40px);letter-spacing:-.04em;text-align:center}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,40px);letter-spacing:-.04em;text-align:center}
 .sub{text-align:center;color:#6d6551;margin:0 0 16px;font-size:15px}
 .top{display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:14px;font-weight:700}
+.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:15px;font-weight:700}
 .card{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px;margin-bottom:14px}
 .in{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.in label{font-size:14px;font-weight:700;display:block}
+.in label{font-size:15px;font-weight:700;display:block}
 .in input{width:100%;font:inherit;font-size:18px;padding:10px 12px;border:1.5px solid #d8c9a3;border-radius:10px;margin-top:4px;background:#fff}
-.hint{font-size:12.5px;color:#8a7f66;margin:8px 0 0}
+.hint{font-size:13px;color:#8a7f66;margin:8px 0 0}
 #svg{width:100%;height:auto;display:block}
-.leg{display:flex;flex-wrap:wrap;gap:6px 8px;font-size:13px;margin:8px 0 0}.leg button{font:inherit;font-size:13.5px;display:inline-flex;align-items:center;gap:5px;border:1px solid #e3d6b8;background:#fff;color:#2b2418;border-radius:999px;padding:5px 11px;cursor:pointer}.leg button:hover{border-color:#8a7f66}.leg button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}.leg .lh{font-size:12px;color:#8a7f66;align-self:center}.leg span{display:inline-flex;align-items:center;gap:5px}.leg i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.leg{display:flex;flex-wrap:wrap;gap:6px 8px;font-size:13px;margin:8px 0 0}.leg button{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:5px;border:1px solid #e3d6b8;background:#fff;color:#2b2418;border-radius:999px;padding:5px 11px;cursor:pointer}.leg button:hover{border-color:#8a7f66}.leg button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}.leg .lh{font-size:12px;color:#8a7f66;align-self:center}.leg span{display:inline-flex;align-items:center;gap:5px}.leg i{width:11px;height:11px;border-radius:50%;display:inline-block}
 .verdict{font-size:16px;line-height:1.7}.verdict b{font-weight:900}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;border-bottom:1px solid #efe6cf;text-align:center}th{font-size:12.5px;color:#6d6551}td:first-child,th:first-child{text-align:left}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{padding:6px 4px;border-bottom:1px solid #efe6cf;text-align:center}th{font-size:13px;color:#6d6551}td:first-child,th:first-child{text-align:left}
 .near{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .near a{display:block;text-decoration:none;color:inherit;border:1px solid #e3d6b8;border-radius:10px;overflow:hidden;background:#fff}
 .near img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;display:block}
@@ -24,7 +24,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .note{font-size:13px;color:#8a7f66;line-height:1.6;text-align:center}
 @media(max-width:520px){.near{grid-template-columns:repeat(2,1fr)}}
 /* 구간 색인 */
-.bx-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.bx-h small{color:#8a7f66;font-size:12.5px}
+.bx-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}.bx-h small{color:#8a7f66;font-size:13px}
 .bx-wrap{overflow-x:auto;margin-top:8px}
 .bx{border-collapse:separate;border-spacing:4px;margin:0 auto;font-size:13px}
 .bx th,.bx td{padding:0}
@@ -33,7 +33,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .bx button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}
 .bx .rh button{background:#f4ecd8;font-weight:700;writing-mode:vertical-rl;min-width:40px;min-height:64px;letter-spacing:.02em}
 .bx .ch button{background:#f4ecd8;font-weight:700}
-.bx .ch button[aria-pressed="true"],.bx .rh button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}.bx .all button{font-size:13px;line-height:1.25}.bx .all button b{font-size:15px}.bx .all button small{display:block;font-size:10.5px;font-weight:500;opacity:.7}
+.bx .ch button[aria-pressed="true"],.bx .rh button[aria-pressed="true"]{background:#2b2418;color:#fff;border-color:#2b2418}.bx .all button{font-size:13px;line-height:1.25}.bx .all button b{font-size:15px}.bx .all button small{display:block;font-size:12px;font-weight:500;opacity:.7}
 .bx td button b{display:block;font-size:15px}.bx td button{min-height:48px}
 .bx td button.z{color:#c9bc9c;cursor:default;background:#fbf8f1}
 .bx td button.me{box-shadow:inset 0 0 0 2px #d12b2b}
@@ -42,10 +42,10 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 4px;b
 .bl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
 .bl a{display:block;text-decoration:none;color:inherit;border:1px solid #e3d6b8;border-radius:10px;overflow:hidden;background:#fff}
 .bl img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;display:block}
-.bl div{padding:5px 7px;font-size:12.5px;line-height:1.45;color:#4a4130}
+.bl div{padding:5px 7px;font-size:13px;line-height:1.45;color:#4a4130}
 .bl .rg{color:#fff;padding:0 5px;border-radius:4px;font-weight:700}.bl .hv{color:#fff;background:#2b2418;padding:0 5px;border-radius:4px;font-weight:700}
-.bl .sr{color:#8a7f66;font-size:11.5px}
-@media(max-width:520px){.bx{border-spacing:3px;font-size:12px}.bx button{min-width:0;padding:4px 2px}.bx .rh button{min-width:38px}.bx td button b{font-size:14px}.bx .ax{font-size:11px}}
+.bl .sr{color:#8a7f66;font-size:12px}
+@media(max-width:520px){.bx{border-spacing:3px;font-size:12px}.bx button{min-width:0;padding:4px 2px}.bx .rh button{min-width:38px}.bx td button b{font-size:15px}.bx .ax{font-size:12px}}
 @media(max-width:720px){.bl{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.bl{grid-template-columns:repeat(2,1fr)}}
 circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stroke-width:2.6}
 #pick:empty{display:none}#pick .pk{display:grid;grid-template-columns:minmax(0,46%) 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid #efe6cf}#pick .pk:first-of-type{border-top:0}#pick .pk img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#f4ecd8;border-radius:10px;display:block}#pick .pk .t{font-size:15px;font-weight:800;line-height:1.4}#pick .pk .m{font-size:13px;color:#4a4130;line-height:1.7;margin-top:4px}#pick .pk .rg{display:inline-block;color:#fff;font-size:12px;font-weight:800;border-radius:999px;padding:1px 9px;margin-right:6px}#pick .pk a.go{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#111;text-decoration:none;border-bottom:1.5px solid #111}#pick .hd{display:flex;align-items:baseline;gap:8px}#pick .hd small{color:#8a7f66}#pick .hd button{margin-left:auto;font:inherit;font-size:13px;font-weight:700;border:1px solid #e3d6b8;background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}@media(max-width:520px){#pick .pk{grid-template-columns:1fr}}
@@ -56,13 +56,13 @@ circle.pt{cursor:pointer}circle.pt.sel{fill-opacity:1!important;stroke:#111;stro
 .d-img{flex:1 1 60%;display:grid;place-items:center;min-height:300px;background:#fafaf8;border-radius:12px}
 .d-img img{max-width:100%;max-height:72vh;object-fit:contain}
 .d-info{flex:1 1 40%;min-width:220px}
-.d-info .cat{color:#111;font-weight:700;font-size:14px}
-.d-info h3{margin:4px 0 12px;font-size:28px;font-weight:900;letter-spacing:-.04em}
+.d-info .cat{color:#111;font-weight:700;font-size:15px}
+.d-info h3{margin:4px 0 12px;font-size:24px;font-weight:900;letter-spacing:-.04em}
 .d-info h3 small{font-size:16px;color:#6b7183;font-weight:500;margin-left:8px}
 .d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}
 .d-info dt{color:#6b7183}.d-info dd{margin:0}
-.d-info a{display:inline-block;margin-top:18px;color:#fff;background:#1f2433;text-decoration:none;font-weight:700;font-size:14px;border-radius:10px;padding:10px 16px}
-.d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid #e6e8f0;font-size:14px;color:#6b7183}
+.d-info a{display:inline-block;margin-top:18px;color:#fff;background:#1f2433;text-decoration:none;font-weight:700;font-size:15px;border-radius:10px;padding:10px 16px}
+.d-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 22px;border-top:1px solid #e6e8f0;font-size:15px;color:#6b7183}
 .d-foot button{font:inherit;background:#fff;border:1px solid #e6e8f0;border-radius:8px;padding:6px 12px;cursor:pointer;color:#1f2433}.d-foot button:disabled{opacity:.4}
 .d-r{display:flex;gap:8px}
 .bm-st{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.bm-st button{width:56px;height:56px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer}.bm-st button.on{border-color:#111}.bm-st img{width:100%;height:100%;object-fit:cover}
@@ -222,7 +222,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     s += `<line x1="${xs(ratio)}" y1="${ST - 10}" x2="${xs(ratio)}" y2="${SH - 26 * Z}" stroke="#d12b2b" stroke-width="2" stroke-dasharray="5 4"/><text x="${xs(ratio)}" y="${ST - 12}" text-anchor="middle" font-size="${12.5 * Z}" font-weight="700" fill="#d12b2b">${ratio.toFixed(2)}</text></svg>`;
     const bi = BINS.findIndex((x) => ratio >= x[0] && ratio < x[1]), inb = P.filter((p) => { const k = p.w / p.h; return k >= BINS[bi][0] && k < BINS[bi][1]; });
     const c = {}; inb.forEach((p) => (c[p.g] = (c[p.g] || 0) + 1)); const top = Object.entries(c).sort((x, y) => y[1] - x[1]), mx = top.length ? top[0][1] : 1;
-    const bars = top.map(([g, n]) => `<div style="display:grid;grid-template-columns:3em 1fr 2.5em;gap:8px;align-items:center;font-size:13.5px"><span>${g}</span><i style="display:block;height:10px;border-radius:99px;background:${COL[g]};width:${Math.round(n / mx * 100)}%"></i><span style="color:#6d6551">${n}</span></div>`).join('');
+    const bars = top.map(([g, n]) => `<div style="display:grid;grid-template-columns:3em 1fr 2.5em;gap:8px;align-items:center;font-size:13px"><span>${g}</span><i style="display:block;height:10px;border-radius:99px;background:${COL[g]};width:${Math.round(n / mx * 100)}%"></i><span style="color:#6d6551">${n}</span></div>`).join('');
     const word = bi === 3 ? '경상 반닫이에 많은 비례' : bi === 2 ? '전라·경상·경기에 걸친 비례' : '여러 지역에 걸친 비례 — 비례만으로는 가리지 않음';
     return `<div class="card"><b>지역별 가로:세로</b> <small style="color:#8a7f66">띠는 가운데 절반, 검은 막대는 중앙값</small>${s}` +
       `<p style="margin:10px 0 6px;font-size:15px">${own ? '넣은 치수' : '우리 언양 반닫이'} <b>${ratio.toFixed(2)} : 1</b> → <b>${BINS[bi][2]}</b> 구간 · ${word}</p>` +
@@ -322,5 +322,5 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   });
 })();
 </script>
-<script src="share.js" defer></script><script src="likes.js?v=20261029e" defer></script><script src="homebtn.js" defer></script><script src="dlgback.js" defer></script>
+<script src="share.js" defer></script><script src="likes.js?v=20261029e" defer></script><script src="homebtn.js?v=20261113" defer></script><script src="dlgback.js" defer></script>
 </body></html>

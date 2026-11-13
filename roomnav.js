@@ -1,6 +1,7 @@
 /* 거믄·힌의 방 이동 줄 — 공부방·소장품·통계·비교하기 화면 맨 위(컴퓨터) / 맨 아래(휴대폰)에 붙는다.
    가족 암호를 넣어 둔 기기에서만 보인다(잠금 화면에는 방 이름이 나오지 않게). 2026-11-02 */
 (function () {
+  return;   /* 2026-11-13 공통 머리줄(homebtn.js)의 메뉴로 옮김 — 방 이동은 메뉴 「거믄·힌의 방」에서 */
   if (window.MOKGAGU_ROOMNAV) return; window.MOKGAGU_ROOMNAV = 1;
   var P = location.pathname.split('/').pop() || 'index.html';
   var ROOMS = [['study.html', '공부방', 'SEOAN'], ['collection.html', '소장품', 'BAN'], ['stats.html', '통계', 'SANG'], ['compare.html', '비교하기', 'CMP']];

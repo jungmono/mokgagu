@@ -19,7 +19,7 @@
   function post(b) { b.code = code(); return fetch(API, { method: 'POST', body: JSON.stringify(b) }).then(function (r) { return r.json(); }); }
   function keyOf(s) { return (s.owner || '거믄') + '|' + s.date; }
   function save() { ls.set(K_CACHE, JSON.stringify(EDITS)); }
-  function toast(t) { var d = document.createElement('div'); d.textContent = t; d.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:99999;max-width:90vw;text-align:center'; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2600); }
+  function toast(t) { var d = document.createElement('div'); d.textContent = t; d.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-size:15px;font-weight:700;z-index:99999;max-width:90vw;text-align:center'; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2600); }
 
   /* 글 꾸미기: ## 제목 · - 목록 · **굵게**  (원래 노트의 h3 모양과 같게 그린다) */
   function md(t) {
@@ -88,12 +88,12 @@
 
   /* ───── 고치기 창 ───── */
   var css = document.createElement('style');
-  css.textContent = '.ne-bar{margin-left:auto;display:inline-flex;gap:6px}.ne-bar button{font:inherit;font-size:12.5px;font-weight:800;border:1.5px solid #111;background:#fff;color:#111;border-radius:999px;padding:4px 11px;cursor:pointer;min-height:30px}.ne-bar button:active{background:#eee}' +
-    '.ne-tag{font-size:11px!important;font-weight:800;color:#8a5a00!important;background:#fff3d6;border-radius:6px;padding:2px 7px}' +
+  css.textContent = '.ne-bar{margin-left:auto;display:inline-flex;gap:6px}.ne-bar button{font:inherit;font-size:13px;font-weight:800;border:1.5px solid #111;background:#fff;color:#111;border-radius:999px;padding:4px 11px;cursor:pointer;min-height:30px}.ne-bar button:active{background:#eee}' +
+    '.ne-tag{font-size:12px!important;font-weight:800;color:#8a5a00!important;background:#fff3d6;border-radius:6px;padding:2px 7px}' +
     '.ne-ph{margin:14px 0 0;padding-top:10px;border-top:1px dashed #d8d2c7}.ne-pt{font-size:13px;font-weight:800;color:#4a463f}' +
     '#ne-dlg{border:0;border-radius:16px;padding:0;width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 20px);box-shadow:0 20px 60px rgba(0,0,0,.35)}#ne-dlg::backdrop{background:rgba(0,0,0,.5)}' +
     '#ne-dlg form{display:flex;flex-direction:column;gap:9px;padding:16px 18px 14px;max-height:calc(100dvh - 20px);overflow:auto}' +
-    '#ne-dlg h2{margin:0;font-size:18px}#ne-dlg label{font-size:12.5px;font-weight:800;color:#4a463f;display:block;margin:0 0 3px}' +
+    '#ne-dlg h2{margin:0;font-size:18px}#ne-dlg label{font-size:13px;font-weight:800;color:#4a463f;display:block;margin:0 0 3px}' +
     '#ne-dlg input[type=text],#ne-dlg textarea{width:100%;box-sizing:border-box;font:inherit;font-size:16px;border:1.5px solid #cfc8bb;border-radius:10px;padding:9px 11px;background:#fff;color:#111}' +
     '#ne-dlg textarea{line-height:1.6;resize:vertical}#ne-body{min-height:260px}' +
     '#ne-dlg .ne-seg{display:inline-flex;border:1.5px solid #111;border-radius:999px;overflow:hidden}#ne-dlg .ne-seg button{border:0;background:#fff;font:inherit;font-weight:800;font-size:13px;padding:5px 14px;cursor:pointer}#ne-dlg .ne-seg button.on{background:#111;color:#fff}' +
@@ -101,7 +101,7 @@
     '#ne-dlg .ne-pc{display:flex;gap:8px;align-items:center;margin:0 0 6px}#ne-dlg .ne-pc input{flex:1}' +
     '#ne-dlg .ne-act{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;position:sticky;bottom:-14px;background:#fff;padding:10px 0 4px;border-top:1px solid #eee}' +
     '#ne-dlg .ne-act button{font:inherit;font-weight:800;font-size:15px;border:2px solid #111;background:#fff;color:#111;border-radius:999px;padding:9px 20px;cursor:pointer}#ne-dlg .ne-act .go{background:#111;color:#fff}#ne-dlg .ne-act .rs{margin-right:auto;border-color:#b3261e;color:#b3261e}' +
-    '#ne-msg{font-size:13.5px;font-weight:700;color:#b3261e;min-height:1em}';
+    '#ne-msg{font-size:13px;font-weight:700;color:#b3261e;min-height:1em}';
   document.head.appendChild(css);
   var dlg = null;
   function draw() {

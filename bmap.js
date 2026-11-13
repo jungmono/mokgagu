@@ -158,23 +158,23 @@
 .bm .bm-pb button,.bm .bm-t button{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;padding:10px 2px 8px;font:inherit;font-size:13px;font-weight:700;color:#1f2433;background:#fff;border:1px solid #e6e8f0;border-radius:14px;cursor:pointer;transition:transform .15s,border-color .15s;line-height:1.2}
 .bm .bm-pb button:hover,.bm .bm-t button:hover{transform:translateY(-2px);border-color:#6b7183}
 .bm .bm-pb button[aria-pressed=true],.bm .bm-t button[aria-pressed=true]{border-color:#1f2433;box-shadow:inset 0 0 0 1px #1f2433}
-.bm .bm-tot{text-align:center;font-size:19px;font-weight:800;color:#1f2433;margin:4px 0 10px}.bm .bm-tot b{color:#8a2d18;font-size:22px}.bm .bm-t button small{font-size:14px;font-weight:700;color:#6b7183;min-height:1em}
+.bm .bm-tot{text-align:center;font-size:18px;font-weight:800;color:#1f2433;margin:4px 0 10px}.bm .bm-tot b{color:#8a2d18;font-size:24px}.bm .bm-t button small{font-size:15px;font-weight:700;color:#6b7183;min-height:1em}
 .bm .bm-t button{width:96px}.bm .bm-t button[aria-pressed=false]{opacity:.45}
 .bm .bi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#f1efeb;color:#1d1b18}.bm .bi svg{width:32px;height:32px}.bm .bm-t .bi svg{width:34px;height:34px}
 .bm .bm-pb button small{display:block;font-size:12px;color:#6b7183;font-weight:700;min-height:1em;margin-top:-3px}
 .bm .bm-t button i{position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%}
 .bm .bx{cursor:pointer}.bm .bx rect{fill:#fffdf6;stroke:var(--c,#6f6450);stroke-width:4}.bm .bx.has rect{fill:#f3e6c4}.bm .bx.sel rect{stroke-width:9;fill:#e1f1ea}.bm .bx.pin rect{stroke-width:7;fill:#fff3d2}
-.bm .bx text{fill:#2b2418;pointer-events:none;text-anchor:middle}.bm .bx .hj{font-size:28px;font-family:serif}.bm .bx .hg{font-size:36px;font-weight:900}
+.bm .bx text{fill:#2b2418;pointer-events:none;text-anchor:middle}.bm .bx .hj{font-size:24px;font-family:serif}.bm .bx .hg{font-size:34px;font-weight:900}
 .bm .bx.dim{opacity:.4}
 .bm .pl{font-weight:900;font-size:46px;fill-opacity:.85;cursor:pointer;text-anchor:middle;paint-order:stroke;stroke:#fbf6ea;stroke-width:8px}.bm .pl:hover{opacity:1}
 .bm #bm-p{margin-top:10px;border:1px solid #e3d6b8;background:#fff;border-radius:14px;padding:14px}
-.bm #bm-p h3{margin:0 0 4px;font-size:20px}.bm .bm-jg{margin:12px 0;background:#f7f3ea;border:1px solid #e6dcc6;border-radius:12px;padding:10px 14px;font-size:14.5px;line-height:1.6}.bm .bm-jg summary{cursor:pointer;font-weight:700;color:#0F6E56}.bm .bm-jg h4{margin:8px 0 2px;font-size:13px;color:#7a6c50}.bm .bm-jg ul{margin:0;padding-left:18px}.bm #bm-p .src{font-size:13px;color:#7a6c50;margin-top:6px}
+.bm #bm-p h3{margin:0 0 4px;font-size:18px}.bm .bm-jg{margin:12px 0;background:#f7f3ea;border:1px solid #e6dcc6;border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.6}.bm .bm-jg summary{cursor:pointer;font-weight:700;color:#0F6E56}.bm .bm-jg h4{margin:8px 0 2px;font-size:13px;color:#7a6c50}.bm .bm-jg ul{margin:0;padding-left:18px}.bm #bm-p .src{font-size:13px;color:#7a6c50;margin-top:6px}
 .bm .bm-go{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.bm .bm-go button{border:1.5px solid var(--c);background:#fff;color:var(--c);border-radius:999px;padding:4px 11px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
 .bm .bm-it{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .bm .bm-it button{display:flex;gap:6px;align-items:center;border:1px solid #e3d6b8;background:#fffdf6;border-radius:10px;padding:3px 8px 3px 3px;font:inherit;font-size:12px;cursor:pointer;text-align:left}
 .bm .bm-it img{width:44px;height:44px;object-fit:cover;border-radius:7px}.bm .bm-it i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.bm textarea{width:100%;min-height:120px;font:inherit;font-size:14px;border:1px solid #cdbf9f;border-radius:8px;padding:8px}
-.bm .bm-b button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:14px;cursor:pointer;margin:6px 6px 0 0}
+.bm textarea{width:100%;min-height:120px;font:inherit;font-size:15px;border:1px solid #cdbf9f;border-radius:8px;padding:8px}
+.bm .bm-b button{border:1px solid #cdbf9f;background:#fff;border-radius:8px;padding:6px 11px;font:inherit;font-size:15px;cursor:pointer;margin:6px 6px 0 0}
 .bm #bm-k{height:280px;width:100%;margin-top:10px;border-radius:10px;overflow:hidden;position:relative}.bm #bm-k img{max-width:none!important;max-height:none!important}.bm #bm-k div,.bm #bm-k img{box-sizing:content-box}
 .bm .bx.pb rect{stroke-dasharray:10 6;fill:#fff8e8}.bm .bm-it .ow{width:44px;height:44px;border-radius:7px;object-fit:cover;background:#eee}
 </style>
@@ -189,12 +189,12 @@ ${base()}
 </g>
 <g id="bm-pl">${PN.map((p) => `<text class="pl" data-p="${p}" x="${PV[p][2]}" y="${PV[p][3]}" fill="${PV[p][0]}">${p}</text>`).join('')}</g>
 <g id="bm-g"></g></svg>
-<div class="bm-cr" style="margin:6px 2px 0;font-size:14px;font-weight:700;color:#000;text-align:right">지도출처 : 동인방</div>
+<div class="bm-cr" style="margin:6px 2px 0;font-size:15px;font-weight:700;color:#000;text-align:right">지도출처 : 동인방</div>
 <div id="bm-p"><div class="src">위의 도 이름이나 지도의 지역을 눌러 보세요. 도를 누르면 그 도에 속한 지역의 반닫이가 모두 나옵니다.</div></div></div>`;
     const g = el.querySelector('#bm-g'), panel = el.querySelector('#bm-p'), dlg = document.getElementById('dlg');
     /* 개수 점: 켜 둔 종류 가운데 기물이 있는 것만 왼쪽부터 차례로 붙인다(종류 번호 자리에 두면 『조선의 궤』·기준 도판 점이 상자 밖으로 밀려 옆 지역 뒤에 가려졌다) */
     const dotsOf = (p, x, y) => { const ks = TYPES.filter(([k]) => on[k] && p[k] && p[k].length), gap = ks.length > 4 ? (W - 36) / (ks.length - 1) : 29;
-      return ks.map(([k, , col], i) => `<circle cx="${x + 18 + i * gap}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * gap}" y="${y + H + 10}" style="font-size:17px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>`).join(''); };
+      return ks.map(([k, , col], i) => `<circle cx="${x + 18 + i * gap}" cy="${y + H + 4}" r="14" fill="${col}"/><text x="${x + 18 + i * gap}" y="${y + H + 10}" style="font-size:18px;font-weight:800;fill:#fff;text-anchor:middle">${p[k].length}</text>`).join(''); };
     function draw() {
       g.innerHTML = R.map((r) => {
         const p = P.by[r[0]], n = cntT(p), x = r[3] - W / 2, y = r[4] - H / 2, pn = provOf[r[0]] || '', c = pn ? PV[pn][0] : '#6f6450';
@@ -245,7 +245,7 @@ ${base()}
         img.src = r.full || (r.b === 'seoulauction' && r.pid ? `photos/seoul/${encodeURIComponent(r.pid)}.jpg` : r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : ''));
         img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
         img.alt = r.name;
-        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}${r.pics && r.pics.length > 1 ? dRow('사진', (vp + 1) + ' / ' + r.pics.length + '장') : ''}</dl>${r.pics && r.pics.length > 1 ? `<div class="bm-st">${r.pics.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" src="${p.thumb}"></button>`).join('')}</div>` : ''}${r.b === 'gijun' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">장석 감정실에 올린 기준 도판</p>' : r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:14px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
+        $d('d-info').innerHTML = `<div class="cat">${esc(r.cat || '')}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? r.page + '쪽' : '')}${dRow('비고', r.note)}${r.pics && r.pics.length > 1 ? dRow('사진', (vp + 1) + ' / ' + r.pics.length + '장') : ''}</dl>${r.pics && r.pics.length > 1 ? `<div class="bm-st">${r.pics.map((p, k) => `<button type="button" data-p="${k}" class="${k === vp ? 'on' : ''}"><img alt="" src="${p.thumb}"></button>`).join('')}</div>` : ''}${r.b === 'gijun' ? '<p style="margin-top:16px;color:#6b7183;font-size:15px">장석 감정실에 올린 기준 도판</p>' : r.b === 'joseongwe' ? '<p style="margin-top:16px;color:#6b7183;font-size:15px">출처: 정대영, 『조선의 궤』</p>' : `<a href="${r.b}.html">도록으로 돌아가기 →</a>`}`;
       }
       $d('d-pos').textContent = `${i + 1} / ${list.length}`; $d('d-prev').disabled = i === 0; $d('d-next').disabled = i === list.length - 1;
       if (!dlg.open) dlg.showModal();
@@ -308,7 +308,7 @@ ${base()}
       sel = id; selP = ''; draw(); const r = R.find((x) => x[0] === id), p = P.by[id], d = edits[id] != null ? edits[id] : r[8], pn = provOf[id] || '';
       panel.innerHTML = `<h3>${esc(r[1])} <small style="font-weight:400;color:#7a6c50">${r[2]}${pn ? ' · ' + pn : ''}</small></h3>
 ${jgHTML(JG[id])}
-<div id="bm-d" style="white-space:pre-wrap;line-height:1.6;font-size:14.5px">${esc(d)}</div>
+<div id="bm-d" style="white-space:pre-wrap;line-height:1.6;font-size:15px">${esc(d)}</div>
 <div class="src">출처: ${esc(r[9])}${edits[id] != null ? ' · (고친 글' + (meta[id] && meta[id].editor ? ' · ' + esc(meta[id].editor) : '') + ')' : ''}</div>
 <div class="bm-b"><button type="button" id="bm-e">편집</button></div>
 <div class="bm-it">${items(p) || '<span class="src">이 지역으로 분류된 기물이 아직 없어요.</span>'}</div>

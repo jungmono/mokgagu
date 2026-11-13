@@ -4,7 +4,7 @@ var css=document.createElement('style');
 css.textContent='.shr{position:absolute;top:8px;left:8px;z-index:5;background:#fff;color:#111;border:1.5px solid #111;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;cursor:pointer}.shr:active{background:#111;color:#fff}';
 document.head.appendChild(css);
 var BASE='https://jungmono.github.io/mokgagu/';
-function say(t){var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:14px;z-index:2147483647';(document.querySelector('dialog[open]')||document.body).appendChild(d);setTimeout(function(){d.remove();},1800);}
+function say(t){var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:999px;font-size:15px;z-index:2147483647';(document.querySelector('dialog[open]')||document.body).appendChild(d);setTimeout(function(){d.remove();},1800);}
 /* ── 공유창: 카카오톡 · 문자 · 인스타그램 · 링크복사 ──
    카카오톡 대화창으로 바로 보내려면 카카오 개발자(developers.kakao.com)에서 앱을 만들고
    「JavaScript 키」를 아래에 넣고, 플랫폼 → Web 에 https://jungmono.github.io 를 등록한다. 키가 비어 있으면 링크를 복사해 준다. */
@@ -13,10 +13,10 @@ var ISM=/Android|iPhone|iPad/i.test(navigator.userAgent),ISI=/iPhone|iPad/i.test
 var sheetCss=document.createElement('style');
 sheetCss.textContent='#mk-sh{position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif}#mk-sh[hidden]{display:none}'+
 '#mk-sh .b{background:#fff;border-radius:6px;width:min(310px,calc(100vw - 24px));box-shadow:0 10px 36px rgba(0,0,0,.3)}'+
-'#mk-sh .h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;font-weight:700;color:#111;border-bottom:1px solid #e5e5e5}'+
+'#mk-sh .h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:15px;font-weight:700;color:#111;border-bottom:1px solid #e5e5e5}'+
 '#mk-sh .x{border:0;background:none;padding:2px;cursor:pointer;color:#777;display:grid}#mk-sh .x svg{width:18px;height:18px}'+
 '#mk-sh .g{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 10px;padding:16px 10px 14px}'+
-'#mk-sh .g button{width:60px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:pointer;font:inherit;font-size:11.5px;color:#222}'+
+'#mk-sh .g button{width:60px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:pointer;font:inherit;font-size:12px;color:#222}'+
 '#mk-sh .g i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center}#mk-sh .g i svg{width:23px;height:23px}'+
 '#mk-sh .m{margin:-4px 14px 12px;text-align:center;font-size:12px;color:#0f6e56;font-weight:700;min-height:1.2em;word-break:break-all}'+
 '@media (max-width:520px){#mk-sh{align-items:flex-end}#mk-sh .b{width:100%;border-radius:16px 16px 0 0}}';

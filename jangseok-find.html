@@ -4,20 +4,20 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#fbf6ea;color:#2b2418;font-family:"Noto Sans KR",system-ui,sans-serif;word-break:keep-all}
 main{max-width:860px;margin:0 auto;padding:16px 16px 60px}
-h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacing:-.04em;text-align:center}
+h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacing:-.04em;text-align:center}
 .sub{text-align:center;color:#6d6551;margin:0 0 18px;font-size:15px}
 .top{display:flex;justify-content:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:14px;font-weight:700}
+.top a{color:#2b2418;background:#fff;border:1px solid #e3d6b8;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:15px;font-weight:700}
 .wrap{display:grid;grid-template-columns:260px 1fr;gap:18px}
 @media(max-width:760px){.wrap{grid-template-columns:1fr}}
 .card{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px}
 .photo{text-align:center}
-.photo .ph{display:grid;place-items:center;aspect-ratio:4/3;background:#f4ecd8;border:2px dashed #d8c9a3;border-radius:12px;cursor:pointer;overflow:hidden;color:#8a7f66;font-size:14px}
+.photo .ph{display:grid;place-items:center;aspect-ratio:4/3;background:#f4ecd8;border:2px dashed #d8c9a3;border-radius:12px;cursor:pointer;overflow:hidden;color:#8a7f66;font-size:15px}
 .photo img{width:100%;height:100%;object-fit:contain;background:#fff}
 .photo small{display:block;margin-top:8px;color:#8a7f66;font-size:12px;line-height:1.5}
 .g{margin:0 0 14px}.g h3{margin:0 0 7px;font-size:15px;font-weight:900}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{font:inherit;font-size:13.5px;padding:6px 11px;border-radius:999px;border:1px solid #d8c9a3;background:#fff;color:#2b2418;cursor:pointer}
+.chips button{font:inherit;font-size:13px;padding:6px 11px;border-radius:999px;border:1px solid #d8c9a3;background:#fff;color:#2b2418;cursor:pointer}
 .chips button.on{background:#2b2418;color:#fff;border-color:#2b2418}
 .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0 0}
 .bar button{font:inherit;font-size:13px;background:none;border:none;color:#0F6E56;cursor:pointer;text-decoration:underline}
@@ -25,16 +25,16 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
 .say{padding:12px 14px;border-radius:12px;margin-bottom:12px;font-weight:700;line-height:1.6}
 .say.no{background:#fbe9e4;color:#8a2d18}.say.ok{background:#e6f2ec;color:#0F5A45}.say.wait{background:#f4ecd8;color:#6d6551;font-weight:500}
 .cand{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:14px;margin-bottom:12px}
-.cand h4{margin:0 0 6px;font-size:20px;font-weight:900;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cand h4{margin:0 0 6px;font-size:18px;font-weight:900;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .cand h4 small{font-size:13px;color:#6d6551;font-weight:500}
 .meter{height:8px;background:#f0e7d2;border-radius:99px;overflow:hidden;margin:6px 0 10px}.meter i{display:block;height:100%;background:#0F6E56}
-.ln{font-size:14px;line-height:1.7;margin:2px 0}.ln b{display:inline-block;min-width:60px;color:#6d6551;font-weight:500}
+.ln{font-size:15px;line-height:1.7;margin:2px 0}.ln b{display:inline-block;min-width:60px;color:#6d6551;font-weight:500}
 .hit{color:#0F5A45;font-weight:700}.miss{color:#a3998a}
 .thumbs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:4px}
-.thumbs a{flex:none;width:84px;text-decoration:none;color:#6d6551;font-size:11px;text-align:center}
+.thumbs a{flex:none;width:84px;text-decoration:none;color:#6d6551;font-size:12px;text-align:center}
 .thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid #e3d6b8;background:#f4ecd8;display:block;margin-bottom:3px}
 .src{font-size:12px;color:#8a7f66;margin-top:6px}
-.foot{margin-top:24px;font-size:12.5px;color:#8a7f66;line-height:1.7}
+.foot{margin-top:24px;font-size:13px;color:#8a7f66;line-height:1.7}
 </style><script src="common.js?v=18" defer></script></head>
 <body><main>
 <h1>장석으로 지역 찾기</h1>
@@ -120,11 +120,11 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacin
       <div class="meter"><i style="width:${Math.round(x.s / max * 100)}%"></i></div>
       <div class="ln"><b>맞음</b><span class="hit">${x.hit.map(esc).join(' · ')}</span></div>
       ${x.miss.length ? `<div class="ln"><b>안 맞음</b><span class="miss">${x.miss.map(esc).join(' · ')}</span></div>` : ''}
-      <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13.5px;color:#0F6E56">이 지역 기준표 보기</summary>${lines || '<div class="ln">자세한 특징 자료가 아직 없습니다.</div>'}<div class="src">출처: ${esc(d.src || '')}</div></details>
+      <details style="margin-top:6px"><summary style="cursor:pointer;font-size:13px;color:#0F6E56">이 지역 기준표 보기</summary>${lines || '<div class="ln">자세한 특징 자료가 아직 없습니다.</div>'}<div class="src">출처: ${esc(d.src || '')}</div></details>
       ${ps.length ? `<div class="thumbs">${th}</div><div class="src">도록에서 이름에 이 지역이 적힌 반닫이 ${ps.length}점${ps.length > 10 ? ' 가운데 10점' : ''}</div>` : '<div class="src">이 지역 이름이 붙은 참고 사진이 아직 없습니다.</div>'}
     </div>`;
   }
   run();
 })();
 </script>
-<script src="recent.js" defer></script><script src="share.js" defer></script><script>/* 장석 감정실은 작은 별도 창으로 연다 */(function(){document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href*="7JrHGKPQ72y4djSvgSACyB"]');if(!a)return;var w=Math.min(520,screen.availWidth-40),h=Math.min(900,screen.availHeight-60);var p=window.open(a.href,'jangseok','popup=yes,width='+w+',height='+h+',left='+Math.max(0,screen.availWidth-w-20)+',top=20');if(p){e.preventDefault();try{p.focus()}catch(x){}}},true);})();</script><script src="homebtn.js" defer></script></body></html>
+<script src="recent.js" defer></script><script src="share.js" defer></script><script>/* 장석 감정실은 작은 별도 창으로 연다 */(function(){document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href*="7JrHGKPQ72y4djSvgSACyB"]');if(!a)return;var w=Math.min(520,screen.availWidth-40),h=Math.min(900,screen.availHeight-60);var p=window.open(a.href,'jangseok','popup=yes,width='+w+',height='+h+',left='+Math.max(0,screen.availWidth-w-20)+',top=20');if(p){e.preventDefault();try{p.focus()}catch(x){}}},true);})();</script><script src="homebtn.js?v=20261113" defer></script></body></html>

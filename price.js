@@ -18,8 +18,8 @@
   function man(v) { var m = v / 10000; return m >= 10000 ? (Math.round(m / 1000) / 10) + '억' : (m >= 1000 ? Math.round(m).toLocaleString('ko-KR') : Math.round(m * 10) / 10) + '만'; }   /* 경매 시세 화면과 같은 표기 */
   var css = document.createElement('style');
   css.textContent = '.pr-box{margin:12px 0 0;padding:9px 12px;border:1px solid #e7d9b4;background:#fdfaf2;border-radius:10px;font-size:13px;line-height:1.55;color:#4a4130}' +
-    '.pr-box b{color:#2b2418}.pr-box .pr-m{font-weight:900;color:#8a2f22}.pr-box a{display:inline!important;margin:0!important;padding:0!important;background:none!important;color:#6b5d3f!important;font-weight:700!important;font-size:12.5px!important;text-decoration:underline!important;border:0!important}' +
-    '.pr-box small{display:block;color:#8a7f66;font-size:11.5px;margin-top:2px}';
+    '.pr-box b{color:#2b2418}.pr-box .pr-m{font-weight:900;color:#8a2f22}.pr-box a{display:inline!important;margin:0!important;padding:0!important;background:none!important;color:#6b5d3f!important;font-weight:700!important;font-size:13px!important;text-decoration:underline!important;border:0!important}' +
+    '.pr-box small{display:block;color:#8a7f66;font-size:12px;margin-top:2px}';
   document.head.appendChild(css);
   function sync(dlg) {
     var old = dlg.querySelector('.pr-box'); if (old) old.remove();

@@ -18,18 +18,18 @@
     '.mp-th button.mp-open{display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:zoom-in}' +
     '.mp-th img{width:100%;height:100%;object-fit:cover;display:block}' +
     '.mp-th .mp-x{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(17,17,17,.82);color:#fff;font-size:13px;line-height:22px;padding:0;cursor:pointer}' +
-    '.mp-th .mp-n{position:absolute;left:0;bottom:0;right:0;background:rgba(17,17,17,.6);color:#fff;font-size:10.5px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.mp-add{width:68px;height:68px;border-radius:9px;border:1.5px dashed #9a9387;background:#fff;color:#5d574d;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;flex:none}' +
-    '.mp-add b{font-size:22px;line-height:1;font-weight:500}' +
+    '.mp-th .mp-n{position:absolute;left:0;bottom:0;right:0;background:rgba(17,17,17,.6);color:#fff;font-size:12px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.mp-add{width:68px;height:68px;border-radius:9px;border:1.5px dashed #9a9387;background:#fff;color:#5d574d;font:inherit;font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;flex:none}' +
+    '.mp-add b{font-size:24px;line-height:1;font-weight:500}' +
     '.mp-add:disabled{opacity:.5}' +
-    '.mp-busy{font-size:12.5px;color:#756e65;font-weight:700}' +
+    '.mp-busy{font-size:13px;color:#756e65;font-weight:700}' +
     '.mp-dlg{border:0;padding:0;background:#111;color:#fff;max-width:100vw;max-height:100vh;width:100vw;height:100dvh;margin:0}' +
     '.mp-dlg::backdrop{background:rgba(0,0,0,.85)}' +
     '.mp-area{position:absolute;inset:0 0 64px 0;display:flex;align-items:center;justify-content:center}' +
     '.mp-area img{max-width:100%;max-height:100%;object-fit:contain}' +
     '.mp-bar{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;gap:8px;align-items:center;justify-content:center;padding:0 10px;background:#000}' +
-    '.mp-bar button{font:inherit;font-size:14px;font-weight:700;border:1px solid #666;background:#1c1c1c;color:#fff;border-radius:10px;padding:9px 14px;cursor:pointer}' +
-    '.mp-cap{position:absolute;left:0;right:0;top:0;padding:10px 56px 10px 14px;font-size:13.5px;line-height:1.5;background:linear-gradient(#000a,#0000);z-index:2;pointer-events:none}';
+    '.mp-bar button{font:inherit;font-size:15px;font-weight:700;border:1px solid #666;background:#1c1c1c;color:#fff;border-radius:10px;padding:9px 14px;cursor:pointer}' +
+    '.mp-cap{position:absolute;left:0;right:0;top:0;padding:10px 56px 10px 14px;font-size:13px;line-height:1.5;background:linear-gradient(#000a,#0000);z-index:2;pointer-events:none}';
   document.head.appendChild(css);
 
   /* 이 기기에 사진 담아 두기 */

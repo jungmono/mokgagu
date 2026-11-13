@@ -5,7 +5,7 @@
   var ok = document.getElementById('ds-items') || /(^|\/)(index\.html)?$/.test(location.pathname);
   if (!ok) return;
   var css = document.createElement('style');
-  css.textContent = '#grid>[hidden],#r-grid>[hidden],#gallery>[hidden]{display:none!important}.mr-wrap{text-align:center;margin:18px 0 6px}.mr-wrap button{border:2px solid #111;background:#fff;color:#111;border-radius:999px;padding:11px 26px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}.mr-wrap button+button{margin-left:8px;border-color:#bdb6aa;color:#6b665e;font-weight:600}.mr-wrap small{display:block;color:#6b665e;margin-top:6px;font-size:12.5px}';
+  css.textContent = '#grid>[hidden],#r-grid>[hidden],#gallery>[hidden]{display:none!important}.mr-wrap{text-align:center;margin:18px 0 6px}.mr-wrap button{border:2px solid #111;background:#fff;color:#111;border-radius:999px;padding:11px 26px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}.mr-wrap button+button{margin-left:8px;border-color:#bdb6aa;color:#6b665e;font-weight:600}.mr-wrap small{display:block;color:#6b665e;margin-top:6px;font-size:13px}';
   document.head.appendChild(css);
   function wire(g) {
     var shown = STEP, busy = false;
