@@ -184,6 +184,12 @@ body{position:relative}
 .bk-arr{top:calc(6px + var(--lbh) + var(--cvh)/2 - 19px)}
 .bk-box.open .bk-shelf{row-gap:14px}
 .bk-shelf .lb small{display:inline;margin:0 0 0 5px;font-size:12px}
+/* 2026-11-13 첫 화면: 가운데 큰 제목 삭제 · 위쪽 표시 글자 작게 · 세로 간격 줄임 */
+.since-top,.eyebrow.eb-top{font-size:clamp(10px,.95vw,12px)!important}
+.wrap{padding-top:34px!important}
+.intro{margin:0 auto 4px!important;padding:8px 10px 6px!important}
+.info{margin:0 0 14px!important}.quick{margin:-4px 0 16px!important}
+.hm-sec{margin-top:14px!important}
 /* 탐색 도구 · 자료 묶음 */
 .hm-two{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch;margin-bottom:30px}
 .hm-col{display:flex;flex-direction:column;min-width:0}
@@ -244,9 +250,7 @@ body{position:relative}
 <div class="since-top"><span class="sc-blk">since</span><span class="sc-wht">2026.10.16.</span></div>
 <div class="eyebrow eb-top"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span><span class="ew-rest">고미술공부방</span></div>
 <div class="wrap">
-  <header>
-    <h1 class="ttl-row"><a class="home-link" id="home-link" href="index.html" title="처음 화면으로"><span class="ttl">조선의 목가구</span></a></h1>
-  </header>
+  <a id="home-link" href="index.html" hidden aria-hidden="true"></a>
   <div class="intro"><div class="ig"><div><div class="hj" lang="zh-Hant">知則爲眞愛</div><div class="kr">알면 사랑하게 되고</div></div><div><div class="hj" lang="zh-Hant">愛則爲眞看</div><div class="kr">사랑하면 보게 되고</div></div><div><div class="hj" lang="zh-Hant">看則畜之而非徒畜也</div><div class="kr">볼 줄 알면 모으게 된다.</div></div></div><div class="by">유한준(1732~1811)</div></div>
 
 
