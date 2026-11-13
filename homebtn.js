@@ -91,7 +91,7 @@
   }
 
   function mount() {
-    if (d.getElementById('ub')) return;
+    if (d.getElementById('ub') || /[?&]embed=1/.test(location.search)) return;   /* 창 안에 띄운 화면(embed)에는 상단 흰 띠 없음 */
     var b = d.createElement('header'); b.id = 'ub';
     b.innerHTML = '<div class="in"><a class="ib" href="index.html" aria-label="홈" title="홈" data-ub="home">' + IC.home + '</a>' +
       '<a class="lg" href="index.html" data-ub="home" data-p="' + (new Date().getDate() % 2) + '"><img src="mark_angwe.png" alt="" width="36" height="22">조선의 목가구<img src="mark_eonyang_white.png" alt="" width="36" height="22"></a>' +
