@@ -30,5 +30,5 @@ window.MOKGAGU_BOOKS = [
   { path: 'yerang', title: '예랑방·고목당 목공예품 백선전', desc: '『美術의 해 木工藝品百選展』 1995 — 반닫이·장·탁자·상 86점, 크기 표기, 정대영 선생님 연필 이름', items: 86, icon: 'bandaji', tone: 'meok', added: '2026-11-09' },
   { path: 'enar',   title: '조선의 목공예 예나르', desc: '『조선의 목공예 — 부엌 세간과 사랑방의 기물』 1994 — 반닫이·장·소반·문방 107점, 크기 표기', items: 107, icon: 'bandaji', tone: 'hwang', added: '2026-11-10' },
   { path: 'dugaheon', title: '화가가 애호하는 조선시대 목가구', desc: '두가헌 갤러리 「여섯 화가의 소장 가구」 — 반닫이·장·탁자·서안·문방 64점, 크기 표기', items: 64, icon: 'bandaji', tone: 'meok', added: '2026-11-10' },
-  { path: 'hoam', title: '조선목가구대전 — 나뭇결에 스민 지혜', desc: '호암미술관 2002 — 사랑방·안방·부엌 가구와 반닫이·약장까지 전시 기물 171점, 도판 번호·소장처·크기 표기', items: 171, icon: 'seoan', tone: 'meok', added: '2026-11-13' },
+  { path: 'hoam', title: '조선목가구대전', desc: '호암미술관 2002 『나뭇결에 스민 지혜』 — 사랑방·안방·부엌 가구와 반닫이·약장까지 전시 기물 171점, 도판 번호·소장처·크기 표기', items: 171, icon: 'seoan', tone: 'meok', added: '2026-11-13' },
 ];
