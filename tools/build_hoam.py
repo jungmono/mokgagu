@@ -266,8 +266,7 @@ s = re.sub(r'^const GRPS = .*$', lambda m: 'const GRPS = ' + J(GRPS) + ';', s, c
 a = s.index("document.getElementById('lead').innerHTML = ["); b = s.index("].map((s) => `<li>${s}</li>`)", a)
 s = s[:a] + ("document.getElementById('lead').innerHTML = [\n"
   "  `호암미술관 『조선목가구대전 — 나뭇결에 스민 지혜』(2002.5.31~9.1) 도록의 <b>전시 기물</b> ${ITEMS.length}점, 사진 ${nPics}장 — 도판 번호 순서대로 실었습니다.`,\n"
-  "  `갈래를 골라 보거나 이름으로 찾을 수 있습니다. 크기는 가로×옆너비×높이(cm)로 적었습니다(도록은 高·幅 순서).`,\n"
-  "  `스캔한 쪽이 뒤집혀 있어 바로 돌렸고, 사진은 인쇄된 사진 부분만 잘랐습니다. 펼침면에 걸친 사진은 이어 붙였습니다.`,\n") + s[b:]
+  "  `갈래를 골라 보거나 이름으로 찾을 수 있습니다. 크기는 가로×옆너비×높이(cm)로 적었습니다(도록은 高·幅 순서).`\n") + s[b:]
 tiles = "const TILES = " + J([['', '기물 전체', len(items), '전체 보기']] + [[g, g, sum(1 for i in items if i['kind'] == g), g] for g in GRPS]) + ";"
 s = re.sub(r"^const TILES = .*$", lambda m: tiles, s, count=1, flags=re.M)
 rep('data-cid="dugaheon/${i.id}"', 'data-cid="hoam/${i.id}"')
