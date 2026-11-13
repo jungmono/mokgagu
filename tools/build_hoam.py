@@ -235,7 +235,6 @@ for n, (no, name, hanja, en, era, size, kind, owner, memo) in enumerate(R, 1):
         if no in [x[0] for x in SPREAD]: memo = '도록 펼침면에 걸친 사진을 이어 붙였습니다.'
         if len(cl) > 1 and not memo: memo = '도록에 사진이 %d장(같은 기물, 다른 방향·세부).' % len(cl)
         flat = [1 for c in cl if len(np.unique(np.array(c.convert('L').resize((200, 200))) // 8)) < 14]
-        if no == 64 and not flat: flat = [1]
         if flat: memo = (memo + ' ' if memo else '') + '스캔이 흑백(2진)에 가까워 사진이 거칩니다. 다시 스캔하면 바꿉니다.'; FLAT.append(no)
     for k, c in enumerate(cl):
         c.thumbnail((3200, 3200)); w, h = c.size; fn = id_ + ('' if k == 0 else chr(97 + k)) + '.jpg'
