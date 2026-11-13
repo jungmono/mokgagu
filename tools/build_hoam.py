@@ -161,6 +161,8 @@ def conv(raw):
     if d.startswith('長'): return '길이 %s×높이 %s' % (d[1:], h)
     if ',' in h or ',' in d: return '%s (높이 %s)' % (d, h.replace(',', '·'))
     return '%s×%s%s' % (d, h, sfx)
+# 선생님 감정으로 바뀐 이름(재생성해도 유지)
+RENAME = {150: '강화도 반닫이', 151: '강화도 반닫이', 156: '진주 반닫이', 157: '나주 반닫이', 158: '나주 반닫이', 159: '남원 반닫이', 160: '영광 반닫이'}
 def load_list():
     rows = []
     for ln in open(os.path.join(ROOT, 'tools', 'hoam_list.txt'), encoding='utf-8'):
@@ -168,6 +170,7 @@ def load_list():
         no_s, hj, ko, era, sz, own, sec = ln.rstrip('\n').split('|'); no = int(re.match(r'\d+', no_s).group())
         sec = 'S6' if no in (84, 85, 86) else sec
         own = own.replace('?(확인)', '확인 필요').replace('?정택(확인)', '확인 필요(정택?)')
+        ko = RENAME.get(no, ko)
         rows.append((no, ko, hj.replace('〔', '(').replace('〕', ')'), '', era, conv(sz), SECT[sec], own, '')) 
     return rows
 def order(bs):
