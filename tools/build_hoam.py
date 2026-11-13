@@ -11,7 +11,7 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 PDF = os.path.abspath(sys.argv[1]); COVER = sys.argv[2]; PHOTOS = os.path.abspath(sys.argv[3])
 HOST = 'https://jungmono.github.io/mokgagu-photos/photos/hoam/'
-VER = '20261113'
+VER = '20261113b'
 os.makedirs(PHOTOS, exist_ok=True); os.makedirs('thumbs/hoam', exist_ok=True)
 BOOK = '『조선목가구대전 — 나뭇결에 스민 지혜』 — 호암미술관, 2002 (사랑방 가구)'
 GRPS = ['서안·경상', '연상', '문갑', '탁자·책장']
@@ -63,25 +63,26 @@ def page(n):
     return cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
 
 def find_boxes(img, minarea=120000):
-    H, W = img.shape[:2]
-    g = cv2.GaussianBlur(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32), (0, 0), 3)
+    H, W = img.shape[:2]; S = W / 1654.0   # 200dpi 기준 배율(400dpi 스캔이면 2)
+    minarea = int(minarea * S * S); k = lambda v: max(1, int(round(v * S)))
+    g = cv2.GaussianBlur(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY).astype(np.float32), (0, 0), 3 * S)
     m = (g < 251).astype(np.uint8)
     m[int(H * 0.885):, :] = 0; m[:int(H * 0.025), :] = 0          # 아래 캡션·위 쪽번호 제외
-    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((9, 9), np.uint8))
-    m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((41, 41), np.uint8))
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((k(9), k(9)), np.uint8))
+    m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((k(41), k(41)), np.uint8))
     nl, lab, st, _ = cv2.connectedComponentsWithStats(m)
     comps = sorted([(int(st[i, 4]), [int(v) for v in st[i, :4]]) for i in range(1, nl) if st[i, 4] > minarea], key=lambda c: -c[0])
     return [c[1] for c in comps]
 
 def soften(img, b, pad=70):
     """사진 바탕이 종이와 거의 같은 쪽은 사각형이 안 보여 물체만 잡힌다 → 그 변만 조금 넓힌다."""
-    H, W = img.shape[:2]; x, y, w, h = b; g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    H, W = img.shape[:2]; x, y, w, h = b; g = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY); S = W / 1654.0; pad = int(pad * S); e1, e2 = int(2 * S), int(12 * S)
     def hard(strip_in, strip_out): return np.median(strip_in) < 244 and np.median(strip_out) >= 250
     x0, x1, y0, y1 = x, x + w, y, y + h
-    L = hard(g[y0 + h // 4:y1 - h // 4, x0 + 2:x0 + 12], g[y0 + h // 4:y1 - h // 4, max(x0 - 12, 0):max(x0 - 2, 1)]) if x0 > 12 else True
-    Rr = hard(g[y0 + h // 4:y1 - h // 4, x1 - 12:x1 - 2], g[y0 + h // 4:y1 - h // 4, min(x1 + 2, W - 1):min(x1 + 12, W)]) if x1 < W - 12 else True
-    T = hard(g[y0 + 2:y0 + 12, x0 + w // 4:x1 - w // 4], g[max(y0 - 12, 0):max(y0 - 2, 1), x0 + w // 4:x1 - w // 4]) if y0 > 12 else True
-    B = hard(g[y1 - 12:y1 - 2, x0 + w // 4:x1 - w // 4], g[min(y1 + 2, H - 1):min(y1 + 12, H), x0 + w // 4:x1 - w // 4]) if y1 < H - 12 else True
+    L = hard(g[y0 + h // 4:y1 - h // 4, x0 + e1:x0 + e2], g[y0 + h // 4:y1 - h // 4, max(x0 - e2, 0):max(x0 - e1, 1)]) if x0 > e2 else True
+    Rr = hard(g[y0 + h // 4:y1 - h // 4, x1 - e2:x1 - e1], g[y0 + h // 4:y1 - h // 4, min(x1 + e1, W - 1):min(x1 + e2, W)]) if x1 < W - e2 else True
+    T = hard(g[y0 + e1:y0 + e2, x0 + w // 4:x1 - w // 4], g[max(y0 - e2, 0):max(y0 - e1, 1), x0 + w // 4:x1 - w // 4]) if y0 > e2 else True
+    B = hard(g[y1 - e2:y1 - e1, x0 + w // 4:x1 - w // 4], g[min(y1 + e1, H - 1):min(y1 + e2, H), x0 + w // 4:x1 - w // 4]) if y1 < H - e2 else True
     if not L: x0 = max(0, x0 - pad)
     if not Rr: x1 = min(W, x1 + pad)
     if not T: y0 = max(int(H * 0.03), y0 - pad)
@@ -92,7 +93,7 @@ def pad_smooth(img, top, bottom, left, right):
     """늘린 부분은 가장자리 색을 늘린 뒤 크게 흐려 줄무늬 없이 바탕처럼 보이게 한다."""
     H, W = img.shape[:2]
     big = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_REPLICATE)
-    blur = cv2.GaussianBlur(big, (0, 0), 45)
+    blur = cv2.GaussianBlur(big, (0, 0), 45 * (img.shape[1] / 1654.0 if False else max(1.0, H / 1100.0)))
     out = blur.copy(); out[top:top + H, left:left + W] = img
     # 사진과 늘린 바탕의 경계가 튀지 않도록 안쪽 6px 를 섞는다
     return out
@@ -117,7 +118,7 @@ def trim_gutter(img, side):
     for x in rng:
         if col[x] >= 247: n += 1
         else: break
-    n += 3
+    n += int(3 * W / 800)
     return img[:, :W - n] if side == 'right' else img[:, n:]
 
 def crops(no):
@@ -142,7 +143,7 @@ items, ds, photos = [], [], []
 for n, (no, name, hanja, en, era, size, kind, owner, memo) in enumerate(R, 1):
     id_ = 'H%02d' % no; pics = []
     for k, c in enumerate(crops(no)):
-        c.thumbnail((2800, 2800)); w, h = c.size; fn = id_ + ('' if k == 0 else chr(97 + k)) + '.jpg'
+        c.thumbnail((3200, 3200)); w, h = c.size; fn = id_ + ('' if k == 0 else chr(97 + k)) + '.jpg'
         c.save(os.path.join(PHOTOS, fn), quality=90, optimize=True)
         pics.append({'src': HOST + fn + '?v=' + VER, 'w': w, 'h': h})
         if k == 0:
