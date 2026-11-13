@@ -58,7 +58,7 @@
     '#ub a,#ub button{font:inherit;color:#111;text-decoration:none;-webkit-tap-highlight-color:transparent}',
     '#ub .ib{flex:none;width:42px;height:42px;border-radius:11px;border:1px solid #e4e0d8;background:#fff;display:grid;place-items:center;cursor:pointer;padding:0}',
     '#ub .ib:hover{background:#f3f0e9}#ub .ib svg{width:22px;height:22px;display:block}',
-    '#ub .lg{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-weight:900;font-size:18px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}',
+    '#ub .lg{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;font-size:18px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}',
     '#ub .lg img{height:22px;width:auto;display:block}',
     '#ub-m{position:fixed;top:62px;right:max(12px,calc((100vw - 1200px)/2 + 12px));z-index:2147482000;width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - 80px);overflow:auto;background:#fff;border:1px solid #e4e0d8;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);padding:8px;font-family:inherit;display:none}',
     '#ub-m.on{display:block}',
