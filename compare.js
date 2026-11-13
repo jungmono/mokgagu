@@ -95,7 +95,7 @@
   }
   function sync(dlg) {
     var b = dlg.querySelector('.cmpbtn'); if (!b) return;
-    var s = dlg.querySelector('.shr'); b.style.left = s ? (s.offsetLeft + s.offsetWidth + 8) + 'px' : '8px';
+    var s = dlg.querySelector('.shr'); b.style.left = s ? (s.offsetLeft + s.offsetWidth + 6) + 'px' : '8px';
     var p = parse(dlg), c = current(dlg), on = c && c.pid && has(c.b + '/' + c.pid);
     if (p && !p.pid && !window.SEARCH) loadIdx().then(function () { sync(dlg); });
     b.className = 'cmpbtn wb' + (on ? ' on' : ''); b.innerHTML = btnHtml(on);

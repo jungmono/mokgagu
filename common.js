@@ -87,7 +87,7 @@
 (function () {
   var d = document;
   if (d.querySelector('script[src^="compare.js"]')) return;
-  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=8'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=3'; m.defer = true; d.head.appendChild(m); }
+  function go() { var s = d.createElement('script'); s.src = 'compare.js?v=9'; s.defer = true; d.head.appendChild(s); var m = d.createElement('script'); m.src = 'more.js?v=3'; m.defer = true; d.head.appendChild(m); }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', go); else go();
 })();
 
@@ -122,7 +122,7 @@
     /* 사진 위에 떠 있는 단추(공유·비교에 담기): 이름에 옅은 바탕을 깔아 어떤 사진 위에서도 읽히게 */
     '.shr.wb,.cmpbtn.wb{position:absolute;top:8px;z-index:5}.shr.wb{left:8px}.cmpbtn.wb{left:62px}',
     /* 좋아요·공유: 글자 없는 얇은 테두리 동그라미 단추 */
-    '.shr.wb,#cmp-share.wb{min-width:0}.shr.wb .wb-t,#cmp-share.wb .wb-t{display:none}.shr.wb .wb-c,#cmp-share.wb .wb-c{width:34px;height:34px;background:#fff;border:1px solid #b5aa98;color:#4a4339;-webkit-backdrop-filter:none;backdrop-filter:none}.shr.wb .wb-c svg,#cmp-share.wb .wb-c svg{width:16px;height:16px}.shr.wb:hover .wb-c,#cmp-share.wb:hover .wb-c{background:#f6f2ea}',
+    '.shr.wb,#cmp-share.wb{min-width:0}.shr.wb .wb-t,#cmp-share.wb .wb-t{display:none}.shr.wb .wb-c,#cmp-share.wb .wb-c{width:36px;height:36px;background:#fff;border:1px solid #b5aa98;color:#4a4339;-webkit-backdrop-filter:none;backdrop-filter:none}.shr.wb .wb-c svg,#cmp-share.wb .wb-c svg{width:16px;height:16px}.shr.wb:hover .wb-c,#cmp-share.wb:hover .wb-c{background:#f6f2ea}',
     '.shr.wb .wb-t,.cmpbtn.wb .wb-t{background:rgba(255,255,255,.72);padding:2px 6px;border-radius:6px;color:#2b2418}',
     /* 검은 띠 위(사진 넘겨 보기)에서는 밝은 동그라미 */
     '.mp-bar .wb .wb-c{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5);color:#fff}.mp-bar .wb .wb-t{color:#ddd}.mp-bar .wb.m .wb-c{background:rgba(255,255,255,.88);color:#111}',
