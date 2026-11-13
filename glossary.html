@@ -30,4 +30,4 @@ function draw(){var q=document.getElementById('q').value.trim();
 document.getElementById('chips').innerHTML=cats.map(function(c){return '<button data-c="'+(c==='전체'?'':c)+'" class="'+(c==='전체'?'on':'')+'">'+c+'</button>';}).join('');
 document.getElementById('chips').onclick=function(e){var b=e.target.closest('button');if(!b)return;cat=b.dataset.c;[].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});draw();};
 document.getElementById('q').oninput=draw;draw();
-</script></div><script src="homebtn.js?v=20261113e" defer></script></body></html>
+</script></div><script src="homebtn.js?v=20261113f" defer></script></body></html>
