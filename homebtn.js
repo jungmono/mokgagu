@@ -60,6 +60,7 @@
     '#ub .ib:hover{background:#f3f0e9}#ub .ib svg{width:22px;height:22px;display:block}',
     '#ub .lg{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:18px;font-weight:900;font-size:18px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}',
     '#ub .lg img{height:22px;width:auto;display:block}',
+    '@media (max-width:600px){#ub .lg[data-p="0"] img:last-child,#ub .lg[data-p="1"] img:first-child{display:none}}',   /* 휴대폰: 짝수날 안궤, 홀수날 언양반닫이 아이콘 하나만 */
     '#ub-m{position:fixed;top:62px;right:max(12px,calc((100vw - 1200px)/2 + 12px));z-index:2147482000;width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - 80px);overflow:auto;background:#fff;border:1px solid #e4e0d8;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);padding:8px;font-family:inherit;display:none}',
     '#ub-m.on{display:block}',
     '#ub-m h6{margin:10px 10px 4px;font-size:12px;font-weight:700;color:#857f75}',
@@ -91,7 +92,7 @@
     if (d.getElementById('ub')) return;
     var b = d.createElement('header'); b.id = 'ub';
     b.innerHTML = '<div class="in"><a class="ib" href="index.html" aria-label="홈" title="홈" data-ub="home">' + IC.home + '</a>' +
-      '<a class="lg" href="index.html" data-ub="home"><img src="mark_angwe.png" alt="" width="36" height="22">조선의 목가구<img src="mark_eonyang_white.png" alt="" width="36" height="22"></a>' +
+      '<a class="lg" href="index.html" data-ub="home" data-p="' + (new Date().getDate() % 2) + '"><img src="mark_angwe.png" alt="" width="36" height="22">조선의 목가구<img src="mark_eonyang_white.png" alt="" width="36" height="22"></a>' +
       '<button type="button" class="ib" aria-label="찾기" title="찾기" data-ub="search">' + IC.search + '</button>' +
       '<button type="button" class="ib" aria-label="메뉴" title="메뉴" aria-expanded="false" aria-controls="ub-m" data-ub="menu">' + IC.menu + '</button></div>';
     d.body.insertBefore(b, d.body.firstChild);
