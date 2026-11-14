@@ -10,7 +10,11 @@
     if (cacheData) return cacheData;
     var buf = new Uint8Array(await fetch('study/quiz.bin', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('net'); return r.arrayBuffer(); }));
     var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0, 12) }, key, buf.slice(12));
-    return (cacheData = JSON.parse(new TextDecoder().decode(plain)));
+    var D = JSON.parse(new TextDecoder().decode(plain));
+    /* 덧붙인 수업의 문제(study.html 이 data2.bin 에서 풀어 둔다) */
+    var more = await Promise.all((window.MOKGAGU_QUIZ_ADD || []).map(function (p) { return p.catch(function () { return null; }); }));
+    more.forEach(function (m) { if (!m) return; Object.assign(D.sessions, m.sessions || {}); var ids = {}; (m.qs || []).forEach(function (x) { ids[x.id] = 1; }); D.qs = D.qs.filter(function (x) { return !ids[x.id]; }).concat(m.qs || []); });
+    return (cacheData = D);
   }
   function mount(el, key) {
     var DATA = null, ST = {}, scope = '', run = null;
