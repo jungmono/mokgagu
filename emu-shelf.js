@@ -1,0 +1,33 @@
+/* e뮤지엄 소장품 서가 — 기관별 한 쪽(nfm.html 등)이 window.EMU_KEY 를 정하면 emuseum-data.js 의 그 기관 목록을 보여 줌 */
+(function () {
+  const E = window.EMU, org = E.orgs.find((o) => o.k === window.EMU_KEY);
+  const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const items = org.rows.map((r, i) => ({ i, name: E.names[r[0]], pre: E.prefs[r[1]], no: r[2], kind: r[3] }));
+  const link = () => 'https://emuseum.go.kr/';
+  const cnt = (k) => items.filter((x) => x.kind === k).length;
+  const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
+  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>이름과 소장번호만 담았습니다. 크기·사진·설명은 e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
+  let kind = -1, q = '', shown = 120, view = [];
+  const tiles = document.getElementById('tiles');
+  function renderTiles() {
+    tiles.innerHTML = [['', '전체', items.length]].concat(E.kinds.map((k, n) => [n, k, cnt(n)]).filter((t) => t[2])).map(([v, k, n]) => `<button type="button" class="tile${(v === '' ? kind === -1 : kind === v) ? ' on' : ''}" data-k="${v}"><div class="k">${k}</div><div class="v">${n}<small>점</small></div></button>`).join('');
+  }
+  tiles.addEventListener('click', (e) => { const b = e.target.closest('.tile'); if (!b) return; kind = b.dataset.k === '' ? -1 : +b.dataset.k; shown = 120; render(); });
+  document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim(); shown = 120; render(); });
+  function render() {
+    renderTiles();
+    view = items.filter((x) => (kind < 0 || x.kind === kind) && (!q || (x.name + ' ' + x.pre + ' ' + x.no).includes(q)));
+    document.getElementById('cnt').textContent = view.length + '점';
+    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}"><div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
+  }
+  const dlg = document.getElementById('dlg');
+  document.getElementById('grid').addEventListener('click', (e) => {
+    if (e.target.closest('#more')) { shown += 240; render(); return; }
+    const c = e.target.closest('.card'); if (!c) return; const x = view[+c.dataset.n];
+    document.getElementById('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><dl><dt>소장기관</dt><dd>${esc(org.n)}</dd><dt>소장번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>출처</dt><dd>e뮤지엄 전국박물관소장품검색</dd></dl><p style="margin:14px 0 0"><a href="${link(x)}" target="_blank" rel="noopener">e뮤지엄 열기 ↗</a> <span style="color:#777;font-size:13px">— 검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</span></p>`;
+    dlg.showModal();
+  });
+  document.getElementById('d-close').onclick = () => dlg.close();
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  render();
+})();
