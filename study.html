@@ -199,12 +199,14 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
     DATA = JSON.parse(new TextDecoder().decode(plain));
     /* 덧붙인 노트 — data.bin 을 다시 잠그지 않고 새 수업을 보탠다.
        study/data2.bin(가족 암호) = {add:[{k, notes, quiz}]} · k 는 그 수업 노트·사진·퀴즈를 잠근 열쇠(base64 원시 키) */
-    window.MOKGAGU_QUIZ_ADD = [];
+    window.MOKGAGU_QUIZ_ADD = []; window.MOKGAGU_KG_ADD = [];
     try {
       var add = JSON.parse(new TextDecoder().decode(await dec('study/data2.bin'))).add || [];
       for (var ai = 0; ai < add.length; ai++) {
         var a = add[ai];
         if (a.notes) { var nn = JSON.parse(new TextDecoder().decode(await decK(a.notes, a.k))); (nn.sessions || []).forEach(function (n) { DATA.sessions = DATA.sessions.filter(function (x) { return !((x.owner || '거믄') === (n.owner || '거믄') && x.date === n.date); }); DATA.sessions.push(n); }); }
+        var kgf = a.kg || (a.notes && a.notes.replace(/n\.bin$/, 'k.bin'));   // 지식 지도 덧붙임: 따로 적지 않으면 노트 파일 이름(…n.bin → …k.bin)을 따른다
+        if (kgf) window.MOKGAGU_KG_ADD.push(decK(kgf, a.k).then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }));
         if (a.quiz) window.MOKGAGU_QUIZ_ADD.push(decK(a.quiz, a.k).then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }));
       }
     } catch (e) {}
@@ -246,7 +248,12 @@ body{font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","M
       var kgEl = document.getElementById('kgm');
       var mountKg = function () { window.MOKGAGU_KG.mount(kgEl, {
         sessions: DATA.sessions,
-        load: function () { return dec('study/kg.bin').then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }); },
+        load: function () { return dec('study/kg.bin').then(function (b) { return JSON.parse(new TextDecoder().decode(b)); }).then(function (K) {
+          /* 덧붙인 수업의 개념·지역(이미 있는 점은 그대로 두고 새 점·선·꼬리표만 보탠다) */
+          return Promise.all((window.MOKGAGU_KG_ADD || []).map(function (p) { return p.catch(function () { return null; }); })).then(function (more) {
+            var have = {}; K.nodes.forEach(function (n) { have[n.id] = 1; });
+            more.forEach(function (m) { if (!m) return; (m.nodes || []).forEach(function (n) { if (!have[n.id]) { have[n.id] = 1; K.nodes.push(n); } }); K.links = K.links.concat(m.links || []); Object.keys(m.tagmap || {}).forEach(function (t) { if (!K.tagmap[t]) K.tagmap[t] = m.tagmap[t]; }); Object.assign(K.sessLinks, m.sessLinks || {}); });
+            return K; }); }); },
         goSession: function (se) {
           tab = se.owner || '거믄'; ls.set(K_TAB, tab); render();
           var id = 'd' + (se.owner === '힌' ? 'h' : 'g') + se.date;
