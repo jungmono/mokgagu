@@ -436,7 +436,7 @@
     else html += '<div class="lc-grid">' + keys.map(function (k) {
       var r = IX[k], s = m[k];
       var st = (s['거믄'] ? star('거믄') : '') + (s['힌'] ? star('힌') : '');
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg')) + '" alt="" onerror="this.remove()">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg')) + '" alt="" onerror="this.remove()">' : '') +
         '<span class="lc-stars">' + st + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>';
     }).join('') + '</div>';
     if (pend.length) html += '<p class="lc-note">' + (serverOk ? '별 ' + pend.length + '개를 시트에 올리는 중이에요.' : '별 ' + pend.length + '개가 아직 이 기기에만 있어요. 시트 연결이 열리면 저절로 올라가요.') + '</p>';
@@ -449,7 +449,7 @@
     var keys = Object.keys(beot).sort(function (a, b) { return String(beot[b]).localeCompare(String(beot[a])); });
     var html = '<div class="lc-hd"><h2>' + star('벗') + '벗의 좋아요</h2><button type="button" class="lc-x">닫기</button></div><div class="lc-body">';
     html += keys.length ? '<div class="lc-grid">' + keys.map(function (k) { var r = IX[k];
-      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg')) + '" alt="" onerror="this.remove()">' : '') +
+      return '<button type="button" class="lc-it" data-key="' + esc(k) + '"><div class="lc-ph">' + (r && r.t ? '<img decoding="async" width="300" height="300" referrerpolicy="no-referrer" src="' + (r.u || (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg')) + '" alt="" onerror="this.remove()">' : '') +
         '<span class="lc-stars">' + star('벗') + '</span></div><div class="lc-tx"><div class="lc-nm">' + esc(r ? r.name : k) + '</div><div class="lc-ct">' + esc(r ? r.cat : '') + '</div></div></button>'; }).join('') + '</div>'
       : '<p class="lc-empty">아직 좋아요 한 기물이 없어요. 사진 왼쪽 위 말풍선을 눌러 보세요.</p>';
     html += '<p class="lc-note">벗의 좋아요는 이 기기에만 담겨요.</p>';

@@ -46,4 +46,11 @@ window.MOKGAGU_BOOKS = [
   { path: 'gimhae', title: '김해목재문화박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 15점', items: 15, icon: 'ham', tone: 'cheong', added: '2026-11-15', group: 'museum' },
   { path: 'namgaram', title: '남가람박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 31점', items: 31, icon: 'yakjang', tone: 'meok', added: '2026-11-15', group: 'museum' },
   { path: 'bupyeong', title: '부평역사박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 25점', items: 25, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'gyeongun', title: '경운박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 56점', items: 56, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'tongyeong', title: '통영시립박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 28점', items: 28, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'ulsan', title: '울산박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 60점', items: 60, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'snu', title: '서울대학교박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 19점', items: 19, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'cheonan', title: '천안박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 63점', items: 63, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'dolmun', title: '제주돌문화공원 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 52점', items: 52, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
+  { path: 'gwangju', title: '국립광주박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 4점', items: 4, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
 ];

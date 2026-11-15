@@ -134,7 +134,7 @@ window.RK = (function () {
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
   const usable = pool.filter((r) => regs.includes(regOf(r)));
-  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1, miribeol: 1, andong: 1, jeonjudae: 1, busancity: 1, wonju: 1, sangju: 1, gimhae: 1, namgaram: 1, bupyeong: 1 };
+  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1, miribeol: 1, andong: 1, jeonjudae: 1, busancity: 1, wonju: 1, sangju: 1, gimhae: 1, namgaram: 1, bupyeong: 1, gyeongun: 1, tongyeong: 1, ulsan: 1, snu: 1, cheonan: 1, dolmun: 1, gwangju: 1 };
   const tu = (r) => EMU5[r.b] ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg';
   const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg';   /* 큰 원본(저장소 mokgagu-photos), 안 되면 작은 사진 */
   /* 다음 문제 사진을 미리 받아 둔다 */

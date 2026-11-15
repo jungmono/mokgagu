@@ -259,7 +259,7 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
 
   /* 기물 찾기 (검색 색인) — 색인이 늦게 와도 화면은 먼저 그린다 */
   function rec(cid) { return IX[cid]; }
-  function thumb(cid) { var r = rec(cid); return r && r.t ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') : ''; }
+  function thumb(cid) { var r = rec(cid); return r && r.t ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') : ''; }
   function name(cid) { var r = rec(cid); return r ? r.name : String(cid || '').split('/').pop(); }
   function link(cid) { return 'index.html#see=' + String(cid).split('/').map(encodeURIComponent).join('/'); }
   function thA(cid, badge, grp) { return '<a href="' + link(cid) + '" data-seq="' + grp + '" data-k="' + esc(cid) + '" title="' + esc(name(cid)) + '">' + (thumb(cid) ? '<img loading="lazy" src="' + thumb(cid) + '" alt="">' : '') + (badge ? '<i>' + badge + '</i>' : '') + '<span>' + esc(name(cid)) + '</span></a>'; }
@@ -687,8 +687,8 @@ h2.sec small{font-size:13px;font-weight:500;color:var(--muted);white-space:norma
     if (i < 0 || i >= V.list.length) return;
     V.at = i; var cid = V.list[i], r = rec(cid), dlg = document.getElementById('dlg'), img = document.getElementById('d-img');
     dlg.dataset.cid = cid;
-    img.onerror = function () { if (r && r.t && img.src.indexOf('/thumbs/') < 0) img.src = (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'); };
-    img.src = r ? (r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') : '')) : '';
+    img.onerror = function () { if (r && r.t && img.src.indexOf('/thumbs/') < 0) img.src = (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'); };
+    img.src = r ? (r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') : '')) : '';
     img.alt = name(cid);
     var notes = V.S && V.S.notes && V.S.notes[cid];
     document.getElementById('d-info').innerHTML = '<div class="cat">' + esc(BOOK[cid.split('/')[0]] || '') + '</div><h3>' + esc(name(cid)) + (r && r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h3>' +
