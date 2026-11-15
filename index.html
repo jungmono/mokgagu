@@ -14,6 +14,7 @@
 <meta property="og:url" content="https://jungmono.github.io/mokgagu/">
 <meta name="twitter:card" content="summary_large_image">
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('emb');</script>
+<script>/* 기물만 새 창으로 띄우기(?solo=1): 홈은 숨기고 사진 창만 보임, 닫으면 창을 닫음 */if(/[?&]solo=1/.test(location.search))document.documentElement.classList.add('solo');</script>
 <script>/* 비교하기에서 띄운 기물 창(embed): 이전·다음은 비교한 순서대로 부모(compare)가 넘겨 준다 */
 window.MOKGAGU_EMB = {
   on: document.documentElement.classList.contains('emb'),
@@ -22,7 +23,7 @@ window.MOKGAGU_EMB = {
   label: function (key) { var a = this.all(), i = a.indexOf(key); return i < 0 ? null : { text: '비교 ' + (i + 1) + ' / ' + a.length, first: i === 0, last: i === a.length - 1 }; }
 };</script>
 <style>
-html.emb,html.emb body{background:transparent!important}html.emb body{visibility:hidden!important;overflow:hidden!important}html.emb dialog,html.emb dialog *{visibility:visible}
+html.solo,html.solo body{background:#f3efe4!important}html.solo body{visibility:hidden!important;overflow:hidden!important}html.solo dialog,html.solo dialog *{visibility:visible}html.emb,html.emb body{background:transparent!important}html.emb body{visibility:hidden!important;overflow:hidden!important}html.emb dialog,html.emb dialog *{visibility:visible}
 
 :root{
   --bg:#ffffff; --card:#ffffff; --fg:#1f2433; --muted:#6b7183; --line:#e6e8f0;
@@ -616,6 +617,7 @@ function openSeen() {
 }
 /* 다른 화면(비례 자 등)에서 열었으면 창을 닫을 때 그 화면으로 돌아간다 */
 $('dlg').addEventListener('close', () => {
+  if (document.documentElement.classList.contains('solo')) { try { window.close(); } catch (e) {} setTimeout(() => { document.documentElement.classList.remove('solo'); }, 300); return; }   /* 닫히지 않으면 홈을 보여 줌 */
   if (document.documentElement.classList.contains('emb')) { try { parent.postMessage('mokgagu-see-close', location.origin); } catch (e) {} return; }
   if (!seqBack) return; const to = seqBack; seqBack = '';
   if (document.referrer && document.referrer.indexOf(to) >= 0 && history.length > 1) history.back(); else location.href = to;
