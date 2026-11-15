@@ -77,7 +77,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
   const FIELDS = ['재질', '경첩', '앞바탕', '들쇠', '감잡이', '광두정', '투각무늬', '덮는비율', '나무', '비례', '구조', '별칭', '느낌'];
 
   /* 참고 사진: 도록 이름에 지역이 적힌 반닫이 */
-  const TH5 = /^(nfm|gjfolk|dgu|yecheon|sokcho)$/;
+  const TH5 = /^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/;
   const KIND = /반닫이|櫃|궤/;
   const keysOf = (c) => (J.find && J.find[c.id]) || (c.kind === '도' ? [c.id.slice(0, 2)] : c.id.replace(/\(.*\)/, '').split('·'));
   const photos = {};

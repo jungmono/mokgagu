@@ -113,7 +113,7 @@ select{font:inherit;font-size:13px;border:1px solid #d9d4cc;border-radius:8px;pa
     var cls = c.author === '거믄' ? 'g' : c.author === '힌' ? 'h' : 'o';
     var label = c.author === '벗' ? (c.name ? '벗 · ' + c.name : '벗') : c.author;
     var pub = C.isPub(c), fam = c.author === '거믄' || c.author === '힌';
-    var ph = r.t ? '<img loading="lazy" src="' + (/^(nfm|gjfolk|dgu|yecheon|sokcho)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '<span>사진 없음</span>';
+    var ph = r.t ? '<img loading="lazy" src="' + (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '<span>사진 없음</span>';
     var acts = '';
     if (editing === c.id) {
       return '<div class="cl-card editing' + (pub ? '' : ' priv') + '" data-cid="' + C.esc(c.cid) + '" data-no-star="1">' +

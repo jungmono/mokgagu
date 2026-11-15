@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet"><title>부평역사박물관 — e뮤지엄 — 조선의 목가구</title>
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="catalog-ref.css?v=20261110"><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<script src="common.js?v=19" defer></script>
+<script src="photozoom.js?v=20261115a"></script></head>
+<body>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="wrap">
+  <h1>부평역사박물관 — e뮤지엄</h1>
+  <ul class="lead" id="lead"></ul>
+  <div class="tiles" id="tiles"></div>
+  <div class="filters"><span class="lab">찾기</span><input type="search" id="q" placeholder="이름·소장번호로 찾기 — 예: 반닫이, 머릿장, 12190" style="font:inherit;font-size:15px;border:1px solid #ccc;border-radius:8px;padding:6px 10px;min-width:220px"><span id="cnt" style="margin-left:10px;color:#777"></span></div>
+  <div class="grid" id="grid"></div>
+</div>
+<div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
+
+<dialog id="dlg" aria-label="자세히 보기">
+  <div class="d-body">
+    <div class="d-img">
+      <div class="d-main" id="d-main"><img id="d-img" alt="" draggable="false"><button class="d-arrow l" id="p-prev" aria-label="이전 사진" hidden>‹</button><button class="d-arrow r" id="p-next" aria-label="다음 사진" hidden>›</button><span class="zhint" id="zhint">휠·두 손가락으로 사진만 확대 · 옆으로 밀면 이전·다음</span></div>
+      <div class="d-cap" id="d-cap"></div>
+      <div class="d-strip" id="d-strip"></div>
+    </div>
+    <div class="d-info" id="d-info"></div>
+  </div>
+  <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos" style="font-size:13px;color:var(--muted)"></span><span><button id="d-next">다음 →</button> <button id="d-close">닫기</button></span></div>
+</dialog>
+<script>window.EMU_KEY="bupyeong";</script>
+<script src="emuseum-data.js?v=20261115ze"></script><script src="emu-info.js?v=20261115ze"></script><script src="emu-photos.js?v=20261115ze"></script><script src="emu-shelf.js?v=20261115ze"></script>
+<script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
+<script src="recent.js" defer></script><script src="glossary.js?v=20261024" defer></script><script src="share.js" defer></script>
+<script src="books.js?v=1" defer></script><script src="site.js" defer></script><script src="comments.js?v=20261121" defer></script>
+<script src="mklink.js?v=5" defer></script>
+<script src="homebtn.js?v=20261115b" defer></script><script src="dlgback.js" defer></script>
+</body></html>
