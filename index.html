@@ -392,7 +392,7 @@ function buildTools() {
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
-const SHORT = { nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', hoam: '호암미술관', hoam: '호암미술관', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
+const SHORT = { nfm: '국립민속박물관', gjfolk: '광주민속박물관', dgu: '대구대박물관', yecheon: '예천박물관', sokcho: '속초박물관', nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', hoam: '호암미술관', hoam: '호암미술관', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
 document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}<button type="button" class="all" data-all="${k}">전체 ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 보기 →</button></div></div>`).join('');
 document.getElementById('hm-folds').addEventListener('click', (e) => { const b = e.target.closest('[data-all]'); if (!b) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(b.dataset.all); });
@@ -424,6 +424,10 @@ render();
 const PROV = /(경기|강원|충청|전라|경상|황해|평안|함경|제주)(남|북)?도/g;
 const norm = (s) => s.toLowerCase().replace(/\s+/g, '').replace(PROV, '$1$2');
 const ORDER = DASHBOARDS.map((d) => d.path);
+/* e뮤지엄 서가 5곳: 사진은 photos/emuseum/<pid>.jpg, 작은 사진은 thumbs/emu/<pid>.jpg, 좋아요·이야기는 emuseum/<pid> */
+const EMUB = ['nfm', 'gjfolk', 'dgu', 'yecheon', 'sokcho'];
+const thOf = (r) => EMUB.includes(r.b) ? `thumbs/emu/${r.pid}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
+const cidOf = (r) => (EMUB.includes(r.b) ? 'emuseum' : r.b) + '/' + r.pid;
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -530,8 +534,8 @@ function drawResults(label) {
   $('r-chips').innerHTML = hits.length && Object.keys(counts).length > 1 ? chips.map(([k, t, n]) =>
     `<button class="r-chip" data-k="${k}" aria-pressed="${only === k}">${esc(t)}<small>${n}</small></button>`).join('') : '';
   $('r-grid').innerHTML = shown.length ? shown.map((r, i) => `
-    <button class="r-item" data-i="${i}" data-cid="${esc(r.b + '/' + r.pid)}">
-      <div class="ph">${r.t ? `<img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="">` : ''}</div>
+    <button class="r-item" data-i="${i}" data-cid="${esc(cidOf(r))}">
+      <div class="ph">${r.t ? `<img loading="lazy" src="${thOf(r)}" alt="">` : ''}</div>
       <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat.replace(/^우리나라 전통 무늬 \d+\s*/, ""))}</div>
       <div class="mt">${esc([r.era, r.size, r.wood].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';
@@ -560,16 +564,16 @@ function askNotes(cid) {
   return `<div class="d-ask">${L.map((n) => `<div class="d-ask1"><span class="d-ow ${n.who === '힌' ? 'h' : 'g'}">${esc(n.who)}</span>${n.done ? '<small>여쭤봤어요</small>' : ''}<p>${esc(n.text)}</p>${n.ans ? `<div class="d-ans"><b>선생님 말씀</b>${esc(n.ans)}</div>` : ''}</div>`).join('')}</div>`;
 }
 function openItem(i) {
-  cur = i; const r = shown[i]; if (!r) return; $('dlg').dataset.cid = r.b + '/' + r.pid; $('dlg').classList.toggle('big-img', r.b === 'seoulauction');
+  cur = i; const r = shown[i]; if (!r) return; $('dlg').dataset.cid = cidOf(r); $('dlg').classList.toggle('big-img', r.b === 'seoulauction');
   const img = $('d-img');
-  img.src = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? `thumbs/${r.b}/${r.n}.jpg` : '');
-  img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
+  img.src = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${EMUB.includes(r.b) ? 'emuseum' : r.b}/${encodeURIComponent(r.pid)}.jpg` : (r.t ? thOf(r) : '');
+  img.onerror = () => { if (r.t && !img.src.includes('/thumbs/')) img.src = thOf(r); };
   img.alt = r.name;
   const row = (k, v) => (v ? `<dt>${k}</dt><dd>${esc(v)}</dd>` : '');
   $('d-info').innerHTML = `<div class="cat">${esc(TITLE[r.b])}</div>
     <h3>${esc(r.name)}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3>
     <dl>${row('종류', r.kind)}${row('연대', r.era)}${row(/^\s*[\d.]+×[\d.]+×[\d.]+/.test(r.size || '') ? '치수(가로×세로×높이)' : '치수', r.size)}${row('재질', r.wood)}${row('소장', r.owner)}${row('도록', r.page ? r.page + '쪽' : '')}</dl>
-    ${askNotes(r.b + '/' + r.pid)}<a href="${r.b}.html"${document.documentElement.classList.contains('emb') ? ' target="_blank" rel="noopener"' : ''}>도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
+    ${askNotes(cidOf(r))}<a href="${r.b}.html"${document.documentElement.classList.contains('emb') ? ' target="_blank" rel="noopener"' : ''}>도록으로 돌아가기 →</a>${seqFrom === 'comments' ? ' <a href="comments.html" style="background:#fff;color:var(--fg);border:1px solid var(--line)">이야기 모아보기로 →</a>' : ''}${seqBack ? ` <a href="${esc(seqBack)}" style="background:#fff;color:var(--fg);border:1px solid var(--line)">${seqFrom === 'ask' ? '여쭤볼 것으로' : '통계로'} →</a>` : ''}`;
   $('d-pos').textContent = (seqFrom === 'comments' ? '이야기 모아보기 ' : seqLabel ? seqLabel + ' ' : '') + `${i + 1} / ${shown.length}`;
   $('d-prev').disabled = i === 0; $('d-next').disabled = i === shown.length - 1;
   if (!$('dlg').open) $('dlg').showModal();
