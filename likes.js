@@ -220,8 +220,10 @@
     var l = d.querySelector(':scope > .lk-top .lk-big[data-lk]'); if (!l) return;
         var sc = d.querySelector('.shr .wb-c') || d.querySelector('.shr'), cc = d.querySelector('.cmpbtn .wb-c') || d.querySelector('.cmpbtn');
     if (!sc || !cc || !cc.offsetWidth) return;
-    var dr = d.getBoundingClientRect(), a = sc.getBoundingClientRect(), b = cc.getBoundingClientRect(), gap = b.left - a.right;
-    l.style.left = Math.round(b.right - dr.left + gap) + 'px';
+    /* 창이 열릴 때 커지는 움직임(transform)에 영향받지 않도록 offset 값으로 잰다 */
+    var off = function (el) { var x = 0; while (el && el !== d) { x += el.offsetLeft; el = el.offsetParent; } return x; };
+    var aR = off(sc) + sc.offsetWidth, bL = off(cc), bR = bL + cc.offsetWidth, gap = bL - aR;
+    l.style.left = Math.round(bR + gap) + 'px';
   }
   function paintDlg() {
     document.querySelectorAll('dialog[open]').forEach(function (d) {
@@ -244,7 +246,7 @@
         (whoTxt.length ? '<span class="lk-who">' + whoTxt.map(star).join('') + whoTxt.join(' · ') + (whoTxt.length > 1 ? ' 둘 다' : '') + ' 좋아해요</span>' : '');
       if (!bar) { bar = document.createElement('div'); bar.className = 'lk-bar'; var cm = box.querySelector(':scope > .cm'); box.insertBefore(bar, cm || null); }
       if (bar.innerHTML !== html) bar.innerHTML = html;
-      alignLike(d);
+      alignLike(d); setTimeout(function () { alignLike(d); }, 250); setTimeout(function () { alignLike(d); }, 900);
     });
   }
   window.addEventListener('resize', function () { paintDlg(); document.querySelectorAll('dialog[open]').forEach(alignLike); });
