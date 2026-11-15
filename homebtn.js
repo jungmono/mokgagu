@@ -107,7 +107,7 @@
       if (!t) { if (m.classList.contains('on') && !(e.target.closest && e.target.closest('#ub-m'))) close(); return; }
       var k = t.getAttribute('data-ub');
       if (k === 'menu') { e.preventDefault(); if (m.classList.contains('on')) close(); else { m.innerHTML = menuHTML(); m.classList.add('on'); t.setAttribute('aria-expanded', 'true'); } return; }
-      if (k === 'home' && HOME) { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      if (k === 'home' && HOME) { e.preventDefault(); var hl = d.getElementById('home-link'); if (hl) hl.click(); else scrollTo({ top: 0, behavior: 'smooth' }); return; }
       if (k === 'search') {
         e.preventDefault();
         var q = d.getElementById('q') || d.getElementById('st-q') || d.querySelector('input[type=search]:not([hidden])');
