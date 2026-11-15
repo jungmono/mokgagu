@@ -3,10 +3,12 @@
   const E = window.EMU, org = E.orgs.find((o) => o.k === window.EMU_KEY);
   const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const items = org.rows.map((r, i) => ({ i, name: E.names[r[0]], pre: E.prefs[r[1]], no: r[2], kind: r[3] }));
+  const PH = window.EMU_PH || {}, PHBASE = 'https://jungmono.github.io/mokgagu-photos/photos/emuseum/';
+  const pid = (x) => PH[x.pre + ' ' + x.no];
   const link = () => 'https://emuseum.go.kr/';
   const cnt = (k) => items.filter((x) => x.kind === k).length;
   const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
-  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>이름과 소장번호만 담았습니다. 크기·사진·설명은 e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
+  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>${items.some(pid) ? '이름과 소장번호를 담았고 공공누리 제1유형 사진이 있는 기물에는 사진을 붙였습니다. 크기·설명과 나머지 사진은' : '이름과 소장번호만 담았습니다. 크기·사진·설명은'} e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
   let kind = -1, q = '', shown = 120, view = [];
   const tiles = document.getElementById('tiles');
   function renderTiles() {
@@ -18,13 +20,14 @@
     renderTiles();
     view = items.filter((x) => (kind < 0 || x.kind === kind) && (!q || (x.name + ' ' + x.pre + ' ' + x.no).includes(q)));
     document.getElementById('cnt').textContent = view.length + '점';
-    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}"><div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
+    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
   }
   const dlg = document.getElementById('dlg');
   document.getElementById('grid').addEventListener('click', (e) => {
     if (e.target.closest('#more')) { shown += 240; render(); return; }
     const c = e.target.closest('.card'); if (!c) return; const x = view[+c.dataset.n];
-    document.getElementById('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><dl><dt>소장기관</dt><dd>${esc(org.n)}</dd><dt>소장번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>출처</dt><dd>e뮤지엄 전국박물관소장품검색</dd></dl><p style="margin:14px 0 0"><a href="${link(x)}" target="_blank" rel="noopener">e뮤지엄 열기 ↗</a> <span style="color:#777;font-size:13px">— 검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</span></p>`;
+    const ph = pid(x);
+    document.getElementById('d-info').innerHTML = (ph ? `<div class="ph" style="margin:0 0 12px"><img src="${PHBASE}${ph}.jpg" alt="${esc(x.name)}" style="width:100%;max-height:60vh;object-fit:contain;background:#f6f4f0;border-radius:6px"></div><p style="margin:0 0 10px;font-size:12px;color:#777">사진: ${esc(org.n)} · 공공누리 제1유형(출처표시) · e뮤지엄</p>` : '') + `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><dl><dt>소장기관</dt><dd>${esc(org.n)}</dd><dt>소장번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>출처</dt><dd>e뮤지엄 전국박물관소장품검색</dd></dl><p style="margin:14px 0 0"><a href="${link(x)}" target="_blank" rel="noopener">e뮤지엄 열기 ↗</a> <span style="color:#777;font-size:13px">— 검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</span></p>`;
     dlg.showModal();
   });
   document.getElementById('d-close').onclick = () => dlg.close();
