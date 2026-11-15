@@ -4,11 +4,13 @@
   const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const items = org.rows.map((r, i) => ({ i, name: E.names[r[0]], pre: E.prefs[r[1]], no: r[2], kind: r[3] }));
   const PH = window.EMU_PH || {}, PHBASE = 'https://jungmono.github.io/mokgagu-photos/photos/emuseum/';
-  const pid = (x) => PH[x.pre + ' ' + x.no];
+  const pid = (x) => (PH[x.pre + ' ' + x.no] || [])[0];
+  const KOGL = { 1: '출처표시', 2: '출처표시·상업적 이용금지', 3: '출처표시·변경금지', 4: '출처표시·상업적 이용금지·변경금지' };
+  const typ = (x) => (PH[x.pre + ' ' + x.no] || [])[1] || 1;
   const link = () => 'https://emuseum.go.kr/';
   const cnt = (k) => items.filter((x) => x.kind === k).length;
   const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
-  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>${items.some(pid) ? '이름과 소장번호를 담았고 공공누리 제1유형 사진이 있는 기물에는 사진을 붙였습니다. 크기·설명과 나머지 사진은' : '이름과 소장번호만 담았습니다. 크기·사진·설명은'} e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
+  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>${items.some(pid) ? '이름과 소장번호를 담았고 공공누리 사진이 있는 기물에는 사진을 붙였습니다. 크기·설명과 나머지 사진은' : '이름과 소장번호만 담았습니다. 크기·사진·설명은'} e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
   let kind = -1, q = '', shown = 120, view = [];
   const tiles = document.getElementById('tiles');
   function renderTiles() {
@@ -29,7 +31,7 @@
     const x = view[cur], im = $('d-img'), ph = pid(x);
     if (ph) { im.src = 'thumbs/emu/' + ph + '.jpg'; const hi = new Image(); hi.onload = () => { if (view[cur] === x) im.src = hi.src; }; hi.src = phSrc(x); im.alt = x.name; im.hidden = false; }
     else { im.removeAttribute('src'); im.hidden = true; }
-    $('d-cap').textContent = ph ? `1 / 1 · 공공누리 제1유형(출처표시) · ${org.n} · e뮤지엄` : '사진이 아직 없습니다. e뮤지엄에서 소장번호로 찾아 보세요.';
+    $('d-cap').textContent = ph ? `1 / 1 · 공공누리 제${typ(x)}유형(${KOGL[typ(x)]}) · ${org.n} · e뮤지엄` : '사진이 아직 없습니다. e뮤지엄에서 소장번호로 찾아 보세요.';
     $('p-prev').hidden = $('p-next').hidden = true;
   }
   function open_(n) {
