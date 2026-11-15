@@ -7,7 +7,10 @@
   const pid = (x) => (PH[x.pre + ' ' + x.no] || [])[0];
   const KOGL = { 1: '출처표시', 2: '출처표시·상업적 이용금지', 3: '출처표시·변경금지', 4: '출처표시·상업적 이용금지·변경금지' };
   const typ = (x) => (PH[x.pre + ' ' + x.no] || [])[1] || 1;
-  const link = () => 'https://emuseum.go.kr/';
+  const INFO = window.EMU_INFO || {};
+  const inf = (x) => INFO[x.pre + ' ' + x.no] || [];
+  const era = (x) => String(inf(x)[0] || '').replace(/^한국\s*-?\s*/, '');
+  const link = (x) => pid(x) ? 'https://emuseum.go.kr/detail?relicId=' + pid(x) : 'https://emuseum.go.kr/';
   const cnt = (k) => items.filter((x) => x.kind === k).length;
   const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
   document.getElementById('lead').innerHTML = items.length ? `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구 가운데 공공누리 사진이 있는 <b>${items.length}</b>점</li>${skip}<li>사진이 없는 기물은 싣지 않았고 사진을 모으는 대로 늘립니다. 크기·설명은 e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>` : `<li>${esc(org.n)}의 가구 사진을 e뮤지엄에서 모으는 중입니다. 사진이 갖춰진 기물부터 이곳에 싣겠습니다.</li>`;
@@ -22,7 +25,7 @@
     renderTiles();
     view = items.filter((x) => (kind < 0 || x.kind === kind) && (!q || (x.name + ' ' + x.pre + ' ' + x.no).includes(q)));
     document.getElementById('cnt').textContent = view.length + '점';
-    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}" data-cid="emuseum/${pid(x)}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
+    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}" data-cid="emuseum/${pid(x)}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}${era(x) ? ' · ' + esc(era(x)) : ''}${inf(x)[2] ? ' · ' + esc(inf(x)[2]) : ''}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
   }
   const dlg = document.getElementById('dlg'); let cur = 0;
   const $ = (id) => document.getElementById(id);
@@ -39,7 +42,7 @@
     dlg.dataset.cid = 'emuseum/' + pid(x);
     $('d-strip').innerHTML = '';
     showPic();
-    $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl><dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl><a class="d-src" href="${link(x)}" target="_blank" rel="noopener">e뮤지엄에서 보기 ↗</a> <div style="color:#777;font-size:13px;margin-top:6px">검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</div>`;
+    $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl>${era(x) ? `<dt>시대</dt><dd>${esc(era(x))}</dd>` : ''}${inf(x)[1] ? `<dt>재질</dt><dd>${esc(inf(x)[1])}</dd>` : ''}${inf(x)[2] ? `<dt>크기</dt><dd>${esc(inf(x)[2])}</dd>` : ''}<dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl><a class="d-src" href="${link(x)}" target="_blank" rel="noopener">e뮤지엄에서 보기 ↗</a>`;
     $('d-pos').textContent = `${cur + 1} / ${view.length}`;
     if (!dlg.open) dlg.showModal();
   }
