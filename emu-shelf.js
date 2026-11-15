@@ -22,7 +22,7 @@
     renderTiles();
     view = items.filter((x) => (kind < 0 || x.kind === kind) && (!q || (x.name + ' ' + x.pre + ' ' + x.no).includes(q)));
     document.getElementById('cnt').textContent = view.length + '점';
-    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
+    document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}" data-cid="emuseum/${pid(x)}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
   }
   const dlg = document.getElementById('dlg'); let cur = 0;
   const $ = (id) => document.getElementById(id);
@@ -36,6 +36,7 @@
   }
   function open_(n) {
     cur = (n + view.length) % view.length; const x = view[cur];
+    dlg.dataset.cid = 'emuseum/' + pid(x);
     $('d-strip').innerHTML = '';
     showPic();
     $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl><dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl><a class="d-src" href="${link(x)}" target="_blank" rel="noopener">e뮤지엄에서 보기 ↗</a> <div style="color:#777;font-size:13px;margin-top:6px">검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</div>`;
