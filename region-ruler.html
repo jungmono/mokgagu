@@ -277,7 +277,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
       const cS = tally(nearS.slice(0, K)), cR = tally(nearR.slice(0, K));
       const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg';
       window.__seeKeys = [];
-      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='${tu(r)}'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
+      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"${r.b === 'joseongwe' ? '' : ' data-new="1" target="_blank" rel="noopener"'}><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='${tu(r)}'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
       v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양 반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
       v += stripCard(ratio, own);
       v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
@@ -316,7 +316,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: dlg.querySelector('.d-img'), next: () => open(cur + 1), prev: () => open(cur - 1), canNext: () => cur < L.length - 1, canPrev: () => cur > 0 });
   document.addEventListener('click', (e) => {
-    const a = e.target.closest && e.target.closest('a[data-see]'); if (!a || a.closest('#dlg')) return;
+    const a = e.target.closest && e.target.closest('a[data-see]'); if (!a || a.closest('#dlg')) return; if (a.dataset.new) return;   /* 닮은 반닫이 카드는 새 창에서 도록으로 엶 */
     const IX = window.__RIX || {}, k0 = a.dataset.see; if (!IX[k0]) return;   /* 색인에 없으면 원래대로 도록으로 */
     e.preventDefault();
     const ks = ((a.dataset.reg ? window.__regKeys : a.dataset.band ? window.__bandKeys : a.dataset.pick ? window.__pickKeys : window.__nearKeys) || window.__seeKeys || []).filter((k, i, A) => A.indexOf(k) === i);
