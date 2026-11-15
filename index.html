@@ -437,7 +437,7 @@ let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seq
 let idxLoading = null;
 function loadIdx() {
   if (window.SEARCH) return Promise.resolve();
-  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js?v=20261115t'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
+  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js?v=20261115u'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
   return idxLoading;
 }
 let lastTerms = [];
