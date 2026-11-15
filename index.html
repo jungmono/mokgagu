@@ -477,7 +477,9 @@ function search(raw) {
   let terms = raw.split(/[·,]/).map(norm).filter(Boolean);   // '장·농' → 장 또는 농
   /* 같은 말 — 흔히 쓰는 다른 이름도 함께 찾는다(용어 사전의 「같은 말」과 같은 내용) */
   const SYN = [['반닫이', '반다지', '드닫이'], ['궤', '궤짝'], ['사방탁자', '책탁자'], ['뒤주', '쌀뒤주'], ['소반', '밥상', '개다리소반']];
-  { const extra = []; terms.forEach((t) => { SYN.forEach((g) => { if (g.includes(t)) g.forEach((n) => extra.push(n)); }); }); terms = [...new Set(terms.concat(extra))]; }
+  { const extra = []; terms.forEach((t) => { SYN.forEach((g) => { if (g.includes(t)) g.forEach((n) => extra.push(n)); }); }); /* 「금산 반닫이」를 찾으면 「금산 앞닫이(궤)」도, 반대로도 함께 — 지역 이름이 앞에 붙은 말만 */
+    terms.forEach((t) => { const m = t.match(/^(.+?)(반닫이|앞닫이)(궤)?$/); if (!m) return; extra.push(m[1] + (m[2] === '반닫이' ? '앞닫이' : '반닫이')); });
+    terms = [...new Set(terms.concat(extra))]; }
   if (!terms.length) { $('results').hidden = true; $('home').hidden = false; return; }
   lastTerms = terms;
   const all = window.SEARCH || [];
