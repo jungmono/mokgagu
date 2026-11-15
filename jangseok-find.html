@@ -77,6 +77,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
   const FIELDS = ['재질', '경첩', '앞바탕', '들쇠', '감잡이', '광두정', '투각무늬', '덮는비율', '나무', '비례', '구조', '별칭', '느낌'];
 
   /* 참고 사진: 도록 이름에 지역이 적힌 반닫이 */
+  const TH5 = /^(nfm|gjfolk|dgu|yecheon|sokcho)$/;
   const KIND = /반닫이|櫃|궤/;
   const keysOf = (c) => (J.find && J.find[c.id]) || (c.kind === '도' ? [c.id.slice(0, 2)] : c.id.replace(/\(.*\)/, '').split('·'));
   const photos = {};
@@ -123,8 +124,8 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
     const d = x.c.d, ps = pics(x.c);
     const lines = FIELDS.filter((f) => d[f]).map((f) => `<div class="ln"><b>${f === '덮는비율' ? '장석 양' : f}</b>${esc(d[f])}</div>`).join('');
     const th = ps.slice(0, 10).map((r) => {
-      const big = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
-      return `<a href="${big}" target="_blank" rel="noopener"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="" onerror="this.style.visibility='hidden'">${esc((r.owner || r.cat || '').slice(0, 10))}</a>`;
+      const big = r.h ? `https://jungmono.github.io/mokgagu-photos/photos/${TH5.test(r.b) ? 'emuseum' : r.b}/${encodeURIComponent(r.pid)}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
+      return `<a href="${big}" target="_blank" rel="noopener"><img loading="lazy" src="${TH5.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'}" alt="" onerror="this.style.visibility='hidden'">${esc((r.owner || r.cat || '').slice(0, 10))}</a>`;
     }).join('');
     return `<div class="cand"><h4>${i + 1}. ${esc(x.c.id)} <small>${x.c.kind === '지역' ? esc(x.c.p) : '도 단위'}</small></h4>
       <div class="meter"><i style="width:${Math.round(x.s / max * 100)}%"></i></div>

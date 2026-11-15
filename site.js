@@ -124,7 +124,7 @@
       var h = '<h3>‘' + esc(label) + '’ — 「' + esc(title) + '」에서 <b>' + hits.length.toLocaleString('ko-KR') + '</b>건<button type="button" data-clear="1">지우기</button></h3>';
       if (!hits.length) h += '<div class="st-empty">이 도록에는 찾는 물건이 없어요. 다른 이름으로 찾아보거나, 처음 화면에서 모든 도록을 찾아보세요.</div>';
       else h += '<div class="st-grid">' + hits.slice(0, limit).map(function (r, i) {
-        return '<button type="button" class="st-it" data-i="' + i + '" data-cid="' + esc(r.b + '/' + r.pid) + '"><div class="ph">' + (r.t ? '<img loading="lazy" src="thumbs/' + r.b + '/' + r.n + '.jpg" alt="">' : '') + '</div>' +
+        return '<button type="button" class="st-it" data-i="' + i + '" data-cid="' + esc(r.b + '/' + r.pid) + '"><div class="ph">' + (r.t ? '<img loading="lazy" src="' + (/^(nfm|gjfolk|dgu|yecheon|sokcho)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '') + '</div>' +
           '<div class="tx"><div class="nm">' + esc(r.name) + '</div><div class="mt">' + esc([r.era, r.size].filter(Boolean).join(' · ')) + '</div></div></button>';
       }).join('') + '</div>' + (hits.length > limit ? '<button type="button" class="st-more" data-more="1">더 보기 (' + (hits.length - limit).toLocaleString('ko-KR') + '건 더)</button>' : '');
       res.innerHTML = h;
@@ -139,8 +139,8 @@
     function open(i) {
       var r = hits[i]; if (!r) return; cur = i;
       dlg.dataset.cid = r.b + '/' + r.pid;
-      img.onerror = function () { if (r.t && img.src.indexOf('/thumbs/') < 0) img.src = 'thumbs/' + r.b + '/' + r.n + '.jpg'; };
-      img.src = r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? 'thumbs/' + r.b + '/' + r.n + '.jpg' : '');
+      img.onerror = function () { if (r.t && img.src.indexOf('/thumbs/') < 0) img.src = (/^(nfm|gjfolk|dgu|yecheon|sokcho)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'); };
+      img.src = r.h ? 'https://jungmono.github.io/mokgagu-photos/photos/' + (/^(nfm|gjfolk|dgu|yecheon|sokcho)$/.test(r.b) ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg' : (r.t ? (/^(nfm|gjfolk|dgu|yecheon|sokcho)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') : '');
       img.alt = r.name;
       var row = function (k, v) { return v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : ''; };
       dlg.querySelector('#st-info').innerHTML = '<h4>' + esc(r.name) + (r.hanja ? '<small>' + esc(r.hanja) + '</small>' : '') + '</h4>' +
