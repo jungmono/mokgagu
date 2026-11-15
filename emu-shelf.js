@@ -22,15 +22,32 @@
     document.getElementById('cnt').textContent = view.length + '점';
     document.getElementById('grid').innerHTML = view.slice(0, shown).map((x, n) => `<button type="button" class="card" data-n="${n}">${pid(x) ? `<div class="ph"><img loading="lazy" src="thumbs/emu/${pid(x)}.jpg" alt="${esc(x.name)}"></div>` : ''}<div class="bd"><span class="badge">${esc(E.kinds[x.kind])}</span><span class="nm">${esc(x.name)}</span><span class="mt">${esc(x.pre)} ${x.no}</span></div></button>`).join('') + (view.length > shown ? `<button type="button" class="card" id="more"><div class="bd"><span class="nm">더 보기 (${view.length - shown}점 남음)</span></div></button>` : '');
   }
-  const dlg = document.getElementById('dlg');
-  document.getElementById('grid').addEventListener('click', (e) => {
+  const dlg = document.getElementById('dlg'); let cur = 0;
+  const $ = (id) => document.getElementById(id);
+  const phSrc = (x) => PHBASE + pid(x) + '.jpg';
+  function showPic() {
+    const x = view[cur], im = $('d-img'), ph = pid(x);
+    if (ph) { im.src = 'thumbs/emu/' + ph + '.jpg'; const hi = new Image(); hi.onload = () => { if (view[cur] === x) im.src = hi.src; }; hi.src = phSrc(x); im.alt = x.name; im.hidden = false; }
+    else { im.removeAttribute('src'); im.hidden = true; }
+    $('d-cap').textContent = ph ? `1 / 1 · 공공누리 제1유형(출처표시) · ${org.n} · e뮤지엄` : '사진이 아직 없습니다. e뮤지엄에서 소장번호로 찾아 보세요.';
+    $('p-prev').hidden = $('p-next').hidden = true;
+  }
+  function open_(n) {
+    cur = (n + view.length) % view.length; const x = view[cur];
+    $('d-strip').innerHTML = '';
+    showPic();
+    $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl><dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl><a class="d-src" href="${link(x)}" target="_blank" rel="noopener">e뮤지엄에서 보기 ↗</a> <div style="color:#777;font-size:13px;margin-top:6px">검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</div>`;
+    $('d-pos').textContent = `${cur + 1} / ${view.length}`;
+    if (!dlg.open) dlg.showModal();
+  }
+  $('grid').addEventListener('click', (e) => {
     if (e.target.closest('#more')) { shown += 240; render(); return; }
-    const c = e.target.closest('.card'); if (!c) return; const x = view[+c.dataset.n];
-    const ph = pid(x);
-    document.getElementById('d-info').innerHTML = (ph ? `<div class="ph" style="margin:0 0 12px"><img src="${PHBASE}${ph}.jpg" alt="${esc(x.name)}" style="width:100%;max-height:60vh;object-fit:contain;background:#f6f4f0;border-radius:6px"></div><p style="margin:0 0 10px;font-size:12px;color:#777">사진: ${esc(org.n)} · 공공누리 제1유형(출처표시) · e뮤지엄</p>` : '') + `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><dl><dt>소장기관</dt><dd>${esc(org.n)}</dd><dt>소장번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>출처</dt><dd>e뮤지엄 전국박물관소장품검색</dd></dl><p style="margin:14px 0 0"><a href="${link(x)}" target="_blank" rel="noopener">e뮤지엄 열기 ↗</a> <span style="color:#777;font-size:13px">— 검색창에 「${esc(x.pre)} ${x.no}」을 넣으세요</span></p>`;
-    dlg.showModal();
+    const c = e.target.closest('.card'); if (c) open_(+c.dataset.n);
   });
-  document.getElementById('d-close').onclick = () => dlg.close();
+  if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: $('d-main'), next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1 });
+  $('d-prev').onclick = () => open_(cur - 1);
+  $('d-next').onclick = () => open_(cur + 1);
+  $('d-close').onclick = () => dlg.close();
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   render();
 })();
