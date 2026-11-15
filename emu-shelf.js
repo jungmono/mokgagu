@@ -42,7 +42,7 @@
     dlg.dataset.cid = 'emuseum/' + pid(x);
     $('d-strip').innerHTML = '';
     showPic();
-    $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl>${era(x) ? `<dt>시대</dt><dd>${esc(era(x))}</dd>` : ''}${inf(x)[1] ? `<dt>재질</dt><dd>${esc(inf(x)[1])}</dd>` : ''}${inf(x)[2] ? `<dt>크기</dt><dd>${esc(inf(x)[2])}</dd>` : ''}<dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl><a class="d-src" href="${link(x)}" target="_blank" rel="noopener">e뮤지엄에서 보기 ↗</a>`;
+    $('d-info').innerHTML = `<span class="badge">${esc(E.kinds[x.kind])}</span><h3>${esc(x.name)}</h3><div class="hj"></div><dl>${era(x) ? `<dt>시대</dt><dd>${esc(era(x))}</dd>` : ''}${inf(x)[1] ? `<dt>재질</dt><dd>${esc(inf(x)[1])}</dd>` : ''}${inf(x)[2] ? `<dt>크기</dt><dd>${esc(inf(x)[2])}</dd>` : ''}<dt>분류</dt><dd>${esc(E.kinds[x.kind])}</dd><dt>소장품번호</dt><dd>${esc(x.pre)} ${x.no}</dd><dt>소장</dt><dd>${esc(org.n)}</dd></dl>`;
     $('d-pos').textContent = `${cur + 1} / ${view.length}`;
     if (!dlg.open) dlg.showModal();
   }
