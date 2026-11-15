@@ -155,3 +155,25 @@
   window.MOKGAGU_ICONS = IC;
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', mount); else mount();
 })();
+
+/* 오른쪽 아래 「맨 위로」 단추 — 2026-11-15. 화면을 조금 내리면 나타남 */
+(function () {
+  var d = document;
+  if (window.MOKGAGU_TOP) return; window.MOKGAGU_TOP = 1;
+  function mount() {
+    if (d.getElementById('to-top') || d.getElementById('ub-top')) return;
+    var st = d.createElement('style');
+    st.textContent = '#ub-top{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:2147481000;width:46px;height:46px;border-radius:50%;border:1.5px solid #cfc3a4;background:rgba(255,255,255,.94);color:#3a342a;box-shadow:0 2px 10px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s}#ub-top.on{opacity:1;pointer-events:auto;transform:none}#ub-top svg{width:22px;height:22px}@media print{#ub-top{display:none}}';
+    d.head.appendChild(st);
+    var b = d.createElement('button');
+    b.id = 'ub-top'; b.type = 'button'; b.setAttribute('aria-label', '맨 위로');
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V6"/><path d="M6 11.5 12 5.5l6 6"/></svg>';
+    b.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    d.body.appendChild(b);
+    var t = 0;
+    function chk() { t = 0; b.classList.toggle('on', (window.pageYOffset || d.documentElement.scrollTop) > 500); }
+    window.addEventListener('scroll', function () { if (!t) t = requestAnimationFrame(chk); }, { passive: true });
+    chk();
+  }
+  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', mount); else mount();
+})();
