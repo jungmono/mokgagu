@@ -10,7 +10,7 @@
   const link = () => 'https://emuseum.go.kr/';
   const cnt = (k) => items.filter((x) => x.kind === k).length;
   const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
-  document.getElementById('lead').innerHTML = `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구·소반·뒤주 <b>${items.length}</b>점</li>${skip}<li>${items.some(pid) ? '이름과 소장번호를 담았고 공공누리 사진이 있는 기물에는 사진을 붙였습니다. 크기·설명과 나머지 사진은' : '이름과 소장번호만 담았습니다. 크기·사진·설명은'} e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>`;
+  document.getElementById('lead').innerHTML = items.length ? `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구 가운데 공공누리 사진이 있는 <b>${items.length}</b>점</li>${skip}<li>사진이 없는 기물은 싣지 않았고 사진을 모으는 대로 늘립니다. 크기·설명은 e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>` : `<li>${esc(org.n)}의 가구 사진을 e뮤지엄에서 모으는 중입니다. 사진이 갖춰진 기물부터 이곳에 싣겠습니다.</li>`;
   let kind = -1, q = '', shown = 120, view = [];
   const tiles = document.getElementById('tiles');
   function renderTiles() {
