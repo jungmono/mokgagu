@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet"><title>조선의 멋 목기·장신구(묵갤러리 김미혜 소장展) — 조선의 목가구</title>
+<meta name="color-scheme" content="light">
+<style>
+:root{--fg:#1d1b18;--muted:#6b665e;--line:#e5e1da;--panel:#faf9f6;--accent:#8a2f22;
+  --sans:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--serif:"Noto Serif KR","AppleMyungjo","Nanum Myeongjo","Batang",serif}
+*{box-sizing:border-box}
+html{background:#fff}
+body{margin:0;background:#fff;color:var(--fg);font-family:var(--sans);padding:24px 16px 48px;word-break:keep-all}
+.wrap{max-width:1200px;margin:0 auto}
+.sa-top{max-width:1200px;margin:0 auto 18px}
+.sa-home{display:inline-flex;align-items:center;gap:10px;color:#111;background:#fff;border:2px solid #111;border-radius:999px;padding:8px 18px;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .15s,background .15s}
+.sa-home:hover{background:#f2f0ec;transform:translateY(-1px)}
+.sa-home img{height:34px;width:auto;display:block}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,3.4vw,34px);margin:4px 0 8px}
+ul.lead{margin:0 0 20px;padding-left:20px;color:#3b3833;line-height:1.75;font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0 0 22px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.tile .k{font-size:13px;color:var(--muted)}.tile .v{font-family:var(--serif);font-size:24px;margin-top:4px}.tile .v small{font-size:15px;color:var(--muted);margin-left:2px}
+.tile .s{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+button.tile{font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s}button.tile:hover{border-color:#bdb6aa}button.tile.on{border-color:#1d1b18;box-shadow:inset 0 0 0 1px #1d1b18}
+.zbar{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;z-index:3}.zbar button{width:34px;height:34px;border-radius:8px;border:0;background:rgba(255,255,255,.92);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:18px;line-height:1}
+.zhint{position:absolute;left:10px;bottom:12px;font-size:12px;color:#6b665e;background:rgba(255,255,255,.85);border-radius:6px;padding:2px 7px;z-index:3}
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 16px}
+.filters .lab{font-size:13px;color:var(--muted);min-width:44px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--fg);font-family:inherit}
+.chip:hover{border-color:#bdb6aa}.chip.on{background:#1d1b18;color:#fff;border-color:#1d1b18}.chip .n{opacity:.6;margin-left:4px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;padding:0;font:inherit;color:inherit;transition:box-shadow .15s,transform .15s}
+.card:hover{box-shadow:0 8px 22px rgba(0,0,0,.09);transform:translateY(-2px)}
+.card .ph{aspect-ratio:4/3;background:#f6f4f0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .ph img{width:100%;height:100%;object-fit:contain}
+.card .ph .no{font-size:13px;color:var(--muted)}
+.card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.badge{display:inline-block;width:max-content;font-size:12px;font-weight:700;color:var(--accent);border:1px solid #e8cfc8;background:#fbf4f2;border-radius:6px;padding:2px 7px}
+.nm{font-family:var(--serif);font-size:18px;line-height:1.35}
+.hj{font-size:13px;color:var(--muted)}
+.mt{font-size:13px;color:var(--muted);line-height:1.5}
+.pc{font-size:12px;color:var(--muted)}
+p.note{font-size:13px;color:var(--muted);line-height:1.7;margin-top:28px}
+dialog{border:0;border-radius:14px;padding:0;width:min(1180px,96vw);max-height:94vh;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(20,18,15,.55)}
+.d-body{display:flex;gap:22px;padding:20px;max-height:calc(94vh - 60px);overflow:auto}
+.d-img{flex:1.35;min-width:0;display:flex;flex-direction:column;gap:10px}
+.d-main{position:relative;background:#f6f4f0;border-radius:10px;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;overscroll-behavior:contain}
+.d-main img{max-width:100%;max-height:66vh;object-fit:contain;display:block;transform-origin:0 0;user-select:none;-webkit-user-drag:none;cursor:zoom-in}.d-main.zoomed img{cursor:grab}.d-main.zoomed.drag img{cursor:grabbing}
+.d-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:18px}
+.d-arrow.l{left:10px}.d-arrow.r{right:10px}
+.d-cap{font-size:13px;color:var(--muted)}
+.d-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.d-strip button{flex:0 0 auto;width:64px;height:52px;border:2px solid transparent;border-radius:6px;padding:0;background:#f6f4f0;cursor:pointer;overflow:hidden}
+.d-strip button.on{border-color:#1d1b18}.d-strip img{width:100%;height:100%;object-fit:cover}
+.d-info{flex:1;min-width:0}
+.d-info h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:6px 0 2px}
+.d-info .hj{margin-bottom:12px}
+.d-info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:15px;margin:0 0 14px}
+.d-info dt{color:var(--muted)}.d-info dd{margin:0}
+.d-desc{font-size:15px;line-height:1.85;white-space:pre-line;color:#2e2b27}
+.d-en{font-size:13px;line-height:1.7;color:var(--muted);margin-top:12px}
+.d-en summary{cursor:pointer}
+.d-src{display:inline-block;margin-top:14px;font-size:13px;color:var(--accent)}
+.d-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line)}
+.d-foot button{font:inherit;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--fg)}
+@media (max-width:760px){.d-body{flex-direction:column;padding:14px}.d-main{min-height:220px}.d-main img{max-height:46vh}}
+.sa-foot{max-width:1200px;margin:40px auto 0;text-align:center;font-size:13px;color:var(--muted);line-height:1.7}
+.sa-foot .ft-mark{display:inline-flex;vertical-align:middle;margin-right:8px;font-size:12px;font-weight:900}
+.sa-foot .ft-mark span{display:inline-block;min-width:2.9em;padding:.12em .4em;border:1.5px solid #111;line-height:1.2;text-align:center}
+.sa-foot .ew-blk{background:#fff;color:#111}.sa-foot .ew-wht{background:#111;color:#fff}
+.sa-foot .ft-icon{display:block;margin:18px auto 8px;width:144px;height:auto}
+</style><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="조선의 목가구">
+<script src="photozoom.js?v=20261115a"></script>
+<script src="common.js?v=19" defer></script>
+</head>
+<body>
+<div class="sa-top"><a class="sa-home" href="index.html" aria-label="홈으로" title="홈으로"><img src="mark_angwe.png" alt="" width="328" height="200"></a></div>
+<div class="wrap">
+  <h1>조선의 멋 목기·장신구 — 김미혜 소장展</h1>
+  <ul class="lead" id="lead"></ul>
+  <div class="tiles" id="tiles"></div>
+  <div class="filters" id="f-grp"><span class="lab">기종</span></div>
+  <div class="filters"><span class="lab">찾기</span><input type="search" id="q" placeholder="이름에서 찾기 — 예: 약장, 반닫이, 서안, 밀양, 오동나무" style="font:inherit;font-size:15px;border:1px solid #d9d4cc;border-radius:999px;padding:7px 14px;width:min(360px,100%)"><span id="cnt" style="font-size:13px;color:var(--muted);margin-left:6px"></span></div>
+  <div class="grid" id="grid"></div>
+
+</div>
+<div class="sa-foot"><span class="ft-mark"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span></span>도록 사진과 캡션의 저작권은 각 소장처·발행처에 있으며, 무단 복제·재배포를 금합니다.<img class="ft-icon" src="mark_eonyang_white.png" width="400" height="243" alt="언양반닫이"></div>
+
+<dialog id="dlg" aria-label="자세히 보기">
+  <div class="d-body">
+    <div class="d-img">
+      <div class="d-main" id="d-main"><img id="d-img" alt="" draggable="false"><button class="d-arrow l" id="p-prev" aria-label="이전 사진">‹</button><button class="d-arrow r" id="p-next" aria-label="다음 사진">›</button><span class="zhint" id="zhint">휠·두 손가락으로 사진만 확대 · 옆으로 밀면 이전·다음</span></div>
+      <div class="d-cap" id="d-cap"></div>
+      <div class="d-strip" id="d-strip"></div>
+    </div>
+    <div class="d-info" id="d-info"></div>
+  </div>
+  <div class="d-foot"><button id="d-prev">← 이전</button><span id="d-pos" style="font-size:13px;color:var(--muted)"></span><span><button id="d-next">다음 →</button> <button id="d-close">닫기</button></span></div>
+</dialog>
+<script type="application/json" id="ds-items">[{"portal": "약장", "id": "M01", "name": "약장", "hanja": "", "kind": "약장", "type": "", "size_raw": "93.5×29×37.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "약장", "id": "M02", "name": "약장", "hanja": "", "kind": "약장", "type": "", "size_raw": "75.7×29×105.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "약장", "id": "M03", "name": "약장", "hanja": "", "kind": "약장", "type": "", "size_raw": "89.5×23×128", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M04", "name": "숭쑹이 반닫이(맞뚫임 장식)", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "96.5×46.5×95", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M05", "name": "숭쑹이 반닫이", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "51×32×51", "era": "19세기 후반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M06", "name": "강화 반닫이", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "79×43.5×65.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M07", "name": "반닫이(하문갑 구조)", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "72.5×34.5×64", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M08", "name": "밀양 반닫이", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "79×41×60", "era": "19세기 후반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "반닫이", "id": "M09", "name": "나주 반닫이(문갑 구조)", "hanja": "", "kind": "반닫이", "type": "", "size_raw": "106×40×95", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "서안", "id": "M10", "name": "서안", "hanja": "書案", "kind": "서안·경상·소반", "type": "", "size_raw": "68×31×33", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "소반", "id": "M11", "name": "해주소반", "hanja": "", "kind": "서안·경상·소반", "type": "", "size_raw": "14.5×29.5×26", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "서안", "id": "M12", "name": "경상", "hanja": "經床", "kind": "서안·경상·소반", "type": "", "size_raw": "64.5×23.5×25", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "서안", "id": "M13", "name": "서안", "hanja": "書案", "kind": "서안·경상·소반", "type": "", "size_raw": "50×24×23", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "서안", "id": "M14", "name": "서안", "hanja": "書案", "kind": "서안·경상·소반", "type": "", "size_raw": "56.5×28.5×29", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "서안", "id": "M15", "name": "서안", "hanja": "書案", "kind": "서안·경상·소반", "type": "", "size_raw": "69×29×39", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M16", "name": "이층책장(미닫이와 여닫이)", "hanja": "二層冊櫃", "kind": "책장·탁자", "type": "", "size_raw": "104×40×94", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M17", "name": "전주장", "hanja": "", "kind": "장·농", "type": "", "size_raw": "76×37×107", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M18", "name": "이층농", "hanja": "二層籠", "kind": "장·농", "type": "", "size_raw": "80×39.5×135", "era": "19세기 후반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M19", "name": "이층농", "hanja": "二層籠", "kind": "장·농", "type": "", "size_raw": "70×39×93.4", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M20", "name": "삼층책장(상층 공간)", "hanja": "三層冊櫃", "kind": "책장·탁자", "type": "", "size_raw": "97×52×159", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M21", "name": "책궤", "hanja": "冊櫃", "kind": "책장·탁자", "type": "", "size_raw": "72×27.5×50", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M22", "name": "책장", "hanja": "", "kind": "책장·탁자", "type": "", "size_raw": "122×42.5×94", "era": "19세기 초반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M23", "name": "책장", "hanja": "", "kind": "책장·탁자", "type": "", "size_raw": "84×39×66", "era": "19세기 초반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M24", "name": "갑게수리", "hanja": "甲鎧受理", "kind": "함·상자·소품", "type": "", "size_raw": "107×33×56", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "사방탁자", "id": "M25", "name": "사층탁자(유리 그림)", "hanja": "四層卓子", "kind": "책장·탁자", "type": "", "size_raw": "59×37.5×180", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M26", "name": "삼층화초장", "hanja": "", "kind": "장·농", "type": "", "size_raw": "104×47.5×152.5", "era": "19세기 후반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M27", "name": "책탁", "hanja": "冊卓", "kind": "책장·탁자", "type": "", "size_raw": "68×33×105", "era": "19세기 초반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M28", "name": "삼층책장", "hanja": "三層冊櫃", "kind": "책장·탁자", "type": "", "size_raw": "111×47×160.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "장·농", "id": "M29", "name": "지장", "hanja": "", "kind": "장·농", "type": "", "size_raw": "103×23×158.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M30", "name": "향탁", "hanja": "香卓", "kind": "책장·탁자", "type": "", "size_raw": "52×28×61", "era": "19세기 초반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M31", "name": "고비·등가·촛대", "hanja": "考備", "kind": "함·상자·소품", "type": "", "size_raw": "고비 10.5×6.5×85 · 등가 높이 44 · 촛대 높이 115", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M32", "name": "갑게수리", "hanja": "甲鎧受理", "kind": "함·상자·소품", "type": "", "size_raw": "56×29×30.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M33", "name": "함", "hanja": "函", "kind": "함·상자·소품", "type": "", "size_raw": "48.5×33×17", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M34", "name": "엽전궤", "hanja": "葉錢櫃", "kind": "함·상자·소품", "type": "", "size_raw": "92.5×42×48", "era": "19세기 초반", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M35", "name": "약연", "hanja": "", "kind": "함·상자·소품", "type": "", "size_raw": "31×6×5 · 26×9×7.5", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M36", "name": "화약통", "hanja": "火藥筒", "kind": "함·상자·소품", "type": "", "size_raw": "11.5×6.5×2.5 · 22×12×5 · 20×11.5×3", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}, {"portal": "", "id": "M37", "name": "무관용 장식꽃이", "hanja": "", "kind": "함·상자·소품", "type": "", "size_raw": "함 높이 41.5 · 수염 길이 38", "era": "19세기", "owner": "묵갤러리 · 김미혜 소장", "page": ""}]</script>
+<script type="application/json" id="ds-photos">[{"id": "M01", "img": "thumbs/mukgallery/1.jpg?v=20261115"}, {"id": "M02", "img": "thumbs/mukgallery/2.jpg?v=20261115"}, {"id": "M03", "img": "thumbs/mukgallery/3.jpg?v=20261115"}, {"id": "M04", "img": "thumbs/mukgallery/4.jpg?v=20261115"}, {"id": "M05", "img": "thumbs/mukgallery/5.jpg?v=20261115"}, {"id": "M06", "img": "thumbs/mukgallery/6.jpg?v=20261115"}, {"id": "M07", "img": "thumbs/mukgallery/7.jpg?v=20261115"}, {"id": "M08", "img": "thumbs/mukgallery/8.jpg?v=20261115"}, {"id": "M09", "img": "thumbs/mukgallery/9.jpg?v=20261115"}, {"id": "M10", "img": "thumbs/mukgallery/10.jpg?v=20261115"}, {"id": "M11", "img": "thumbs/mukgallery/11.jpg?v=20261115"}, {"id": "M12", "img": "thumbs/mukgallery/12.jpg?v=20261115"}, {"id": "M13", "img": "thumbs/mukgallery/13.jpg?v=20261115"}, {"id": "M14", "img": "thumbs/mukgallery/14.jpg?v=20261115"}, {"id": "M15", "img": "thumbs/mukgallery/15.jpg?v=20261115"}, {"id": "M16", "img": "thumbs/mukgallery/16.jpg?v=20261115"}, {"id": "M17", "img": "thumbs/mukgallery/17.jpg?v=20261115"}, {"id": "M18", "img": "thumbs/mukgallery/18.jpg?v=20261115"}, {"id": "M19", "img": "thumbs/mukgallery/19.jpg?v=20261115"}, {"id": "M20", "img": "thumbs/mukgallery/20.jpg?v=20261115"}, {"id": "M21", "img": "thumbs/mukgallery/21.jpg?v=20261115"}, {"id": "M22", "img": "thumbs/mukgallery/22.jpg?v=20261115"}, {"id": "M23", "img": "thumbs/mukgallery/23.jpg?v=20261115"}, {"id": "M24", "img": "thumbs/mukgallery/24.jpg?v=20261115"}, {"id": "M25", "img": "thumbs/mukgallery/25.jpg?v=20261115"}, {"id": "M26", "img": "thumbs/mukgallery/26.jpg?v=20261115"}, {"id": "M27", "img": "thumbs/mukgallery/27.jpg?v=20261115"}, {"id": "M28", "img": "thumbs/mukgallery/28.jpg?v=20261115"}, {"id": "M29", "img": "thumbs/mukgallery/29.jpg?v=20261115"}, {"id": "M30", "img": "thumbs/mukgallery/30.jpg?v=20261115"}, {"id": "M31", "img": "thumbs/mukgallery/31.jpg?v=20261115"}, {"id": "M32", "img": "thumbs/mukgallery/32.jpg?v=20261115"}, {"id": "M33", "img": "thumbs/mukgallery/33.jpg?v=20261115"}, {"id": "M34", "img": "thumbs/mukgallery/34.jpg?v=20261115"}, {"id": "M35", "img": "thumbs/mukgallery/35.jpg?v=20261115"}, {"id": "M36", "img": "thumbs/mukgallery/36.jpg?v=20261115"}, {"id": "M37", "img": "thumbs/mukgallery/37.jpg?v=20261115"}]</script>
+<script>
+const ITEMS = [{"id": "M01", "kind": "약장", "name": "약장", "hanja": "", "cat": "Medicine Chest", "era": "19세기", "size": "93.5×29×37.5", "wood": "호두나무", "place": "경기도", "memo": "", "no": 1, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M01.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M02", "kind": "약장", "name": "약장", "hanja": "", "cat": "Medicine Chest", "era": "19세기", "size": "75.7×29×105.5", "wood": "오동나무", "place": "", "memo": "작은 약장과 함께 찍은 사진.", "no": 2, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M02.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M03", "kind": "약장", "name": "약장", "hanja": "", "cat": "Medicine Chest", "era": "19세기", "size": "89.5×23×128", "wood": "피나무", "place": "", "memo": "", "no": 3, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M03.jpg?v=20261115", "w": 1350, "h": 1800}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M03-2.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M04", "kind": "반닫이", "name": "숭쑹이 반닫이(맞뚫임 장식)", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기", "size": "96.5×46.5×95", "wood": "피나무", "place": "평안도", "memo": "", "no": 4, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M04.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M05", "kind": "반닫이", "name": "숭쑹이 반닫이", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기 후반", "size": "51×32×51", "wood": "피나무·주칠", "place": "평안도", "memo": "", "no": 5, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M05.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M06", "kind": "반닫이", "name": "강화 반닫이", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기", "size": "79×43.5×65.5", "wood": "느티나무", "place": "경기도 강화", "memo": "도록 표기: 강화반닫이.", "no": 6, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M06.jpg?v=20261115", "w": 1799, "h": 1349}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M06-2.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M07", "kind": "반닫이", "name": "반닫이(하문갑 구조)", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기", "size": "72.5×34.5×64", "wood": "피나무", "place": "", "memo": "", "no": 7, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M07.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M08", "kind": "반닫이", "name": "밀양 반닫이", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기 후반", "size": "79×41×60", "wood": "느티나무", "place": "경상남도 밀양", "memo": "도록 표기: 반닫이, 경상남도 밀양.", "no": 8, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M08.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M09", "kind": "반닫이", "name": "나주 반닫이(문갑 구조)", "hanja": "", "cat": "Chest with Hinged Front Flap", "era": "19세기", "size": "106×40×95", "wood": "가래나무", "place": "전라남도 나주", "memo": "도록 표기: 반닫이(문갑 구조), 전라남도 나주.", "no": 9, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M09.jpg?v=20261115", "w": 1800, "h": 1350}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M09-2.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M10", "kind": "서안·경상·소반", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "68×31×33", "wood": "느티나무", "place": "", "memo": "", "no": 10, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M10.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M11", "kind": "서안·경상·소반", "name": "해주소반", "hanja": "", "cat": "Portable Table", "era": "19세기", "size": "14.5×29.5×26", "wood": "은행나무", "place": "황해도 해주", "memo": "크기는 도록 표기 그대로.", "no": 11, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M11.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M12", "kind": "서안·경상·소반", "name": "경상", "hanja": "經床", "cat": "Scholar's Desk", "era": "19세기", "size": "64.5×23.5×25", "wood": "참죽나무", "place": "", "memo": "", "no": 12, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M12.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M13", "kind": "서안·경상·소반", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "50×24×23", "wood": "은행나무", "place": "", "memo": "한 쪽에 두 점이 실림(위).", "no": 13, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M13.jpg?v=20261115", "w": 1491, "h": 1118}]}, {"id": "M14", "kind": "서안·경상·소반", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "56.5×28.5×29", "wood": "은행나무", "place": "", "memo": "한 쪽에 두 점이 실림(아래).", "no": 14, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M14.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M15", "kind": "서안·경상·소반", "name": "서안", "hanja": "書案", "cat": "Writing Desk", "era": "19세기", "size": "69×29×39", "wood": "참죽나무", "place": "", "memo": "", "no": 15, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M15.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M16", "kind": "책장·탁자", "name": "이층책장(미닫이와 여닫이)", "hanja": "二層冊櫃", "cat": "Two-tiered Book Chest", "era": "19세기", "size": "104×40×94", "wood": "참죽나무", "place": "경상남도 통영", "memo": "", "no": 16, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M16.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M17", "kind": "장·농", "name": "전주장", "hanja": "", "cat": "Two-tiered Chest", "era": "19세기", "size": "76×37×107", "wood": "느티나무", "place": "전라북도 전주", "memo": "", "no": 17, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M17.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M18", "kind": "장·농", "name": "이층농", "hanja": "二層籠", "cat": "Two-tiered Chest Inlaid with Mother-of-pearl", "era": "19세기 후반", "size": "80×39.5×135", "wood": "주칠·나전", "place": "경기도", "memo": "", "no": 18, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M18.jpg?v=20261115", "w": 1350, "h": 1800}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M18-2.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M19", "kind": "장·농", "name": "이층농", "hanja": "二層籠", "cat": "Two-tiered Chest", "era": "19세기", "size": "70×39×93.4", "wood": "오동나무", "place": "경기도", "memo": "", "no": 19, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M19.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M20", "kind": "책장·탁자", "name": "삼층책장(상층 공간)", "hanja": "三層冊櫃", "cat": "Three-tiered Book Chest", "era": "19세기", "size": "97×52×159", "wood": "물푸레나무", "place": "경기(내사)", "memo": "", "no": 20, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M20.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M21", "kind": "책장·탁자", "name": "책궤", "hanja": "冊櫃", "cat": "Book Chest", "era": "19세기", "size": "72×27.5×50", "wood": "느티나무", "place": "", "memo": "", "no": 21, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M21.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M22", "kind": "책장·탁자", "name": "책장", "hanja": "", "cat": "Book Chest", "era": "19세기 초반", "size": "122×42.5×94", "wood": "벽오동나무", "place": "", "memo": "", "no": 22, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M22.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M23", "kind": "책장·탁자", "name": "책장", "hanja": "", "cat": "Book Chest", "era": "19세기 초반", "size": "84×39×66", "wood": "은행나무", "place": "", "memo": "", "no": 23, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M23.jpg?v=20261115", "w": 1350, "h": 1800}, {"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M23-2.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M24", "kind": "함·상자·소품", "name": "갑게수리", "hanja": "甲鎧受理", "cat": "Safety Box", "era": "19세기", "size": "107×33×56", "wood": "느티나무", "place": "경기도", "memo": "위쪽 작은 갑게수리는 문을 열어 속 서랍을 보인 사진.", "no": 24, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M24.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M25", "kind": "책장·탁자", "name": "사층탁자(유리 그림)", "hanja": "四層卓子", "cat": "Four-tiered Flower Motive Chest", "era": "19세기", "size": "59×37.5×180", "wood": "화류목·유리", "place": "경기도", "memo": "", "no": 25, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M25.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M26", "kind": "장·농", "name": "삼층화초장", "hanja": "", "cat": "Three-tiered Flower Motive Chest", "era": "19세기 후반", "size": "104×47.5×152.5", "wood": "나무에 주칠", "place": "경기도", "memo": "", "no": 26, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M26.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M27", "kind": "책장·탁자", "name": "책탁", "hanja": "冊卓", "cat": "Book Shelf", "era": "19세기 초반", "size": "68×33×105", "wood": "소나무", "place": "경기도", "memo": "", "no": 27, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M27.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M28", "kind": "책장·탁자", "name": "삼층책장", "hanja": "三層冊櫃", "cat": "Three-tiered Book Chest", "era": "19세기", "size": "111×47×160.5", "wood": "소나무", "place": "경기도", "memo": "", "no": 28, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M28.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M29", "kind": "장·농", "name": "지장", "hanja": "", "cat": "Paper-covered Chest", "era": "19세기", "size": "103×23×158.5", "wood": "소나무", "place": "", "memo": "작은 지장과 함께 찍은 사진.", "no": 29, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M29.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M30", "kind": "책장·탁자", "name": "향탁", "hanja": "香卓", "cat": "Incense Table", "era": "19세기 초반", "size": "52×28×61", "wood": "은행나무(행자목)", "place": "", "memo": "", "no": 30, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M30.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M31", "kind": "함·상자·소품", "name": "고비·등가·촛대", "hanja": "考備", "cat": "Letter Holder · Lamp Stand · Candle Holder", "era": "19세기", "size": "고비 10.5×6.5×85 · 등가 높이 44 · 촛대 높이 115", "wood": "느티나무", "place": "", "memo": "고비는 편지꽂이. 한 쪽에 세 점이 실림.", "no": 31, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M31.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M32", "kind": "함·상자·소품", "name": "갑게수리", "hanja": "甲鎧受理", "cat": "Safety Box", "era": "19세기", "size": "56×29×30.5", "wood": "느티나무(안쪽 피나무)", "place": "", "memo": "한 쪽에 두 점이 실림(위 큰 것).", "no": 32, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M32.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M33", "kind": "함·상자·소품", "name": "함", "hanja": "函", "cat": "Box", "era": "19세기", "size": "48.5×33×17", "wood": "오동나무", "place": "", "memo": "한 쪽에 두 점이 실림(아래).", "no": 33, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M33.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M34", "kind": "함·상자·소품", "name": "엽전궤", "hanja": "葉錢櫃", "cat": "Coin Chest", "era": "19세기 초반", "size": "92.5×42×48", "wood": "소나무", "place": "경상남도 언양", "memo": "", "no": 34, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M34.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M35", "kind": "함·상자·소품", "name": "약연", "hanja": "", "cat": "Medicine Grinder", "era": "19세기", "size": "31×6×5 · 26×9×7.5", "wood": "참죽나무 · 피나무", "place": "", "memo": "두 점(앞 참죽나무, 뒤 피나무).", "no": 35, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M35.jpg?v=20261115", "w": 1800, "h": 1350}]}, {"id": "M36", "kind": "함·상자·소품", "name": "화약통", "hanja": "火藥筒", "cat": "Gun Powder Case", "era": "19세기", "size": "11.5×6.5×2.5 · 22×12×5 · 20×11.5×3", "wood": "", "place": "", "memo": "세 점.", "no": 36, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M36.jpg?v=20261115", "w": 1350, "h": 1800}]}, {"id": "M37", "kind": "함·상자·소품", "name": "무관용 장식꽃이", "hanja": "", "cat": "Horangyisuyum and Case", "era": "19세기", "size": "함 높이 41.5 · 수염 길이 38", "wood": "오동나무 · 호랑이 수염", "place": "", "memo": "", "no": 37, "pics": [{"src": "https://jungmono.github.io/mokgagu-photos/photos/mukgallery/M37.jpg?v=20261115", "w": 1350, "h": 1800}]}];
+const THUMB = Object.fromEntries(JSON.parse(document.getElementById('ds-photos').textContent).map((p) => [p.id, p.img]));
+const GRPS = ["반닫이", "약장", "장·농", "책장·탁자", "서안·경상·소반", "함·상자·소품"];
+const ERAS = [];
+const gOf = (i) => i.kind;
+const eOf = (i) => '';
+const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const nPics = ITEMS.reduce((s, i) => s + i.pics.length, 0);
+const cnt = (g) => ITEMS.filter((i) => gOf(i) === g).length;
+document.getElementById('lead').innerHTML = [
+  `묵갤러리 김미혜 소장展 『조선의 멋 — 목기·장신구』(2016)에 실린 목기·목가구 <b>${ITEMS.length}</b>점, 사진 ${nPics}장`,
+  `기종별로 골라 보거나 이름·재질·지역으로 찾을 수 있습니다. 크기는 도록에 적힌 순서(가로×옆너비×높이, cm) 그대로입니다. 장신구 부분은 아직 싣지 않았습니다.`,
+].map((s) => `<li>${s}</li>`).join('');
+const TILES = [['', '기물 전체', ITEMS.length, '전체 보기'], ["반닫이", "반닫이", cnt("반닫이"), "평안·경기·경상·전라 반닫이"], ["약장", "약장", cnt("약장"), "호두·오동·피나무 약장"], ["장·농", "장·농", cnt("장·농"), "전주장·이층농·화초장·지장"], ["책장·탁자", "책장·탁자", cnt("책장·탁자"), "책장·책궤·책탁·사층탁자·향탁"], ["서안·경상·소반", "서안·경상·소반", cnt("서안·경상·소반"), "서안·경상·해주소반"], ["함·상자·소품", "함·상자·소품", cnt("함·상자·소품"), "갑게수리·함·엽전궤·약연·화약통"]];
+
+
+
+
+
+
+
+function tiles() {
+  document.getElementById('tiles').innerHTML = TILES.map(([g, k, n, s]) => `<button type="button" class="tile${grp === g ? ' on' : ''}" data-g="${g}"><div class="k">${k}</div><div class="v">${n}<small>점</small></div><div class="s">${s}</div></button>`).join('');
+}
+document.getElementById('tiles').addEventListener('click', (e) => { const b = e.target.closest('.tile'); if (!b) return; grp = b.dataset.g; era = ''; render(); document.getElementById('f-grp').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+let grp = '', era = '', q = '', view = [];
+function chipRow(id, list, cur, ofn, set) {
+  const el = document.getElementById(id); el.querySelectorAll('.chip').forEach((c) => c.remove());
+  [['', '전체', ITEMS.length], ...list.map((g) => [g, g, ITEMS.filter((i) => ofn(i) === g).length]).filter((x) => x[2])].forEach(([v, t, n]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (cur === v ? ' on' : '');
+    b.innerHTML = `${t}<span class="n">${n}</span>`; b.onclick = () => { set(v); render(); }; el.appendChild(b);
+  });
+}
+function chips() { chipRow('f-grp', GRPS, grp, gOf, (v) => { grp = v; }); }
+document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim(); render(); });
+function render() {
+  chips(); tiles();
+  view = ITEMS.filter((i) => (!grp || gOf(i) === grp) && (!q || (i.name + ' ' + (i.hanja || '') + ' ' + (i.cat || '') + ' ' + (i.memo || '') + ' ' + (i.wood || '') + ' ' + (i.place || '')).includes(q)));
+  document.getElementById('cnt').textContent = view.length + '점';
+  document.getElementById('grid').innerHTML = view.map((i, n) => `<button type="button" class="card" data-n="${n}" data-cid="mukgallery/${i.id}"><div class="ph">${THUMB[i.id] ? `<img loading="lazy" src="${THUMB[i.id]}" alt="${esc(i.name)}">` : '<span class="no">사진 없음</span>'}</div><div class="bd"><span class="badge">${esc(i.kind)}</span><span class="nm">${esc(i.name)}</span>${i.hanja ? `<span class="hj">${esc(i.hanja)}</span>` : ''}<span class="mt">${i.size ? esc(i.size) + ' cm' : ''}</span><span class="pc">${i.pics.length ? '사진 ' + i.pics.length + '장' : ''}</span></div></button>`).join('');
+}
+document.getElementById('grid').addEventListener('click', (e) => { const c = e.target.closest('.card'); if (c) open_(+c.dataset.n); });
+const dlg = document.getElementById('dlg'); let cur = 0, pi = 0;
+function showPic() {
+  const i = view[cur], im = document.getElementById('d-img'), p = i.pics[pi];
+  if (p) { im.src = THUMB[i.id] && pi === 0 ? THUMB[i.id] : p.src; if (pi === 0) { const hi = new Image(); hi.onload = () => { if (view[cur] === i && pi === 0) im.src = hi.src; }; hi.src = p.src; } im.alt = i.name; im.hidden = false; }
+  else { im.removeAttribute('src'); im.hidden = true; }
+  document.getElementById('d-cap').textContent = p ? `${pi + 1} / ${i.pics.length}` : '사진이 없습니다.';
+  const multi = i.pics.length > 1;
+  document.getElementById('p-prev').hidden = document.getElementById('p-next').hidden = !multi;
+  document.querySelectorAll('#d-strip button').forEach((b, k) => b.classList.toggle('on', k === pi));
+}
+function open_(n) {
+  cur = (n + view.length) % view.length; pi = 0; const i = view[cur]; dlg.dataset.cid = 'mukgallery/' + i.id;
+  document.getElementById('d-strip').innerHTML = i.pics.length > 1 ? i.pics.map((p, k) => `<button type="button" data-k="${k}" aria-label="${k + 1}번째 사진"><img loading="lazy" src="${p.src}" alt=""></button>`).join('') : '';
+  showPic();
+  document.getElementById('d-info').innerHTML = `<span class="badge">${esc(i.kind)}</span>${i.imp ? ' <span class="badge" style="background:#8a2f22">중요</span>' : ''}<h3>${esc(i.name)}</h3><div class="hj">${esc(i.hanja)}</div><dl>
+    <dt>크기</dt><dd>${esc(i.size ? i.size + ' cm' : '—')}</dd>${i.era ? `<dt>시대</dt><dd>조선 ${esc(i.era)}</dd>` : ''}${i.wood ? `<dt>재질</dt><dd>${esc(i.wood)}</dd>` : ''}${i.place ? `<dt>지역</dt><dd>${esc(i.place)}</dd>` : ''}${i.cat ? `<dt>영문 표기</dt><dd>${esc(i.cat)}</dd>` : ''}${i.memo ? `<dt>메모</dt><dd>${esc(i.memo)}</dd>` : ''}<dt>소장</dt><dd>묵갤러리 · 김미혜 소장</dd><dt>출처</dt><dd>『조선의 멋 — 목기·장신구』 — 묵갤러리, 김미혜 소장展(2016)</dd></dl>
+    
+    `;
+  document.getElementById('d-pos').textContent = `${cur + 1} / ${view.length}`;
+  if (!dlg.open) dlg.showModal();
+}
+
+/* 사진 확대·끌기·좌우로 밀어 넘기기 — 다른 도록과 같은 공용 photozoom.js */
+if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: document.getElementById('d-main'),
+  next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1,
+  pics: { n: () => (view[cur] && view[cur].pics.length) || 0, i: () => pi, set: (k) => { pi = k; showPic(); } } });
+document.getElementById('d-strip').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; pi = +b.dataset.k; showPic(); });
+document.getElementById('p-prev').onclick = () => { const i = view[cur]; pi = (pi - 1 + i.pics.length) % i.pics.length; showPic(); };
+document.getElementById('p-next').onclick = () => { const i = view[cur]; pi = (pi + 1) % i.pics.length; showPic(); };
+document.getElementById('d-prev').onclick = () => open_(cur - 1);
+document.getElementById('d-next').onclick = () => open_(cur + 1);
+document.getElementById('d-close').onclick = () => dlg.close();
+dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+document.addEventListener('keydown', (e) => { if (!dlg.open) return; if (e.key === 'ArrowRight') document.getElementById('p-next').click(); if (e.key === 'ArrowLeft') document.getElementById('p-prev').click(); });
+(function () { const m = location.hash.match(/^#(M\d+)$/); if (m) { const n = ITEMS.findIndex((i) => i.id === m[1]); if (n >= 0) { view = ITEMS; open_(n); } } })();
+render();
+</script>
+<script id="ft-top">document.querySelectorAll('.ft-icon').forEach(function(i){i.style.cursor='pointer';i.title='맨 위로';i.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});});</script>
+<script src="recent.js" defer></script><script src="glossary.js?v=20261024" defer></script><script src="share.js" defer></script>
+<script src="books.js?v=1" defer></script><script src="site.js" defer></script><script src="comments.js?v=20261121" defer></script>
+<script src="homebtn.js?v=20261115a" defer></script><script src="dlgback.js" defer></script>
+</body></html>
