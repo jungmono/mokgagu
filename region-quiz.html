@@ -134,7 +134,9 @@ window.RK = (function () {
   const byReg = {}; pool.forEach((r) => { const g = regOf(r); (byReg[g] = byReg[g] || []).push(r); });
   const regs = Object.keys(byReg).filter((g) => byReg[g].length >= 3);
   const usable = pool.filter((r) => regs.includes(regOf(r)));
-  const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';   /* 큰 원본(저장소 mokgagu-photos), 안 되면 작은 사진 */
+  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1 };
+  const tu = (r) => EMU5[r.b] ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg';
+  const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg';   /* 큰 원본(저장소 mokgagu-photos), 안 되면 작은 사진 */
   /* 다음 문제 사진을 미리 받아 둔다 */
   const warm = (r) => { if (r) { const m = new Image(); m.src = hi(r); } };
   let Q = [], i = 0, score = 0, wrong = [];
@@ -170,7 +172,7 @@ window.RK = (function () {
     const r = Q[i], ans = regOf(r); warm(Q[i + 1]);
     const others = shuffle(regs.filter((g) => g !== ans)).slice(0, 3), opts = shuffle([ans].concat(others));
     box.innerHTML = `<div class="prog"><span>${i + 1} / ${ROUND}</span><span>맞힌 것 ${score}</span></div>
-      <div class="qa"><div class="ph"><img src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt="어느 지역 반닫이일까요?"></div>
+      <div class="qa"><div class="ph"><img src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='${tu(r)}'}" alt="어느 지역 반닫이일까요?"></div>
       <div class="side"><div class="opts">${opts.map((o) => `<button type="button" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div><div id="fb"></div></div></div>`;
     zoomable(box.querySelector('.ph'));
     box.querySelector('.opts').onclick = (e) => {

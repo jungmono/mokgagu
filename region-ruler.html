@@ -90,6 +90,9 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const REG = ['경상','전라','충청','강원','경기','황해','평안','함경','제주','서울','평양','개성','강화','박천','해주','안동','진주','통영','나주','남원','전주','밀양','울산','동래','남한산성','금산','언양','양산','김해','남해','상주','예천','영광','장흥','해남','익산','정주','초산','한양','김포','고창','여수','청도','숭숭이'];
   const MAP = { 안동: '경상', 진주: '경상', 통영: '경상', 밀양: '경상', 울산: '경상', 동래: '경상', 나주: '전라', 남원: '전라', 전주: '전라', 평양: '평안', 박천: '평안', 해주: '황해', 개성: '경기', 강화: '경기', 서울: '경기', 남한산성: '경기', 한양: '경기', 금산: '충청', 언양: '경상', 양산: '경상', 김해: '경상', 남해: '경상', 상주: '경상', 예천: '경상', 영광: '전라', 장흥: '전라', 해남: '전라', 익산: '전라', 정주: '평안', 초산: '평안', 김포: '경기', 고창: '전라', 여수: '전라', 청도: '경상', 숭숭이: '평안' };
+  /* e뮤지엄 서가 5곳 사진은 thumbs/emu/<pid>.jpg · photos/emuseum/<pid>.jpg */
+  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1 };
+  const tu = (r) => EMU5[r.b] ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg';
   const regOf = (r) => { const m = ((r.name || '') + ' ' + (r.hanja || '')).match(new RegExp(REG.join('|'))); return m ? (MAP[m[0]] || m[0]) : ''; };
   /* 치수 글자 → 가로·높이. 이름표(가로·높이)가 있으면 그대로, 없으면 ×로 이은 세 수 중 앞 둘의 큰 쪽이 가로, 마지막이 높이 */
   function dims(s, b) {
@@ -168,7 +171,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     const lab = sel.h < 0 && sel.w < 0 ? '모든 반닫이' : [sel.h >= 0 ? `세로 ${HB[sel.h][0]}~${HB[sel.h][1]}cm` : '', sel.w >= 0 ? `가로 ${WB[sel.w][0]}~${WB[sel.w][1]}cm` : ''].filter(Boolean).join(' · ');
     const L = list.slice().sort((x, y) => y.h - x.h || x.g.localeCompare(y.g));
     const keys = L.map((p) => p.r.b + '/' + p.r.pid);
-    const cards = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-band="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div><span class="rg" style="background:${COL[p.g] || '#888'}">${p.g}</span> ${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }).join('');
+    const cards = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-band="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${tu(r)}" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div><span class="rg" style="background:${COL[p.g] || '#888'}">${p.g}</span> ${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }).join('');
     box.innerHTML = `<div class="bx-h"><b>크기 구간으로 보기</b><small>세로 줄·가로 칸을 누르면 그 구간의 반닫이가 나옵니다. 빨간 테두리 칸 = ${$('w').value && $('h').value ? '넣은 치수' : '우리 언양 반닫이'}</small></div><div class="bx-wrap">${t}</div><p style="margin:12px 0 0;font-weight:700">${lab} <span style="color:#8a7f66;font-weight:400">${L.length}점</span></p>` + (L.length ? `<div class="bl">${cards}</div>` : '<p class="sub">이 구간에는 반닫이가 없습니다.</p>');
     box.onclick = (e) => {
       const b = e.target.closest('button[data-h]'); if (b && !b.disabled) { sel = { h: +b.dataset.h, w: +b.dataset.w }; bands(cw, ch); return; }
@@ -182,7 +185,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   }
   /* 점을 누르면 그래프 바로 아래에 그 기물이 나온다 (겹친 점은 가까운 순으로 최대 6점) */
   let picked = [];
-  const hiUrl = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
+  const hiUrl = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg';
   function showPick(scroll) {
     const box = $('pick'), svg = $('svg'); if (!box || !svg) return;
     svg.querySelectorAll('circle.pt').forEach((c) => { const on = picked.indexOf(+c.dataset.i) >= 0; c.classList.toggle('sel', on); if (on) svg.insertBefore(c, svg.querySelector('text[font-size="13"][fill="#d12b2b"]')); });
@@ -190,7 +193,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     window.__pickKeys = picked.map((i) => PS[i].r.b + '/' + PS[i].r.pid);
     box.innerHTML = '<div class="card"><div class="hd"><b>고른 점</b><small>' + picked.length + '점 · 겹친 점은 함께 나옵니다</small><button type="button" id="pk-x">닫기</button></div>' + picked.map((i) => {
       const p = PS[i], r = p.r, k = (p.w / p.h).toFixed(2);
-      return `<div class="pk"><a data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img src="${hiUrl(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt="${esc(r.name)}"></a><div><div class="t"><span class="rg" style="background:${COL[p.g]}">${p.g}</span>${esc(r.name)}</div><div class="m">가로 ${p.w} × 세로 ${p.h} cm<br>가로:세로 ${k} : 1 · 크기 ${sizeOf(p.w, p.h)}${r.era ? '<br>' + esc(r.era) : ''}${r.page ? '<br>도록 ' + esc(String(r.page)) + '쪽' : ''}<br><a class="go" data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">사진 크게 보기 →</a></div></div></div>`;
+      return `<div class="pk"><a data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img src="${hiUrl(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='${tu(r)}'}" alt="${esc(r.name)}"></a><div><div class="t"><span class="rg" style="background:${COL[p.g]}">${p.g}</span>${esc(r.name)}</div><div class="m">가로 ${p.w} × 세로 ${p.h} cm<br>가로:세로 ${k} : 1 · 크기 ${sizeOf(p.w, p.h)}${r.era ? '<br>' + esc(r.era) : ''}${r.page ? '<br>도록 ' + esc(String(r.page)) + '쪽' : ''}<br><a class="go" data-see="${r.b}/${esc(String(r.pid))}" data-pick="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">사진 크게 보기 →</a></div></div></div>`;
     }).join('') + '</div>';
     $('pk-x').onclick = () => { picked = []; showPick(); };
     if (scroll) box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -238,7 +241,7 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
     svg.querySelectorAll('circle.pt').forEach((c) => c.classList.toggle('on', PS[+c.dataset.i] && PS[+c.dataset.i].g === selReg));
     const L = PS.filter((p) => p.g === selReg).sort((x, y) => x.w / x.h - y.w / y.h), q = L.map((p) => p.w / p.h);
     window.__regKeys = L.map((p) => p.r.b + '/' + p.r.pid);
-    const CARDS = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-reg="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="thumbs/${r.b}/${r.n}.jpg" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div>${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span> · <b>${(p.w / p.h).toFixed(2)}</b><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }), FIRST = 12;   /* 처음엔 12점만, 나머지는 단추로 */
+    const CARDS = L.map((p) => { const r = p.r; return `<a data-see="${r.b}/${esc(String(r.pid))}" data-reg="1" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${tu(r)}" alt="${esc(r.name)}" onerror="this.style.visibility='hidden'"><div>${esc(r.name)}<br>가로 ${p.w} · 세로 <span class="hv">${p.h}</span> · <b>${(p.w / p.h).toFixed(2)}</b><br><span class="sr">${esc(r.owner || r.cat || r.b)}</span></div></a>`; }), FIRST = 12;   /* 처음엔 12점만, 나머지는 단추로 */
     const cards = CARDS.slice(0, FIRST).join('') + (CARDS.length > FIRST ? `<button type="button" id="reg-more" style="grid-column:1/-1;font:inherit;font-weight:700;border:1px solid #2b2418;background:#fff;border-radius:999px;padding:9px;cursor:pointer">나머지 ${CARDS.length - FIRST}점 더 보기</button>` : '');
     box.innerHTML = `<div class="card"><div class="hd" style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b><span class="rg" style="display:inline-block;color:#fff;background:${COL[selReg]};border-radius:999px;padding:1px 10px;margin-right:4px">${selReg}</span>반닫이 ${L.length}점</b><small style="color:#8a7f66">가로:세로 중앙값 ${med(q).toFixed(2)} · 가운데 절반 ${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)} · 높은 것부터</small><button type="button" id="reg-x" style="margin-left:auto;font:inherit;font-size:13px;font-weight:700;border:1px solid #e3d6b8;background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer">닫기</button></div><div class="bl">${cards}</div></div>`;
     const mb = $('reg-more'); if (mb) mb.onclick = () => { mb.insertAdjacentHTML('beforebegin', CARDS.slice(FIRST).join('')); mb.remove(); };
@@ -272,9 +275,9 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
       const nearS = P.map((p) => ({ p, d: Math.hypot((p.w - w) / 100, (p.h - h) / 100) })).sort((a, b) => a.d - b.d);
       const nearR = P.map((p) => ({ p, d: Math.abs(Math.log(p.w / p.h) - Math.log(ratio)) })).sort((a, b) => a.d - b.d);
       const cS = tally(nearS.slice(0, K)), cR = tally(nearR.slice(0, K));
-      const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg';
+      const hi = (r) => 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg';
       window.__seeKeys = [];
-      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='thumbs/${r.b}/${r.n}.jpg'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
+      const cards = (arr, shows) => arr.slice(0, 6).map(({ p }) => { const r = p.r; window.__seeKeys.push(r.b + '/' + r.pid); return `<a data-see="${r.b}/${esc(String(r.pid))}" href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}"><img loading="lazy" src="${hi(r)}" onerror="if(this.dataset.f!=='1'){this.dataset.f='1';this.src='${tu(r)}'}" alt=""><small><b>${p.g}</b> · ${shows(p)}<br>${esc(r.name)}</small></a>`; }).join('');
       v = `<div class="card verdict"><b>${own ? '넣은 치수' : '우리 언양 반닫이'}</b> 가로 ${w} · 세로 ${h}<br>가로:세로 = <b>${fmt(ratio)}</b><br>크기가 가장 비슷한 ${K}점 가운데 <b>${line(cS)}</b><br>비율이 가장 비슷한 ${K}점 가운데 <b>${line(cR)}</b></div>`;
       v += stripCard(ratio, own);
       v += `<div class="card"><table><tr><th>지역</th><th>점수</th><th>가로 중앙값</th><th>세로 중앙값</th><th>가로:세로<br>(중간 절반)</th></tr>` + regs.map((g) => { const a = P.filter((p) => p.g === g), q = a.map((p) => p.w / p.h); return `<tr${cS[g] || cR[g] ? ' style="background:#fbf6ea;font-weight:700"' : ''}><td>${g}</td><td>${a.length}</td><td>${med(a.map((p) => p.w)).toFixed(0)}</td><td>${med(a.map((p) => p.h)).toFixed(0)}</td><td>${qs(q, .25).toFixed(2)}~${qs(q, .75).toFixed(2)}</td></tr>`; }).join('') + `</table></div>`;
@@ -302,8 +305,8 @@ Promise.resolve(window.MOKGAGU_READY).then(function () {
   let L = [], cur = -1;
   function open(i) {
     const p = L[i]; if (!p) return; cur = i; const r = p.r, img = $('d-img'), jw = r.b === 'joseongwe'; dlg.dataset.cid = r.b + '/' + r.pid;
-    img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = `thumbs/${r.b}/${r.n}.jpg`; };
-    img.src = 'https://jungmono.github.io/mokgagu-photos/photos/' + r.b + '/' + encodeURIComponent(r.pid) + '.jpg'; img.alt = r.name || '';
+    img.onerror = () => { if (!img.src.includes('/thumbs/')) img.src = `${tu(r)}`; };
+    img.src = 'https://jungmono.github.io/mokgagu-photos/photos/' + (EMU5[r.b] ? 'emuseum' : r.b) + '/' + encodeURIComponent(r.pid) + '.jpg'; img.alt = r.name || '';
     $('d-info').innerHTML = `<div class="cat">${esc(jw ? '정대영, 『조선의 궤』' : (r.cat || ''))}</div><h3>${esc(r.name || '')}${r.hanja ? `<small>${esc(r.hanja)}</small>` : ''}</h3><dl>${dRow('지역', p.g)}${dRow('종류', r.kind)}${dRow('연대', r.era)}${dRow('치수', r.size)}${dRow('가로:세로', p.w && p.h ? (p.w / p.h).toFixed(2) + ' : 1' : '')}${dRow('재질', r.wood)}${dRow('소장', r.owner)}${dRow('도록', r.page ? String(r.page).replace(/쪽$/, '') + '쪽' : '')}${dRow('비고', r.note || r.cap)}</dl>` +
       (jw ? '' : `<a href="index.html#see=${r.b}/${encodeURIComponent(r.pid)}">도록에서 보기 →</a>`);
     $('d-pos').textContent = `${i + 1} / ${L.length}`; $('d-prev').disabled = i === 0; $('d-next').disabled = i === L.length - 1;
