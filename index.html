@@ -437,7 +437,7 @@ let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seq
 let idxLoading = null;
 function loadIdx() {
   if (window.SEARCH) return Promise.resolve();
-  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js?v=20261115x'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
+  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js?v=20261115y'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
   return idxLoading;
 }
 let lastTerms = [];
@@ -719,7 +719,7 @@ window.addEventListener('mouseup',function(){if(mouse){mouse=false;end();apply(f
 img.addEventListener('wheel',function(e){e.preventDefault();zoomAt(sc*(e.deltaY<0?1.2:1/1.2),e.clientX,e.clientY);apply(false);},{passive:false});
 img.addEventListener('dblclick',function(e){if(sc>1){sc=1;tx=0;ty=0;}else zoomAt(2.5,e.clientX,e.clientY);apply(true);});
 d.addEventListener('click',function(e){if(e.isTrusted&&Date.now()-tEnd<400&&dxEnd){e.stopPropagation();e.preventDefault();}},true);
-document.addEventListener('keydown',function(e){if(!d.open||document.querySelector('#zv[open]'))return;if(e.target.closest&&e.target.closest('input,textarea,select'))return;if(e.key==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();e.stopImmediatePropagation();go(-1);}else if(e.key==='+'||e.key==='='){zoomAt(sc*1.3,innerWidth/2,innerHeight/2);apply(true);}else if(e.key==='-'){zoomAt(sc/1.3,innerWidth/2,innerHeight/2);apply(true);}},true);
+document.addEventListener('keydown',function(e){if(!d.open||document.querySelector('#zv[open]'))return;if(e.target.closest&&e.target.closest('input,textarea,select')&&(e.target.value||e.target.tagName==='SELECT'))return;if(e.key==='ArrowRight'){e.preventDefault();e.stopImmediatePropagation();go(1);}else if(e.key==='ArrowLeft'){e.preventDefault();e.stopImmediatePropagation();go(-1);}else if(e.key==='+'||e.key==='='){zoomAt(sc*1.3,innerWidth/2,innerHeight/2);apply(true);}else if(e.key==='-'){zoomAt(sc/1.3,innerWidth/2,innerHeight/2);apply(true);}},true);
 d.addEventListener('close',reset);
 })();</script>
 <style>#dlg img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;transform-origin:center center}#dlg{touch-action:pan-y}#dlg *{touch-action:pan-y}</style>
