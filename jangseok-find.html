@@ -35,6 +35,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
 .thumbs img{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid #e3d6b8;background:#f4ecd8;display:block;margin-bottom:3px}
 .src{font-size:12px;color:#8a7f66;margin-top:6px}
 .foot{margin-top:24px;font-size:13px;color:#8a7f66;line-height:1.7}
+.hk{background:#fff;border:1px solid #e3d6b8;border-radius:14px;padding:12px;margin-bottom:12px}.hk h4{margin:0 0 4px;font-size:15px}.hk .nt{font-size:12.5px;color:#6d6551;line-height:1.6;margin-bottom:8px}.hk .row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}.hk figure{margin:0;flex:0 0 160px;border:2px solid transparent;border-radius:10px;padding:4px}.hk figure.top{border-color:#0F6E56;background:#f1faf6}.hk img{width:100%;display:block;border-radius:8px;background:#222}.hk img.f{height:120px;object-fit:cover}.hk img.c{height:170px;object-fit:contain;margin-top:4px}.hk b{display:block;font-size:14px;margin-top:4px}.hk small{display:block;font-size:11.5px;color:#6d6551}.hk p{margin:3px 0 0;font-size:12.5px;line-height:1.5}
 </style><script src="common.js?v=19" defer></script></head>
 <body><main>
 <h1>장석으로 지역 찾기</h1>
@@ -52,10 +53,11 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
     <div class="bar"><span id="cnt" style="font-size:13px;color:#6d6551"></span><button id="reset" type="button">모두 지우기</button></div>
   </div>
 </div>
+<div id="hori"></div>
 <div id="res"></div>
 <p class="foot">기준표 출처: 지역N문화 「각 지역별 반닫이 특징」「목공예품을 견고하고 아름답게 하는 금속장석」「한국 목공예의 특성」(한국문화원연합회), 반닫이여지도에 정리해 둔 논문 요약. 정대영 「조선의 궤」 자료는 더할 예정입니다.<br>이 화면은 기준표와 맞대어 본 결과일 뿐 감정이 아닙니다. 장석은 바뀌어 달리는 일이 많아 몸체·나무·비례와 함께 보아야 합니다.</p>
 </main>
-<script src="jangseok-criteria.js?v=3"></script>
+<script src="jangseok-criteria.js?v=4"></script>
 <script>
 (function () {
   const J = window.MOKGAGU_JANGSEOK, $ = (id) => document.getElementById(id);
@@ -92,10 +94,17 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
     return (photos[c.id] = out);
   };
 
+  /* 호리병 경첩 동정키: 「호리병형」을 고르면 다섯 지역 사진을 나란히 보여 줌 */
+  function horiPanel(top) {
+    const H = J.hori, el = $('hori');
+    if (!H || !sel.has('호리병형')) { el.innerHTML = ''; return; }
+    const hit = (id) => top.some((t) => t === id || (id === '익산' || id === '남원' ? /익산|남원/.test(t) : false));
+    el.innerHTML = `<div class="hk"><h4>호리병 경첩 견주어 보기</h4><div class="nt">${esc(H.note)}</div><div class="row">` + H.items.map((it) => `<figure class="${hit(it.id) ? 'top' : ''}"><img class="f" loading="lazy" src="thumbs/joseongwe/${it.n}.jpg" alt="${esc(it.id)} 반닫이 앞면"><img class="c" loading="lazy" src="thumbs/joseongwe/hori-${it.n}.jpg" alt="${esc(it.id)} 호리병 경첩"><b>${esc(it.id)}${hit(it.id) ? ' · 후보' : ''}</b><small>『조선의 궤』${it.page ? ' ' + it.page + '쪽' : ''}</small><p>${esc(it.say)}</p></figure>`).join('') + '</div></div>';
+  }
   function run() {
     $('cnt').textContent = sel.size ? `고른 특징 ${sel.size}개` : '';
     const R = $('res');
-    if (sel.size < 3) { R.innerHTML = `<div class="say wait">특징을 세 가지 이상 골라 주세요. 재질·경첩 모양·장식 양처럼 사진에서 분명히 보이는 것부터 고르면 좋습니다.</div>`; return; }
+    if (sel.size < 3) { horiPanel([]); R.innerHTML = `<div class="say wait">특징을 세 가지 이상 골라 주세요. 재질·경첩 모양·장식 양처럼 사진에서 분명히 보이는 것부터 고르면 좋습니다.</div>`; return; }
     const S = [...sel];
     const scored = cands.map((c) => {
       let s = 0; const hit = [];
@@ -107,6 +116,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
     if (!best || best.hit.length / S.length < 0.5) say = `<div class="say no">판단할 수 없습니다. 고른 특징 가운데 절반 이상이 맞는 지역이 기준표에 없습니다. 아래는 일부만 맞는 참고 후보입니다.</div>`;
     else if (scored[1] && scored[1].s === best.s) say = `<div class="say no">판단할 수 없습니다. ${esc(best.c.id)}와 ${esc(scored[1].c.id)}가 같은 점수입니다. 특징을 더 골라 보세요.</div>`;
     else say = `<div class="say ok">기준표로 보면 ${esc(best.c.id)} 쪽에 가장 가깝습니다. 고른 특징 ${S.length}개 가운데 ${best.hit.length}개가 맞습니다.</div>`;
+    horiPanel(scored.slice(0, 3).map((x) => x.c.id));
     R.innerHTML = say + scored.slice(0, 3).map((x, i) => card(x, i, max)).join('');
   }
   function card(x, i, max) {
