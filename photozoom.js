@@ -72,7 +72,7 @@
     area.addEventListener('dblclick', function (e) { if (sc > 1) { sc = 1; tx = 0; ty = 0; } else zoomAt(2.5, e.clientX, e.clientY); apply(true); });
     document.addEventListener('keydown', function (e) {
       if (!d.open || document.querySelector('#zv[open]')) return;
-      if (e.target.closest && e.target.closest('input,textarea,select')) return;
+      if (e.target.closest && e.target.closest('input,textarea,select') && (e.target.value || e.target.tagName === 'SELECT')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); e.stopImmediatePropagation(); go(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); e.stopImmediatePropagation(); go(-1); }
       else if (e.key === '+' || e.key === '=') { zoomAt(sc * 1.3, innerWidth / 2, innerHeight / 2); apply(true); } else if (e.key === '-') { zoomAt(sc / 1.3, innerWidth / 2, innerHeight / 2); apply(true); }
     }, true);
