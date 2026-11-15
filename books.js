@@ -33,7 +33,7 @@ window.MOKGAGU_BOOKS = [
   { path: 'hoam', title: '조선목가구대전', desc: '호암미술관 2002 『나뭇결에 스민 지혜』 — 사랑방·안방·부엌 가구와 반닫이·약장까지 전시 기물 171점, 도판 번호·소장처·크기 표기', items: 171, icon: 'seoan', tone: 'meok', added: '2026-11-13' },
   { path: 'mukgallery', title: '묵갤러리', desc: '김미혜 소장展 『조선의 멋 — 목기·장신구』(2016) — 약장·반닫이·서안·책장·함 등 목기·목가구 37점, 크기·재질·지역 표기', items: 37, icon: 'yakjang', tone: 'ju', added: '2026-11-15' },
   { path: 'nfm', title: '국립민속박물관 e뮤지엄 목가구', desc: 'e뮤지엄 전국박물관소장품 — 공공누리 사진이 있는 가구 523점 (민속유물이해Ⅰ 실린 기물 제외)', items: 523, icon: 'ham', tone: 'ju', added: '2026-11-15', group: 'museum' },
-  { path: 'gjfolk', title: '광주광역시립민속박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 25점', items: 25, icon: 'soban', tone: 'jaju', added: '2026-11-15', group: 'museum' },
+  { path: 'gjfolk', title: '광주광역시립민속박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 24점', items: 24, icon: 'soban', tone: 'jaju', added: '2026-11-15', group: 'museum' },
   { path: 'dgu', title: '대구대학교 중앙박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 132점', items: 132, icon: 'bandaji', tone: 'nok', added: '2026-11-15', group: 'museum' },
   { path: 'yecheon', title: '예천박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 29점', items: 29, icon: 'duiju', tone: 'hwang', added: '2026-11-15', group: 'museum' },
   { path: 'sokcho', title: '속초시립박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 81점', items: 81, icon: 'takja', tone: 'jjok', added: '2026-11-15', group: 'museum' },
