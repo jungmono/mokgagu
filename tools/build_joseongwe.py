@@ -1,4 +1,4 @@
-"""정대영 『조선의 궤』 도판 161점 도록 쪽(joseongwe.html)과 검색 색인 넣기 — ewha.html 을 틀로 쓴다.
+"""정대영 『조선의 궤』 도판 162점 도록 쪽(joseongwe.html)과 검색 색인 넣기 — ewha.html 을 틀로 쓴다.
 입력: joseongwe.js(목록) · thumbs/joseongwe/N.jpg · 큰 사진은 mokgagu-photos/photos/joseongwe/N.jpg
 쓰는 법: python3 tools/build_joseongwe.py   (여러 번 돌려도 같다. search.js·bandaji-idx.js 도 함께 새로 만든다)"""
 import json, os, re, subprocess
