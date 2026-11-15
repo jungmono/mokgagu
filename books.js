@@ -35,5 +35,5 @@ window.MOKGAGU_BOOKS = [
   { path: 'gjfolk', title: '광주광역시립민속박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 25점', items: 25, icon: 'soban', tone: 'jaju', added: '2026-11-15', group: 'museum' },
   { path: 'dgu', title: '대구대학교 중앙박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 133점', items: 133, icon: 'bandaji', tone: 'nok', added: '2026-11-15', group: 'museum' },
   { path: 'yecheon', title: '예천박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 29점', items: 29, icon: 'duiju', tone: 'hwang', added: '2026-11-15', group: 'museum' },
-  { path: 'sokcho', title: '속초시립박물관 목가구', desc: 'e뮤지엄 소장품 — 사진을 모으는 중', items: 0, icon: 'takja', tone: 'jjok', added: '2026-11-15', group: 'museum' },
+  { path: 'sokcho', title: '속초시립박물관 목가구', desc: 'e뮤지엄 소장품 — 공공누리 사진이 있는 가구 81점', items: 81, icon: 'takja', tone: 'jjok', added: '2026-11-15', group: 'museum' },
 ];
