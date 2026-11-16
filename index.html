@@ -147,7 +147,7 @@ body{position:relative}
 .r-fac{margin:0 0 12px}.r-fg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 6px}.r-fl{font-size:13px;color:#6b665e;min-width:36px}.r-sub{font-size:15px;font-weight:600;color:#8a2f22}.r-clr{border-color:#8a2f22!important;color:#8a2f22}
 
 /* ───── 첫 화면: 고정 메뉴 줄 · 도록 서가 · 탐색 도구/자료 묶음 · 거믄·힌의 방 (2026-10-27) ───── */
-:root{--barh:46px;--ink:#111;--kraft:#f9f4e6;--kraft-line:#d9cfb4;--board:#3a2a1c}
+html{scroll-padding-top:calc(var(--barh) + 10px)}:root{--barh:46px;--ink:#111;--kraft:#f9f4e6;--kraft-line:#d9cfb4;--board:#3a2a1c}
 .topbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff}
 .topbar .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:2px;padding:0 12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;height:var(--barh)}
 .topbar .in::-webkit-scrollbar{display:none}
@@ -259,7 +259,7 @@ body{position:relative}
 
 
   <div class="info">
-    <span class="chip"><span>📚</span><span>도록 <b id="n-books">0</b>권<span id="n-refs"></span> · 기물 <b id="n-items">0</b>건</span></span>
+    <span class="chip"><span>📚</span><span>도록 <b id="n-books">–</b>권<span id="n-refs"></span> · 기물 <b id="n-items">–</b>건</span></span>
     <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기">
     <a class="chip cm-link" href="comments.html">💬 기물 이야기 모아보기</a>
   </div>
@@ -539,7 +539,7 @@ function drawResults(label) {
     `<button class="r-chip" data-k="${k}" aria-pressed="${only === k}">${esc(t)}<small>${n}</small></button>`).join('') : '';
   $('r-grid').innerHTML = shown.length ? shown.map((r, i) => `
     <button class="r-item" data-i="${i}" data-cid="${esc(cidOf(r))}">
-      <div class="ph">${r.t ? `<img loading="lazy" src="${thOf(r)}" alt="">` : ''}</div>
+      <div class="ph">${r.t ? `<img loading="lazy" decoding="async" src="${thOf(r)}" alt="">` : ''}</div>
       <div class="tx"><div class="nm">${esc(r.name)}</div><div class="ct">${esc(r.cat.replace(/^우리나라 전통 무늬 \d+\s*/, ""))}</div>
       <div class="mt">${esc([r.era, r.size, r.wood].filter(Boolean).join(' · '))}</div></div>
     </button>`).join('') : '<div class="r-empty">찾는 물건이 없어요. 다른 이름으로 찾아보세요.</div>';

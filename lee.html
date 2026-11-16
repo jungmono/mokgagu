@@ -417,7 +417,7 @@ dash.calc('bandaji_region', {
       b.type = 'button'; b.setAttribute('aria-label', `${r.name} ${r.id}`);
       const ph = document.createElement('div'); ph.className = 'lk-ph';
       const src = photo(r.id);
-      if (src) { const im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy'; ph.appendChild(im); }
+      if (src) { const im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; ph.appendChild(im); }
       const cap = document.createElement('div'); cap.className = 'lk-cap';
       cap.textContent = r.name;
       const sub = document.createElement('span'); sub.textContent = `${r.id} · ${r.era}`; cap.appendChild(sub);
