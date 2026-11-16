@@ -100,7 +100,7 @@
     var T = window.MOKGAGU_TOOLS || [];
     var h = '<h6>조선의 목가구</h6>' + link('index.html#q', 'search', '기물 찾기') + link('index.html', 'home', '홈') + link('index.html#sec-books', 'book', '도록 서가') +
       link('comments.html', 'talk', '기물 이야기') + link('glossary.html', 'dict', '목가구 용어 사전');
-    h += '<h6>탐색 도구</h6>' + (T.length ? T.map(function (x) { return link(x.href, TOOL_IC[x.k] || 'tools', x.n); }).join('') : link('index.html#sec-tools', 'tools', '탐색 도구'));
+    h += '<h6>탐색 도구</h6>' + (T.length ? T.map(function (x) { return x.ext ? '<a href="' + x.href + '" target="_blank" rel="noopener">' + IC[TOOL_IC[x.k] || 'tools'] + x.n + '</a>' : link(x.href, TOOL_IC[x.k] || 'tools', x.n); }).join('') : link('index.html#sec-tools', 'tools', '탐색 도구'));
     h += '<h6>자료 묶음</h6>' + foldHTML();
     if (d.getElementById('rv-more')) h += '<h6>내 기록</h6><button type="button" data-ub="recent">' + IC.hist + '최근 본 기물 · 좋아요</button>';
     if (fam()) h += '<h6>거믄·힌의 방</h6>' + link('study.html', 'seoan', '공부방') + link('collection.html', 'box', '소장품') + link('stats.html', 'stats', '통계') + link('compare.html', 'cmp', '비교하기');

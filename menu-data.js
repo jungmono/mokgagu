@@ -4,7 +4,7 @@
 window.MOKGAGU_TOOLS = [
   { k: 'room', href: 'room.html', n: '우리 집에 놓아 보기', s: '집에 배치', d: '내 방에 기물을 놓아 봅니다', title: '우리 집에 놓아 보기', sub: '암호 없이 누구나 씁니다. 방 크기와 기물 치수만 넣으면 됩니다.' },
   { k: 'map', href: 'bandaji-map.html', n: '반닫이여지도', s: '여지도', d: '지역별 반닫이(궤)', title: '반닫이(궤)여지도', sub: '' },
-  { k: 'find', href: 'jangseok-find.html', n: '장석으로 지역 찾기', s: '장석 찾기', d: '장석 모양으로 반닫이 지역 알아보기' },
+  { k: 'find', href: 'https://claude.ai/artifact/7JrHGKPQ72y4djSvgSACyB', ext: 1, n: '장석 감정실', s: '감정실', d: '장석 사진으로 반닫이 지역 감정' },
   { k: 'ruler', href: 'region-ruler.html', n: '비례로 보는 반닫이', s: '비례', d: '가로 세로 비율로 보는 반닫이', title: '비례로 보는 반닫이', sub: '가로 세로 비율로 보는 반닫이' },
   { k: 'quiz', href: 'region-quiz.html', n: '반닫이 퀴즈', s: '퀴즈', d: '사진으로 반닫이 지역 맞추기', title: '반닫이 퀴즈', sub: '사진으로 반닫이 지역 맞추기' },
   { k: 'auction', href: 'auction-stats.html', n: '경매 시세', s: '경매시세', d: '종류별 낙찰가 흐름', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }

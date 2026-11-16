@@ -385,8 +385,8 @@ const TOOL_ICO = {
   stats: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
 };
 function buildTools() {
-  const T = window.MOKGAGU_TOOLS.map((x) => [x.href, x.k, x.n, x.d]);
-  document.getElementById('hm-tiles').innerHTML = T.map(([h, k, n, d]) => `<a class="hm-tile" href="${h}"><span class="i">${k === 'map' ? `<span class="mp">${MAPICO}</span>` : TOOL_ICO[k]}</span><b>${n}</b><small>${d}</small></a>`).join('');
+  const T = window.MOKGAGU_TOOLS.map((x) => [x.href, x.k, x.n, x.d, x.ext]);
+  document.getElementById('hm-tiles').innerHTML = T.map(([h, k, n, d, ext]) => `<a class="hm-tile" href="${h}"${ext ? ' target="_blank" rel="noopener"' : ''}><span class="i">${k === 'map' ? `<span class="mp">${MAPICO}</span>` : TOOL_ICO[k]}</span><b>${n}</b><small>${d}</small></a>`).join('');
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
@@ -735,5 +735,5 @@ d.addEventListener('close',reset);
   });
 })();
 </script>
-<script src="homebtn.js?v=20261116a" defer></script></body>
+<script src="homebtn.js?v=20261116b" defer></script></body>
 </html>
