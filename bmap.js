@@ -1,7 +1,7 @@
 /* 선생님 손지도 위에 꽂는 지역별 반닫이 지도.  window.MOKGAGU_BMAP.mount(el) */
 (function () {
   /* e뮤지엄 서가 5곳 사진은 thumbs/emu/<pid>.jpg · photos/emuseum/<pid>.jpg */
-  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1, miribeol: 1, andong: 1, jeonjudae: 1, busancity: 1, wonju: 1, sangju: 1, gimhae: 1, namgaram: 1, bupyeong: 1, gyeongun: 1, tongyeong: 1, ulsan: 1, snu: 1, cheonan: 1, dolmun: 1, gwangju: 1 };
+  const EMU5 = { nfm: 1, gjfolk: 1, dgu: 1, yecheon: 1, sokcho: 1, miribeol: 1, andong: 1, jeonjudae: 1, busancity: 1, wonjuemu: 1, sangju: 1, gimhae: 1, namgaram: 1, bupyeong: 1, gyeongun: 1, tongyeong: 1, ulsan: 1, snu: 1, cheonan: 1, dolmun: 1, gwangju: 1 };
   const KEY = (window.MOKGAGU_KAKAO_KEY || 'c9f47b5a6780c5bb506586cda58fab6e');   // 카카오 JavaScript 키(도메인 jungmono.github.io 에만 허용됨)
   const LS = 'mokgagu_bmap_desc_v1';
   const S1 = '조선후기 경상도·전라도 반닫이 비교 연구', S2 = '반닫이 장석문양의 상징적 의미(경상도)', S3 = '선의 미감 목가구', S4 = '목가구의 미감 선·선·선';

@@ -60,7 +60,6 @@
     '#ub .ib:hover{background:#f3f0e9}#ub .ib svg{width:22px;height:22px;display:block}',
     '#ub .lg{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:18px;font-weight:900;font-size:18px;letter-spacing:-.03em;white-space:nowrap;overflow:hidden}',
     '#ub .lg img{height:26px;width:auto;display:block}',
-    '@media (max-width:600px){#ub [data-ub="search"]{display:none!important}}',
     '@media (min-width:601px){#ub .lg{font-size:24px}#ub .lg img{height:36px}}',
     '@media (max-width:600px){#ub .lg[data-p="0"] img:last-child,#ub .lg[data-p="1"] img:first-child{display:none}}',   /* 휴대폰: 짝수날 안궤, 홀수날 언양반닫이 아이콘 하나만 */
     '#ub-m{position:fixed;top:62px;right:max(12px,calc((100vw - 1200px)/2 + 12px));z-index:2147482000;width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - 80px);overflow:auto;background:#fff;border:1px solid #e4e0d8;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);padding:8px;font-family:inherit;display:none}',
@@ -69,6 +68,9 @@
     '#ub-m a,#ub-m button{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 10px;border:0;border-radius:10px;background:none;color:#111;font:inherit;font-size:15px;font-weight:700;text-align:left;text-decoration:none;cursor:pointer}',
     '#ub-m a:hover,#ub-m button:hover{background:#f3f0e9}#ub-m a.on{background:#111;color:#fff}',
     '#ub-m svg{width:22px;height:22px;flex:none}',
+    '#ub-m details{margin:0}#ub-m summary{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 10px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;list-style:none}#ub-m summary::-webkit-details-marker{display:none}',
+    '#ub-m summary:hover{background:#f3f0e9}#ub-m summary small{margin-left:auto;color:#857f75;font-size:12px;font-weight:700}#ub-m summary::after{content:"▾";color:#857f75;font-size:12px}#ub-m details[open] summary::after{content:"▴"}',
+    '#ub-m .sub{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 10px 44px}#ub-m .sub a{width:auto;min-height:34px;padding:0 11px;border:1px solid #e4e0d8;border-radius:999px;font-size:13px;gap:5px}#ub-m .sub a small{color:#857f75;font-weight:700;font-size:11px}#ub-m .sub a.on small{color:#ddd}',
     '.ui-ic{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;line-height:0}.ui-ic svg{width:100%;height:100%;display:block}',
     /* 예전 머리와 떠 있는 홈 단추 감추기 */
     '.st-top,.th-row,.th-back.th-home,#hb,#rn,body>.topbar,a.h[aria-label="홈"]{display:none!important}',
@@ -81,11 +83,26 @@
   function ls(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function fam() { return !!ls('mokgagu_study_pw') || (ls('mokgagu_cm_fam') === '1' && !!ls('mokgagu_cm_code')); }
   function link(h, ic, t) { return '<a href="' + h + '"' + (h === P ? ' class="on" aria-current="page"' : '') + '>' + IC[ic] + t + '</a>'; }
+  /* 목록은 menu-data.js 한 곳에서 읽는다(화면마다 따로 불러오지 않아도 되게 여기서 불러옴) */
+  ['menu-data.js?v=1', 'books.js?v=1'].forEach(function (f) { var n = f.split('?')[0]; if ((n === 'menu-data.js' ? window.MOKGAGU_TOOLS : window.MOKGAGU_BOOKS) || d.querySelector('script[src^="' + n + '"]')) return; var sc = d.createElement('script'); sc.src = f; d.head.appendChild(sc); });
+  var TOOL_IC = { room: 'house', map: 'plan', find: 'search', ruler: 'ruler', quiz: 'star', auction: 'chart' };
+  function foldHTML() {
+    var B = window.MOKGAGU_BOOKS, F = window.MOKGAGU_FOLDERS, SH = window.MOKGAGU_SHORT || {};
+    if (!B || !F) return link('index.html#sec-folds', 'folder', '자료 묶음');
+    return F.map(function (f) {
+      var L = B.filter(function (x) { return x.group === f[0]; }); if (!L.length) return '';
+      var here = L.some(function (x) { return x.path + '.html' === P; }), n = L.reduce(function (s, x) { return s + (x.items || 0); }, 0);
+      return '<details' + (here ? ' open' : '') + '><summary>' + IC.folder + f[1] + '<small>' + L.length + '곳 · ' + n.toLocaleString('ko-KR') + '건</small></summary><div class="sub">' +
+        L.map(function (x) { return '<a href="' + x.path + '.html"' + (x.path + '.html' === P ? ' class="on" aria-current="page"' : '') + '>' + (SH[x.path] || x.title) + '</a>'; }).join('') + '</div></details>';
+    }).join('');
+  }
   function menuHTML() {
-    var h = '<h6>조선의 목가구</h6>' + link('index.html', 'home', '홈') + link('index.html#q', 'search', '기물 찾기') +
-      link('index.html#sec-books', 'book', '도록 서가') + link('index.html#sec-tools', 'tools', '탐색 도구') + link('index.html#sec-folds', 'folder', '자료 묶음') +
-      link('comments.html', 'talk', '기물 이야기 모아보기') + link('glossary.html', 'dict', '목가구 용어 사전');
-    if (d.getElementById('rv-more')) h += '<button type="button" data-ub="recent">' + IC.hist + '최근 본 기물 · 좋아요</button>';
+    var T = window.MOKGAGU_TOOLS || [];
+    var h = '<h6>조선의 목가구</h6>' + link('index.html#q', 'search', '기물 찾기') + link('index.html', 'home', '홈') + link('index.html#sec-books', 'book', '도록 서가') +
+      link('comments.html', 'talk', '기물 이야기') + link('glossary.html', 'dict', '목가구 용어 사전');
+    h += '<h6>탐색 도구</h6>' + (T.length ? T.map(function (x) { return link(x.href, TOOL_IC[x.k] || 'tools', x.n); }).join('') : link('index.html#sec-tools', 'tools', '탐색 도구'));
+    h += '<h6>자료 묶음</h6>' + foldHTML();
+    if (d.getElementById('rv-more')) h += '<h6>내 기록</h6><button type="button" data-ub="recent">' + IC.hist + '최근 본 기물 · 좋아요</button>';
     if (fam()) h += '<h6>거믄·힌의 방</h6>' + link('study.html', 'seoan', '공부방') + link('collection.html', 'box', '소장품') + link('stats.html', 'stats', '통계') + link('compare.html', 'cmp', '비교하기');
     return h;
   }

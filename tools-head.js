@@ -4,13 +4,8 @@
 (function () {
   /* 제목 오른쪽 아이콘: 언양 반닫이 들쇠고리 (symbols/eonyang_deulsoe_icon.svg) */
   var DEUL = '<svg class="th-ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="11" y="1.8" width="10" height="5.2" rx="1.2"/><circle cx="13.7" cy="4.4" r=".9" fill="currentColor" stroke="none"/><circle cx="18.3" cy="4.4" r=".9" fill="currentColor" stroke="none"/><rect x="9.8" y="7" width="12.4" height="2.7" rx="1"/><path d="M14 7v2.7M18 7v2.7"/><path d="M12.2 9.7V13L16 18.4L19.8 13V9.7"/><circle cx="16" cy="14.4" r=".9" fill="currentColor" stroke="none"/><path d="M12.2 12.2H11.4M19.8 12.2H20.6"/><path d="M4.8 13.8L8.2 12.2L11.4 13.8V18.6L8.2 20.2L4.8 18.6Z"/><path d="M27.2 13.8L23.8 12.2L20.6 13.8V18.6L23.8 20.2L27.2 18.6Z"/><path d="M6 20.4C3 25.6 8.2 30.8 16 30.8S29 25.6 26 20.4"/><path d="M9.8 20.9C8.9 24.2 11.8 27.6 16 27.6S23.1 24.2 22.2 20.9"/><path d="M14.2 27.6a1.8 1.8 0 0 1 3.6 0"/><path stroke-width="1.2" d="M5.4 25.2l2.8-1M8 28.6l2.2-1.7M26.6 25.2l-2.8-1M24 28.6l-2.2-1.7"/></svg>';
-  var TOOLS = [
-    { k: 'room', s: '집에 배치', href: 'room.html', t: '우리 집에 놓아 보기', title: '우리 집에 놓아 보기', sub: '암호 없이 누구나 씁니다. 방 크기와 기물 치수만 넣으면 됩니다.' },
-    { k: 'map', s: '여지도', href: 'bandaji-map.html', t: '반닫이여지도', title: '반닫이(궤)여지도', sub: '' },
-    { k: 'quiz', s: '퀴즈', href: 'region-quiz.html', t: '반닫이 퀴즈', title: '반닫이 퀴즈', sub: '사진으로 반닫이 지역 맞추기' },
-    { k: 'ruler', s: '비례', href: 'region-ruler.html', t: '비례로 보는 반닫이', title: '비례로 보는 반닫이', sub: '가로 세로 비율로 보는 반닫이', ico: DEUL },
-    { k: 'auction', s: '경매시세', href: 'auction-stats.html', t: '경매 시세', title: '경매 시세', sub: '아이옥션·마이아트옥션·서울옥션 낙찰가를 종류별로 봅니다' }
-  ];
+  var DATA = window.MOKGAGU_TOOLS || [];   /* 목록은 menu-data.js 한 곳에서 관리 */
+  var TOOLS = DATA.map(function (x) { return { k: x.k, s: x.s, href: x.href, t: x.n, title: x.title || x.n, sub: x.sub || '', ico: x.k === 'ruler' ? DEUL : '' }; });
   var me = document.currentScript, key = me && me.getAttribute('data-k'), cur = TOOLS.filter(function (x) { return x.k === key; })[0];
   if (!cur) return;
   /* 통계에서 들어왔으면 「통계로」, 아니면 「홈」 */

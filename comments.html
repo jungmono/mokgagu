@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><title>기물 이야기 모아보기 — 조선의 목가구</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><title>기물 이야기 — 조선의 목가구</title>
 <style>
 :root{--fg:#1d1b18;--muted:#7a736a;--line:#e6e1d9;--card:#fff;--bg:#fff}
 *{box-sizing:border-box}
@@ -64,7 +64,7 @@ select{font:inherit;font-size:13px;border:1px solid #d9d4cc;border-radius:8px;pa
 </head>
 <body>
 <div class="wrap">
-  <h1><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>기물 이야기 모아보기</h1>
+  <h1><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>기물 이야기</h1>
   <p class="lead">모든 도록에 남긴 이야기를 한곳에서 봅니다. 카드를 누르면 그 기물 사진 창이 열리고, 이 목록 순서대로 좌우로 넘겨 볼 수 있어요.</p>
   <div class="who-box" id="who"></div>
   <div class="filters">
@@ -113,7 +113,7 @@ select{font:inherit;font-size:13px;border:1px solid #d9d4cc;border-radius:8px;pa
     var cls = c.author === '거믄' ? 'g' : c.author === '힌' ? 'h' : 'o';
     var label = c.author === '벗' ? (c.name ? '벗 · ' + c.name : '벗') : c.author;
     var pub = C.isPub(c), fam = c.author === '거믄' || c.author === '힌';
-    var ph = r.t ? '<img loading="lazy" src="' + (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '<span>사진 없음</span>';
+    var ph = r.t ? '<img loading="lazy" src="' + (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonjuemu|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg') + '" alt="">' : '<span>사진 없음</span>';
     var acts = '';
     if (editing === c.id) {
       return '<div class="cl-card editing' + (pub ? '' : ' priv') + '" data-cid="' + C.esc(c.cid) + '" data-no-star="1">' +
@@ -188,5 +188,5 @@ select{font:inherit;font-size:13px;border:1px solid #d9d4cc;border-radius:8px;pa
   C.onChange(draw); draw();
 })();
 </script>
-<script src="homebtn.js?v=20261115b" defer></script></body>
+<script src="homebtn.js?v=20261116a" defer></script></body>
 </html>

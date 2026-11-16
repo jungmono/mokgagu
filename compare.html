@@ -99,7 +99,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
       return;
     }
     $('sub').textContent = n + '점을 나란히 놓았어요. 다른 칸은 색으로 표시됩니다. 사진을 누르면 기물 설명이 열리고, 설명 창에서는 확대·축소(휠·두 번 톡·두 손가락)하고 옆으로 밀면 다음·이전 기물로 넘어가요.';
-    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner, rec.b), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: String(rec.name || r.n || r.k).replace(/^소장\s*/, ''), f: rec.t && rec.b && rec.n ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(rec.b) ? 'thumbs/emu/' + rec.pid + '.jpg' : 'thumbs/' + rec.b + '/' + rec.n + '.jpg') : '' }; });
+    var cols = recs.map(function (r) { var rec = r.rec || {}; return { k: r.k, r: rec, n: r.n, dm: dims(rec.size, rec.owner, rec.b), u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: String(rec.name || r.n || r.k).replace(/^소장\s*/, ''), f: rec.t && rec.b && rec.n ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonjuemu|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(rec.b) ? 'thumbs/emu/' + rec.pid + '.jpg' : 'thumbs/' + rec.b + '/' + rec.n + '.jpg') : '' }; });
     function row(label, vals, num) {
       var present = vals.filter(function (v) { return v !== '' && v != null; });
       var diff = present.length >= 2 && new Set(present.map(String)).size > 1, mn = num ? Math.min.apply(null, present) : null;
@@ -317,7 +317,7 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
     function go() {
       var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
       var recs = a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec || by[x.k] }; });
-      window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k, r: rec, k: r.k, f: rec.t && rec.b && rec.n ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(rec.b) ? 'thumbs/emu/' + rec.pid + '.jpg' : 'thumbs/' + rec.b + '/' + rec.n + '.jpg') : '' }; });
+      window.__cols = recs.map(function (r) { var rec = r.rec || {}; return { u: rec.h ? PH + rec.b + '/' + encodeURIComponent(rec.pid) + '.jpg' : (r.u || ''), name: rec.name || r.n || r.k, r: rec, k: r.k, f: rec.t && rec.b && rec.n ? (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonjuemu|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(rec.b) ? 'thumbs/emu/' + rec.pid + '.jpg' : 'thumbs/' + rec.b + '/' + rec.n + '.jpg') : '' }; });
       render(recs);
     }
     if (a.length < 2) { render(a.map(function (x) { return { k: x.k, n: x.n, u: x.u, rec: x.rec }; })); return; }
@@ -329,5 +329,5 @@ dialog::backdrop{background:rgba(20,20,24,.6)}
   start();
 })();
 </script>
-<script src="share.js" defer></script><script src="roomnav.js?v=6" defer></script><script src="homebtn.js?v=20261115b" defer></script><script src="dlgback.js" defer></script>
+<script src="share.js" defer></script><script src="roomnav.js?v=6" defer></script><script src="homebtn.js?v=20261116a" defer></script><script src="dlgback.js" defer></script>
 </body></html>

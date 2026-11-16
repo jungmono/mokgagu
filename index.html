@@ -148,12 +148,6 @@ body{position:relative}
 
 /* ───── 첫 화면: 고정 메뉴 줄 · 도록 서가 · 탐색 도구/자료 묶음 · 거믄·힌의 방 (2026-10-27) ───── */
 html{scroll-padding-top:calc(var(--barh) + 10px)}:root{--barh:46px;--ink:#111;--kraft:#f9f4e6;--kraft-line:#d9cfb4;--board:#3a2a1c}
-.topbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff}
-.topbar .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:2px;padding:0 12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;height:var(--barh)}
-.topbar .in::-webkit-scrollbar{display:none}
-.topbar .mk{display:inline-flex;border:1.5px solid #fff;font-size:12px;font-weight:900;margin-right:8px;flex:none}.topbar .mk b{padding:1px 5px;background:#fff;color:#111}.topbar .mk i{font-style:normal;padding:1px 5px}
-.topbar a,.topbar button{flex:none;font:inherit;font-size:15px;font-weight:700;color:#fff;background:none;border:0;padding:0 12px;height:var(--barh);opacity:.8;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
-.topbar a:hover,.topbar button:hover{opacity:1}.topbar .sp{flex:1}
 .since-top,.eyebrow.eb-top{top:calc(var(--barh) + 14px)!important}
 .hm-sec{scroll-margin-top:calc(var(--barh) + 12px)}
 .hm-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}.hm-head h2{margin:0;font-size:18px;font-weight:800;letter-spacing:-.02em;color:#2b2418}.hm-head small{font-size:13px;color:#8a7d66}
@@ -250,7 +244,6 @@ html{scroll-padding-top:calc(var(--barh) + 10px)}:root{--barh:46px;--ink:#111;--
 .intro .by{text-align:right;font:700 13px system-ui,sans-serif;margin:4px 6px 0}</style>
 </head>
 <body>
-<nav class="topbar" aria-label="첫 화면 메뉴"><div class="in"><span class="mk" aria-hidden="true"><b>거믄</b><i>힌</i></span><a href="index.html" data-go="top" aria-label="홈"><svg viewBox="0 0 32 32" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-4px;margin-right:5px"><path d="M4 15 16 4l12 11"/><path d="M7 13v14h18V13"/><path d="M13 27v-8h6v8"/></svg>홈</a><button type="button" data-go="q">찾기</button><button type="button" data-go="sec-books">도록 서가</button><button type="button" data-go="sec-tools">탐색 도구</button><button type="button" data-go="sec-folds">자료 묶음</button><button type="button" data-go="sec-home">거믄·힌의 방</button><span class="sp"></span><a href="comments.html">💬 이야기</a></div></nav>
 <div class="since-top"><span class="sc-blk">since</span><span class="sc-wht">2026.10.16.</span></div>
 <div class="eyebrow eb-top"><span class="ew-blk">거믄</span><span class="ew-wht">힌</span><span class="ew-rest">고미술공부방</span></div>
 <div class="wrap">
@@ -261,7 +254,7 @@ html{scroll-padding-top:calc(var(--barh) + 10px)}:root{--barh:46px;--ink:#111;--
   <div class="info">
     <span class="chip"><span>📚</span><span>도록 <b id="n-books">–</b>권<span id="n-refs"></span> · 기물 <b id="n-items">–</b>건</span></span>
     <input class="search" id="q" type="search" placeholder="물건 이름으로 찾기 — 예: 반닫이, 이층장, 소반" aria-label="물건 이름으로 찾기">
-    <a class="chip cm-link" href="comments.html">💬 기물 이야기 모아보기</a>
+    <a class="chip cm-link" href="comments.html">💬 기물 이야기</a>
   </div>
 
   <nav class="quick" id="quick" aria-label="기물로 바로 찾기"></nav>
@@ -300,6 +293,7 @@ html{scroll-padding-top:calc(var(--barh) + 10px)}:root{--barh:46px;--ink:#111;--
   </footer>
 </div>
 
+<script src="menu-data.js?v=1"></script>
 <script src="books.js?v=1"></script>
 <script>
 /* ───────── 새 대시보드를 추가할 때는 이 목록 맨 위에 한 덩어리만 더 붙이면 됩니다 ─────────
@@ -384,17 +378,19 @@ document.getElementById('bk-all').addEventListener('click', (e) => { const box =
 const TOOL_ICO = {
   /* 반닫이 퀴즈: 언양 반닫이 앞바탕 장석(2026-10-31, symbols/eonyang_apbatang_icon.svg) */
   quiz: T32('<g stroke-width="1.6"><path d="M7 2.8H25Q28 2.8 28 5.8V22.4A2.38 2.38 0 0 1 25.00 24.00A2.38 2.38 0 0 1 22.00 25.60A2.41 2.41 0 0 1 19.00 27.30L16 29.0L13.00 27.30A2.41 2.41 0 0 1 10.00 25.60A2.38 2.38 0 0 1 7.00 24.00A2.38 2.38 0 0 1 4.00 22.40V5.8Q4 2.8 7 2.8Z"/><circle cx="7.4" cy="6.2" r=".7" stroke-width=".85"/><circle cx="7.4" cy="9.6" r=".7" stroke-width=".85"/><circle cx="24.6" cy="6.2" r=".7" stroke-width=".85"/><circle cx="24.6" cy="9.6" r=".7" stroke-width=".85"/><circle cx="16" cy="12.2" r="3.2" stroke-width="1.2"/><path stroke-width="1.1" d="M16 10.6V13.799999999999999M14.4 12.2H17.6M16 10.6H17.2M17.6 12.2V13.399999999999999M16 13.799999999999999H14.8M14.4 12.2V11.0"/><circle cx="25.82" cy="21.92" r=".58" stroke-width=".8"/><circle cx="22.82" cy="23.52" r=".58" stroke-width=".8"/><circle cx="19.79" cy="25.19" r=".58" stroke-width=".8"/><circle cx="12.21" cy="25.19" r=".58" stroke-width=".8"/><circle cx="9.18" cy="23.52" r=".58" stroke-width=".8"/><circle cx="6.18" cy="21.92" r=".58" stroke-width=".8"/><circle cx="26.54" cy="19.66" r=".9" fill="currentColor" stroke="none"/><circle cx="20.65" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="16.00" cy="26.00" r=".9" fill="currentColor" stroke="none"/><circle cx="11.35" cy="23.15" r=".9" fill="currentColor" stroke="none"/><circle cx="5.46" cy="19.66" r=".9" fill="currentColor" stroke="none"/></g>'),
+  find: T32('<circle cx="13.5" cy="13.5" r="8.5"/><circle cx="13.5" cy="13.5" r="3"/><path d="M20 20l8 8"/>'),
   room: T32('<path d="M3 15 16 4l13 11"/><path d="M6 13v14h20V13"/><path d="M11 27v-7h10v7"/><path d="M13 20v-3h6v3"/>'),
   ruler: T32('<path d="M5 26 26 5"/><path d="M5 26V9M5 26h17"/><path d="M5 13h3M5 17h4M5 21h3M9 26v-3M13 26v-4M17 26v-3"/>'),
+  auction: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
   stats: T32('<path d="M4 27h24M4 27V5"/><path d="M7 22l6-6 5 4 8-10"/><circle cx="26" cy="10" r="1.4" fill="currentColor"/>'),
 };
 function buildTools() {
-  const T = [['room.html', 'room', '우리 집에 놓아 보기', '내 방에 기물을 놓아 봅니다'], ['bandaji-map.html', 'map', '반닫이여지도', '지역별 반닫이(궤)'], ['region-ruler.html', 'ruler', '비례로 보는 반닫이', '가로 세로 비율로 보는 반닫이'], ['region-quiz.html', 'quiz', '반닫이 퀴즈', '사진으로 반닫이 지역 맞추기'], ['auction-stats.html', 'stats', '경매 시세', '종류별 낙찰가 흐름']];
+  const T = window.MOKGAGU_TOOLS.map((x) => [x.href, x.k, x.n, x.d]);
   document.getElementById('hm-tiles').innerHTML = T.map(([h, k, n, d]) => `<a class="hm-tile" href="${h}"><span class="i">${k === 'map' ? `<span class="mp">${MAPICO}</span>` : TOOL_ICO[k]}</span><b>${n}</b><small>${d}</small></a>`).join('');
 }
 /* 자료 묶음 — 누르면 아래에 그 묶음의 도록이 펼쳐진다 */
 /* 자료 묶음 펼침 메뉴에 쓰는 짧은 이름 */
-const SHORT = { nfm: '국립민속박물관', gjfolk: '광주민속박물관', dgu: '대구대박물관', yecheon: '예천박물관', sokcho: '속초박물관', miribeol: '미리벌민속박물관', andong: '안동시립민속박물관', jeonjudae: '전주대박물관', busancity: '부산시립박물관', wonju: '원주역사박물관', sangju: '상주박물관', gimhae: '김해목재박물관', namgaram: '남가람박물관', bupyeong: '부평역사박물관', gyeongun: '경운박물관', tongyeong: '통영시립박물관', ulsan: '울산박물관', snu: '서울대학교박물관', cheonan: '천안박물관', dolmun: '제주돌문화공원', gwangju: '국립광주박물관', nmk: '국립중앙박물관', heritage: '국가유산', ewha: '이화여대박물관', horim: '호림박물관', yerang: '예랑방·고목당', enar: '예나르', dugaheon: '두가헌', hoam: '호암미술관', mukgallery: '묵갤러리', seoulauction: '서울옥션', overseas: '해외경매', myart: '마이아트옥션', auction: '아이옥션', jikmul: '직물', dojagi: '도자기', najeon: '나전·화각', geumsok: '금속공예', wajeon: '와전', seokjo: '궁능석조물' };
+const SHORT = window.MOKGAGU_SHORT;
 const FOLD_DESC = { museum: '박물관·지정 문화유산 목공예', auction: '추정가와 낙찰가', ref: '전통 무늬 조사보고서' };
 document.getElementById('hm-folds').innerHTML = FOLDERS.filter((f) => f[3].length).map(([k, name, p, L]) => `<div class="hm-fg"><a class="hm-fold" href="#${k}" data-k="${k}"><span class="i">${FD_ICON[k] || FOLDER_SVG}</span><b>${name}</b><small>${FOLD_DESC[k] || ''}</small><em>${L.length}${k === 'ref' ? '권' : '개'} · ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 <span class="ar">▾</span></em></a><div class="hm-mini" hidden>${L.map((d) => `<a href="${url(d)}" title="${d.title} — ${d.desc}">${SHORT[d.path] || d.title}<small>${d.items.toLocaleString('ko-KR')}</small></a>`).join('')}<button type="button" class="all" data-all="${k}">전체 ${L.reduce((s, d) => s + d.items, 0).toLocaleString('ko-KR')}건 보기 →</button></div></div>`).join('');
 document.getElementById('hm-folds').addEventListener('click', (e) => { const b = e.target.closest('[data-all]'); if (!b) return; e.preventDefault(); history.replaceState(null, '', location.pathname); render(); showGroup(b.dataset.all); });
@@ -411,15 +407,6 @@ function render() {
 document.getElementById('hm-folds').addEventListener('click', (e) => { const a = e.target.closest('.hm-fold'); if (a && a.classList.contains('on')) { e.preventDefault(); closeFold(); } });
 grid.addEventListener('click', (e) => { if (e.target.closest('#fd-close')) { e.preventDefault(); closeFold(); document.getElementById('sec-folds').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
 window.addEventListener('hashchange', () => { if (location.hash.startsWith('#see=')) return; render(); });
-/* 고정 메뉴 줄 */
-document.querySelector('.topbar').addEventListener('click', (e) => {
-  const b = e.target.closest('[data-go]'); if (!b) return;
-  const g = b.dataset.go;
-  if (g === 'top') { e.preventDefault(); document.getElementById('home-link').click(); return; }
-  if (g === 'q') { window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => document.getElementById('q').focus(), 300); return; }
-  if (document.getElementById('home').hidden) { document.getElementById('q').value = ''; search(''); syncQuick(); }
-  document.getElementById(g).scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
 render();
 
 /* ───────── 물건 이름 검색 ───────── */
@@ -427,7 +414,7 @@ const PROV = /(경기|강원|충청|전라|경상|황해|평안|함경|제주)(�
 const norm = (s) => s.toLowerCase().replace(/\s+/g, '').replace(PROV, '$1$2');
 const ORDER = DASHBOARDS.map((d) => d.path);
 /* e뮤지엄 서가 5곳: 사진은 photos/emuseum/<pid>.jpg, 작은 사진은 thumbs/emu/<pid>.jpg, 좋아요·이야기는 emuseum/<pid> */
-const EMUB = ['nfm', 'gjfolk', 'dgu', 'yecheon', 'sokcho', 'miribeol', 'andong', 'jeonjudae', 'busancity', 'wonju', 'sangju', 'gimhae', 'namgaram', 'bupyeong', 'gyeongun', 'tongyeong', 'ulsan', 'snu', 'cheonan', 'dolmun', 'gwangju'];
+const EMUB = ['nfm', 'gjfolk', 'dgu', 'yecheon', 'sokcho', 'miribeol', 'andong', 'jeonjudae', 'busancity', 'wonjuemu', 'sangju', 'gimhae', 'namgaram', 'bupyeong', 'gyeongun', 'tongyeong', 'ulsan', 'snu', 'cheonan', 'dolmun', 'gwangju'];
 const thOf = (r) => EMUB.includes(r.b) ? `thumbs/emu/${r.pid}.jpg` : `thumbs/${r.b}/${r.n}.jpg`;
 const cidOf = (r) => (EMUB.includes(r.b) ? 'emuseum' : r.b) + '/' + r.pid;
 const TITLE = Object.fromEntries(DASHBOARDS.map((d) => [d.path, d.title]));
@@ -748,5 +735,5 @@ d.addEventListener('close',reset);
   });
 })();
 </script>
-<script src="homebtn.js?v=20261115b" defer></script></body>
+<script src="homebtn.js?v=20261116a" defer></script></body>
 </html>

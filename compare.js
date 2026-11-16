@@ -117,7 +117,7 @@
       fillTried = true;
       loadIdx().then(function () {
         var by = {}; (window.SEARCH || []).forEach(function (r) { by[r.b + '/' + r.pid] = r; });
-        var b = load().map(function (x) { var r = by[x.k]; if (r && !x.u) { x.u = (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonju|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'); if (!x.n) x.n = r.name || ''; } return x; });
+        var b = load().map(function (x) { var r = by[x.k]; if (r && !x.u) { x.u = (/^(nfm|gjfolk|dgu|yecheon|sokcho|miribeol|andong|jeonjudae|busancity|wonjuemu|sangju|gimhae|namgaram|bupyeong|gyeongun|tongyeong|ulsan|snu|cheonan|dolmun|gwangju)$/.test(r.b) ? 'thumbs/emu/' + r.pid + '.jpg' : 'thumbs/' + r.b + '/' + r.n + '.jpg'); if (!x.n) x.n = r.name || ''; } return x; });
         save(b); fillTried = false; if (!b.some(function (x) { return !x.u && x.k.indexOf('col/') !== 0; })) paint();
       });
     }
