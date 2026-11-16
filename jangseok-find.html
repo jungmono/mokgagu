@@ -39,13 +39,15 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
 </style><script src="common.js?v=19" defer></script></head>
 <body><main>
 <h1>장석으로 지역 찾기</h1>
-<p class="sub">반닫이에서 보이는 특징을 고르면 기준표와 맞대어 지역 후보를 보여 줍니다</p>
-<div class="top"><a href="bandaji-map.html">← 반닫이(궤)여지도</a><a href="index.html">처음 화면</a><a href="https://claude.ai/artifact/7JrHGKPQ72y4djSvgSACyB" target="_blank" rel="noopener">📷 사진으로 감정하기</a></div>
+<p class="sub">장석 사진을 올리면 Claude가 기준표와 맞대어 지역을 감정합니다</p>
+<div class="top"><a href="bandaji-map.html">← 반닫이(궤)여지도</a><a href="index.html">처음 화면</a></div>
+<div class="card" style="text-align:center;padding:26px 16px;margin-bottom:16px"><a href="https://claude.ai/artifact/7JrHGKPQ72y4djSvgSACyB" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#111;color:#fff;text-decoration:none;font-weight:900;font-size:20px;border-radius:999px;padding:16px 30px"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg>사진으로 감정하기</a><p style="margin:12px 0 0;font-size:14px;line-height:1.6;color:#6d6551">반닫이 앞판 장석 사진을 올리면 알아서 지역을 판단합니다.<br>사진은 Claude로 보내져 판단에만 쓰이며 이 포털에는 저장되지 않습니다.</p></div>
+<details><summary style="cursor:pointer;font-weight:700;font-size:15px;margin:0 0 12px;color:#6d6551">특징으로 직접 찾기 (보조)</summary>
 <div class="wrap">
   <div>
     <div class="card photo">
       <label class="ph" id="ph"><span>반닫이 사진 올리기<br>(눌러서 고르기)</span><input type="file" id="file" accept="image/*" hidden></label>
-      <small>사진은 이 기기에서 보기만 하고 어디에도 올리지 않습니다. 사진을 보면서 오른쪽 특징을 고르세요.</small>
+      <small>사진은 이 기기에서 보기만 하고 어디에도 올리지 않습니다. </small>
     </div>
   </div>
   <div class="card">
@@ -55,6 +57,7 @@ h1{margin:6px 0 4px;font-weight:900;font-size:clamp(24px,6vw,44px);letter-spacin
 </div>
 <div id="hori"></div>
 <div id="res"></div>
+</details>
 <p class="foot">기준표 출처: 지역N문화 「각 지역별 반닫이 특징」「목공예품을 견고하고 아름답게 하는 금속장석」「한국 목공예의 특성」(한국문화원연합회), 반닫이여지도에 정리해 둔 논문 요약. 정대영 「조선의 궤」 자료는 더할 예정입니다.<br>이 화면은 기준표와 맞대어 본 결과일 뿐 감정이 아닙니다. 장석은 바뀌어 달리는 일이 많아 몸체·나무·비례와 함께 보아야 합니다.</p>
 </main>
 <script src="jangseok-criteria.js?v=5"></script>
