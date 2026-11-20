@@ -425,9 +425,13 @@ let hits = [], shown = [], only = '', cur = -1, seqFrom = '', seqLabel = '', seq
 /* 검색 색인(search.js, 1.5MB)은 처음 화면에서는 받지 않고, 검색창을 누르거나 검색·기물 열기가 필요할 때 불러온다 */
 let idxLoading = null;
 function loadIdx() {
-  if (window.SEARCH) return Promise.resolve();
-  if (!idxLoading) idxLoading = new Promise((ok) => { const s = document.createElement('script'); s.src = 'search.js?v=20261115zf'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s); });
-  return idxLoading;
+  /* 표준 칸(std.json: 표준 기종·시대·치수 숫자, tools/build_std_fields.js 로 만듦)도 함께 받는다. 못 받아도 검색은 그대로 된다 */
+  if (!window.__stdP) window.__stdP = fetch('std.json?v=20261120').then((r) => (r.ok ? r.json() : {})).then((j) => { window.STD = j; }).catch(() => { window.STD = {}; });
+  if (!idxLoading) idxLoading = new Promise((ok) => {
+    if (window.SEARCH) return ok();
+    const s = document.createElement('script'); s.src = 'search.js?v=20261115zf'; s.onload = ok; s.onerror = () => { idxLoading = null; ok(); }; document.head.appendChild(s);
+  });
+  return Promise.all([idxLoading, window.__stdP]);
 }
 let lastTerms = [];
 /* 내 소장품 — 소장품 도록을 한 번이라도 연 기기(암호 입력한 기기)에만 저장된 목록에서 찾는다. 사진 없이 이름·상태만 */
@@ -499,9 +503,11 @@ const REG = ['경상','전라','충청','강원','경기','황해','평안','함
 const regOf = (r) => { const m = (r.name || '').match(new RegExp(REG.join('|'))); return m ? ({안동:'경상',진주:'경상',통영:'경상',밀양:'경상',울산:'경상',동래:'경상',나주:'전라',남원:'전라',전주:'전라',평양:'평안',박천:'평안',해주:'황해',개성:'경기',강화:'경기'}[m[0]] || m[0]) : ''; };
 const eraOf = (r) => { const e = r.era || ''; if (!e || /미상/.test(e)) return '시대 미상'; if (/고려/.test(e)) return '고려'; if (/(19|20)세기.*(20)세기|20세기|일제|근대/.test(e) && !/^조선 19세기$|^19세기$/.test(e)) return '19말~20세기'; if (/15세기|16세기|조선 전기/.test(e)) return '조선 전기'; if (/17세기|18세기|조선 후기/.test(e)) return '조선 후기'; if (/19세기/.test(e)) return '19세기'; return '조선'; };
 const woodsOf = (r) => (r.wood || '').split(/\s*[,·]\s*/).filter(Boolean);
-const FAC = [['지역', '지역', (r) => [regOf(r)].filter(Boolean)], ['시대', '시대', (r) => [eraOf(r)]], ['수종', '수종', woodsOf]];
+const stdKindOf = (r) => { const v = window.STD && window.STD[r.b + ':' + r.n]; return v && v[0] ? [v[0]] : []; };
+const FAC = [['기종', '기종', stdKindOf], ['지역', '지역', (r) => [regOf(r)].filter(Boolean)], ['시대', '시대', (r) => [eraOf(r)]], ['수종', '수종', woodsOf]];
 const facOk = (r, skip) => FAC.every(([k, , f]) => k === skip || !fa[k] || f(r).includes(fa[k]));
 function drawFacets(base) {
+  if (!window.STD) loadIdx().then(() => { if (window.STD) drawFacets(base); });   // 표준 칸이 늦게 오면 기종 단추를 채워 다시 그린다
   const out = FAC.map(([k, lab, f]) => {
     const cnt = {}; base.filter((r) => facOk(r, k)).forEach((r) => f(r).forEach((v) => (cnt[v] = (cnt[v] || 0) + 1)));
     const ent = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 10);
@@ -640,7 +646,7 @@ let tmr; $('q').addEventListener('input', (e) => { clearTimeout(tmr); tmr = setT
 </script>
 <script>/* 검색 상태를 주소에 담기 — 검색어(q)·도록(b)·지역(r)·시대(e)·수종(w). 주소를 보내면 같은 결과가 열린다 */
 (function () {
-  const KEYS = { r: '지역', e: '시대', w: '수종' };
+  const KEYS = { k: '기종', r: '지역', e: '시대', w: '수종' };
   const P = new URLSearchParams(location.search);
   let pend = P.get('q') ? { b: P.get('b') || '', fa: Object.fromEntries(Object.entries(KEYS).map(([k, n]) => [n, P.get(k) || '']).filter(([, v]) => v)) } : null;
   function url() {
