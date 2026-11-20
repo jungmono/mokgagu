@@ -44,7 +44,8 @@ function parse(it,src){var o=it.owner||'',m=o.match(/^(\S+)\s.*?\((\d{4})\)\s*Lo
 function grab(f,src){return fetch(f).then(function(r){return r.text()}).then(function(t){var m=t.match(/id="ds-items">([\s\S]*?)<\/script>/);return m?JSON.parse(m[1]).map(function(i){return parse(i,src)}):[]});}
 /* 새 경매사 도록을 만들면 이 목록에 [파일, 이름]을 한 줄만 더하면 경매 시세에 자동으로 들어옵니다(도록 파일에 id="ds-items" 자료가 있어야 함) */
 var SOURCES=[['auction.html','auction'],['myart.html','myart'],['seoulauction.html','seoulauction']];
-Promise.all(SOURCES.map(function(s){return grab(s[0],s[1])})).then(function(r){ALL=[].concat.apply([],r).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
+/* 시세용 자료 파일(auction-data.json, tools/build_auction_data.py 로 만듦)을 먼저 읽고 없으면 도록 HTML에서 읽는다 */
+fetch('auction-data.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){return [a]}).catch(function(){return Promise.all(SOURCES.map(function(s){return grab(s[0],s[1])}))}).then(function(r){ALL=[].concat.apply([],r).filter(function(x){return x.year});init();},function(){document.getElementById('note').textContent='자료를 불러오지 못했어요.';});
 function sites(){var o=[];ALL.forEach(function(x){if(x.site&&o.indexOf(x.site)<0)o.push(x.site)});return o;}
 function med(a){a=a.slice().sort(function(x,y){return x-y});var n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;}
 function man(v){var m=v/10000;return (m>=10000?(m/10000).toFixed(m%10000?1:0)+'억':(m>=1000?Math.round(m).toLocaleString():(Math.round(m*10)/10))+'만');}
