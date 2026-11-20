@@ -14,13 +14,13 @@
   const cnt = (k) => items.filter((x) => x.kind === k).length;
   const skip = org.k === 'nfm' && E.skipped ? `<li>『민속유물이해Ⅰ 목가구』(2003)에 이미 실린 ${E.skipped}점은 그 서가에 있어 여기서는 뺐습니다.</li>` : '';
   document.getElementById('lead').innerHTML = items.length ? `<li>e뮤지엄 전국박물관소장품검색에서 모은 ${esc(org.n)}의 가구 가운데 공공누리 사진이 있는 <b>${items.length}</b>점</li>${skip}<li>사진이 없는 기물은 싣지 않았고 사진을 모으는 대로 늘립니다. 크기·설명은 e뮤지엄 검색창에 소장번호를 넣어 원본에서 확인하세요.</li><li>기획전 도록(목가구, 나무의 이치를 담다 등)에 실린 같은 기물과는 겹칠 수 있습니다.</li>` : `<li>${esc(org.n)}의 가구 사진을 e뮤지엄에서 모으는 중입니다. 사진이 갖춰진 기물부터 이곳에 싣겠습니다.</li>`;
-  let kind = -1, q = '', shown = 120, view = [];
+  let kind = -1, q = '', shown = 60, view = [];
   const tiles = document.getElementById('tiles');
   function renderTiles() {
     tiles.innerHTML = [['', '전체', items.length]].concat(E.kinds.map((k, n) => [n, k, cnt(n)]).filter((t) => t[2])).map(([v, k, n]) => `<button type="button" class="tile${(v === '' ? kind === -1 : kind === v) ? ' on' : ''}" data-k="${v}"><div class="k">${k}</div><div class="v">${n}<small>점</small></div></button>`).join('');
   }
-  tiles.addEventListener('click', (e) => { const b = e.target.closest('.tile'); if (!b) return; kind = b.dataset.k === '' ? -1 : +b.dataset.k; shown = 120; render(); });
-  document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim(); shown = 120; render(); });
+  tiles.addEventListener('click', (e) => { const b = e.target.closest('.tile'); if (!b) return; kind = b.dataset.k === '' ? -1 : +b.dataset.k; shown = 60; render(); });
+  document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim(); shown = 60; render(); });
   function render() {
     renderTiles();
     view = items.filter((x) => (kind < 0 || x.kind === kind) && (!q || (x.name + ' ' + x.pre + ' ' + x.no).includes(q)));
@@ -47,7 +47,7 @@
     if (!dlg.open) dlg.showModal();
   }
   $('grid').addEventListener('click', (e) => {
-    if (e.target.closest('#more')) { shown += 240; render(); return; }
+    if (e.target.closest('#more')) { shown += 120; render(); return; }
     const c = e.target.closest('.card'); if (c) open_(+c.dataset.n);
   });
   if (window.MOKGAGU_PHOTOZOOM) MOKGAGU_PHOTOZOOM.attach({ dialog: dlg, area: $('d-main'), next: () => open_(cur + 1), prev: () => open_(cur - 1), canNext: () => view.length > 1, canPrev: () => view.length > 1 });

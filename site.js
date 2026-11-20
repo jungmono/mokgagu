@@ -4,6 +4,7 @@
   /* 도록 목록은 books.js 한 곳에서 읽는다(홈과 같은 목록) */
   var BOOKS = {}; (window.MOKGAGU_BOOKS || []).forEach(function (d) { BOOKS[d.path] = { t: d.title, d: d.desc, n: d.items, g: d.group || '' }; });
   var GROUP = { museum: '박물관자료', auction: '경매자료', ref: '도움자료', '': '도록' };
+  var HAS_COVER = 'auction busan dojagi dugaheon enar ewha geumsok heritage hoam horim jikmul joseongwe kwon lee migam minsok mukgallery munui myart najeon namu nmk overseas salm seokjo seoulauction soban wajeon wonju yakjang yangsan yerang'.split(' ');   /* covers 폴더에 있는 표지만 요청(없는 파일 404 방지) — 표지를 더하면 여기에도 적음 */
   var slug = (location.pathname.split('/').pop() || '').replace(/\.html$/, '');
   var css = document.createElement('style');
   css.textContent = [
@@ -22,6 +23,7 @@
     '.st-cover .st-tx .st-n{margin-top:6px!important;font-weight:900!important;font-size:clamp(15px,1.6vw,18px);color:#111}',
     '.st-h1-hide{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;margin:0!important;padding:0!important}',
     '@media (max-width:420px){.st-top .st-mark img{height:26px}.st-top .st-mark.st-angwe img{height:23px}.st-top .st-mark{margin-bottom:5px}}',
+    '@media (max-width:560px){body #grid.grid,body #gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}body #grid .card .nm{font-size:15px}body #grid .card .bd{padding:9px 10px 11px}}',
     '@media print{.st-top .st-mark{display:none}}'
   ].join('');
   document.head.appendChild(css);
@@ -42,7 +44,7 @@
     var b = BOOKS[slug]; if (!b) return;
     var h1 = document.querySelector('h1');
     var cv = document.createElement('section'); cv.className = 'st-cover';
-    cv.innerHTML = '<img src="covers/' + slug + '.jpg?v=2" alt="' + esc(b.t) + ' 표지" onerror="this.remove()">' +
+    cv.innerHTML = (HAS_COVER.indexOf(slug) >= 0 ? '<img src="covers/' + slug + '.jpg?v=3" alt="' + esc(b.t) + ' 표지" onerror="this.remove()">' : '') +
       '<div class="st-tx"><span class="st-grp">' + GROUP[b.g || ''] + '</span><h2>' + esc(b.t) + '</h2><p>' + esc(b.d) + '</p><p class="st-n">기물 ' + b.n.toLocaleString('ko-KR') + '건</p></div>';
     if (h1) { h1.parentNode.insertBefore(cv, h1); h1.classList.add('st-h1-hide'); }
     else top.parentNode.insertBefore(cv, top.nextSibling);

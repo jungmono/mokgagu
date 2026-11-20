@@ -52,6 +52,7 @@
   var css = d.createElement('style');
   css.textContent = [
     'html,body{background:#faf7f0!important}',
+    'html,body{overflow-x:clip}',
     '#ub{position:sticky;top:0;z-index:55;background:#fff;border-bottom:1px solid #e4e0d8;font-family:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}',
     '#ub{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;box-sizing:border-box}',
     '#ub .in{max-width:1200px;margin:0 auto;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px}',
